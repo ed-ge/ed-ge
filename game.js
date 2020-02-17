@@ -16,21 +16,23 @@ document.body.addEventListener('keydown', keydown);
 document.body.addEventListener('keyup', keyup);
 document.body.addEventListener('keypress', keypress);
 
-let Input = Engine.Input;
+let Input = Engine.Base.Input;
 
 function keydown(event){
-    console.log("keydown");
-    console.log(event.key);
+    //console.log("keydown");
+    //console.log(event.key);
+    Input.keys[event.key] = true;
 }
 
 function keyup(event){
-    console.log("keyup");
-    console.log(event.keyCode);
+    //console.log("keyup");
+    //console.log(event.keyCode);
+    Input.keys[event.key] = false;
 }
 
 function keypress(event){
-    console.log("keypress");
-    console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
+    //console.log("keypress");
+    //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
 }
 
 

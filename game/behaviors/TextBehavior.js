@@ -1,16 +1,23 @@
 import Base from "../../engine/Base.js"
 import Components from "../../engine/Components.js"
+import Input from "../../engine/base/Input.js";
 
-class TextBehavior extends Base.Behavior{
+class TextBehavior extends Base.Behavior {
     time = 10;
-    
-    start(){
-        
+
+    start() {
+
     }
-    update(){
+    update() {
         this.time -= .1;
-        this.gameObject.getComponent(Components.TextComponent).text = this.time;
-        
+        if (Input.keys['ArrowUp']) {
+            this.gameObject.getComponent(Components.TextComponent).text = 'Down';
+        }
+        else {
+            this.gameObject.getComponent(Components.TextComponent).text = 'Up';
+
+        }
+
     }
 }
 
