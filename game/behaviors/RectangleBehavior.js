@@ -1,6 +1,6 @@
 import Base from "../../engine/Base.js"
 
-class RectangleBehavior extends Base.Behavior{
+export default class RectangleBehavior extends Base.Behavior{
     start(){
         this.gameObject.rotation = 0;
     }
@@ -8,5 +8,3 @@ class RectangleBehavior extends Base.Behavior{
         this.gameObject.rotation += .1;
     }
 }
-
-export default RectangleBehavior;

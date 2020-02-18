@@ -1,6 +1,6 @@
 import Base from "../Base.js"
 
-class RectangleComponent extends Base.Component{
+export default class RectangleComponent extends Base.Component{
     width;
     height;
     fill;
@@ -25,5 +25,3 @@ class RectangleComponent extends Base.Component{
 
     }
 }
-
-export default RectangleComponent;

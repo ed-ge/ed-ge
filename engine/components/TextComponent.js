@@ -1,6 +1,6 @@
 import Base from "../Base.js"
 
-class TextComponent extends Base.Component{
+export default class TextComponent extends Base.Component{
     text;
     font;
     fill;
@@ -22,5 +22,3 @@ class TextComponent extends Base.Component{
 
     }
 }
-
-export default TextComponent;

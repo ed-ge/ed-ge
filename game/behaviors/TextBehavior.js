@@ -2,7 +2,7 @@ import Base from "../../engine/Base.js"
 import Components from "../../engine/Components.js"
 import Input from "../../engine/base/Input.js";
 
-class TextBehavior extends Base.Behavior {
+export default class TextBehavior extends Base.Behavior {
     time = 10;
 
     start() {
@@ -20,5 +20,3 @@ class TextBehavior extends Base.Behavior {
 
     }
 }
-
-export default TextBehavior;

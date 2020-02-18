@@ -1,15 +1,11 @@
 import Component from "./Component.js"
 
-class Behavior extends Component{
+export default class Behavior extends Component{
 
-    start(){
+    //Just a reminder that extending classes should have a start() function
+    start(){ }
 
-    }
-
-    update(){
-        
-    }
+    //Just a reminder that extending classes should have an update() function
+    update(){ }
 
 }
-
-export default Behavior;

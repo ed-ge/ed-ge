@@ -1,9 +1,7 @@
 import NameableParent from "./NamableParent.js"
 
 export default class Scene extends NameableParent{
-    gameObjects = [];
     
-
     constructor(){
         super();
         
@@ -11,16 +9,11 @@ export default class Scene extends NameableParent{
     draw(ctx, width, height){
         ctx.fillStyle = "white";
         ctx.fillRect(0,0,width, height)
-        for(let i = 0; i < this.gameObjects.length; i++){
-            let gameObject = this.gameObjects[i];
-            gameObject.draw(ctx);
-        }
+        
+        this.children.forEach(i=>i.draw(ctx));
 
     }
     update(){
-        for(let i = 0; i < this.gameObjects.length; i++){
-            let gameObject = this.gameObjects[i];
-            gameObject.update();
-        }
+        this.children.forEach(i=>i.update());
     }
 }

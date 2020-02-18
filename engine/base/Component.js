@@ -1,7 +1,7 @@
-class Component{
+export default class Component{
+
+    //Reference to containing GameObject
     gameObject;
     
 
 }
-
-export default Component;

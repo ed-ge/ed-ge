@@ -1,20 +1,15 @@
 import NameableParent from "./NamableParent.js"
 
 export default class GameObject extends NameableParent {
-    x;
-    y;
+    x; y;
     scaleX;
     scaleY;
     rotation;
     components = [];
 
-    constructor(x=0, y=0, scaleX=1, scaleY=1, rotation=0) {
+    constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0) {
         super();
-        this.x = x;
-        this.y = y;
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
-        this.rotation = rotation;
+        [this.x, this.y, this.scaleX, this.scaleY, this.rotation] = [x, y, scaleX, scaleY, rotation];
     }
     addComponent(component) {
         this.components.push(component);
@@ -26,31 +21,22 @@ export default class GameObject extends NameableParent {
         ctx.scale(this.scaleX, this.scaleY);
         ctx.rotate(this.rotation);
 
-        for (let i = 0; i < this.components.length; i++) {
-            let component = this.components[i];
-            if (component.draw) {
-                component.draw(ctx);
-            }
-        }
+        this.components.filter(i => i.draw).forEach(i => i.draw(ctx));
+
+        //Now draw all the children
+        this.children.forEach(i => i.draw(ctx))
 
         ctx.restore();
-
     }
     update() {
-        for (let i = 0; i < this.components.length; i++) {
-            let component = this.components[i];
-            if (component.update) {
-                component.update();
-            }
-        }
+        this.components.filter(i => i.update).forEach(i => i.update());
+
+        //Now update all the children
+        this.children.forEach(i => i.update());
     }
-    getComponent(type){
-        for (let i = 0; i < this.components.length; i++) {
-            let component = this.components[i];
-            if (component instanceof type) {
-                return component;
-            }
-        }
+    getComponent(type) {
+        let component = this.components.find(i => i instanceof type);
+        if (component) return component;
         throw "Error, couldn't find type " + type;
     }
 }

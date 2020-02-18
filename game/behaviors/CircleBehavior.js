@@ -1,6 +1,6 @@
 import Base from "../../engine/Base.js"
 
-class CircleBehavior extends Base.Behavior{
+export default class CircleBehavior extends Base.Behavior{
     time = 0;
     position = 0;
     speed = 5;
@@ -28,5 +28,3 @@ class CircleBehavior extends Base.Behavior{
         this.gameObject.x = Math.sin(this.time/25)*50+50;
     }
 }
-
-export default CircleBehavior;
