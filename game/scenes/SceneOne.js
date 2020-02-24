@@ -1,23 +1,21 @@
-import Base from "../../engine/Base.js"
-import RotatingSquare from './../prefabs/RotatingSquare.js'
-import OscillatingCircle from "./../prefabs/OscillatingCircle.js";
-import TextTimer from "./../prefabs/TextTimer.js";
-import Moon from "./../prefabs/Moon.js"
+import Engine from "../../engine/Engine.js"
+import GameObjects from "../GameObjects.js"
 
 
-export default class SceneOne extends Base.Scene {
+
+export default class SceneOne extends Engine.Base.Scene {
   constructor() {
-    super();
-    let rotatingSquare = new RotatingSquare(200, 200);
+    super("SceneOne");
+    let rotatingSquare = new GameObjects.RotatingSquare(200, 200);
     this.children.push(rotatingSquare);
 
-    let textTimer = new TextTimer(300, 300);
+    let textTimer = new GameObjects.Text(300, 300);
     this.children.push(textTimer);
 
-    let greenCircle = new OscillatingCircle(100, 100);
+    let greenCircle = new GameObjects.OscillatingCircle(100, 100);
     this.children.push(greenCircle);
 
-    let moon = new Moon();
+    let moon = new GameObjects.Moon();
     greenCircle.children.push(moon);
 
 

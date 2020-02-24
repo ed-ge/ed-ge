@@ -10,7 +10,7 @@ export default class TextBehavior extends Base.Behavior {
     }
     update() {
         this.time -= .1;
-        if (Input.keys['ArrowUp']) {
+        if (Input.keys[' ']) {
             this.gameObject.getComponent(Components.TextComponent).text = 'Down';
         }
         else {
