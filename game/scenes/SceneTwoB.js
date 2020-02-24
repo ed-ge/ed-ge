@@ -11,6 +11,7 @@ export default class SceneTwoB extends Engine.Base.Scene{
 
     let text = new GameObjects.Text(10, 80);
     text.getComponent(Engine.Components.TextComponent).text = "B";
+    this.children.push(text);
     
     let textTime = new GameObjects.Timer(10, 40);
     let component = textTime.getComponent(CountDownTimer);

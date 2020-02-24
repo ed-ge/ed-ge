@@ -24,7 +24,7 @@ export default class GameObject extends NameableParent {
         this.components.filter(i => i.draw).forEach(i => i.draw(ctx));
 
         //Now draw all the children
-        this.children.forEach(i => i.draw(ctx))
+        this.children.filter(i=>i.draw).forEach(i => i.draw(ctx))
 
         ctx.restore();
     }
