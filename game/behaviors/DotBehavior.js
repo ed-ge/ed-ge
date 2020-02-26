@@ -10,10 +10,10 @@ export default class DotBehavior extends Base.Behavior {
     update() {
 
         if(/*in collision*/Math.random() < .1){
-            console.log("in collision");
+            //console.log("in collision");
         }
-        
-        
-
+    }
+    onCollisionEnter(otherGameObject){
+        console.log("in collision");
     }
 }

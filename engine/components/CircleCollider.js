@@ -1,5 +1,5 @@
-import Collider from "./Collider";
-import Point from "./Point";
+import Collider from "./Collider.js";
+import Point from "./Point.js";
 
 export default class CircleCollider extends Collider{
 
