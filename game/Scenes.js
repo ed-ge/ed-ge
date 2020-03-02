@@ -3,6 +3,7 @@ import SceneTwo from "./scenes/SceneTwo.js"
 import StartScene from "./scenes/StartScene.js"
 import StrategyScene from "./scenes/StrategyScene.js"
 import SceneTwoB from "./scenes/SceneTwoB.js"
+import CollisionScene from "./scenes/CollisionScene.js"
 
 export default{
   SceneOne,
@@ -10,4 +11,5 @@ export default{
   StrategyScene,
   StartScene,
   SceneTwoB,
+  CollisionScene,
 }

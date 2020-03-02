@@ -1,5 +1,6 @@
 import Base from "../Base.js"
 
+
 export default class CircleComponent extends Base.Component{
     radius;
     fill;

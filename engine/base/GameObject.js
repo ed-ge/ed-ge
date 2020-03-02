@@ -1,4 +1,6 @@
 import NameableParent from "./NamableParent.js"
+import Point from "./Point.js";
+
 
 export default class GameObject extends NameableParent {
     x; y;
@@ -6,6 +8,11 @@ export default class GameObject extends NameableParent {
     scaleY;
     rotation;
     components = [];
+
+    get location(){
+            return new Point(this.x,this.y);
+        }
+    
 
     constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0) {
         super();

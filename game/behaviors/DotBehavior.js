@@ -16,4 +16,8 @@ export default class DotBehavior extends Base.Behavior {
     onCollisionEnter(otherGameObject){
         console.log("in collision");
     }
+
+    onCollisionStay(collisionObject){
+        console.log("on collision stay");
+    }
 }

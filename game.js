@@ -1,8 +1,7 @@
+import Engine from "./engine/Engine.js"
 import Scenes from "./game/Scenes.js"
 import SceneManager from "./game/SceneManager.js"
-import Engine from "./engine/Engine.js"
-import CollisionScene from "./game/scenes/CollisionScene.js";
-import Scene from "./engine/base/Scene.js";
+
 
 
 let sceneOne = new Scenes.SceneOne();
@@ -10,7 +9,7 @@ let sceneTwo = new Scenes.SceneTwo();
 let sceneTwoB = new Scenes.SceneTwoB();
 let sceneStrategyScene = new Scenes.StrategyScene();
 let startScene = new Scenes.StartScene();
-let collisionScene = new CollisionScene();
+let collisionScene = new Scenes.CollisionScene();
 
 SceneManager.addScene(sceneOne);
 SceneManager.addScene(sceneTwo);
@@ -58,12 +57,30 @@ function keypress(event) {
     //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
 }
 
+//Keep our canvas full screen
+//from https://blog.codepen.io/2013/07/29/full-screen-canvas/
+
+var can = document.getElementById("canv");
+
+function resizeCanvas() {
+    can.style.width = window.innerWidth + "px";
+    setTimeout(function () {
+        can.style.height = window.innerHeight + "px";
+    }, 0);
+};
+
+// Webkit/Blink will fire this on load, but Gecko doesn't.
+window.onresize = resizeCanvas;
+
+
+
 
 
 let canv, ctx;
 
 function main() {
     canv = document.querySelector("#canv");
+    resizeCanvas();
     ctx = canv.getContext('2d');
 
     setInterval(gameLoop, 33);
@@ -76,7 +93,7 @@ function gameLoop() {
 }
 
 function update() {
-    SceneManager.currentScene.update();
+    SceneManager.currentScene.update(Engine.Components.Collider, Engine.Components.CollisionHelper);
 }
 
 function draw(ctx) {

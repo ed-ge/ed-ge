@@ -1,12 +1,10 @@
-import Collider from "./Collider.js";
-import Point from "./Point.js";
+import Collider from "./Collider.js"
+
 
 export default class CircleCollider extends Collider{
-
-    isInCollision(collider){
-        if(collider instanceof Point){
-            
-        }
+    constructor(radius){
+        super();
+        this.radius = radius;
     }
 
 }
