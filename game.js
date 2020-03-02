@@ -63,16 +63,19 @@ function keypress(event) {
 var can = document.getElementById("canv");
 
 function resizeCanvas() {
-    can.style.width = window.innerWidth + "px";
-    setTimeout(function () {
-        can.style.height = window.innerHeight + "px";
-    }, 0);
+  can.style.width = window.innerWidth + "px";
+  setTimeout(function() {
+    can.style.height = window.innerHeight + "px";
+  }, 0);
+  can.width = window.innerWidth;
+  can.height = window.innerHeight;
 };
 
 // Webkit/Blink will fire this on load, but Gecko doesn't.
 window.onresize = resizeCanvas;
 
-
+// So we fire it manually...
+resizeCanvas();
 
 
 
@@ -80,7 +83,6 @@ let canv, ctx;
 
 function main() {
     canv = document.querySelector("#canv");
-    resizeCanvas();
     ctx = canv.getContext('2d');
 
     setInterval(gameLoop, 33);
