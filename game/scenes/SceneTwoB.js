@@ -6,23 +6,47 @@ import CountDownTimer from "../behaviors/CountDownTimer.js";
 import GameObject from "../../engine/base/GameObject.js";
 
 
-export default class SceneTwoB extends Engine.Base.Scene{
+export default class SceneTwoB extends Engine.Base.Scene {
 
-  prefabs = [
+  objects = [
     {
-      name:"counter",
+      name: "counter",
       type: GameObjects.Text,
-      location: new Engine.Base.Point(10, 80)
+      location: new Engine.Base.Point(10, 80),
+      componentValues:[
+        {
+          type:Engine.Components.TextComponent,
+          values:[
+            {
+              key:"text",
+              value:"B"
+            }
+          ]
+        }
+      ]
     },
+
+ 
     {
-      name:"timer",
+      name: "timer",
       type: GameObjects.Timer,
       location: new Engine.Base.Point(10, 40),
-    },
+      componentValues: [
+        {
+          type: CountDownTimer,
+          values: [
+            { 
+              key: "toSceneText",
+             value : "SceneTwo" 
+            }
+          ]
+        }
+      ]
+    }
   ]
 
 
-  constructor(){
+  constructor() {
     super("SceneTwoB");
 
     /*let text = new GameObjects.Text(10, 80);
@@ -34,6 +58,6 @@ export default class SceneTwoB extends Engine.Base.Scene{
     component.toSceneText = "SceneTwo";
 
     this.children.push(textTime);*/
-    
+
   }
 }

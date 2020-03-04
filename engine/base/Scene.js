@@ -9,13 +9,27 @@ export default class Scene extends NameableParent {
 
     }
     start() {
-        if (!this.prefabs) return;
         this.children = [];
-        for (let i = 0; i < this.prefabs.length; i++) {
-            let obj = this.prefabs[i];
-            let gameObject = this.instantiate(obj.type, obj.location);
-            gameObject.name = obj.name;
-           
+        
+        if (this.objects) {
+            this.children = [];
+            for (let i = 0; i < this.objects.length; i++) {
+                let obj = this.objects[i];
+                let gameObject = this.instantiate(obj.type, obj.location);
+                gameObject.name = obj.name;
+                if(!obj.componentValues) continue;
+                for(let j = 0; j < obj.componentValues.length; j++){
+                    let componentValue= obj.componentValues[j]
+                    let type = componentValue.type;
+                    let component = gameObject.getComponent(type);
+                    let values = componentValue.values;
+                    for(let k = 0; k < values.length; k++){
+                        let value = values[k];
+                        component[value.key] = value.value;
+                    }
+                }
+
+            }
         }
     }
     draw(ctx, width, height) {

@@ -12,19 +12,21 @@ import StartScene from "./StartScene.js";
 
 export default class CollisionScene extends Engine.Base.Scene{
 
-    prefabs = [
+    objects = [
       {
         name:"target",
         location: new Point(50,50),
         type: CollisionCircle
       },      
       {
-        name:"dot",
+        name:"dot", 
         location: new Point(200,200),
         type: CollisionDot
       },
 
     ]
+
+    
 
 
   constructor(){
