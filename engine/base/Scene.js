@@ -62,4 +62,15 @@ export default class Scene extends NameableParent {
             }
         }
     }
+    destroy(gameObject){
+        this.children = this.children.filter(i=>i != gameObject);
+    }
+    instantiate(gameObjectType, location, rotation){
+        let gameObject = new gameObjectType(location.x, location.y);
+        gameObject.rotation = rotation;
+
+        this.children.push(gameObject);
+        gameObject.recursiveCall("start");
+
+    }
 }

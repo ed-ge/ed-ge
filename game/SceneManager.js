@@ -23,8 +23,8 @@ export default class SceneManager {
     }
     else {
       if (typeof argument === "string") {
-        let index = this.scenes.findIndex(i=>i.name == argument);
-        if(index != -1){
+        let index = this.scenes.findIndex(i => i.name == argument);
+        if (index != -1) {
           this._currentSceneIndex = index;
         }
         else throw "No scene has that name. Current scene index not set."
@@ -40,6 +40,13 @@ export default class SceneManager {
 
   static addScene(scene) {
     this.scenes.push(scene);
+  }
+
+  static destroy(gameObject) {
+    this.currentScene.destroy(gameObject);
+  }
+  static instantiate(gameObjectType, location, rotation) {
+    this.currentScene.instantiate(gameObjectType, location, rotation);
   }
 
 

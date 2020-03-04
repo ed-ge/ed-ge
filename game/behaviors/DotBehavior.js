@@ -1,23 +1,25 @@
 import Base from "../../engine/Base.js"
-import Components from "../../engine/Components.js"
-import Input from "../../engine/base/Input.js";
+import SceneManager from "../SceneManager.js"
+import Point from "../../engine/base/Point.js";
+import CollisionCircle from "../prefabs/CollisionCircle.js"
 
 export default class DotBehavior extends Base.Behavior {
     
     start() {
+        console.log("Dot started");
 
     }
     update() {
 
-        if(/*in collision*/Math.random() < .1){
-            //console.log("in collision");
-        }
+        
     }
     onCollisionEnter(otherGameObject){
-        console.log("in collision");
+        //console.log("in collision");
     }
 
     onCollisionStay(collisionObject){
-        console.log("on collision stay");
+        SceneManager.destroy(collisionObject.gameObject);
+        SceneManager.instantiate(CollisionCircle, new Point(Math.random() * 400, Math.random() * 400), 0);
+        //console.log("on collision stay");
     }
 }
