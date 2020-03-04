@@ -5,7 +5,18 @@ export default class Scene extends NameableParent {
 
     constructor(name) {
         super(name);
+        this.start();
 
+    }
+    start() {
+        if (!this.prefabs) return;
+        this.children = [];
+        for (let i = 0; i < this.prefabs.length; i++) {
+            let obj = this.prefabs[i];
+            let gameObject = this.instantiate(obj.type, obj.location);
+            gameObject.name = obj.name;
+           
+        }
     }
     draw(ctx, width, height) {
         ctx.fillStyle = "cyan";
@@ -20,41 +31,40 @@ export default class Scene extends NameableParent {
         //Add collision behavior
         let collidableChildren = [];
         this.getCollidable(this.children, collidableChildren, collidableType);
-        
-        for(let i = 0; i < collidableChildren.length; i++){
-            for(let j = i + 1; j < collidableChildren.length; j++){
-                if(collisionHelper.inCollision(collidableChildren[i], collidableChildren[j]))
-                {
+
+        for (let i = 0; i < collidableChildren.length; i++) {
+            for (let j = i + 1; j < collidableChildren.length; j++) {
+                if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
                     let gameObjectOne = collidableChildren[i].gameObject;
                     let gameObjectTwo = collidableChildren[j].gameObject;
 
                     //Now loop over all the behaviors too see if any are listening for collision events
-                    for(let i = 0; i < gameObjectOne.components.length; i++){
+                    for (let i = 0; i < gameObjectOne.components.length; i++) {
                         let component = gameObjectOne.components[i];
-                        if(component.onCollisionStay)
+                        if (component.onCollisionStay)
                             component.onCollisionStay(collidableChildren[j]);
                     }
-                    for(let j = 0; j < gameObjectTwo.components.length; j++){
+                    for (let j = 0; j < gameObjectTwo.components.length; j++) {
                         let component = gameObjectTwo.components[j];
-                        if(component.onCollisionStay)
+                        if (component.onCollisionStay)
                             component.onCollisionStay(collidableChildren[i]);
                     }
-                   
+
                 }
             }
         }
     }
     getCollidable(children, collidableChildren, type) {
 
-        
+
         for (let i = 0; i < children.length; i++) {
             let child = children[i];
             try {
                 let collidableComponent = child.getComponent(type);
                 if (collidableComponent) {
-                    collidableChildren.push({collider:collidableComponent, gameObject:child});
+                    collidableChildren.push({ collider: collidableComponent, gameObject: child });
                 }
-            } catch (e) { 
+            } catch (e) {
                 let x = 1;//no-op
             }
             for (let j = 0; j < child.children.length; j++) {
@@ -62,15 +72,16 @@ export default class Scene extends NameableParent {
             }
         }
     }
-    destroy(gameObject){
-        this.children = this.children.filter(i=>i != gameObject);
+    destroy(gameObject) {
+        this.children = this.children.filter(i => i != gameObject);
     }
-    instantiate(gameObjectType, location, rotation){
+    instantiate(gameObjectType, location, rotation) {
         let gameObject = new gameObjectType(location.x, location.y);
         gameObject.rotation = rotation;
 
         this.children.push(gameObject);
         gameObject.recursiveCall("start");
+        return gameObject
 
     }
 }

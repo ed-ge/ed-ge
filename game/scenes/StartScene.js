@@ -1,6 +1,7 @@
 import Engine from "../../engine/Engine.js"
 import GameObjects from "../GameObjects.js"
 import GameBehaviors from "../GameBehaviors.js";
+import GameObject from "../../engine/base/GameObject.js";
 
 
 export default class StartScene extends Engine.Base.Scene {
@@ -23,9 +24,8 @@ export default class StartScene extends Engine.Base.Scene {
     startTextFour.getComponent(Engine.Components.TextComponent).text = "Push 'a' to start the scene test game.";
     this.children.push(startTextFour); 
 
-    let startSceneInputListener = new GameBehaviors.StartSceneInputListener();
-    this.children.push(startSceneInputListener);
-
+    let startSceneListener = new GameObjects.StartSceneListener(0,0);
+    this.children.push(startSceneListener);
 
   }
 }

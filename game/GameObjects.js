@@ -4,6 +4,7 @@ import ResponsiveText from "./prefabs/ResponsiveText.js"
 import Text from "./prefabs/Text.js"
 import Timer from "./prefabs/Timer.js"
 import Moon from "./prefabs/Moon.js"
+import StartSceneListener from "./prefabs/StartSceneListener.js"
 
 
 export default {
@@ -13,4 +14,5 @@ export default {
   Text,
   Timer,
   Moon,
+  StartSceneListener,
 }
