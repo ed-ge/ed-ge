@@ -4,10 +4,17 @@ import NapsterBehavior from "../behaviors/NapsterBehavior.js";
 import Tile from "../prefabs/Tile.js";
 
 export default class StrategyScene extends Base.Scene{
+  objects = [
+    {
+      name:"Napster",
+      type:Napster,
+      location:new Base.Point(0,0)
+    }
+  ]
   constructor(){
     super("StrategyScene");
 
-    let napster = new Napster();
+   /* let napster = new Napster();
     this.children.push(napster);
 
     let marginX = 100;
@@ -26,7 +33,7 @@ export default class StrategyScene extends Base.Scene{
         }
     }
 
-    napsterBehavior.select(0,0);
+    napsterBehavior.select(0,0);*/
     
   }
 }
