@@ -11,9 +11,6 @@ export default class DotBehavior extends Base.Behavior {
 
     }
     update() {
-        if(Input.getKeyUp(" ")){
-            SceneManager.currentScene = "StartScene";
-        }
         
     }
     onCollisionEnter(otherGameObject){

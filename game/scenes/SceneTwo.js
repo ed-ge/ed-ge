@@ -4,6 +4,7 @@ import Behaviors from "../GameBehaviors.js"
 import GameBehaviors from "../GameBehaviors.js";
 import Point from "../../engine/base/Point.js";
 import CountDownTimer from "../behaviors/CountDownTimer.js";
+import BackToStartSceneBehavior from "../behaviors/BackToStartSceneBehavior.js"
 
 export default class SceneTwo extends Engine.Base.Scene{
 
@@ -23,9 +24,7 @@ export default class SceneTwo extends Engine.Base.Scene{
           ]
         }
       ]
-    },
-
- 
+    }, 
     {
       name: "timer",
       type: GameObjects.Timer,
@@ -39,6 +38,17 @@ export default class SceneTwo extends Engine.Base.Scene{
              value : "SceneTwoB" 
             }
           ]
+        }
+      ]
+    },
+    {
+      name:"Main Controller",
+      location: new Engine.Base.Point(100, 100),
+      type: GameObjects.EmptyGameObject,
+      children:[],
+      components:[
+        {
+          type:BackToStartSceneBehavior,
         }
       ]
     }

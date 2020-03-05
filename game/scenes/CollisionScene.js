@@ -9,6 +9,7 @@ import CollisionCircle from "../prefabs/CollisionCircle.js";
 import Point from "../../engine/base/Point.js";
 import SceneManager from "../SceneManager.js";
 import StartScene from "./StartScene.js";
+import BackToStartSceneBehavior from "../behaviors/BackToStartSceneBehavior.js"
 
 export default class CollisionScene extends Engine.Base.Scene{
 
@@ -23,6 +24,17 @@ export default class CollisionScene extends Engine.Base.Scene{
         location: new Point(200,200),
         type: CollisionDot
       },
+      {
+        name:"Main Controller",
+        location: new Engine.Base.Point(100, 100),
+        type: GameObjects.EmptyGameObject,
+        children:[],
+        components:[
+          {
+            type:BackToStartSceneBehavior,
+          }
+        ]
+      }
 
     ]
 

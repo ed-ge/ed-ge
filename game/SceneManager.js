@@ -47,7 +47,7 @@ export default class SceneManager {
     this.currentScene.destroy(gameObject);
   }
   static instantiate(gameObjectType, location, rotation) {
-    return this.currentScene.instantiate(gameObjectType, location, rotation);
+    return this.currentScene.instantiate(gameObjectType, location, rotation, this.currentScene.children);
   }
 
 
