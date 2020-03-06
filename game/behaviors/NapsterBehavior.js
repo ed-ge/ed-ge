@@ -8,50 +8,81 @@ import GameObjects from "../GameObjects.js"
 
 export default class NapsterBehavior extends Base.Behavior {
   peons = []
+  characterX = 0;
+  characterY = 0;
+  strategyCharacter = {};
+  marginX = 100;
+  marginY = 100;
+  tilesWide = 8;
+  tilesHigh = 5;
   start() {
 
-    let marginX = 100;
-    let marginY = 100;
 
-    let tilesWide = 8;
-    let tilesHigh = 5;
 
-    for (let y = 0; y < tilesHigh; y++) {
+    for (let y = 0; y < this.tilesHigh; y++) {
       this.peons.push([]);
-      for (let x = 0; x < tilesWide; x++) {
+      for (let x = 0; x < this.tilesWide; x++) {
         let tile = new Tile();
-        tile.x = x * 100 + marginX;
-        tile.y = y * 100 + marginY;
+        tile.x = x * 100 + this.marginX;
+        tile.y = y * 100 + this.marginY;
         this.gameObject.children.push(tile);
         this.peons[y].push(tile);
 
         //Randomly assign water
         let waterBehavior = tile.getComponent(TileBehavior);
-        if(Math.random() < .1 && (y != 0 && x != 0)){
+        if (Math.random() < .1 && (y != 0 && x != 0)) {
           waterBehavior.isWater = true;
         }
       }
     }
 
-    this.select(0,0);
+    this.select(0, 0);
 
     //Add the strategy character
-    let strategyCharacter = SceneManager.instantiate(GameObjects.StrategyCharacter, new Point(marginX*2+20, marginY-25), 0);
+    this.strategyCharacter = SceneManager.instantiate(GameObjects.StrategyCharacter, new Point(this.marginX * 2 + 20, this.marginY - 25), 0);
 
   }
   update() {
+    let proposedX = this.characterX;
+    let proposedY = this.characterY;
+    if (Base.Input.getKeyUp('ArrowUp')) {
+      proposedY -= 1;
+    }
+    if (Base.Input.getKeyUp('ArrowDown')) {
+      proposedY += 1
+    }
+    if (Base.Input.getKeyUp('ArrowLeft')) {
+      proposedX -= 1
+    }
+    if (Base.Input.getKeyUp('ArrowRight')) {
+      proposedX += 1
+    }
+
+    if (proposedX >= 0 && proposedX < this.tilesWide && proposedY >= 0 && proposedY < this.tilesHigh) {
+      let tileBehavior = this.peons[proposedY][proposedX].getComponent(TileBehavior);
+      if (!tileBehavior.isWater) {
+        this.characterX = proposedX;
+        this.characterY = proposedY;
+        this.strategyCharacter.x = this.marginX * 2 + 20 + this.characterX * 100;
+        this.strategyCharacter.y = this.marginY - 25 + this.characterY * 100;
+
+        this.select(this.characterX, this.characterY);
+      }
+    }
+
 
   }
-  select(x, y) {
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        let tile = this.peons[i][j];
+  select(_x, _y) {
+    for (let y = 0; y < this.tilesHigh; y++) {
+      for (let x = 0; x < this.tilesWide; x++) {
+        let tile = this.peons[y][x];
         let behavior = tile.getComponent(TileBehavior);
-        if (i != x || j != y)
+        if (x != _x || y != _y)
           behavior.hasCharacter = false;
         else
           behavior.hasCharacter = true;
       }
     }
   }
+
 }
