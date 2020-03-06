@@ -1,39 +1,30 @@
-import Base from "../../engine/Base.js"
+import Engine from "../../engine/Engine.js"
 import Napster from "../prefabs/Napster.js";
-import NapsterBehavior from "../behaviors/NapsterBehavior.js";
+import GameObjects from "../GameObjects.js"
+import BackToStartSceneBehavior from "../behaviors/BackToStartSceneBehavior.js";
 import Tile from "../prefabs/Tile.js";
 
-export default class StrategyScene extends Base.Scene{
+export default class StrategyScene extends Engine.Base.Scene{
   objects = [
     {
       name:"Napster",
       type:Napster,
-      location:new Base.Point(0,0)
+      location:new Engine.Base.Point(0,0)
+    },
+    {
+      name:"Main Controller",
+      location: new Engine.Base.Point(100, 100),
+      type: GameObjects.EmptyGameObject,
+      children:[],
+      components:[
+        {
+          type:BackToStartSceneBehavior,
+        }
+      ]
     }
   ]
   constructor(){
     super("StrategyScene");
-
-   /* let napster = new Napster();
-    this.children.push(napster);
-
-    let marginX = 100;
-    let marginY = 100;
-
-    let napsterBehavior = napster.getComponent(NapsterBehavior);
-
-    for(let i = 0; i < 3; i++){
-        napsterBehavior.peons.push([]);
-        for(let j =0; j < 3; j++){
-            let tile = new Tile();
-            tile.x = i * 100 + marginX;
-            tile.y = j*100 + marginY;
-            this.children.push(tile);
-            napsterBehavior.peons[i].push(tile);
-        }
-    }
-
-    napsterBehavior.select(0,0);*/
     
   }
 }

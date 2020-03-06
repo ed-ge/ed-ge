@@ -5,16 +5,21 @@ import RectangleBehavior from "./RectangleBehavior.js";
 
 export default class TileBehavior extends Base.Behavior{
     selected = false;
+    isWater = false;
+    hasCharacter = false;
     start(){
         
     }
     update(){
         let component = this.gameObject.getComponent(Engine.Components.RectangleComponent);
-        if(this.selected){
-            component.fill = "red";
+        if(this.isWater){
+            component.fill = "blue";
+        }
+        else if(this.hasCharacter){
+            component.fill = "green";
         }
         else{
-            component.fill = "green";
+            component.fill = "gray";
         }
         
     }

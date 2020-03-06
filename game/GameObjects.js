@@ -6,6 +6,7 @@ import Timer from "./prefabs/Timer.js"
 import Moon from "./prefabs/Moon.js"
 import StartSceneListener from "./prefabs/StartSceneListener.js"
 import EmptyGameObject from "./prefabs/EmptyGameObject.js"
+import StrategyCharacter from "./prefabs/StrategyCharacter.js"
 
 
 export default {
@@ -16,5 +17,6 @@ export default {
   Timer,
   Moon,
   StartSceneListener,
-  EmptyGameObject
+  EmptyGameObject,
+  StrategyCharacter
 }

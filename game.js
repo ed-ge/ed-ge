@@ -17,7 +17,7 @@ SceneManager.addScene(sceneTwoB);
 SceneManager.addScene(sceneStrategyScene);
 SceneManager.addScene(startScene);
 SceneManager.addScene(collisionScene);
-SceneManager.currentScene = "StartScene";
+SceneManager.currentScene = "StrategyScene";
 
 
 //Setup event handling
