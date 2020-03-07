@@ -7,8 +7,8 @@ import Moon from "./prefabs/Moon.js"
 import StartSceneListener from "./prefabs/StartSceneListener.js"
 import EmptyGameObject from "./prefabs/EmptyGameObject.js"
 import StrategyCharacter from "./prefabs/StrategyCharacter.js"
-
-
+import CollisionCircle from "./prefabs/CollisionCircle.js"
+import CollisionDot from "./prefabs/CollisionDot.js"
 export default {
   OscillatingCircle,
   RotatingSquare,
@@ -18,5 +18,7 @@ export default {
   Moon,
   StartSceneListener,
   EmptyGameObject,
-  StrategyCharacter
+  StrategyCharacter,
+  CollisionCircle,
+  CollisionDot,
 }

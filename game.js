@@ -1,6 +1,8 @@
 import Engine from "./engine/Engine.js"
 import Scenes from "./game/Scenes.js"
 import SceneManager from "./game/SceneManager.js"
+import GameBehaviors from "./game/GameBehaviors.js";
+import GameObjects from "./game/GameObjects.js";
 
 
 
@@ -9,7 +11,7 @@ let sceneTwo = new Scenes.SceneTwo();
 let sceneTwoB = new Scenes.SceneTwoB();
 let sceneStrategyScene = new Scenes.StrategyScene();
 let startScene = new Scenes.StartScene();
-let collisionScene = new Scenes.CollisionScene();
+let collisionScene = Engine.Base.Scene.parse(Scenes.CollisionScene, GameBehaviors, GameObjects, Engine.Components);
 
 SceneManager.addScene(sceneOne);
 SceneManager.addScene(sceneTwo);
@@ -17,7 +19,7 @@ SceneManager.addScene(sceneTwoB);
 SceneManager.addScene(sceneStrategyScene);
 SceneManager.addScene(startScene);
 SceneManager.addScene(collisionScene);
-SceneManager.currentScene = "StrategyScene";
+SceneManager.currentScene = "CollisionScene";
 
 
 //Setup event handling

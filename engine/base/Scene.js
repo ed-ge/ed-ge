@@ -1,5 +1,5 @@
 import NameableParent from "./NamableParent.js"
-
+import Point from "./Point.js"
 
 export default class Scene extends NameableParent {
 
@@ -7,6 +7,27 @@ export default class Scene extends NameableParent {
     super(name);
     this.start();
 
+  }
+  static parse(obj, gameBehaviors, gameObjects, components){
+    let toReturn = new Scene(obj.name);
+    toReturn.objects = obj.objects;
+    toReturn.start2(gameBehaviors, gameObjects, components);
+    return toReturn;
+
+  }
+  start2(gameBehaviors, gameObjects, components) {
+    this.children = [];
+
+    //Load a scene from a declarative syntax
+
+    if (this.objects) {
+      this.children = [];
+      for (let i = 0; i < this.objects.length; i++) {
+        let obj = this.objects[i];
+        this.buildChild2(obj, this.children, gameBehaviors, gameObjects, components)
+
+      }
+    }
   }
   start() {
     this.children = [];
@@ -18,6 +39,73 @@ export default class Scene extends NameableParent {
       for (let i = 0; i < this.objects.length; i++) {
         let obj = this.objects[i];
         this.buildChild(obj, this.children)
+
+      }
+    }
+  }
+  buildChild2(obj, parent,gameBehaviors,  gameObjects, components) {
+
+    let gameObjectType = null;
+    let keys = Object.keys(gameObjects)
+    for(let i  = 0; i < keys.length; i++){
+      let key = keys[i]
+      if(key == obj.type){
+        gameObjectType = gameObjects[key];
+        break;
+      }
+    }
+    if(gameObjectType == null) throw "Could now find game object of type " + obj.type;
+
+    let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.x), 0, parent);
+    gameObject.name = obj.name;
+
+    if (obj.children) {
+      for (let i = 0; i < obj.children.length; i++) {
+        let child = obj.children[i];
+        this.buildChild2(child, gameObject.children, gameBehaviors, gameObjects);
+      }
+
+    }
+
+    if (obj.componentValues) {
+      for (let j = 0; j < obj.componentValues.length; j++) {
+        let componentValue = obj.componentValues[j]
+        let type = componentValue.type;
+        let component = gameObject.getComponent(type);
+        let values = componentValue.values;
+        for (let k = 0; k < values.length; k++) {
+          let value = values[k];
+          component[value.key] = value.value;
+        }
+      }
+    }
+    if(obj.components){
+      for(let i = 0; i < obj.components.length; i++){
+        let componentInfo = obj.components[i];
+
+        let componentString = componentInfo.type;
+        let componentType = null;
+        let componentKeys = Object.keys(components);
+        let behaviorKeys = Object.keys(gameBehaviors);
+        for(let i = 0; i < componentKeys.length; i++){
+          let key = componentKeys[i];
+          if(key == componentString){
+            componentType = components[key];
+            break
+          }
+        }
+        if(componentType == null)
+        {
+          for(let i = 0; i < behaviorKeys.length; i++){
+            let key = behaviorKeys[i]
+            if(key == componentString){
+              componentType = gameBehaviors[key]
+              break;
+            }
+          }
+        }
+        if(componentType == null) throw "Could not find component " + componentString;
+        gameObject.addComponent(new componentType());
 
       }
     }
