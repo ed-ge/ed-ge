@@ -4,22 +4,21 @@ import GameBehaviors from "../GameBehaviors.js";
 import GameObject from "../../engine/base/GameObject.js";
 
 
-export default class StartScene extends Engine.Base.Scene {
-
-  
-  objects = [
+export default  {
+  name: "StartScene",  
+  objects : [
     {
       name: "Scene listener",
-      location: new Engine.Base.Point(0, 0),
-      type: GameObjects.StartSceneListener,
+      location: {x:0, y:0},
+      type: "StartSceneListener",
     },
     {
       name: "Click",
-      location: new Engine.Base.Point(10, 40),
-      type: GameObjects.Text,
+      location: {x:10, y:40},
+      type: "Text",
       componentValues: [
         {
-          type: Engine.Components.TextComponent,
+          type: "TextComponent",
           values: [
             {
               key: "text",
@@ -31,11 +30,11 @@ export default class StartScene extends Engine.Base.Scene {
     },
     {
       name: "Enter",
-      location: new Engine.Base.Point(10, 80),
-      type: GameObjects.Text,
+      location: {x:10, y:80},
+      type: "Text",
       componentValues: [
         {
-          type: Engine.Components.TextComponent,
+          type: "TextComponent",
           values: [
             {
               key: "text",
@@ -47,11 +46,11 @@ export default class StartScene extends Engine.Base.Scene {
     },
     {
       name: "Space",
-      location: new Engine.Base.Point(10, 120),
-      type: GameObjects.Text,
+      location: {x:10, y:120},
+      type: "Text",
       componentValues: [
         {
-          type: Engine.Components.TextComponent,
+          type: "TextComponent",
           values: [
             {
               key: "text",
@@ -63,11 +62,11 @@ export default class StartScene extends Engine.Base.Scene {
     },
     {
       name: "a",
-      location: new Engine.Base.Point(10, 160),
-      type: GameObjects.Text,
+      location: {x:10,y:160},
+      type: "Text",
       componentValues: [
         {
-          type: Engine.Components.TextComponent,
+          type: "TextComponent",
           values: [
             {
               key: "text",
@@ -78,10 +77,4 @@ export default class StartScene extends Engine.Base.Scene {
       ]
     },
   ]
-
-
-  constructor() {
-    super("StartScene");
-
-  }
 }

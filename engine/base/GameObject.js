@@ -50,9 +50,18 @@ export default class GameObject extends NameableParent {
     this.children.forEach(i => i.update());
   }
   getComponent(type) {
-    let component = this.components.find(i => i instanceof type);
-    if (component) return component;
-    throw "Error, couldn't find type " + type;
+    if (typeof (type) === 'string' || type instanceof String) {
+      //The user passed us a string, not a type
+      //https://stackoverflow.com/a/7772724/10047920
+      let component = this.components.find(i => i.constructor.name === type);
+      if (component) return component;
+      throw "Error, couldn't find type " + type;
+    }
+    else {
+      let component = this.components.find(i => i instanceof type);
+      if (component) return component;
+      throw "Error, couldn't find type " + type;
+    }
   }
   recursiveCall(functionName) {
     for (let i = 0; i < this.components.length; i++) {

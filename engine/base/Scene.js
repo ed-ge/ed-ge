@@ -56,7 +56,7 @@ export default class Scene extends NameableParent {
     }
     if(gameObjectType == null) throw "Could now find game object of type " + obj.type;
 
-    let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.x), 0, parent);
+    let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), 0, parent);
     gameObject.name = obj.name;
 
     if (obj.children) {

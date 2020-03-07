@@ -10,8 +10,8 @@ let sceneOne = new Scenes.SceneOne();
 let sceneTwo = new Scenes.SceneTwo();
 let sceneTwoB = new Scenes.SceneTwoB();
 let sceneStrategyScene = new Scenes.StrategyScene();
-let startScene = new Scenes.StartScene();
 let collisionScene = Engine.Base.Scene.parse(Scenes.CollisionScene, GameBehaviors, GameObjects, Engine.Components);
+let startScene = Engine.Base.Scene.parse(Scenes.StartScene, GameBehaviors, GameObjects, Engine.Components);
 
 SceneManager.addScene(sceneOne);
 SceneManager.addScene(sceneTwo);
