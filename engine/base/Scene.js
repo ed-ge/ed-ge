@@ -8,10 +8,9 @@ export default class Scene extends NameableParent {
     this.start();
 
   }
-  static parse(obj, gameBehaviors, gameObjects, components){
+  static parse(obj){
     let toReturn = new Scene(obj.name);
     toReturn.objects = obj.objects;
-    toReturn.start2(gameBehaviors, gameObjects, components);
     return toReturn;
 
   }

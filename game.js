@@ -1,17 +1,15 @@
 import Engine from "./engine/Engine.js"
 import Scenes from "./game/Scenes.js"
 import SceneManager from "./game/SceneManager.js"
-import GameBehaviors from "./game/GameBehaviors.js";
-import GameObjects from "./game/GameObjects.js";
 
 
 
-let sceneOne = new Scenes.SceneOne();
-let sceneTwo = new Scenes.SceneTwo();
-let sceneTwoB = new Scenes.SceneTwoB();
-let sceneStrategyScene = new Scenes.StrategyScene();
-let collisionScene = Engine.Base.Scene.parse(Scenes.CollisionScene, GameBehaviors, GameObjects, Engine.Components);
-let startScene = Engine.Base.Scene.parse(Scenes.StartScene, GameBehaviors, GameObjects, Engine.Components);
+let collisionScene = Engine.Base.Scene.parse(Scenes.CollisionScene);
+let startScene = Engine.Base.Scene.parse(Scenes.StartScene);
+let sceneOne = Engine.Base.Scene.parse(Scenes.SceneOne);
+let sceneTwo = Engine.Base.Scene.parse(Scenes.SceneTwo);
+let sceneTwoB = Engine.Base.Scene.parse(Scenes.SceneTwoB);
+let sceneStrategyScene = Engine.Base.Scene.parse(Scenes.StrategyScene);
 
 SceneManager.addScene(sceneOne);
 SceneManager.addScene(sceneTwo);
@@ -19,7 +17,7 @@ SceneManager.addScene(sceneTwoB);
 SceneManager.addScene(sceneStrategyScene);
 SceneManager.addScene(startScene);
 SceneManager.addScene(collisionScene);
-SceneManager.currentScene = "CollisionScene";
+SceneManager.currentScene = "StartScene";
 
 
 //Setup event handling

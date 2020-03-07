@@ -9,6 +9,8 @@ import EmptyGameObject from "./prefabs/EmptyGameObject.js"
 import StrategyCharacter from "./prefabs/StrategyCharacter.js"
 import CollisionCircle from "./prefabs/CollisionCircle.js"
 import CollisionDot from "./prefabs/CollisionDot.js"
+import Napster from "./prefabs/Napster.js"
+
 export default {
   OscillatingCircle,
   RotatingSquare,
@@ -21,4 +23,5 @@ export default {
   StrategyCharacter,
   CollisionCircle,
   CollisionDot,
+  Napster,
 }

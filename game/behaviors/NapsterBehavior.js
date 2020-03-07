@@ -15,6 +15,7 @@ export default class NapsterBehavior extends Base.Behavior {
   marginY = 100;
   tilesWide = 8;
   tilesHigh = 5;
+  
   start() {
 
 

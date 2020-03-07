@@ -1,75 +1,50 @@
-import Engine from "../../engine/Engine.js"
-import GameObjects from "../GameObjects.js"
-import Behaviors from "../GameBehaviors.js"
-import GameBehaviors from "../GameBehaviors.js";
-import CountDownTimer from "../behaviors/CountDownTimer.js";
-import GameObject from "../../engine/base/GameObject.js";
-import BackToStartSceneBehavior from "../behaviors/BackToStartSceneBehavior.js"
 
+export default {
+  name: "SceneTwoB",
 
-export default class SceneTwoB extends Engine.Base.Scene {
-
-  objects = [
+  objects: [
     {
       name: "counter",
-      type: GameObjects.Text,
-      location: new Engine.Base.Point(10, 80),
-      componentValues:[
-        {
-          type:Engine.Components.TextComponent,
-          values:[
-            {
-              key:"text",
-              value:"B"
-            }
-          ]
-        }
-      ]
-    },
-
- 
-    {
-      name: "timer",
-      type: GameObjects.Timer,
-      location: new Engine.Base.Point(10, 40),
+      type: 'Text',
+      location: { x: 10, y:80},
       componentValues: [
         {
-          type: CountDownTimer,
+          type: 'TextComponent',
           values: [
-            { 
-              key: "toSceneText",
-             value : "SceneTwo" 
+            {
+              key: "text",
+              value: "B"
             }
           ]
         }
       ]
     },
     {
-      name:"Main Controller",
-      location: new Engine.Base.Point(100, 100),
-      type: GameObjects.EmptyGameObject,
-      children:[],
-      components:[
+      name: "timer",
+      type: 'Timer',
+      location: { x: 10, y:40},
+      componentValues: [
         {
-          type:BackToStartSceneBehavior,
+          type: 'CountDownTimer',
+          values: [
+            {
+              key: "toSceneText",
+              value: "SceneTwo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: "Main Controller",
+      location: { x: 100, y:100},
+      type: 'EmptyGameObject',
+      children: [],
+      components: [
+        {
+          type: 'BackToStartSceneBehavior',
         }
       ]
     }
   ]
-
-
-  constructor() {
-    super("SceneTwoB");
-
-    /*let text = new GameObjects.Text(10, 80);
-    text.getComponent(Engine.Components.TextComponent).text = "B";
-    this.children.push(text);
-    
-    let textTime = new GameObjects.Timer(10, 40);
-    let component = textTime.getComponent(CountDownTimer);
-    component.toSceneText = "SceneTwo";
-
-    this.children.push(textTime);*/
-
-  }
 }
