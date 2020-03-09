@@ -246,6 +246,7 @@ export default class Scene extends NameableParent {
     parent.push(gameObject);
     let prefab = Scene.gameObjects[gameObjectType.name];
     this.buildIt(prefab, gameObject)
+    gameObject.recursiveCall("start");
     return gameObject
 
   }

@@ -7,6 +7,9 @@ import BackToStartSceneBehavior from "./behaviors/BackToStartSceneBehavior.js"
 import CollisionCircleBehavior from "./behaviors/CollisionCircleBehavior.js"
 import MovementBehavior from "./behaviors/MovementBehavior.js"
 import DotBehavior from "./behaviors/DotBehavior.js"
+import NapsterBehavior from "./behaviors/NapsterBehavior.js"
+import TileBehavior from "./behaviors/TileBehavior.js"
+import OrbitBehavior from "./behaviors/OrbitBehavior.js"
 
 export default{
   CircleBehavior,
@@ -18,4 +21,7 @@ export default{
   CollisionCircleBehavior,
   MovementBehavior,
   DotBehavior,
+  NapsterBehavior,
+  TileBehavior,
+  OrbitBehavior,
 }

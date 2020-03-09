@@ -23,9 +23,9 @@ export default class NapsterBehavior extends Base.Behavior {
     for (let y = 0; y < this.tilesHigh; y++) {
       this.peons.push([]);
       for (let x = 0; x < this.tilesWide; x++) {
-        let tile = new Tile();
-        tile.x = x * 100 + this.marginX;
-        tile.y = y * 100 + this.marginY;
+        let _x = x * 100 + this.marginX;
+        let _y = y * 100 + this.marginY;
+        let tile = SceneManager.instantiate(Tile, new Base.Point(_x, _y), 0);
         this.gameObject.children.push(tile);
         this.peons[y].push(tile);
 
@@ -40,7 +40,7 @@ export default class NapsterBehavior extends Base.Behavior {
     this.select(0, 0);
 
     //Add the strategy character
-    this.strategyCharacter = SceneManager.instantiate(GameObjects.StrategyCharacter, new Point(this.marginX * 2 + 20, this.marginY - 25), 0);
+    this.strategyCharacter = SceneManager.instantiate(GameObjects.StrategyCharacter, new Point(this.marginX, this.marginY), 0);
 
   }
   update() {
@@ -64,8 +64,8 @@ export default class NapsterBehavior extends Base.Behavior {
       if (!tileBehavior.isWater) {
         this.characterX = proposedX;
         this.characterY = proposedY;
-        this.strategyCharacter.x = this.marginX * 2 + 20 + this.characterX * 100;
-        this.strategyCharacter.y = this.marginY - 25 + this.characterY * 100;
+        this.strategyCharacter.x = this.marginX   + this.characterX * 100;
+        this.strategyCharacter.y = this.marginY + this.characterY * 100;
 
         this.select(this.characterX, this.characterY);
       }

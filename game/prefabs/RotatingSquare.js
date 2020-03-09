@@ -1,9 +1,42 @@
-import  Components from "../../engine/Components.js"
+import Components from "../../engine/Components.js"
 import Base from "../../engine/Base.js"
 import RectangleBehavior from "../../game/behaviors/RectangleBehavior.js";
 
 
-export default class RotatingSquare extends Base.GameObject {
+export default {
+  name: "RotatingSquare",
+  components: [
+    {
+      type: "RectangleComponent",
+      values: [
+        {
+          key: "width",
+          value: "100"
+        },
+        {
+          key: "height",
+          value: "100"
+        },
+        {
+          key: "fill",
+          value: "red"
+        },
+        {
+          key: "stroke",
+          value: "blue"
+        },
+      ]
+    },
+    {
+      type: "RectangleBehavior",
+
+    },
+  ]
+}
+
+
+
+/*export default class RotatingSquare extends Base.GameObject {
   constructor(x, y) {
     super(x, y);
     let rectangleComponent = new Components.RectangleComponent;
@@ -16,4 +49,4 @@ export default class RotatingSquare extends Base.GameObject {
     this.addComponent(rectangleBehavior);
   }
 
-}
+}*/

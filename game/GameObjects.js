@@ -10,6 +10,7 @@ import StrategyCharacter from "./prefabs/StrategyCharacter.js"
 import CollisionCircle from "./prefabs/CollisionCircle.js"
 import CollisionDot from "./prefabs/CollisionDot.js"
 import Napster from "./prefabs/Napster.js"
+import Tile from "./prefabs/Tile.js"
 
 export default {
   OscillatingCircle,
@@ -24,4 +25,5 @@ export default {
   CollisionCircle,
   CollisionDot,
   Napster,
+  Tile
 }

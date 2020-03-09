@@ -2,7 +2,37 @@ import Engine from "../../engine/Engine.js";
 import CircleBehavior from "../behaviors/CircleBehavior.js"
 import CircleCollider from "../../engine/components/CircleCollider.js";
 
-export default class OscillatingCircle extends Engine.Base.GameObject{
+
+export default {
+  name: "OscillatingCircle",
+  components:[
+    {
+      type:"CircleComponent",
+      values:[
+        {
+          key:"radius",
+          value:"50"
+        },
+        {
+          key:"fill",
+          value:"green"
+        },
+        {
+          key:"stroke",
+          value:"blue"
+        },
+      ]
+    },
+    {
+      type:"CircleBehavior",
+     
+    },
+    
+  ]
+}
+
+
+/*export default class OscillatingCircle extends Engine.Base.GameObject{
   constructor(x, y) {
     super(x, y)
     let circleComponent = new Engine.Components.CircleComponent;
@@ -15,4 +45,4 @@ export default class OscillatingCircle extends Engine.Base.GameObject{
 
   }
 
-}
+}*/
