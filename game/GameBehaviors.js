@@ -4,6 +4,9 @@ import TextBehavior from "./behaviors/TextBehavior.js";
 import StartSceneInputListener from "./behaviors/StartSceneInputListener.js"
 import CountDownTimer from "./behaviors/CountDownTimer.js"
 import BackToStartSceneBehavior from "./behaviors/BackToStartSceneBehavior.js"
+import CollisionCircleBehavior from "./behaviors/CollisionCircleBehavior.js"
+import MovementBehavior from "./behaviors/MovementBehavior.js"
+import DotBehavior from "./behaviors/DotBehavior.js"
 
 export default{
   CircleBehavior,
@@ -11,5 +14,8 @@ export default{
   TextBehavior,
   StartSceneInputListener,
   CountDownTimer,
-  BackToStartSceneBehavior
+  BackToStartSceneBehavior,
+  CollisionCircleBehavior,
+  MovementBehavior,
+  DotBehavior,
 }

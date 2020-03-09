@@ -5,12 +5,8 @@ export default class RectangleComponent extends Base.Component{
     height;
     fill;
     stroke;
-    constructor(width, height, fill, stroke){
+    constructor(){
         super();
-        this.width = width;
-        this.height = height;
-        this.fill = fill;
-        this.stroke = stroke;
     }
     draw(ctx){
         ctx.save();

@@ -6,7 +6,10 @@ import GameBehaviors from "../GameBehaviors.js";
 export default class Timer extends Base.GameObject {
   constructor(x, y) {
     super(x, y);
-    let textComponent = new Components.TextComponent("10", "30pt Times", "red", "blue");
+    let textComponent = new Components.TextComponent;
+    textComponent.text = "10";
+    textComponent.font = "30pt Times";
+    textComponent.fill = "red";
     let countDownTimer = new GameBehaviors.CountDownTimer();
     this.addComponent(textComponent);
     this.addComponent(countDownTimer);

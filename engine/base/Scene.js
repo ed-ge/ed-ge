@@ -1,20 +1,25 @@
 import NameableParent from "./NamableParent.js"
 import Point from "./Point.js"
+import GameObject from "./GameObject.js";
 
 export default class Scene extends NameableParent {
+  static gameObjects = [];
+  static components = [];
+  static gameBehaviors = [];
 
   constructor(name) {
     super(name);
     this.start();
 
   }
-  static parse(obj){
+  static parse(obj) {
     let toReturn = new Scene(obj.name);
     toReturn.objects = obj.objects;
     return toReturn;
 
   }
-  start2(gameBehaviors, gameObjects, components) {
+  start2() {
+    
     this.children = [];
 
     //Load a scene from a declarative syntax
@@ -23,7 +28,7 @@ export default class Scene extends NameableParent {
       this.children = [];
       for (let i = 0; i < this.objects.length; i++) {
         let obj = this.objects[i];
-        this.buildChild2(obj, this.children, gameBehaviors, gameObjects, components)
+        this.buildChild2(obj, this.children)
 
       }
     }
@@ -42,30 +47,40 @@ export default class Scene extends NameableParent {
       }
     }
   }
-  buildChild2(obj, parent,gameBehaviors,  gameObjects, components) {
+  buildChild2(obj, parent) {
 
     let gameObjectType = null;
-    let keys = Object.keys(gameObjects)
-    for(let i  = 0; i < keys.length; i++){
+    let keys = Object.keys(Scene.gameObjects)
+    for (let i = 0; i < keys.length; i++) {
       let key = keys[i]
-      if(key == obj.type){
-        gameObjectType = gameObjects[key];
+      if (key == obj.type) {
+        gameObjectType = Scene.gameObjects[key];
         break;
       }
     }
-    if(gameObjectType == null) throw "Could now find game object of type " + obj.type;
+    if (gameObjectType == null) throw "Could now find game object of type " + obj.type;
 
     let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), 0, parent);
-    gameObject.name = obj.name;
+    /*let gameObject = new GameObject(obj.location.x, obj.location.y, 1, 1, 0);
+    parent.push(gameObject);
+    let prefab = gameObjects[gameObjectType.name];
+    this.buildIt(prefab, gameObject, gameBehaviors, gameObjects, components);*/
 
+    gameObject.name = obj.name;
+    this.buildIt(obj, gameObject);
+
+
+  }
+  buildIt(obj, gameObject) {
     if (obj.children) {
       for (let i = 0; i < obj.children.length; i++) {
         let child = obj.children[i];
-        this.buildChild2(child, gameObject.children, gameBehaviors, gameObjects);
+        this.buildChild2(child, gameObject.children);
       }
 
     }
 
+    //Set the key-pair values on components already on prefabs
     if (obj.componentValues) {
       for (let j = 0; j < obj.componentValues.length; j++) {
         let componentValue = obj.componentValues[j]
@@ -78,37 +93,57 @@ export default class Scene extends NameableParent {
         }
       }
     }
-    if(obj.components){
-      for(let i = 0; i < obj.components.length; i++){
+
+    //Add new components
+    if (obj.components) {
+      for (let i = 0; i < obj.components.length; i++) {
         let componentInfo = obj.components[i];
 
         let componentString = componentInfo.type;
         let componentType = null;
-        let componentKeys = Object.keys(components);
-        let behaviorKeys = Object.keys(gameBehaviors);
-        for(let i = 0; i < componentKeys.length; i++){
+        let componentKeys = Object.keys(Scene.components);
+        let behaviorKeys = Object.keys(Scene.gameBehaviors);
+        for (let i = 0; i < componentKeys.length; i++) {
           let key = componentKeys[i];
-          if(key == componentString){
-            componentType = components[key];
+          if (key == componentString) {
+            componentType = Scene.components[key];
             break
           }
         }
-        if(componentType == null)
-        {
-          for(let i = 0; i < behaviorKeys.length; i++){
+        if (componentType == null) {
+          for (let i = 0; i < behaviorKeys.length; i++) {
             let key = behaviorKeys[i]
-            if(key == componentString){
-              componentType = gameBehaviors[key]
+            if (key == componentString) {
+              componentType = Scene.gameBehaviors[key]
               break;
             }
           }
         }
-        if(componentType == null) throw "Could not find component " + componentString;
-        gameObject.addComponent(new componentType());
+        if (componentType == null) throw "Could not find component " + componentString;
+        let component = new componentType();
+        gameObject.addComponent(component);
+        if (componentInfo.values) {
+
+          //Now set the key-value pairs on the new component we just made
+          let componentValues = componentInfo.values;
+          for (let v = 0; v < componentValues.length; v++) {
+            let value = componentValues[v];
+            let key = value.key;
+            let val = value.value;
+            component[key] = val;
+          }
+        }
 
       }
     }
   }
+
+
+
+
+
+
+
   buildChild(obj, parent) {
     let gameObject = this.instantiate(obj.type, obj.location, 0, parent);
     gameObject.name = obj.name;
@@ -133,8 +168,8 @@ export default class Scene extends NameableParent {
         }
       }
     }
-    if(obj.components){
-      for(let i = 0; i < obj.components.length; i++){
+    if (obj.components) {
+      for (let i = 0; i < obj.components.length; i++) {
         let componentInfo = obj.components[i];
         let component = new componentInfo.type();
         gameObject.addComponent(component);
@@ -200,11 +235,17 @@ export default class Scene extends NameableParent {
     this.children = this.children.filter(i => i != gameObject);
   }
   instantiate(gameObjectType, location, rotation, parent) {
-    let gameObject = new gameObjectType(location.x, location.y);
+    /*let gameObject = new gameObjectType(location.x, location.y);
     gameObject.rotation = rotation;
 
     parent.push(gameObject);
     gameObject.recursiveCall("start");
+    return gameObject*/
+
+    let gameObject = new GameObject(location.x, location.y, 1, 1, rotation);
+    parent.push(gameObject);
+    let prefab = Scene.gameObjects[gameObjectType.name];
+    this.buildIt(prefab, gameObject)
     return gameObject
 
   }

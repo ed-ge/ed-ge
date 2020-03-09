@@ -5,11 +5,9 @@ export default class CircleComponent extends Base.Component{
     radius;
     fill;
     stroke;
-    constructor(radius, fill, stroke){
+    constructor(){
         super();
-        this.radius = radius;
-        this.fill = fill;
-        this.stroke = stroke;
+
     }
     draw(ctx){
         ctx.save();

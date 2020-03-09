@@ -1,11 +1,18 @@
 import Engine from "./engine/Engine.js"
 import Scenes from "./game/Scenes.js"
 import SceneManager from "./game/SceneManager.js"
+import GameBehaviors from "./game/GameBehaviors.js";
+import GameObjects from "./game/GameObjects.js"
 
 
 
-let collisionScene = Engine.Base.Scene.parse(Scenes.CollisionScene);
+
+Engine.Base.Scene.gameObjects = GameObjects;
+Engine.Base.Scene.components = Engine.Components;
+Engine.Base.Scene.gameBehaviors = GameBehaviors;
+
 let startScene = Engine.Base.Scene.parse(Scenes.StartScene);
+let collisionScene = Engine.Base.Scene.parse(Scenes.CollisionScene);
 let sceneOne = Engine.Base.Scene.parse(Scenes.SceneOne);
 let sceneTwo = Engine.Base.Scene.parse(Scenes.SceneTwo);
 let sceneTwoB = Engine.Base.Scene.parse(Scenes.SceneTwoB);

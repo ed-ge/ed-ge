@@ -13,5 +13,6 @@ export default {
   CircleCollider,
   Point,
   Collider,
-  CollisionHelper
+  CollisionHelper,
+ 
 }

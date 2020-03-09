@@ -5,11 +5,8 @@ export default class TextComponent extends Base.Component{
     font;
     fill;
     
-    constructor(text, font, fill){
+    constructor(){
         super();
-        this.text = text;
-        this.font = font;
-        this.fill = fill;
     }
     draw(ctx){
         ctx.save();

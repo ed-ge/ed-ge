@@ -6,7 +6,11 @@ import RectangleBehavior from "../../game/behaviors/RectangleBehavior.js";
 export default class RotatingSquare extends Base.GameObject {
   constructor(x, y) {
     super(x, y);
-    let rectangleComponent = new Components.RectangleComponent(100, 100, "red", "blue");
+    let rectangleComponent = new Components.RectangleComponent;
+    rectangleComponent.width = 100;
+    rectangleComponent.height = 100;
+    rectangleComponent.fill = "red";
+    rectangleComponent.stroke = "blue";
     let rectangleBehavior = new RectangleBehavior();
     this.addComponent(rectangleComponent);
     this.addComponent(rectangleBehavior);

@@ -5,7 +5,8 @@ import Tile from "../prefabs/Tile.js"
 export default class Napster extends Base.GameObject{
   constructor() {
     super(120,-30)
-    this.addComponent(new NapsterBehavior());
+    let napster = new NapsterBehavior;
+    this.addComponent(napster);
     
 
   }
