@@ -1,9 +1,3 @@
-import Engine from "../../engine/Engine.js"
-import GameObjects from "../GameObjects.js"
-import GameBehaviors from "../GameBehaviors.js";
-import GameObject from "../../engine/base/GameObject.js";
-
-
 export default  {
   name: "StartScene",  
   objects : [
