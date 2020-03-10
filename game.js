@@ -17,6 +17,7 @@ let sceneOne = Engine.Base.Scene.parse(Scenes.SceneOne);
 let sceneTwo = Engine.Base.Scene.parse(Scenes.SceneTwo);
 let sceneTwoB = Engine.Base.Scene.parse(Scenes.SceneTwoB);
 let sceneStrategyScene = Engine.Base.Scene.parse(Scenes.StrategyScene);
+let roomScene = Engine.Base.Scene.parse(Scenes.RoomScene);
 
 SceneManager.addScene(sceneOne);
 SceneManager.addScene(sceneTwo);
@@ -24,6 +25,7 @@ SceneManager.addScene(sceneTwoB);
 SceneManager.addScene(sceneStrategyScene);
 SceneManager.addScene(startScene);
 SceneManager.addScene(collisionScene);
+SceneManager.addScene(roomScene);
 SceneManager.currentScene = "StartScene";
 
 

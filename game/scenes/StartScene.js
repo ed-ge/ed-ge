@@ -70,5 +70,21 @@ export default  {
         }
       ]
     },
+    {
+      name: "r",
+      location: {x:10,y:200},
+      type: "Text",
+      componentValues: [
+        {
+          type: "TextComponent",
+          values: [
+            {
+              key: "text",
+              value: "Push 'r' to start the room test game.",
+            }
+          ]
+        }
+      ]
+    },
   ]
 }

@@ -22,6 +22,10 @@ export default class TextBehavior extends Engine.Base.Behavior {
         {
             SceneManager.currentScene = "StrategyScene";
         }
+        if(Engine.Base.Input.getKeyUp('r'))
+        {
+            SceneManager.currentScene = "RoomScene";
+        }
 
     }
 }
