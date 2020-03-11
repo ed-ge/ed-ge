@@ -1,5 +1,5 @@
 import Engine from "../../engine/Engine.js"
-import SceneManager from "./../SceneManager.js"
+import SceneManager from "../SceneManager.js"
 
 export default class TextBehavior extends Engine.Base.Behavior {
     
