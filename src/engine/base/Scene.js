@@ -233,14 +233,12 @@ export default class Scene extends NameableParent {
     }
   }
 
-  destroy(gameObject) {
-    this.children = this.children.filter(i => i != gameObject);
-  }
+  
 
   instantiate(gameObjectType, location, rotation, parent) {
     /*let gameObject = new gameObjectType(location.x, location.y);
     gameObject.rotation = rotation;
-
+ 
     parent.push(gameObject);
     gameObject.recursiveCall("start");
     return gameObject*/
