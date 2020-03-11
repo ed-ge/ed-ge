@@ -25,6 +25,13 @@ export default class CollisionHelper{
             else if(one.collider instanceof PointCollider && two.collider instanceof AABBCollider){
                 return this.inCollision(two, one);
             }
+            else if(one.collider instanceof CircleCollider && two.collider instanceof CircleCollider){
+                let distance = one.gameObject.location.distance(two.gameObject.location);
+                
+                if(distance < +one.collider.radius + +two.collider.radius)
+                    return true;
+                return false;
+            }
             
         }
     

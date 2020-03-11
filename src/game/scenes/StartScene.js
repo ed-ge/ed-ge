@@ -86,5 +86,21 @@ export default  {
         }
       ]
     },
+    {
+      name: "c",
+      location: {x:10,y:240},
+      type: "Text",
+      componentValues: [
+        {
+          type: "TextComponent",
+          values: [
+            {
+              key: "text",
+              value: "Push 'c' to start the circle collision test game.",
+            }
+          ]
+        }
+      ]
+    },
   ]
 }

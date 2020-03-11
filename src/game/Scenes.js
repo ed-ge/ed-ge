@@ -5,6 +5,7 @@ import StrategyScene from "./scenes/StrategyScene.js"
 import SceneTwoB from "./scenes/SceneTwoB.js"
 import CollisionScene from "./scenes/CollisionScene.js"
 import RoomScene from "./scenes/RoomScene.js"
+import CircleCollisionScene from "./scenes/CircleCollisionScene.js"
 
 export default{
   SceneOne,
@@ -14,4 +15,5 @@ export default{
   SceneTwoB,
   CollisionScene,
   RoomScene,
+  CircleCollisionScene,
 }

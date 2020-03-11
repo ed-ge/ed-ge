@@ -12,6 +12,7 @@ import CollisionDot from "./prefabs/CollisionDot.js"
 import Napster from "./prefabs/Napster.js"
 import Tile from "./prefabs/Tile.js"
 import Rectangle from "./prefabs/Rectangle.js"
+import TestCollisionCircle from "./prefabs/TestCollisionCircle.js"
 
 export default {
   OscillatingCircle,
@@ -27,5 +28,6 @@ export default {
   CollisionDot,
   Napster,
   Tile,
-  Rectangle
+  Rectangle,
+  TestCollisionCircle
 }
