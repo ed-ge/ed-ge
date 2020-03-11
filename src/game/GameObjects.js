@@ -11,7 +11,7 @@ import CollisionCircle from "./prefabs/CollisionCircle.js"
 import CollisionDot from "./prefabs/CollisionDot.js"
 import Napster from "./prefabs/Napster.js"
 import Tile from "./prefabs/Tile.js"
-import SolidBox from "./prefabs/SolidBox.js"
+import Rectangle from "./prefabs/Rectangle.js"
 
 export default {
   OscillatingCircle,
@@ -27,5 +27,5 @@ export default {
   CollisionDot,
   Napster,
   Tile,
-  SolidBox
+  Rectangle
 }

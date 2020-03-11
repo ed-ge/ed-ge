@@ -5,6 +5,7 @@ import CircleCollider from "./components/CircleCollider.js"
 import Collider from "./components/Collider.js"
 import Point from "./components/PointCollider.js"
 import CollisionHelper from "./components/CollisionHelper.js"
+import AABBCollider from "./components/AABBCollider.js"
 
 export default {
   CircleComponent,
@@ -14,5 +15,6 @@ export default {
   Point,
   Collider,
   CollisionHelper,
+  AABBCollider,
  
 }

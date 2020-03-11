@@ -9,14 +9,14 @@ export default {
             type: "EmptyGameObject",
             children: [
                 {
-                    name: "box1",
+                    name: "Rectangle",
                     location: { x: 100, y: 200 },
-                    type: "SolidBox"
+                    type: "Rectangle"
                 },
                 {
-                    name: "box2",
+                    name: "Rectangle",
                     location: { x: 300, y: 100 },
-                    type: "SolidBox",
+                    type: "Rectangle",
                     children: [
                         {
                             name: "moon",

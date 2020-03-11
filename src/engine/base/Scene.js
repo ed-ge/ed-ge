@@ -19,7 +19,7 @@ export default class Scene extends NameableParent {
 
   }
   start2() {
-    
+
     this.children = [];
 
     //Load a scene from a declarative syntax
@@ -189,7 +189,7 @@ export default class Scene extends NameableParent {
 
     //Add collision behavior
     let collidableChildren = [];
-    this.getCollidable(this.children, collidableChildren, collidableType);
+    this.getCollidable(this, collidableChildren, collidableType);
 
     for (let i = 0; i < collidableChildren.length; i++) {
       for (let j = i + 1; j < collidableChildren.length; j++) {
@@ -213,27 +213,30 @@ export default class Scene extends NameableParent {
       }
     }
   }
-  getCollidable(children, collidableChildren, type) {
+  getCollidable(gameObject, collidableChildren, type) {
 
-
-    for (let i = 0; i < children.length; i++) {
-      let child = children[i];
+    if (gameObject.getComponent) {
       try {
-        let collidableComponent = child.getComponent(type);
+        let collidableComponent = gameObject.getComponent(type);
         if (collidableComponent) {
-          collidableChildren.push({ collider: collidableComponent, gameObject: child });
+          collidableChildren.push({ collider: collidableComponent, gameObject });
         }
       } catch (e) {
-        let x = 1;//no-op
-      }
-      for (let j = 0; j < child.children.length; j++) {
-        this.getCollidable(child.children[j], collidableChildren);
+        //no-op
       }
     }
+
+    for (let i = 0; i < gameObject.children.length; i++) {
+      let child = gameObject.children[i];
+
+      this.getCollidable(child, collidableChildren, type);
+    }
   }
+
   destroy(gameObject) {
     this.children = this.children.filter(i => i != gameObject);
   }
+
   instantiate(gameObjectType, location, rotation, parent) {
     /*let gameObject = new gameObjectType(location.x, location.y);
     gameObject.rotation = rotation;
@@ -246,6 +249,7 @@ export default class Scene extends NameableParent {
     parent.push(gameObject);
     let prefab = Scene.gameObjects[gameObjectType.name];
     this.buildIt(prefab, gameObject)
+    gameObject.name = prefab.name;
     gameObject.recursiveCall("start");
     return gameObject
 

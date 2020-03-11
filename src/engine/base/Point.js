@@ -12,4 +12,7 @@ export default class Point{
         let yDiff = (this.y - otherPoint.y);
         return xDiff * xDiff + yDiff * yDiff;
     }
+    diff(otherPoint){
+        return new Point(this.x - otherPoint.x, this.y - otherPoint.y);
+    }
 }

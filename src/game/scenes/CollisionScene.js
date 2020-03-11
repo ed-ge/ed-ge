@@ -4,7 +4,7 @@ export default {
 
   objects: [
     {
-      name: "target",
+      name: "CollisionCircle",
       location: { x: 50, y: 50 },
       type: "CollisionCircle"
     },
