@@ -1,21 +1,23 @@
 import Base from "../Base.js"
 
-export default class TextComponent extends Base.Component{
+class TextComponent extends Base.Component {
     text;
     font;
     fill;
-    
-    constructor(){
+
+    constructor() {
         super();
     }
-    draw(ctx){
+    draw(ctx) {
         ctx.save();
         ctx.fillStyle = this.fill;
         ctx.font = this.font;
-        ctx.fillText(this.text,0,0);
+        ctx.fillText(this.text, 0, 0);
         ctx.restore();
     }
-    update(){
+    update() {
 
     }
 }
+
+export default TextComponent;

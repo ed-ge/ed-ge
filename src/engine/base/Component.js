@@ -3,10 +3,12 @@
  * Examples of components are behaviors, renderers, and colliders
  */
 
-export default class Component{
+class Component {
 
     //Reference to containing GameObject
     gameObject;
-    
+
 
 }
+
+export default Component;

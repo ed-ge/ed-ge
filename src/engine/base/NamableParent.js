@@ -1,4 +1,8 @@
-export default class NameableParent {
+/**
+ * Parent interface for scenes and game objects
+ */
+
+class NameableParent {
     children = [];
     name = "";
     constructor(name) {
@@ -19,8 +23,7 @@ export default class NameableParent {
         if (found) {
             this.children = this.children.filter(i => i != gameObject);
             return true;
-        }
-        else {
+        } else {
             //Loop again and destroy recursively
             for (let i = 0; i < this.children.length && !found; i++) {
                 let child = this.children[i];
@@ -34,3 +37,5 @@ export default class NameableParent {
 
     }
 }
+
+export default NameableParent;

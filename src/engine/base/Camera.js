@@ -1,11 +1,16 @@
 import GameObject from "./GameObject.js"
 
-export default class Camera extends GameObject{
-    
+/**
+ * A virtual view of the game
+ */
+class Camera extends GameObject {
+
     backgroundColor = "black";
 
-    constructor(name){
+    constructor(name) {
         super(name);
 
     }
 }
+
+export default Camera;

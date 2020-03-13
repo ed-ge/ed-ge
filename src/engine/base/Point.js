@@ -1,18 +1,24 @@
-export default class Point{
-    constructor(x,y){
+/**
+ * 2D Point class
+ */
+
+class Point {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
     }
-    distance(otherPoint){
+    distance(otherPoint) {
 
-       return Math.sqrt(this.distanceSquared(otherPoint));
+        return Math.sqrt(this.distanceSquared(otherPoint));
     }
-    distanceSquared(otherPoint){
+    distanceSquared(otherPoint) {
         let xDiff = (this.x - otherPoint.x);
         let yDiff = (this.y - otherPoint.y);
         return xDiff * xDiff + yDiff * yDiff;
     }
-    diff(otherPoint){
+    diff(otherPoint) {
         return new Point(this.x - otherPoint.x, this.y - otherPoint.y);
     }
 }
+
+export default Point;

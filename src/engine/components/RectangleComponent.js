@@ -1,23 +1,25 @@
 import Base from "../Base.js"
 
-export default class RectangleComponent extends Base.Component{
+class RectangleComponent extends Base.Component {
     width;
     height;
     fill;
     stroke;
-    constructor(){
+    constructor() {
         super();
     }
-    draw(ctx){
+    draw(ctx) {
         ctx.save();
-        ctx.translate(-this.width/2, -this.height/2);
+        ctx.translate(-this.width / 2, -this.height / 2);
         ctx.fillStyle = this.fill;
         ctx.strokeStyle = this.stroke;
-        ctx.fillRect(0,0, this.width, this.height);
+        ctx.fillRect(0, 0, this.width, this.height);
         ctx.strokeRect(0, 0, this.width, this.height);
         ctx.restore();
     }
-    update(){
+    update() {
 
     }
 }
+
+export default RectangleComponent;

@@ -1,11 +1,16 @@
 import Collider from "./Collider.js"
 
-//Axis-Aligned Bounding Box
-export default class AABBCollider extends Collider{
+/**
+Axis - Aligned Bounding Box 
+*/
+
+class AABBCollider extends Collider {
     width;
     height;
-    constructor(){
+    constructor() {
         super();
     }
 
 }
+
+export default AABBCollider;
