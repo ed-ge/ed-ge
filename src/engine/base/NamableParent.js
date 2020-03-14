@@ -1,10 +1,25 @@
 /**
- * Parent interface for scenes and game objects
+ * Parent interface for scenes and game objects.
+ * 
+ * The Scene class and the GameObject class both descend from this class.
  */
 
 class NameableParent {
+
+    /**
+     * An array of children this instance has
+     */
     children = [];
+
+    /**
+     * The name of this instance
+     */
     name = "";
+
+    /**
+     * 
+     * @param {String} Name of this instance
+     */
     constructor(name) {
         this.name = name;
     }
