@@ -32,8 +32,8 @@ jobs:
        npm install
        npm run doc
 
-    - name: Publish generated content to GitHub Pages
-      uses: tsunematsu21/actions-publish-gh-pages@v1.0.0
+      - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@3.4.1
       with:
-        dir: docs
-        branch: gh-pages
+        FOLDER: docs
+        BRANCH: gh-pages
