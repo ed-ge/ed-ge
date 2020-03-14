@@ -1,3 +1,5 @@
+import GameObject from "./GameObject";
+
 /**
  * Parent interface for scenes and game objects.
  * 
@@ -23,6 +25,15 @@ class NameableParent {
     constructor(name) {
         this.name = name;
     }
+
+    /**
+     * Remove a game object from the scene tree.
+     * 
+     * This is done recursively since the game object would be the descendant of
+     * any depth in the scene tree.
+     * 
+     * @param {GameObject} gameObject Remove this game object from the Scene tree
+     */
 
     destroy(gameObject) {
         let found = false;
