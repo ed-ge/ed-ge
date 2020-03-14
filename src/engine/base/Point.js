@@ -3,6 +3,11 @@
  */
 
 class Point {
+    /**
+     * 
+     * @param {Number} x The x location of the point
+     * @param {Number} y The y location of the point
+     */
     constructor(x, y) {
         this.x = x;
         this.y = y;
