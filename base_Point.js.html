@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: base/Point.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,46 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: base/Point.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * 2D Point class
+ */
 
+class Point {
+    /**
+     * 
+     * @param {Number} x The x location of the point
+     * @param {Number} y The y location of the point
+     */
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    distance(otherPoint) {
 
-    <h3> </h3>
+        return Math.sqrt(this.distanceSquared(otherPoint));
+    }
+    distanceSquared(otherPoint) {
+        let xDiff = (this.x - otherPoint.x);
+        let yDiff = (this.y - otherPoint.y);
+        return xDiff * xDiff + yDiff * yDiff;
+    }
+    diff(otherPoint) {
+        return new Point(this.x - otherPoint.x, this.y - otherPoint.y);
+    }
+}
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export default Point;</code></pre>
+        </article>
+    </section>
 
 
 
