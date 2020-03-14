@@ -1,21 +1,53 @@
-/**
- * A scene represents a level in a game.
- */
-
 import NameableParent from "./NamableParent.js"
 import Point from "./Point.js"
 import GameObject from "./GameObject.js";
 
+/**
+ * A scene represents a level in a game.
+ */
 class Scene extends NameableParent {
+
+    /**
+     * A static reference to all gameObjects available in this game.
+     * This prevents a circular module dependency. By "linking" these to the
+     * scene as static list after the program starts, we can remove any circular
+     * dependencies.
+     */
     static gameObjects = [];
+
+    /**
+     * A static reference to all Components available in the game engine.
+     * This prevents a circular module dependency. By "linking" these to the
+     * scene as static list after the program starts, we can remove any circular
+     * dependencies.
+     */
     static components = [];
+
+    /**
+     * A static reference to all Game Behaviors available in this game.
+     * This prevents a circular module dependency. By "linking" these to the
+     * scene as static list after the program starts, we can remove any circular
+     * dependencies.
+     */
     static gameBehaviors = [];
 
+    /**
+     * Scene constructor. Assigns the scene a name and starts it.
+     * 
+     * @param {String} name Name of this scene
+     */
     constructor(name) {
         super(name);
         this.start();
 
     }
+
+    /**
+     * Assign the scene its scene tree using our declarative syntax.
+     * 
+     * @param {String} obj The string specifying the contents of the scene in
+     * our declarative syntax.
+     */
     static parse(obj) {
         let toReturn = new Scene(obj.name);
         toReturn.objects = obj.objects;
@@ -51,6 +83,12 @@ class Scene extends NameableParent {
             }
         }
     }
+
+    /**
+     * 
+     * @param {String} obj The string giving the declarative syntax
+     * @param {NameableParent} parent The parent of the object in the scene tree
+     */
     buildChild2(obj, parent) {
 
         let gameObjectType = null;
