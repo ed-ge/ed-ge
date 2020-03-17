@@ -8,7 +8,7 @@ class Point {
      * @param {Number} x The x location of the point
      * @param {Number} y The y location of the point
      */
-    constructor(x, y) {
+    constructor(x = 0, y = 0) {
         this.x = x;
         this.y = y;
     }
@@ -18,7 +18,7 @@ class Point {
      * 
      * @param {Point} otherPoint The point to which we are calculating a distance
      */
-    distance(otherPoint) {
+    distance(otherPoint = new Point(0, 0)) {
 
         return Math.sqrt(this.distanceSquared(otherPoint));
     }
@@ -31,7 +31,7 @@ class Point {
      * @param {Point} otherPoint The point to which we are calculating the
      * squared distance
      */
-    distanceSquared(otherPoint) {
+    distanceSquared(otherPoint = new Point(0, 0)) {
         let xDiff = (this.x - otherPoint.x);
         let yDiff = (this.y - otherPoint.y);
         return xDiff * xDiff + yDiff * yDiff;
