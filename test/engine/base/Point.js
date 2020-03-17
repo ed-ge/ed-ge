@@ -1,10 +1,9 @@
-import Engine from "../../../src/Engine/Engine.js"
 import Point from "../../../src/engine/base/Point.js";
 
 let assert = chai.assert;
 let expect = chai.expect;
 
-describe("Point clas", function() {
+describe("Point class", function() {
     describe("Constructor", function() {
         it("Defaults to zeros", function() {
             let point = new Point()
