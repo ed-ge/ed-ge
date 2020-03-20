@@ -30,6 +30,9 @@ export default {
       type: "EmptyGameObject",
       components: [
         {
+          type:"ScaleBehavior",
+        },
+        {
           type: "TriangleComponent",
           values: [
             {

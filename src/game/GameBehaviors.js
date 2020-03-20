@@ -10,6 +10,7 @@ import DotBehavior from "./behaviors/DotBehavior.js"
 import NapsterBehavior from "./behaviors/NapsterBehavior.js"
 import TileBehavior from "./behaviors/TileBehavior.js"
 import OrbitBehavior from "./behaviors/OrbitBehavior.js"
+import ScaleBehavior from "./behaviors/ScaleBehavior.js"
 
 export default{
   CircleBehavior,
@@ -24,4 +25,5 @@ export default{
   NapsterBehavior,
   TileBehavior,
   OrbitBehavior,
+  ScaleBehavior,
 }
