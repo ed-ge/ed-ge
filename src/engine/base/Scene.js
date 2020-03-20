@@ -101,8 +101,17 @@ class Scene extends NameableParent {
             }
         }
         if (gameObjectType == null) throw "Could now find game object of type " + obj.type;
+        if(!obj.scale)
+      {
+        obj.scale.x = 1;
+        obj.scale.y = 1;
+      }
+      if(!obj.rotation)
+      {
+        obj.rotation = 0;
+      }
 
-        let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), 0, parent);
+        let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent);
         /*let gameObject = new GameObject(obj.location.x, obj.location.y, 1, 1, 0);
         parent.push(gameObject);
         let prefab = gameObjects[gameObjectType.name];
@@ -187,7 +196,7 @@ class Scene extends NameableParent {
 
 
     buildChild(obj, parent) {
-        let gameObject = this.instantiate(obj.type, obj.location, 0, parent);
+        let gameObject = this.instantiate(obj.type, obj.location, new Point(1,1), 0, parent);
         gameObject.name = obj.name;
 
         if (obj.children) {
@@ -277,7 +286,7 @@ class Scene extends NameableParent {
 
 
 
-    instantiate(gameObjectType, location, rotation, parent) {
+    instantiate(gameObjectType, location, scale, rotation, parent) {
         /*let gameObject = new gameObjectType(location.x, location.y);
     gameObject.rotation = rotation;
  
@@ -285,7 +294,7 @@ class Scene extends NameableParent {
     gameObject.recursiveCall("start");
     return gameObject*/
 
-        let gameObject = new GameObject(location.x, location.y, 1, 1, rotation);
+        let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation);
         parent.push(gameObject);
         let prefab = Scene.gameObjects[gameObjectType.name];
         this.buildIt(prefab, gameObject)

@@ -81,7 +81,8 @@ var Scene = /*#__PURE__*/function (_NameableParent) {
       }
 
       if (gameObjectType == null) throw "Could now find game object of type " + obj.type;
-      var gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), 0, parent);
+      
+      var gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent);
       /*let gameObject = new GameObject(obj.location.x, obj.location.y, 1, 1, 0);
       parent.push(gameObject);
       let prefab = gameObjects[gameObjectType.name];

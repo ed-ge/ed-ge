@@ -22,13 +22,15 @@ export default class DotBehavior extends Base.Behavior {
         if (collisionObject.gameObject.name == "CollisionCircle") {
 
             SceneManager.destroy(collisionObject.gameObject);
-            SceneManager.instantiate(CollisionCircle, new Point(Math.random() * 400, Math.random() * 400), 0);
+            SceneManager.instantiate(CollisionCircle, new Point(Math.random() * 400, Math.random() * 400), new Point(1,1),0);
             
         }
         else if (collisionObject.gameObject.name == "Rectangle") {
 
             SceneManager.destroy(collisionObject.gameObject);
-            SceneManager.instantiate(Rectangle, new Point(Math.random() * 400, Math.random() * 400), 0);
+            let circle = SceneManager.instantiate(Rectangle, new Point(Math.random() * 400, Math.random() * 400), new Point(1,1)0);
+            circle.scaleX = Math.random() + 1;
+            circle.scaleY = Math.random() + 1;
             
         }
         

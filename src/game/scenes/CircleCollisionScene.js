@@ -6,6 +6,7 @@ export default {
     {
       name: "CollisionCircle",
       location: { x: 50, y: 50 },
+      scale: { x: 2, y:1},
       type: "CollisionCircle"
     },
     {
@@ -21,6 +22,7 @@ export default {
     {
       name: "CollisionCircle",
       location: { x: 250, y: 50 },
+      scale:{x:1, y:2},
       type: "CollisionCircle"
     },
     {

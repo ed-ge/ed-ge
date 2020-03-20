@@ -25,7 +25,7 @@ export default class NapsterBehavior extends Base.Behavior {
       for (let x = 0; x < this.tilesWide; x++) {
         let _x = x * 100 + this.marginX;
         let _y = y * 100 + this.marginY;
-        let tile = SceneManager.instantiate(Tile, new Base.Point(_x, _y), 0);
+        let tile = SceneManager.instantiate(Tile, new Base.Point(_x, _y), new Point(1,1) 0);
         this.gameObject.children.push(tile);
         this.peons[y].push(tile);
 
@@ -40,7 +40,7 @@ export default class NapsterBehavior extends Base.Behavior {
     this.select(0, 0);
 
     //Add the strategy character
-    this.strategyCharacter = SceneManager.instantiate(GameObjects.StrategyCharacter, new Point(this.marginX, this.marginY), 0);
+    this.strategyCharacter = SceneManager.instantiate(GameObjects.StrategyCharacter, new Point(this.marginX, this.marginY), new Point(1,1), 0);
 
   }
   update() {
