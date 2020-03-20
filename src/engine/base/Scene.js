@@ -101,15 +101,14 @@ class Scene extends NameableParent {
             }
         }
         if (gameObjectType == null) throw "Could now find game object of type " + obj.type;
-        if(!obj.scale)
-      {
-        obj.scale.x = 1;
-        obj.scale.y = 1;
-      }
-      if(!obj.rotation)
-      {
-        obj.rotation = 0;
-      }
+        if (!obj.scale) {
+            obj.scale = {};
+            obj.scale.x = 1;
+            obj.scale.y = 1;
+        }
+        if (!obj.rotation) {
+            obj.rotation = 0;
+        }
 
         let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent);
         /*let gameObject = new GameObject(obj.location.x, obj.location.y, 1, 1, 0);
@@ -196,7 +195,7 @@ class Scene extends NameableParent {
 
 
     buildChild(obj, parent) {
-        let gameObject = this.instantiate(obj.type, obj.location, new Point(1,1), 0, parent);
+        let gameObject = this.instantiate(obj.type, obj.location, new Point(1, 1), 0, parent);
         gameObject.name = obj.name;
 
         if (obj.children) {
