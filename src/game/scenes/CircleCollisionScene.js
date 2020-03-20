@@ -12,6 +12,8 @@ export default {
     {
       name: "Rectangle",
       location: { x: 150, y: 50 },
+      rotation:.1,
+      scale:{x:2,y:.5},
       type: "Rectangle"
     },
     {
