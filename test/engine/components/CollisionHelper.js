@@ -10,10 +10,13 @@ import ConvexCollider from "../../../src/Engine/components/ConvexCollider.js";
 let assert = chai.assert;
 let expect = chai.expect;
 
-function quickBuild(x, y, collider) {
+function quickBuild(x, y, scaleX, scaleY, rotate, collider) {
     let gameObject = new Engine.Base.GameObject();
     gameObject.x = x;
     gameObject.y = y;
+    gameObject.scaleX = scaleX;
+    gameObject.scaleY = scaleY;
+    gameObject.rotation = rotate;
     return { gameObject, collider };
 }
 
@@ -22,9 +25,9 @@ function doubleCheck(one, two, bool) {
     expect(CollisionHelper.inCollision(two, one)).to.equal(bool)
 }
 
-function all(x1, y1, collider1, x2, y2, collider2, bool) {
-    let one = quickBuild(x1, y1, collider1);
-    let two = quickBuild(x2, y2, collider2);
+function all(x1, y1, scaleX1, scaleY1, rotate1, collider1, x2, y2, scaleX2, scaleY2, rotate2, collider2, bool) {
+    let one = quickBuild(x1, y1, scaleX1, scaleY1, rotate1, collider1);
+    let two = quickBuild(x2, y2, scaleX2, scaleY2, rotate2collider2);
     doubleCheck(one, two, bool)
 }
 
@@ -35,12 +38,12 @@ describe("CollisionHelper class", function () {
             let circle = new CircleCollider();
             it("Points collide with circles they are in.", function () {
                 circle.radius = 1;
-                all(0, 0, point, 0, 0, circle, true)
+                all(0, 0, 1, 1, 0, point, 0, 0, 1, 1, 0, circle, true)
             });
             it("Points don't collide with circles they are not in.", function () {
                 circle.radius = 1;
-                all(2, 0, point, 0, 0, circle, false)
-                all(0, 0, point, 2, 0, circle, false)
+                all(2, 0, 1, 1, 0, point, 0, 0, 1, 1, 0, circle, false)
+                all(0, 0, 1, 1, 0, point, 2, 0, 1, 1, 0, circle, false)
             });
         })
         describe("Point/AABB Collisions", function () {
@@ -48,17 +51,17 @@ describe("CollisionHelper class", function () {
             it("Points collide with AABB they are in.", function () {
                 aabb.width = 1;
                 aabb.height = 1
-                all(0, 0, point, 0, 0, aabb, true)
-                all(.25, .25, point, 0, 0, aabb, true)
-                all(-.25, -.25, point, 0, 0, aabb, true)
-                all(-1.25, -1.25, point, -1, -1, aabb, true)
+                all(0, 0, 1, 1, 0, point, 0, 0, 1, 1, 0, aabb, true)
+                all(.25, .25, 1, 1, 0, point, 0, 0, 1, 1, 0, aabb, true)
+                all(-.25, -.25, 1, 1, 0, point, 0, 0, 1, 1, 0, aabb, true)
+                all(-1.25, -1.25, 1, 1, 0, point, -1, -1, 1, 1, 0, aabb, true)
 
             })
             it("Points don't collide with AABB they are not in.", function () {
                 aabb.width = 1;
                 aabb.height = 2
-                all(2, 0, point, 0, 0, aabb, false)
-                all(-1.25, -1.25, point, 1, 1, aabb, false)
+                all(2, 0, 1, 1, 0, point, 0, 0, 1, 1, 1, 0, aabb, false)
+                all(-1.25, -1.25, 1, 1, 0, point, 1, 1, 1, 1, 0, aabb, false)
 
             })
         })
@@ -76,7 +79,7 @@ describe("CollisionHelper class", function () {
         describe("Point/Convex Collisions", function () {
             let convex = new ConvexCollider();
             it("Points collide with Convex Colliders they are in.", function () {
-                
+
 
             })
             it("Points don't collide with Convex Colliders they are not in.", function () {
@@ -93,12 +96,12 @@ describe("CollisionHelper class", function () {
             it("Circles collide with Circles they touch", function () {
                 circle.radius = 1;
                 circle2.radius = 2
-                
-                all(0,0,circle, 0,0, circle2, true)
-                
+
+                all(0, 0, 1, 1, 0, circle, 0, 0, 1, 1, 0,circle2, true)
+
             })
             it("Circles don't collide with Circles they don't touch", function () {
-                all(2,0,circle, -1,0, circle2, false)
+                all(2, 0, 1, 1, 0, circle, -1, 0, 1, 1, 0, circle2, false)
 
             })
         })
@@ -108,11 +111,11 @@ describe("CollisionHelper class", function () {
                 circle.radius = 1;
                 aabb.width = 1;
                 aabb.height = 1
-                all(0,0,circle, 0,0, aabb, true)
-                
+                all(0, 0, 1, 1, 0, circle, 0, 0, 1, 1, 0, aabb, true)
+
             })
             it("Circles don't collide with AABBs they don't touch", function () {
-                all(2,0,circle, 0,0, aabb, false)
+                all(2, 0, 1, 1, 0, circle, 0, 0, 1, 1, 0, aabb, false)
 
             })
         })
@@ -130,7 +133,7 @@ describe("CollisionHelper class", function () {
         describe("Circle/Convex Collisions", function () {
             let convex = new ConvexCollider();
             it("Circles collide with Convex Colliders they are in.", function () {
-                
+
 
             })
             it("Circles don't collide with Convex Colliders they are not in.", function () {
@@ -140,15 +143,15 @@ describe("CollisionHelper class", function () {
             })
         })
     })
-    describe("AABB Collisions", function(){
+    describe("AABB Collisions", function () {
         describe("Circle/AABB Collisions", function () {
             let aabb = new AABBCollider()
             it("AABBs collide with AABBs they touch", function () {
-               expect(true).to.be(false)
-                
+                expect(true).to.be(false)
+
             })
             it("AABBs don't collide with AABBs they don't touch", function () {
-               expect(true).to.be(false)
+                expect(true).to.be(false)
 
             })
         })
@@ -166,7 +169,7 @@ describe("CollisionHelper class", function () {
         describe("AABB/Convex Collisions", function () {
             let convex = new ConvexCollider();
             it("AABBs collide with Convex Colliders they are in.", function () {
-                
+
 
             })
             it("AABBs don't collide with Convex Colliders they are not in.", function () {
@@ -177,7 +180,7 @@ describe("CollisionHelper class", function () {
         })
 
     })
-    describe("TRiangle Collisions", function(){
+    describe("TRiangle Collisions", function () {
         let tri = new TriangleCollider()
         describe("Triangle/Triangle Collisions", function () {
             let triangle = new TriangleCollider();
@@ -193,7 +196,7 @@ describe("CollisionHelper class", function () {
         describe("Triangles/Convex Collisions", function () {
             let convex = new ConvexCollider();
             it("Triangles collide with Convex Colliders they are in.", function () {
-                
+
 
             })
             it("Triangles don't collide with Convex Colliders they are not in.", function () {
