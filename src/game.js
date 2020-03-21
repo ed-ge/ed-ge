@@ -11,24 +11,11 @@ Engine.Base.Scene.gameObjects = GameObjects;
 Engine.Base.Scene.components = Engine.Components;
 Engine.Base.Scene.gameBehaviors = GameBehaviors;
 
-let startScene = Engine.Base.Scene.parse(Scenes.StartScene);
-let collisionScene = Engine.Base.Scene.parse(Scenes.CollisionScene);
-let sceneOne = Engine.Base.Scene.parse(Scenes.SceneOne);
-let sceneTwo = Engine.Base.Scene.parse(Scenes.SceneTwo);
-let sceneTwoB = Engine.Base.Scene.parse(Scenes.SceneTwoB);
-let sceneStrategyScene = Engine.Base.Scene.parse(Scenes.StrategyScene);
-let roomScene = Engine.Base.Scene.parse(Scenes.RoomScene);
-let circleCollisionScene = Engine.Base.Scene.parse(Scenes.CircleCollisionScene);
 
-SceneManager.addScene(sceneOne);
-SceneManager.addScene(sceneTwo);
-SceneManager.addScene(sceneTwoB);
-SceneManager.addScene(sceneStrategyScene);
-SceneManager.addScene(startScene);
-SceneManager.addScene(collisionScene);
-SceneManager.addScene(roomScene);
-SceneManager.addScene(circleCollisionScene);
-SceneManager.currentScene = "StartScene";
+Scenes.allScenes
+  .forEach(i => SceneManager.addScene(Engine.Base.Scene.parse(i)))
+
+SceneManager.currentScene = Scenes.startScene;
 
 
 //Setup event handling
@@ -41,31 +28,31 @@ document.body.addEventListener('mouseup', mouseup);
 let Input = Engine.Base.Input;
 
 function keydown(event) {
-    if (Input.keys[event.key] != true)
-        Input.down[event.key] = true;
-    Input.keys[event.key] = true;
+  if (Input.keys[event.key] != true)
+    Input.down[event.key] = true;
+  Input.keys[event.key] = true;
 }
 
 function keyup(event) {
-    if (Input.keys[event.key] != false)
-        Input.up[event.key] = true;
-    Input.keys[event.key] = false;
+  if (Input.keys[event.key] != false)
+    Input.up[event.key] = true;
+  Input.keys[event.key] = false;
 }
 
 function mousedown(event) {
-    if (Input.mouseButtons[event.button] != true)
-        Input.mouseButtonsDown[event.button] = true;
-    Input.mouseButtons[event.button] = true;
+  if (Input.mouseButtons[event.button] != true)
+    Input.mouseButtonsDown[event.button] = true;
+  Input.mouseButtons[event.button] = true;
 }
 
 function mouseup(event) {
-    if (Input.mouseButtons[event.button] != false)
-        Input.mouseButtonsUp[event.button] = true;
-    Input.mouseButtons[event.button] = false;
+  if (Input.mouseButtons[event.button] != false)
+    Input.mouseButtonsUp[event.button] = true;
+  Input.mouseButtons[event.button] = false;
 }
 
 function keypress(event) {
-    //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
+  //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
 }
 
 //Keep our canvas full screen
@@ -75,7 +62,7 @@ var can = document.getElementById("canv");
 
 function resizeCanvas() {
   can.style.width = window.innerWidth + "px";
-  setTimeout(function() {
+  setTimeout(function () {
     can.style.height = window.innerHeight + "px";
   }, 0);
   can.width = window.innerWidth;
@@ -93,24 +80,24 @@ resizeCanvas();
 let canv, ctx;
 
 function main() {
-    canv = document.querySelector("#canv");
-    ctx = canv.getContext('2d');
+  canv = document.querySelector("#canv");
+  ctx = canv.getContext('2d');
 
-    setInterval(gameLoop, 33);
+  setInterval(gameLoop, 33);
 }
 
 function gameLoop() {
-    Input.swapUpDownArrays();
-    update();
-    draw(ctx);
+  Input.swapUpDownArrays();
+  update();
+  draw(ctx);
 }
 
 function update() {
-    SceneManager.currentScene.update(Engine.Components.Collider, Engine.Components.CollisionHelper);
+  SceneManager.currentScene.update(Engine.Components.Collider, Engine.Components.CollisionHelper);
 }
 
 function draw(ctx) {
-    SceneManager.currentScene.draw(ctx, canv.width, canv.height);
+  SceneManager.currentScene.draw(ctx, canv.width, canv.height);
 }
 
 main();
