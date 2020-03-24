@@ -118,6 +118,25 @@ class GameObject extends NameableParent {
             throw "Error, couldn't find type " + type;
         }
     }
+    /**
+     * Returns true if there is at least one component of the given
+     * type attached to this GameObject.
+     * 
+     * @param {The type of the componet to search for. May be a string or object type} type 
+     */
+    anyComponent(type) {
+        if (typeof(type) === 'string' || type instanceof String) {
+            //The user passed us a string, not a type
+            //https://stackoverflow.com/a/7772724/10047920
+            let component = this.components.find(i => i.constructor.name === type);
+            if (component) return true;
+            return false;
+        } else {
+            let component = this.components.find(i => i instanceof type);
+            if (component) return true;
+            return false;
+        }
+    }
     recursiveCall(functionName) {
         for (let i = 0; i < this.components.length; i++) {
             let component = this.components[i];

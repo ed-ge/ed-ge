@@ -9,6 +9,7 @@ import AABBCollider from "./components/AABBCollider.js"
 import TriangleCollider from "./components/TriangleCollider.js"
 import ConvexCollider from "./components/ConvexCollider.js"
 import TriangleComponent from "./components/TriangleComponent.js"
+import CameraComponent from "./components/CameraComponent.js"
 
 export default {
   CircleComponent,
@@ -21,6 +22,7 @@ export default {
   AABBCollider,
   TriangleCollider,
   ConvexCollider,
-  TriangleComponent
+  TriangleComponent,
+  CameraComponent,
  
 }

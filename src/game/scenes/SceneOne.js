@@ -3,6 +3,22 @@ export default {
 
   objects: [
     {
+      name: "Main Camera",
+      location: { x: 0, y: 0 },
+      type: "Camera",
+      componentValues: [
+        {
+          type: "CameraComponent",
+          values: [
+            {
+              key: "backgroundColor",
+              value: "white"
+            }
+          ]
+        }
+      ]
+    },
+    {
       name: "Rotating Square",
       location: { x: 200, y: 200 },
       type: 'RotatingSquare',
@@ -30,18 +46,18 @@ export default {
       type: "EmptyGameObject",
       components: [
         {
-          type:"ScaleBehavior",
+          type: "ScaleBehavior",
         },
         {
           type: "TriangleComponent",
           values: [
             {
-              key:"fill",
-              value:"white"
+              key: "fill",
+              value: "white"
             },
             {
-              key:"stroke",
-              value:"red"
+              key: "stroke",
+              value: "red"
             },
             {
               key: "pointAX",

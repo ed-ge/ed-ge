@@ -228,8 +228,22 @@ class Scene extends NameableParent {
         }
     }
     draw(ctx, width, height) {
-        ctx.fillStyle = "cyan";
-        ctx.fillRect(0, 0, width, height)
+        //Before we draw, see if we have a camera game object and use that
+        let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
+        if (cameras.length == 0) {
+            //You really should add a camera
+            //console.log("You should add a camera to the scene. C'mon.")
+            ctx.fillStyle = "cyan";
+            ctx.fillRect(0, 0, width, height)
+        }
+        else{
+            if(cameras.length > 1)
+                console.log("More than 1 camera detected in the scene. You should only have exactly one root game object with a camera component attached.")
+            let camera = cameras[0];
+            let cameraComponent = camera.getComponent("CameraComponent")
+            ctx.fillStyle = cameraComponent.backgroundColor;
+            ctx.fillRect(0, 0, width, height)
+        }
 
         this.children.filter(i => i.draw).forEach(i => i.draw(ctx));
 
