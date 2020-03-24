@@ -7,13 +7,16 @@ import CollisionScene from "./scenes/CollisionScene.js"
 import RoomScene from "./scenes/RoomScene.js"
 import CircleCollisionScene from "./scenes/CircleCollisionScene.js"
 
-export default{
-  SceneOne,
-  SceneTwo,
-  StrategyScene,
-  StartScene,
-  SceneTwoB,
-  CollisionScene,
-  RoomScene,
-  CircleCollisionScene,
+export default {
+  startScene: "StartScene",
+  allScenes: [
+    SceneOne,
+    SceneTwo,
+    StrategyScene,
+    StartScene,
+    SceneTwoB,
+    CollisionScene,
+    RoomScene,
+    CircleCollisionScene
+  ]
 }
