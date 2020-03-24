@@ -11,6 +11,7 @@ import NapsterBehavior from "./behaviors/NapsterBehavior.js"
 import TileBehavior from "./behaviors/TileBehavior.js"
 import OrbitBehavior from "./behaviors/OrbitBehavior.js"
 import ScaleBehavior from "./behaviors/ScaleBehavior.js"
+import CameraMover from "./behaviors/CameraMover.js"
 
 export default{
   CircleBehavior,
@@ -26,4 +27,5 @@ export default{
   TileBehavior,
   OrbitBehavior,
   ScaleBehavior,
+  CameraMover,
 }

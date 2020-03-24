@@ -4,7 +4,9 @@ export default {
   objects: [
     {
       name: "Main Camera",
-      location: { x: 0, y: 0 },
+      location: { x: 100, y: 100 },
+      scale: { x: 2, y:2 },
+      rotation: 0,
       type: "Camera",
       componentValues: [
         {
@@ -16,8 +18,14 @@ export default {
             }
           ]
         }
+      ],
+      components: [
+        {
+          type: "CameraMover"
+        }
       ]
     },
+    
     {
       name: "Rotating Square",
       location: { x: 200, y: 200 },
@@ -97,7 +105,33 @@ export default {
           type: 'BackToStartSceneBehavior',
         }
       ]
-    }
+    },
+    {
+      name:"",
+      location:{x:100, y:100},
+      type:"EmptyGameObject",
+      components:[
+        {
+          type:"RectangleComponent",
+          values:[
+            {
+              key:"fill",
+              value:"gray",
+              
+            },
+            {
+              key:"width",
+              value:"10",
+            },
+            {
+              key:"height",
+              value:"10"
+            }
+          ]
+        }
+      ]
+
+    },
 
   ]
 

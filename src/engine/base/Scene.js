@@ -229,12 +229,21 @@ class Scene extends NameableParent {
     }
     draw(ctx, width, height) {
         //Before we draw, see if we have a camera game object and use that
+        ctx.save();
+        let tx,ty,sx,sy,r,hx,hy;
         let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
         if (cameras.length == 0) {
             //You really should add a camera
             //console.log("You should add a camera to the scene. C'mon.")
             ctx.fillStyle = "cyan";
             ctx.fillRect(0, 0, width, height)
+            tx = 0;
+            ty = 0;
+            sx = 1
+            sy = 1
+            r = 0;
+            hx = 0;
+            hy = 0;
         }
         else{
             if(cameras.length > 1)
@@ -243,9 +252,22 @@ class Scene extends NameableParent {
             let cameraComponent = camera.getComponent("CameraComponent")
             ctx.fillStyle = cameraComponent.backgroundColor;
             ctx.fillRect(0, 0, width, height)
+            tx = camera.x;
+            ty = camera.y;
+            sx = camera.scaleX;
+            sy = camera.scaleY;
+            r = camera.rotation;
+            hx = width/2;
+            hy = height/2;
         }
 
+        ctx.translate(hx,hy)
+        ctx.rotate(r)
+        ctx.scale(sx,sy)
+        ctx.translate(-tx, -ty)
         this.children.filter(i => i.draw).forEach(i => i.draw(ctx));
+
+        ctx.restore();
 
     }
     update(collidableType, collisionHelper) {
