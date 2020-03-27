@@ -1,5 +1,5 @@
 export default {
-    name: "Camera",
+    name: "Canvas",
     components: [
         {
             type: "CanvasComponent",
