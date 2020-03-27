@@ -14,6 +14,16 @@ export default {
                 }
             ]
         },
+        {
+            name:"Rectangle",
+            location:{x:300,y:300},
+            type:"Rectangle",
+            components:[
+                {
+                    type:"ClickBehavior"
+                }
+            ]
+        }
 
 
     ]
