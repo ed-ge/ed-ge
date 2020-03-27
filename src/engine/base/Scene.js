@@ -1,6 +1,8 @@
 import NameableParent from "./NamableParent.js"
 import Point from "./Point.js"
 import GameObject from "./GameObject.js";
+import PointCollider from "../components/PointCollider.js";
+import Input from "./Input.js"
 
 /**
  * A scene represents a level in a game.
@@ -183,7 +185,7 @@ class Scene extends NameableParent {
                         component[key] = val;
                     }
                 }
-                if(component.start)
+                if (component.start)
                     component.start();
 
             }
@@ -232,7 +234,7 @@ class Scene extends NameableParent {
     draw(ctx, width, height) {
         //Before we draw, see if we have a camera game object and use that
         ctx.save();
-        let tx,ty,sx,sy,r,hx,hy;
+        let tx, ty, sx, sy, r, hx, hy;
         let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
         if (cameras.length == 0) {
             //You really should add a camera
@@ -247,8 +249,8 @@ class Scene extends NameableParent {
             hx = 0;
             hy = 0;
         }
-        else{
-            if(cameras.length > 1)
+        else {
+            if (cameras.length > 1)
                 console.log("More than 1 camera detected in the scene. You should only have exactly one root game object with a camera component attached.")
             let camera = cameras[0];
             let cameraComponent = camera.getComponent("CameraComponent")
@@ -259,13 +261,13 @@ class Scene extends NameableParent {
             sx = camera.scaleX;
             sy = camera.scaleY;
             r = camera.rotation;
-            hx = width/2;
-            hy = height/2;
+            hx = width / 2;
+            hy = height / 2;
         }
 
-        ctx.translate(hx,hy)
+        ctx.translate(hx, hy)
         ctx.rotate(r)
-        ctx.scale(sx,sy)
+        ctx.scale(sx, sy)
         ctx.translate(-tx, -ty)
 
         //Draw children that are not in screen space
@@ -281,15 +283,15 @@ class Scene extends NameableParent {
             //You really should have *something* in screen space
             //console.log("You don't have a canvas object. That means you can't draw anything in screen space.");
         }
-        else{
-            if(canvases.length > 1){
+        else {
+            if (canvases.length > 1) {
                 console.log("More than 1 canvas object found in the root of your scene graph. You should only have exactly one game object with a canvas component. The other object(s) and its children will not be rendered.")
             }
             let canvas = canvases[0];
             canvas.draw(ctx);
         }
         ctx.restore();
-        
+
 
     }
     update(collidableType, collisionHelper) {
@@ -317,6 +319,40 @@ class Scene extends NameableParent {
                             component.onCollisionStay(collidableChildren[i]);
                     }
 
+                }
+            }
+        }
+        //Now go through and see if the point represented by the mouse collides with any of the colliders
+        //
+        //First get the world space position of the mouse
+        let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
+        let point = Input.mousePosition;
+        if (cameras.length == 0) {
+        }
+        else {
+            point = Input.mousePosition;
+            //Put in transform code here
+        }
+
+        let colliderObject = {};
+        colliderObject.gameObject = new GameObject();
+        colliderObject.gameObject.x = point.x;
+        colliderObject.gameObject.y = point.y;
+        colliderObject.collider = new PointCollider();
+
+        for (let i = 0; i < collidableChildren.length; i++) {
+            if (collisionHelper.inCollision(collidableChildren[i], colliderObject)) {
+                let gameObjectOne = collidableChildren[i].gameObject;
+
+                //Now loop over all the behaviors too see if any are listening for collision events
+                for (let i = 0; i < gameObjectOne.components.length; i++) {
+                    let component = gameObjectOne.components[i];
+                    if (component.onMouseOver)
+                        component.onMouseOver();
+                    if(component.onMouseDown){
+                        if(Input.getMouseButtonDown(0))
+                            component.onMouseDown()
+                    }
                 }
             }
         }
