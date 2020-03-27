@@ -1,15 +1,20 @@
 
 export default {
     name: "MouseScene",
-  
+
     objects: [
-     
-      {
-        name: "Rectangle",
-        location: { x: 150, y: 50 },
-        type: "Rectangle"
-      },
-     
-  
+
+        {
+            name: "Text",
+            location: { x: 150, y: 50 },
+            type: "Text",
+            components: [
+                {
+                    type: "MouseText",
+                }
+            ]
+        },
+
+
     ]
-  }
+}

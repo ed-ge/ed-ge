@@ -183,6 +183,8 @@ class Scene extends NameableParent {
                         component[key] = val;
                     }
                 }
+                if(component.start)
+                    component.start();
 
             }
         }
