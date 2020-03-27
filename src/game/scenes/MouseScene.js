@@ -3,28 +3,86 @@ export default {
     name: "MouseScene",
 
     objects: [
-
         {
-            name: "Text",
-            location: { x: 150, y: 50 },
-            type: "Text",
+            name: "Main Camera",
+            location: { x: 300, y: 300 },
+            scale: { x: 1, y: 1 },
+            rotation: 0,
+            type: "Camera",
+            componentValues: [
+                {
+                    type: "CameraComponent",
+                    values: [
+                        {
+                            key: "backgroundColor",
+                            value: "white"
+                        }
+                    ]
+                }
+            ],
             components: [
                 {
-                    type: "MouseText",
+                    type: "CameraMover"
                 }
             ]
         },
         {
-            name:"Rectangle",
-            location:{x:300,y:300},
-            type:"Rectangle",
-            components:[
+            name: "Canvas",
+            location: { x: 0, y: 0 },
+            type: "Canvas",
+            children: [
                 {
-                    type:"ClickBehavior"
+                    name: "Text",
+                    location: { x: 150, y: 50 },
+                    type: "Text",
+                    components: [
+                        {
+                            type: "MouseText",
+                        }
+                    ]
+                },
+            ]
+        },
+        {
+            name: "Rectangle",
+            location: { x: 300, y: 300 },
+            type: "Rectangle",
+            components: [
+                {
+                    type: "ClickBehavior"
                 }
             ]
-        }
-
+        },
+        {
+            name: "Rectangle",
+            location: { x: 200, y: 200 },
+            type: "Rectangle",
+            components: [
+                {
+                    type: "ClickBehavior"
+                }
+            ]
+        },
+        {
+            name: "Rectangle",
+            location: { x: 200, y: 300 },
+            type: "Rectangle",
+            components: [
+                {
+                    type: "ClickBehavior"
+                }
+            ]
+        },
+        {
+            name: "Rectangle",
+            location: { x: 300, y: 200 },
+            type: "Rectangle",
+            components: [
+                {
+                    type: "ClickBehavior"
+                }
+            ]
+        },
 
     ]
 }

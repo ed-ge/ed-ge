@@ -294,7 +294,7 @@ class Scene extends NameableParent {
 
 
     }
-    update(collidableType, collisionHelper) {
+    update(ctx, collidableType, collisionHelper) {
         this.children.filter(i => i.update).forEach(i => i.update());
 
         //Add collision behavior
@@ -326,12 +326,45 @@ class Scene extends NameableParent {
         //
         //First get the world space position of the mouse
         let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
-        let point = Input.mousePosition;
+        let point = {x:0,y:0};
+        point.x=parseInt(Input.mousePosition.x);
+        point.y=parseInt(Input.mousePosition.y);
         if (cameras.length == 0) {
         }
         else {
-            point = Input.mousePosition;
+           /* point = Input.mousePosition;*/
             //Put in transform code here
+            let camera = cameras[0];
+            let cameraComponent = camera.getComponent("CameraComponent")
+            
+            let tx = camera.x;
+            let ty = camera.y;
+            let sx = camera.scaleX;
+            let sy = camera.scaleY;
+            let r = camera.rotation;
+            let hx = ctx.canvas.width / 2;
+            let hy = ctx.canvas.height / 2;
+
+            let x = point.x;
+            let y = point.y;
+            x -= hx;
+            y -= hy;
+            x /= sx;
+            y /= sy;
+            x += tx;
+            y += ty;
+
+            point.x = x;
+            point.y = y;
+
+            //We have to reverse the transforms from when we draw
+            /*
+            ctx.translate(hx, hy)
+            ctx.rotate(r)
+            ctx.scale(sx, sy)
+            ctx.translate(-tx, -ty)*/
+            
+
         }
 
         let colliderObject = {};
@@ -349,8 +382,8 @@ class Scene extends NameableParent {
                     let component = gameObjectOne.components[i];
                     if (component.onMouseOver)
                         component.onMouseOver();
-                    if(component.onMouseDown){
-                        if(Input.getMouseButtonDown(0))
+                    if (component.onMouseDown) {
+                        if (Input.getMouseButtonDown(0))
                             component.onMouseDown()
                     }
                 }

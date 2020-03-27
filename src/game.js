@@ -111,12 +111,12 @@ function main() {
 
 function gameLoop() {
   Input.swapUpDownArrays();
-  update();
+  update(ctx);
   draw(ctx);
 }
 
 function update() {
-  SceneManager.currentScene.update(Engine.Components.Collider, Engine.Components.CollisionHelper);
+  SceneManager.currentScene.update(ctx, Engine.Components.Collider, Engine.Components.CollisionHelper);
 }
 
 function draw(ctx) {
