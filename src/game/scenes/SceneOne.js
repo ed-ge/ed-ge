@@ -30,11 +30,11 @@ export default {
       location: { x: 0, y: 0 },
       type: "Canvas",
       children:[
-        {
-          name: "Text Timer",
-          location: { x: 200, y: 200 },
-          type: 'Text',
-        },
+       {
+         name:"ScreenText",
+         location:{x:200, y:200},
+         type:"ScreenText",
+       }
       ]
     },
 
@@ -43,7 +43,11 @@ export default {
       location: { x: 200, y: 200 },
       type: 'RotatingSquare',
     },
-    
+    {
+      name: "Text Timer",
+      location: { x: 200, y: 200 },
+      type: 'Text',
+    },
     {
       name: "Oscillating Circle",
       location: { x: 100, y: 100 },
