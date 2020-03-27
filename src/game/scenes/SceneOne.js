@@ -29,6 +29,13 @@ export default {
       name: "Canvas",
       location: { x: 0, y: 0 },
       type: "Canvas",
+      children:[
+        {
+          name: "Text Timer",
+          location: { x: 200, y: 200 },
+          type: 'Text',
+        },
+      ]
     },
 
     {
@@ -36,11 +43,7 @@ export default {
       location: { x: 200, y: 200 },
       type: 'RotatingSquare',
     },
-    {
-      name: "Text Timer",
-      location: { x: 200, y: 200 },
-      type: 'Text',
-    },
+    
     {
       name: "Oscillating Circle",
       location: { x: 100, y: 100 },

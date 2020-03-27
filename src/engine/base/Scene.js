@@ -284,7 +284,7 @@ class Scene extends NameableParent {
                 console.log("More than 1 canvas object found in the root of your scene graph. You should only have exactly one game object with a canvas component. The other object(s) and its children will not be rendered.")
             }
             let canvas = canvases[0];
-            canvas.draw();
+            canvas.draw(ctx);
         }
         ctx.restore();
         
