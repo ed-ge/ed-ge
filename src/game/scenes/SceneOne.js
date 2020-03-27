@@ -5,7 +5,7 @@ export default {
     {
       name: "Main Camera",
       location: { x: 100, y: 100 },
-      scale: { x: 2, y:2 },
+      scale: { x: 2, y: 2 },
       rotation: 0,
       type: "Camera",
       componentValues: [
@@ -25,7 +25,12 @@ export default {
         }
       ]
     },
-    
+    {
+      name: "Canvas",
+      location: { x: 0, y: 0 },
+      type: "Canvas",
+    },
+
     {
       name: "Rotating Square",
       location: { x: 200, y: 200 },
@@ -107,25 +112,25 @@ export default {
       ]
     },
     {
-      name:"",
-      location:{x:100, y:100},
-      type:"EmptyGameObject",
-      components:[
+      name: "",
+      location: { x: 100, y: 100 },
+      type: "EmptyGameObject",
+      components: [
         {
-          type:"RectangleComponent",
-          values:[
+          type: "RectangleComponent",
+          values: [
             {
-              key:"fill",
-              value:"gray",
-              
+              key: "fill",
+              value: "gray",
+
             },
             {
-              key:"width",
-              value:"10",
+              key: "width",
+              value: "10",
             },
             {
-              key:"height",
-              value:"10"
+              key: "height",
+              value: "10"
             }
           ]
         }

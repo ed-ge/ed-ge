@@ -265,9 +265,29 @@ class Scene extends NameableParent {
         ctx.rotate(r)
         ctx.scale(sx,sy)
         ctx.translate(-tx, -ty)
-        this.children.filter(i => i.draw).forEach(i => i.draw(ctx));
+
+        //Draw children that are not in screen space
+        this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent")).forEach(i => i.draw(ctx));
 
         ctx.restore();
+
+        //We're now back in screen space. It's time to draw any GUI components
+        //if we have a gameObject with an attached CanvasComponent
+        ctx.save();
+        let canvases = this.children.filter(i => i.anyComponent("CanvasComponent"))
+        if (canvases.length == 0) {
+            //You really should have *something* in screen space
+            //console.log("You don't have a canvas object. That means you can't draw anything in screen space.");
+        }
+        else{
+            if(canvases.length > 1){
+                console.log("More than 1 canvas object found in the root of your scene graph. You should only have exactly one game object with a canvas component. The other object(s) and its children will not be rendered.")
+            }
+            let canvas = canvases[0];
+            canvas.draw();
+        }
+        ctx.restore();
+        
 
     }
     update(collidableType, collisionHelper) {

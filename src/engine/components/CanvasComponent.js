@@ -6,7 +6,7 @@ import Base from "../Base.js"
  * Currently, there should be no more than one game object with a canvas component 
  * in the root of the scene graph.
  */
-class CanvasComponent extends Base.Component {}
+class CanvasComponent extends Base.Component {
 
     constructor() {
         super();

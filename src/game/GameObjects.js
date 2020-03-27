@@ -14,6 +14,7 @@ import Tile from "./prefabs/Tile.js"
 import Rectangle from "./prefabs/Rectangle.js"
 import TestCollisionCircle from "./prefabs/TestCollisionCircle.js"
 import Camera from "./prefabs/Camera.js"
+import Canvas from "./prefabs/Canvas.js"
 
 export default {
   OscillatingCircle,
@@ -31,5 +32,6 @@ export default {
   Tile,
   Rectangle,
   TestCollisionCircle,
-  Camera
+  Camera,
+  Canvas,
 }
