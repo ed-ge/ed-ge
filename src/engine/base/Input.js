@@ -31,6 +31,13 @@ class Input {
     static frameMouseButtonsDown = [];
     static frameMouseButtonsUp = [];
 
+    //The location of the mouse in screen coordinates
+    static mousePosition = {x:0,y:0};
+
+    //Handle the wheel state
+    static mouseScrollDelta = 0;
+    static frameScrollDelta;
+
 
 
     static swapUpDownArrays() {
@@ -41,8 +48,12 @@ class Input {
 
         this.frameMouseButtonsDown = this.mouseButtonsDown;
         this.frameMouseButtonsUp = this.mouseButtonsUp;
+        this.frameScrollDelta = this.mouseScrollDelta;
+        this.mouseScrollDelta = 0;
         this.mouseButtonsDown = [];
         this.mouseButtonsUp = [];
+        
+        
     }
 
     //---------------------------------------------------
@@ -82,6 +93,11 @@ class Input {
     //Is the mouse button pressed? Down (true) Up (false)
     static getMouseButton(button) {
         return this.mouseButtons[button];
+    }
+
+    //What is the current state of the scroll wheel?
+    static getMouseScrollWheel(){
+        return this.frameScrollDelta;
     }
 
 

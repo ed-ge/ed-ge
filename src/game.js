@@ -24,6 +24,8 @@ document.body.addEventListener('keyup', keyup);
 document.body.addEventListener('keypress', keypress);
 document.body.addEventListener('mousedown', mousedown);
 document.body.addEventListener('mouseup', mouseup);
+document.body.addEventListener('mousemove', mousemove);
+document.body.addEventListener('wheel', wheelevent);
 
 let Input = Engine.Base.Input;
 
@@ -49,6 +51,16 @@ function mouseup(event) {
   if (Input.mouseButtons[event.button] != false)
     Input.mouseButtonsUp[event.button] = true;
   Input.mouseButtons[event.button] = false;
+}
+
+function mousemove(event) {
+  [Input.mousePosition.x, Input.mousePosition.y] = [event.clientX, event.clientY];
+
+}
+
+function wheelevent(event) {
+  if (event.deltaY != 0)
+    Input.mouseScrollDelta = event.deltaY;
 }
 
 function keypress(event) {

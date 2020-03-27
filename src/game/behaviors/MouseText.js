@@ -1,4 +1,5 @@
 import Base from "../../engine/Base.js"
+import Input from "../../engine/base/Input.js";
 
 
 export default class MouseText extends Base.Behavior {
@@ -29,6 +30,10 @@ export default class MouseText extends Base.Behavior {
                 str += i + " reports state " + state + " ";
             
         }
+
+        str += Input.mousePosition.x + " " + Input.mousePosition.y + " ";
+
+        str += Input.getMouseScrollWheel();
 
 
         this.text.text = str;
