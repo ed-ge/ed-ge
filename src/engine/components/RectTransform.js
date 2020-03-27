@@ -23,13 +23,13 @@ class RectTransform extends Base.Component {
     static MIDDLE = "middle";
 
     /** Indicates the object will be anchored vertically to the bottom */
-    static bottom = "bottom"
+    static BOTTOM = "bottom"
 
     /** Where the object will be anchored horizontally */
-    anchorHorizontal = CENTER;
+    anchorHorizontal = this.CENTER;
 
     /** Where the object will be anchored vertically */
-    archorVertical = MIDDLE;
+    archorVertical = this.MIDDLE;
 
     constructor() {
         super();
