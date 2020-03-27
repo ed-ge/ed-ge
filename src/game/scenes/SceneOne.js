@@ -29,12 +29,278 @@ export default {
       name: "Canvas",
       location: { x: 0, y: 0 },
       type: "Canvas",
-      children:[
-       {
-         name:"ScreenText",
-         location:{x:200, y:200},
-         type:"ScreenText",
-       }
+      children: [
+        {
+          name: "ScreenText",
+          location: { x: 50, y: 50 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key: "anchorHorizontal",
+                  value: "left"
+                },
+                {
+                  key: "anchorVertical",
+                  value: "top"
+                },
+              ]
+            },
+            {
+              type: "TextComponent",
+              values: [
+                {
+                  key: "text",
+                  value: "left top"
+                },
+
+              ]
+            },
+          ]
+        },
+        {
+          name: "ScreenText",
+          location: { x: 0, y: 50 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key: "anchorHorizontal",
+                  value: "center"
+                },
+                {
+                  key: "anchorVertical",
+                  value: "top"
+                },
+              ]
+            },
+            {
+              type: "TextComponent",
+              values: [
+                {
+                  key: "text",
+                  value: "center top"
+                },
+
+              ]
+            },
+          ]
+        },
+        {
+          name: "ScreenText",
+          location: { x: -150, y: 50 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key: "anchorHorizontal",
+                  value: "right"
+                },
+                {
+                  key: "anchorVertical",
+                  value: "top"
+                },
+              ]
+            },
+            {
+              type: "TextComponent",
+              values: [
+                {
+                  key: "text",
+                  value: "right top"
+                },
+
+              ]
+            },
+          ]
+        },
+        {
+          name: "ScreenText",
+          location: { x: 50, y: 0 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key: "anchorHorizontal",
+                  value: "left"
+                },
+                {
+                  key: "anchorVertical",
+                  value: "middle"
+                },
+              ]
+            },
+            {
+              type: "TextComponent",
+              values: [
+                {
+                  key: "text",
+                  value: "left middle"
+                },
+
+              ]
+            },
+          ]
+        },
+        {
+          name: "ScreenText",
+          location: { x: 0, y: 0 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key: "anchorHorizontal",
+                  value: "center"
+                },
+                {
+                  key: "anchorVertical",
+                  value: "middle"
+                },
+              ]
+            },
+            {
+              type: "TextComponent",
+              values: [
+                {
+                  key: "text",
+                  value: "center middle"
+                },
+
+              ]
+            },
+          ]
+        },
+        {
+          name: "ScreenText",
+          location: { x: -150, y: 0 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key: "anchorHorizontal",
+                  value: "right"
+                },
+                {
+                  key: "anchorVertical",
+                  value: "middle"
+                },
+              ]
+            },
+            {
+              type: "TextComponent",
+              values: [
+                {
+                  key: "text",
+                  value: "right middle"
+                },
+
+              ]
+            },
+          ]
+        },
+        {
+          name: "ScreenText",
+          location: { x: 50, y: -50 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key: "anchorHorizontal",
+                  value: "left"
+                },
+                {
+                  key: "anchorVertical",
+                  value: "bottom"
+                },
+              ]
+            },
+            {
+              type: "TextComponent",
+              values: [
+                {
+                  key: "text",
+                  value: "left bottom"
+                },
+
+              ]
+            },
+          ]
+        },
+        {
+          name: "ScreenText",
+          location: { x: 0, y: -50 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key: "anchorHorizontal",
+                  value: "center"
+                },
+                {
+                  key: "anchorVertical",
+                  value: "bottom"
+                },
+              ]
+            },
+            {
+              type: "TextComponent",
+              values: [
+                {
+                  key: "text",
+                  value: "center bottom"
+                },
+
+              ]
+            },
+          ]
+        },
+        {
+          name: "ScreenText",
+          location: { x: -150, y: -50 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key: "anchorHorizontal",
+                  value: "right"
+                },
+                {
+                  key: "anchorVertical",
+                  value: "bottom"
+                },
+              ]
+            },
+            {
+              type: "TextComponent",
+              values: [
+                {
+                  key: "text",
+                  value: "right bottom"
+                },
+
+              ]
+            },
+          ]
+        },
+
       ]
     },
 

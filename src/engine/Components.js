@@ -13,6 +13,7 @@ import CameraComponent from "./components/CameraComponent.js"
 import CanvasComponent from "./components/CanvasComponent.js"
 import RectTransform from "./components/RectTransform.js"
 
+
 export default {
   CircleComponent,
   RectangleComponent,
@@ -28,5 +29,6 @@ export default {
   CameraComponent,
   CanvasComponent,
   RectTransform,
+
  
 }

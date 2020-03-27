@@ -1,10 +1,10 @@
-import Base from "../Base.js"
+import Component from "../base/Component.js"
 
 
 /**
  * Determines the anchoring of an object in screen space
  */
-class RectTransform extends Base.Component {
+class RectTransform extends Component {
 
     /** Indicates the object will be anchored horizontally to the left */
     static LEFT = "left";
@@ -25,17 +25,18 @@ class RectTransform extends Base.Component {
     /** Indicates the object will be anchored vertically to the bottom */
     static BOTTOM = "bottom"
 
-    /** Where the object will be anchored horizontally */
-    anchorHorizontal = this.CENTER;
 
-    /** Where the object will be anchored vertically */
-    archorVertical = this.MIDDLE;
 
     constructor() {
         super();
+        /** Where the object will be anchored horizontally */
+        this.anchorHorizontal = this.constructor.CENTER;
+
+        /** Where the object will be anchored vertically */
+        this.anchorVertical = this.constructor.MIDDLE;
 
     }
-    
+
     update() {
 
     }
