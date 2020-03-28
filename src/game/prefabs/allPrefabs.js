@@ -276,7 +276,7 @@ const GameObjects = (function () {
         }
       ]
     },
-    StartScreenListener:
+    StartSceneListener:
     {
       name: "StartSceneListener",
       components: [

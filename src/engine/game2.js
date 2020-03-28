@@ -1,8 +1,9 @@
-Base.Scene.gameObjects = gameObjects;
+Base.Scene.gameObjects = GameObjects;
 Base.Scene.components = Components;
-Base.Scene.gameBehaviors = gameBehaviors;
+Base.Scene.gameBehaviors = GameBehaviors;
 
-
+let sceneManager = SceneManager.SceneManager;
+let scenes = Scenes;
 scenes.allScenes
   .forEach(i => sceneManager.addScene(Base.Scene.parse(i)))
 

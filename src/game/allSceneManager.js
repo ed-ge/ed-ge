@@ -9,7 +9,7 @@ class _SceneManager {
   }
 
   static set currentScene(argument) {
-    if (argument instanceof Engine.Base.Scene) {
+    if (argument instanceof Base.Scene) {
       let index = this.scenes.indexOf(argument);
       if (index != -1) {
         this._currentSceneIndex = index;
@@ -34,7 +34,7 @@ class _SceneManager {
         this._currentSceneIndex = +argument;
       }
     }
-    this.scenes[this._currentSceneIndex].start2(GameBehaviors, GameObjects, Engine.Components);
+    this.scenes[this._currentSceneIndex].start2(GameBehaviors, GameObjects, Components);
   }
 
   static addScene(scene) {
