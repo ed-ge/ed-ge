@@ -4,15 +4,7 @@ import Engine from "./Engine.js"
 
 
 
-Engine.Base.Scene.gameObjects = gameObjects;
-Engine.Base.Scene.components = Engine.Components;
-Engine.Base.Scene.gameBehaviors = gameBehaviors;
 
-
-scenes.allScenes
-  .forEach(i => sceneManager.addScene(Engine.Base.Scene.parse(i)))
-
-sceneManager.currentScene = scenes.startScene;
 
 
 //Setup event handling
@@ -100,6 +92,15 @@ resizeCanvas();
 let canv, ctx;
 
 function main() {
+  Engine.Base.Scene.gameObjects = gameObjects;
+  Engine.Base.Scene.components = Engine.Components;
+  Engine.Base.Scene.gameBehaviors = gameBehaviors;
+
+
+  scenes.allScenes
+    .forEach(i => sceneManager.addScene(Engine.Base.Scene.parse(i)))
+
+  sceneManager.currentScene = scenes.startScene;
   canv = document.querySelector("#canv");
   ctx = canv.getContext('2d');
 
