@@ -2,12 +2,11 @@ Base.Scene.gameObjects = GameObjects;
 Base.Scene.components = Components;
 Base.Scene.gameBehaviors = GameBehaviors;
 
-let sceneManager = SceneManager.SceneManager;
 let scenes = Scenes;
 scenes.allScenes
-  .forEach(i => sceneManager.addScene(Base.Scene.parse(i)))
+  .forEach(i => SceneManager.SceneManager.addScene(Base.Scene.parse(i)))
 
-sceneManager.currentScene = scenes.startScene;
+SceneManager.SceneManager.currentScene = scenes.startScene;
 
 
 //Setup event handling
@@ -108,11 +107,11 @@ function gameLoop() {
 }
 
 function update() {
-  sceneManager.currentScene.update(ctx, Components.Collider, Components.CollisionHelper);
+  SceneManager.SceneManager.currentScene.update(ctx, Components.Collider, Components.CollisionHelper);
 }
 
 function draw(ctx) {
-  sceneManager.currentScene.draw(ctx, canv.width, canv.height);
+  SceneManager.SceneManager.currentScene.draw(ctx, canv.width, canv.height);
 }
 
 main();
