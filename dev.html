@@ -22,18 +22,18 @@
 
   <script type="module">
 
+    import Main from "./src/engine/Main.js"
     import Scenes from "./src/game/Scenes.js"
     import SceneManager from "./src/game/SceneManager.js"
     import GameBehaviors from "./src/game/GameBehaviors.js";
     import GameObjects from "./src/game/GameObjects.js"
-    window.scenes = Scenes;
-    window.sceneManager = SceneManager;
-    window.gameBehaviors = GameBehaviors;
-    window.gameObjects = GameObjects;
+    
+
+    Main(GameObjects, GameBehaviors, Scenes, SceneManager);
 
   </script>
 
-  <script type="module" src="./src/engine/game.js"></script>
+  <!--<script type="module" src="./src/engine/game.js"></script>-->
 
 </body>
 
