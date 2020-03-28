@@ -5,9 +5,9 @@ function main(gameObjects, gameBehaviors, scenes) {
   let canv, ctx;
 
   scenes.allScenes
-    .forEach(i => SceneManager.SceneManager.addScene(Base.Scene.parse(i)))
+    .forEach(i => SceneManager.addScene(Base.Scene.parse(i)))
 
-  SceneManager.SceneManager.currentScene = scenes.startScene;
+  SceneManager.currentScene = scenes.startScene;
   canv = document.querySelector("#canv");
   ctx = canv.getContext('2d');
 
@@ -18,11 +18,11 @@ function main(gameObjects, gameBehaviors, scenes) {
   }
 
   function update() {
-    SceneManager.SceneManager.currentScene.update(ctx, Components.Collider, Components.CollisionHelper);
+    SceneManager.currentScene.update(ctx, Components.Collider, Components.CollisionHelper);
   }
 
   function draw(ctx) {
-    SceneManager.SceneManager.currentScene.draw(ctx, canv.width, canv.height);
+    SceneManager.currentScene.draw(ctx, canv.width, canv.height);
   }
 
   //Setup event handling
@@ -112,3 +112,4 @@ function main(gameObjects, gameBehaviors, scenes) {
 
 
 };
+

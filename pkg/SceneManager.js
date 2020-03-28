@@ -1,4 +1,4 @@
-class _SceneManager {
+class SceneManager {
   static scenes = [];
   static _currentSceneIndex = -1;
   static get currentScene() {
@@ -51,9 +51,3 @@ class _SceneManager {
 
 }
 
-const SceneManager = (function () {
-
-  return {
-    SceneManager:_SceneManager
-  }
-})();

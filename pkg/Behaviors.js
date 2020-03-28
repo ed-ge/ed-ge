@@ -6,7 +6,7 @@ class BackToStartSceneBehavior extends Base.Behavior {
   }
   update() {
       if(Input.getKeyUp("Escape")){
-          SceneManager.SceneManager.currentScene = "StartScene";
+          SceneManager.currentScene = "StartScene";
       }
       
   }
@@ -127,7 +127,7 @@ class CountDownTimer extends Base.Behavior {
 
       this.gameObject.getComponent(Components.TextComponent).text = this.time;
       if(this.time <= 0){
-          SceneManager.SceneManager.currentScene = this.toSceneText;
+          SceneManager.currentScene = this.toSceneText;
       }
 
 
@@ -151,14 +151,14 @@ class DotBehavior extends Base.Behavior {
 
       if (collisionObject.gameObject.name == "CollisionCircle") {
 
-          SceneManager.SceneManager.destroy(collisionObject.gameObject);
-          SceneManager.SceneManager.instantiate(GameObjects.CollisionCircle, new Point(Math.random() * 400, Math.random() * 400), new Point(1,1),0);
+          SceneManager.destroy(collisionObject.gameObject);
+          SceneManager.instantiate(GameObjects.CollisionCircle, new Point(Math.random() * 400, Math.random() * 400), new Point(1,1),0);
           
       }
       else if (collisionObject.gameObject.name == "Rectangle") {
 
-          SceneManager.SceneManager.destroy(collisionObject.gameObject);
-          let circle = SceneManager.SceneManager.instantiate(GameObjects.Rectangle, new Point(Math.random() * 400, Math.random() * 400), new Point(1,1), 0);
+          SceneManager.destroy(collisionObject.gameObject);
+          let circle = SceneManager.instantiate(GameObjects.Rectangle, new Point(Math.random() * 400, Math.random() * 400), new Point(1,1), 0);
           circle.scaleX = Math.random() + 1;
           circle.scaleY = Math.random() + 1;
           
@@ -249,7 +249,7 @@ class NapsterBehavior extends Base.Behavior {
       for (let x = 0; x < this.tilesWide; x++) {
         let _x = x * 100 + this.marginX;
         let _y = y * 100 + this.marginY;
-        let tile = SceneManager.SceneManager.instantiate(GameObjects.Tile, new Base.Point(_x, _y), new Point(1,1), 0);
+        let tile = SceneManager.instantiate(GameObjects.Tile, new Base.Point(_x, _y), new Point(1,1), 0);
         this.gameObject.children.push(tile);
         this.peons[y].push(tile);
 
@@ -264,7 +264,7 @@ class NapsterBehavior extends Base.Behavior {
     this.select(0, 0);
 
     //Add the strategy character
-    this.strategyCharacter = SceneManager.SceneManager.instantiate(GameObjects.StrategyCharacter, new Point(this.marginX, this.marginY), new Point(1,1), 0);
+    this.strategyCharacter = SceneManager.instantiate(GameObjects.StrategyCharacter, new Point(this.marginX, this.marginY), new Point(1,1), 0);
 
   }
   update() {
@@ -355,31 +355,31 @@ class StartSceneInputListener extends Base.Behavior {
   }
   update() {
       if(Base.Input.getMouseButtonUp(0)){
-          SceneManager.SceneManager.currentScene = "CollisionScene" ;
+          SceneManager.currentScene = "CollisionScene" ;
       }
       if(Base.Input.getKeyUp(' '))
       {
-          SceneManager.SceneManager.currentScene = "SceneOne";
+          SceneManager.currentScene = "SceneOne";
       }
       if(Base.Input.getKeyUp('a'))
       {
-          SceneManager.SceneManager.currentScene = "SceneTwo";
+          SceneManager.currentScene = "SceneTwo";
       }
       if(Base.Input.getKeyUp('Enter'))
       {
-          SceneManager.SceneManager.currentScene = "StrategyScene";
+          SceneManager.currentScene = "StrategyScene";
       }
       if(Base.Input.getKeyUp('r'))
       {
-          SceneManager.SceneManager.currentScene = "RoomScene";
+          SceneManager.currentScene = "RoomScene";
       }
       if(Base.Input.getKeyUp('c'))
       {
-          SceneManager.SceneManager.currentScene = "CircleCollisionScene";
+          SceneManager.currentScene = "CircleCollisionScene";
       }
       if(Base.Input.getKeyUp('m'))
       {
-          SceneManager.SceneManager.currentScene = "MouseScene";
+          SceneManager.currentScene = "MouseScene";
       }
 
   }

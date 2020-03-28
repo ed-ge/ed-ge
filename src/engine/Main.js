@@ -1,40 +1,32 @@
-import Engine from "./Engine.js"
+import Base from "./Base.js"
+import Components from "./Components.js"
 import SceneManager from "./SceneManager.js"
 
 
 
 
 
-
-
-
-
-
-
-
-
-
 export default function main(gameObjects, gameBehaviors, scenes) {
-  Engine.Base.Scene.gameObjects = gameObjects;
-  Engine.Base.Scene.components = Engine.Components;
-  Engine.Base.Scene.gameBehaviors = gameBehaviors;
+  Base.Scene.gameObjects = gameObjects;
+  Base.Scene.components = Components;
+  Base.Scene.gameBehaviors = gameBehaviors;
   let canv, ctx;
 
   scenes.allScenes
-    .forEach(i => SceneManager.addScene(Engine.Base.Scene.parse(i)))
+    .forEach(i => SceneManager.addScene(Base.Scene.parse(i)))
 
   SceneManager.currentScene = scenes.startScene;
   canv = document.querySelector("#canv");
   ctx = canv.getContext('2d');
 
   function gameLoop() {
-    Engine.Base.Input.swapUpDownArrays();
+    Base.Input.swapUpDownArrays();
     update(ctx);
     draw(ctx);
   }
 
   function update() {
-    SceneManager.currentScene.update(ctx, Engine.Components.Collider, Engine.Components.CollisionHelper);
+    SceneManager.currentScene.update(ctx, Components.Collider, Components.CollisionHelper);
   }
 
   function draw(ctx) {
@@ -53,37 +45,37 @@ export default function main(gameObjects, gameBehaviors, scenes) {
 
 
   function keydown(event) {
-    if (Engine.Base.Input.keys[event.key] != true)
-      Engine.Base.Input.down[event.key] = true;
-    Engine.Base.Input.keys[event.key] = true;
+    if (Base.Input.keys[event.key] != true)
+      Base.Input.down[event.key] = true;
+    Base.Input.keys[event.key] = true;
   }
 
   function keyup(event) {
-    if (Engine.Base.Input.keys[event.key] != false)
-      Engine.Base.Input.up[event.key] = true;
-    Engine.Base.Input.keys[event.key] = false;
+    if (Base.Input.keys[event.key] != false)
+      Base.Input.up[event.key] = true;
+    Base.Input.keys[event.key] = false;
   }
 
   function mousedown(event) {
-    if (Engine.Base.Input.mouseButtons[event.button] != true)
-      Engine.Base.Input.mouseButtonsDown[event.button] = true;
-    Engine.Base.Input.mouseButtons[event.button] = true;
+    if (Base.Input.mouseButtons[event.button] != true)
+      Base.Input.mouseButtonsDown[event.button] = true;
+    Base.Input.mouseButtons[event.button] = true;
   }
 
   function mouseup(event) {
-    if (Engine.Base.Input.mouseButtons[event.button] != false)
-      Engine.Base.Input.mouseButtonsUp[event.button] = true;
-    Engine.Base.Input.mouseButtons[event.button] = false;
+    if (Base.Input.mouseButtons[event.button] != false)
+      Base.Input.mouseButtonsUp[event.button] = true;
+    Base.Input.mouseButtons[event.button] = false;
   }
 
   function mousemove(event) {
-    [Engine.Base.Input.mousePosition.x, Engine.Base.Input.mousePosition.y] = [event.clientX, event.clientY];
+    [Base.Input.mousePosition.x, Base.Input.mousePosition.y] = [event.clientX, event.clientY];
 
   }
 
   function wheelevent(event) {
     if (event.deltaY != 0)
-      Engine.Base.Input.mouseScrollDelta = event.deltaY;
+      Base.Input.mouseScrollDelta = event.deltaY;
   }
 
   function keypress(event) {
