@@ -5,7 +5,7 @@
     "scripts": {
         "test": "jest",
         "build": "babel src -d production",
-        "start": "webpack --config ./webpack.config.js --mode development",
+        "start": "webpack --config ./webpack.config.js --mode production",
         "doc": "./node_modules/.bin/jsdoc -d ./docs -r ./src -c ./.jsdoc.json"
     },
     "keywords": [

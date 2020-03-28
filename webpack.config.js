@@ -1,6 +1,6 @@
 module.exports = {
   // 1
-  entry: './src/game.js',
+  entry: './src/engine/game.js',
   module: {
     rules: [
       {

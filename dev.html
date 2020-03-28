@@ -2,20 +2,33 @@
 <html>
 
 <head>
-    <title>ed-ge, the Education Game Engine</title>
-    <style>
-        html,body{
-            margin:0;
-            padding:0;
-            overflow:hidden;
-            
-        }
-    </style>
+  <title>ed-ge, the Education Game Engine</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+
+    }
+  </style>
 </head>
 
 <body>
-    <canvas id="canv" width="640px" height="480px"></canvas>
-    <script src="./src/game.js" type="module" ></script>
+  <canvas id="canv" width="640px" height="480px"></canvas>
+  <script type="module">
+    import Scenes from "./src/game/Scenes.js"
+    import SceneManager from "./src/game/SceneManager.js"
+    import GameBehaviors from "./src/game/GameBehaviors.js";
+    import GameObjects from "./src/game/GameObjects.js"
+    window.scenes = Scenes;
+    window.sceneManager = SceneManager;
+    window.gameBehaviors = GameBehaviors;
+    window.gameObjects = GameObjects;
+
+  </script>
+
+  <script src="./src/engine/game.js" type="module"></script>
 </body>
 
 </html>

@@ -1,21 +1,18 @@
-import Engine from "./engine/Engine.js"
-import Scenes from "./game/Scenes.js"
-import SceneManager from "./game/SceneManager.js"
-import GameBehaviors from "./game/GameBehaviors.js";
-import GameObjects from "./game/GameObjects.js"
+import Engine from "./Engine.js"
 
 
 
 
-Engine.Base.Scene.gameObjects = GameObjects;
+
+Engine.Base.Scene.gameObjects = gameObjects;
 Engine.Base.Scene.components = Engine.Components;
-Engine.Base.Scene.gameBehaviors = GameBehaviors;
+Engine.Base.Scene.gameBehaviors = gameBehaviors;
 
 
-Scenes.allScenes
-  .forEach(i => SceneManager.addScene(Engine.Base.Scene.parse(i)))
+scenes.allScenes
+  .forEach(i => sceneManager.addScene(Engine.Base.Scene.parse(i)))
 
-SceneManager.currentScene = Scenes.startScene;
+sceneManager.currentScene = scenes.startScene;
 
 
 //Setup event handling
@@ -116,11 +113,11 @@ function gameLoop() {
 }
 
 function update() {
-  SceneManager.currentScene.update(ctx, Engine.Components.Collider, Engine.Components.CollisionHelper);
+  sceneManager.currentScene.update(ctx, Engine.Components.Collider, Engine.Components.CollisionHelper);
 }
 
 function draw(ctx) {
-  SceneManager.currentScene.draw(ctx, canv.width, canv.height);
+  sceneManager.currentScene.draw(ctx, canv.width, canv.height);
 }
 
 main();
