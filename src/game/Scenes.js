@@ -9,7 +9,7 @@ import CircleCollisionScene from "./scenes/CircleCollisionScene.js"
 import MouseScene from "./scenes/MouseScene.js"
 
 export default {
-  startScene: "MouseScene",
+  startScene: "StartScene",
   allScenes: [
     SceneOne,
     SceneTwo,
