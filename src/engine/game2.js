@@ -1,12 +1,4 @@
-Base.Scene.gameObjects = GameObjects;
-Base.Scene.components = Components;
-Base.Scene.gameBehaviors = GameBehaviors;
 
-let scenes = Scenes;
-scenes.allScenes
-  .forEach(i => SceneManager.SceneManager.addScene(Base.Scene.parse(i)))
-
-SceneManager.SceneManager.currentScene = scenes.startScene;
 
 
 //Setup event handling
@@ -19,7 +11,6 @@ document.body.addEventListener('mousemove', mousemove);
 document.body.addEventListener('wheel', wheelevent);
 document.body.addEventListener('contextmenu', contextmenu);
 
-let Input = Base.Input;
 
 function keydown(event) {
   if (Input.keys[event.key] != true)
@@ -93,7 +84,16 @@ resizeCanvas();
 
 let canv, ctx;
 
-function main() {
+const main = function () {
+  Base.Scene.gameObjects = GameObjects;
+  Base.Scene.components = Components;
+  Base.Scene.gameBehaviors = GameBehaviors;
+
+  let scenes = Scenes;
+  scenes.allScenes
+    .forEach(i => SceneManager.SceneManager.addScene(Base.Scene.parse(i)))
+
+  SceneManager.SceneManager.currentScene = scenes.startScene;
   canv = document.querySelector("#canv");
   ctx = canv.getContext('2d');
 
@@ -114,5 +114,5 @@ function draw(ctx) {
   SceneManager.SceneManager.currentScene.draw(ctx, canv.width, canv.height);
 }
 
-main();
+
 
