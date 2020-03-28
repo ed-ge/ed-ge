@@ -257,7 +257,7 @@ const Components = (function () {
     RectangleComponent,
     TextComponent,
     CircleCollider,
-    Point,
+    PointCollider,
     Collider,
     CollisionHelper,
     AABBCollider,

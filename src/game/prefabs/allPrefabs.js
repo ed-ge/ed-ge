@@ -86,7 +86,7 @@ const GameObjects = (function () {
           type: "DotBehavior",
         },
         {
-          type: "Point",
+          type: "PointCollider",
         },
       ]
     },
