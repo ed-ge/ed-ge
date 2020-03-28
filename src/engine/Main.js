@@ -1,4 +1,5 @@
 import Engine from "./Engine.js"
+import SceneManager from "./SceneManager.js"
 
 
 
@@ -13,16 +14,16 @@ import Engine from "./Engine.js"
 
 
 
-export default function main(gameObjects, gameBehaviors, scenes, sceneManager) {
+export default function main(gameObjects, gameBehaviors, scenes) {
   Engine.Base.Scene.gameObjects = gameObjects;
   Engine.Base.Scene.components = Engine.Components;
   Engine.Base.Scene.gameBehaviors = gameBehaviors;
   let canv, ctx;
 
   scenes.allScenes
-    .forEach(i => sceneManager.addScene(Engine.Base.Scene.parse(i)))
+    .forEach(i => SceneManager.addScene(Engine.Base.Scene.parse(i)))
 
-  sceneManager.currentScene = scenes.startScene;
+  SceneManager.currentScene = scenes.startScene;
   canv = document.querySelector("#canv");
   ctx = canv.getContext('2d');
 
@@ -33,11 +34,11 @@ export default function main(gameObjects, gameBehaviors, scenes, sceneManager) {
   }
 
   function update() {
-    sceneManager.currentScene.update(ctx, Engine.Components.Collider, Engine.Components.CollisionHelper);
+    SceneManager.currentScene.update(ctx, Engine.Components.Collider, Engine.Components.CollisionHelper);
   }
 
   function draw(ctx) {
-    sceneManager.currentScene.draw(ctx, canv.width, canv.height);
+    SceneManager.currentScene.draw(ctx, canv.width, canv.height);
   }
 
   //Setup event handling

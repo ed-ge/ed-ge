@@ -1,5 +1,5 @@
 import Base from "../../engine/Base.js"
-import SceneManager from "../SceneManager.js"
+import SceneManager from "../../engine/SceneManager.js"
 import Input from "../../engine/base/Input.js";
 
 export default class BackToStartSceneBehavior extends Base.Behavior {

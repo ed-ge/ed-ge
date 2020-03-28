@@ -1,7 +1,7 @@
 import Base from "../../engine/Base.js"
 import Components from "../../engine/Components.js"
 import Input from "../../engine/base/Input.js";
-import SceneManager from "../SceneManager.js";
+import SceneManager from "../../engine/SceneManager.js";
 
 export default class CountDownTimer extends Base.Behavior {
     time = 10;

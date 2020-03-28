@@ -1,7 +1,7 @@
 import Base from "../../engine/Base.js"
 import TileBehavior from "./TileBehavior.js";
 import Tile from "../prefabs/Tile.js"
-import SceneManager from "../SceneManager.js";
+import SceneManager from "../../engine/SceneManager.js";
 import Point from "../../engine/base/Point.js";
 import GameObjects from "../GameObjects.js"
 

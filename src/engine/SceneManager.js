@@ -1,6 +1,6 @@
-import Engine from "../engine/Engine.js"
-import GameBehaviors from "./GameBehaviors.js";
-import GameObjects from "./GameObjects.js";
+import Engine from "./Engine.js"
+import GameBehaviors from "../game/GameBehaviors.js";
+import GameObjects from "../game/GameObjects.js";
 
 export default class SceneManager {
   static scenes = [];
