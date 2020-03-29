@@ -18,14 +18,16 @@
   <canvas id="canv" width="640px" height="480px"></canvas>
 
 
-  <script src="./webpack/bundle.js"></script>
-  <script src="./pkg/Behaviors.js"></script>
-  <script src="./pkg/Prefabs.js"></script>
-  <script src="./pkg/Scenes.js"></script>
+  <script src="./webpack/Main.js"></script>
+  <script src="./webpack/Base.js"></script>
+  <script src="./webpack/Components.js"></script>
+  <script src="./wpkg/Behaviors.js"></script>
+  <script src="./wpkg/Prefabs.js"></script>
+  <script src="./wpkg/Scenes.js"></script>
 
   <script>
 
-    Main(GameObjects, GameBehaviors, Scenes);
+    Main.main(GameObjects, GameBehaviors, Scenes);
 
   </script>
 

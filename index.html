@@ -16,19 +16,18 @@
 
 <body>
   <canvas id="canv" width="640px" height="480px"></canvas>
-  <script type="module">
-    import Scenes from "./src/game/Scenes.js"
-    import SceneManager from "./src/game/SceneManager.js"
-    import GameBehaviors from "./src/game/GameBehaviors.js";
-    import GameObjects from "./src/game/GameObjects.js"
-    window.scenes = Scenes;
-    window.sceneManager = SceneManager;
-    window.gameBehaviors = GameBehaviors;
-    window.gameObjects = GameObjects;
 
+  <script src="./production/engine/Base.js"></script>
+  <script src="./production/engine/Components.js"></script>
+  <script src="./production/engine/SceneManager.js"></script>
+  <script src="./production/engine/Main.js"></script>
+  <script src="./production/game/GameBehaviors.js"></script>
+  <script src="./production/game/GameObjects.js"></script>
+  <script src="./production/game/Scenes.js"></script>
+  <script>
+    Main.default(GameObjects.default, GameBehaviors.default, Scenes.default);
   </script>
 
-  <script src="./production/bundle.js" type="module"></script>
 </body>
 
 </html>

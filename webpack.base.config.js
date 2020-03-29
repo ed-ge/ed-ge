@@ -1,6 +1,6 @@
 module.exports = {
   // 1
-  entry: './src/engine/Main.js',
+  entry: './src/engine/Base.js',
   module: {
     rules: [
       {
@@ -15,9 +15,11 @@ module.exports = {
   },
   // 2
   output: {
-    path: __dirname + '/production',
+    path: __dirname + '/webpack',
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: 'Base.js',
+    libraryTarget: 'var',
+    library: 'Base'
   },
   // 3
   devServer: {
