@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: base/Point.js</title>
+    <title>JSDoc: Source: components/CameraComponent.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: base/Point.js</h1>
+    <h1 class="page-title">Source: components/CameraComponent.js</h1>
 
     
 
@@ -26,57 +26,26 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * 2D Point class
+            <pre class="prettyprint source linenums"><code>import Base from "../Base.js"
+
+/**
+ * A component that indicates the containing game object is a virtual camera.
+ * This component also stores the default background color for the scene.
+ * There should be exactly one game object with exactly one instance
+ * of this class in each scene.
  */
 
-class Point {
-    /**
-     * 
-     * @param {Number} x The x location of the point
-     * @param {Number} y The y location of the point
-     */
-    constructor(x = 0, y = 0) {
-        this.x = x;
-        this.y = y;
-    }
+class CameraComponent extends Base.Component {
 
-    /**
-     * Calculate the Euclidian distance between this point and another point.
-     * 
-     * @param {Point} otherPoint The point to which we are calculating a distance
-     */
-    distance(otherPoint = new Point(0, 0)) {
+    constructor() {
+        super();
+       
 
-        return Math.sqrt(this.distanceSquared(otherPoint));
     }
-
-    /**
-     * Since finding the Euclidean distance requires an expensive square root
-     * calculation, we have the option of calculating the squared distance to go
-     * quicker.
-     * 
-     * @param {Point} otherPoint The point to which we are calculating the
-     * squared distance
-     */
-    distanceSquared(otherPoint = new Point(0, 0)) {
-        let xDiff = (this.x - otherPoint.x);
-        let yDiff = (this.y - otherPoint.y);
-        return xDiff * xDiff + yDiff * yDiff;
-    }
-
-    /**
-     * Find the pairwise difference to another point.
-     * 
-     * @param {Point} otherPoint The point from which we are doing a pairwise
-     * difference. 
-     */
-    diff(otherPoint) {
-        return new Point(this.x - otherPoint.x, this.y - otherPoint.y);
-    }
+   
 }
 
-export default Point;</code></pre>
+export default CameraComponent;</code></pre>
         </article>
     </section>
 

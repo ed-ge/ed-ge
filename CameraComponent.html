@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: base/Behavior.js</title>
+    <title>JSDoc: Class: CameraComponent</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,51 +17,140 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: base/Behavior.js</h1>
+    <h1 class="page-title">Class: CameraComponent</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import Component from "./Component.js"
+        <h2><span class="attribs"><span class="type-signature"></span></span>CameraComponent<span class="signature">()</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>A component that indicates the containing game object is a virtual camera.
+This component also stores the default background color for the scene.
+There should be exactly one game object with exactly one instance
+of this class in each scene.</p></div>
+        
+    
+</header>
 
-/**
- * Behaviors are game-specific class that add logic to game objects
- */
-class Behavior extends Component {
+<article>
+    <div class="container-overview">
+    
+        
 
-    /**
-     * Called when the parent game object is instatiated,
-     * either when the scene starts if the game object is
-     * part of the scene definition or in the middle of 
-     * the scene when the game object is instantiated.
-     * 
-     * This is a great place to setup up your scene or
-     * instantiate other game objects programmatically.
-     * For example, if you have a tile-based game, you 
-     * could use the start() method of a controller 
-     * behaviors to intantiate all the tiled with a 
-     * double for loop.
-     */
-    start() {}
+    
+    <h2>Constructor</h2>
+    
 
-    /**
-     * Called as part of the game loop.
-     * Whenever the game loop fires, all game objects in
-     * the scene recursively call update on all their 
-     * behaviors and then on all their child game object
-     * behaviors.
-     */
-    update() {}
+    
+    <h4 class="name" id="CameraComponent"><span class="type-signature"></span>new CameraComponent<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
-}
+    
 
-export default Behavior;</code></pre>
-        </article>
-    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="components_CameraComponent.js.html">components/CameraComponent.js</a>, <a href="components_CameraComponent.js.html#line12">line 12</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
