@@ -1,7 +1,5 @@
 import Base from "../../engine/Base.js"
 import Components from "../../engine/Components.js"
-import Input from "../../engine/base/Input.js";
-import SceneManager from "../../engine/SceneManager.js";
 
 export default class CountDownTimer extends Base.Behavior {
 
@@ -15,7 +13,7 @@ export default class CountDownTimer extends Base.Behavior {
 
         this.gameObject.getComponent(Components.TextComponent).text = this.time;
         if (this.time <= 0) {
-            SceneManager.currentScene = this.toSceneText;
+            Base.SceneManager.currentScene = this.toSceneText;
         }
 
 

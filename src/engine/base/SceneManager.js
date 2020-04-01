@@ -1,7 +1,5 @@
-import Engine from "./Engine.js"
-import Base from "./Base.js"
-import GameBehaviors from "../game/GameBehaviors.js";
-import GameObjects from "../game/GameObjects.js";
+import Scene from "./Scene.js"
+import Globals from "./Globals.js"
 
 const SceneManager = {
   /** Orginally from scene */
@@ -17,7 +15,7 @@ const SceneManager = {
   },
 
   set currentScene(argument) {
-    if (argument instanceof Engine.Base.Scene) {
+    if (argument instanceof Scene) {
       let index = this.scenes.indexOf(argument);
       if (index != -1) {
         this._currentSceneIndex = index;
@@ -42,7 +40,7 @@ const SceneManager = {
         this._currentSceneIndex = +argument;
       }
     }
-    this.scenes[this._currentSceneIndex].start2(Base.Globals.GameBehaviors, Base.Globals.GameObjects, Engine.Components);
+    this.scenes[this._currentSceneIndex].start2(Globals.GameBehaviors, Globals.GameObjects, Globals.Components);
   },
 
   addScene(scene) {

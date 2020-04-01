@@ -1,5 +1,4 @@
 import Engine from "../../engine/Engine.js"
-import SceneManager from "../../engine/SceneManager.js"
 
 export default class TextBehavior extends Engine.Base.Behavior {
     
@@ -8,31 +7,31 @@ export default class TextBehavior extends Engine.Base.Behavior {
     }
     update() {
         if(Engine.Base.Input.getMouseButtonUp(0)){
-            SceneManager.currentScene = "CollisionScene" ;
+            Engine.Base.SceneManager.currentScene = "CollisionScene" ;
         }
         if(Engine.Base.Input.getKeyUp(' '))
         {
-            SceneManager.currentScene = "SceneOne";
+            Engine.Base.SceneManager.currentScene = "SceneOne";
         }
         if(Engine.Base.Input.getKeyUp('a'))
         {
-            SceneManager.currentScene = "SceneTwo";
+            Engine.Base.SceneManager.currentScene = "SceneTwo";
         }
         if(Engine.Base.Input.getKeyUp('Enter'))
         {
-            SceneManager.currentScene = "StrategyScene";
+            Engine.Base.SceneManager.currentScene = "StrategyScene";
         }
         if(Engine.Base.Input.getKeyUp('r'))
         {
-            SceneManager.currentScene = "RoomScene";
+            Engine.Base.SceneManager.currentScene = "RoomScene";
         }
         if(Engine.Base.Input.getKeyUp('c'))
         {
-            SceneManager.currentScene = "CircleCollisionScene";
+            Engine.Base.SceneManager.currentScene = "CircleCollisionScene";
         }
         if(Engine.Base.Input.getKeyUp('m'))
         {
-            SceneManager.currentScene = "MouseScene";
+            Engine.Base.SceneManager.currentScene = "MouseScene";
         }
 
     }

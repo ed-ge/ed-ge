@@ -7,6 +7,8 @@ import Input from "./base/Input.js"
 import NameableParent from "./base/NamableParent.js"
 import Point from "./base/Point.js"
 import Globals from "./base/Globals.js"
+import SceneManager from "./base/SceneManager.js"
+
 
 export default {
   Behavior,
@@ -18,5 +20,5 @@ export default {
   NameableParent,
   Point,
   Globals,
-  
+  SceneManager,
 }

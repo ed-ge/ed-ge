@@ -1,4 +1,3 @@
-import GameObject from "./GameObject.js";
 
 /**
  * Parent interface for scenes and game objects.
