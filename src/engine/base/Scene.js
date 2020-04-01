@@ -3,6 +3,7 @@ import Point from "./Point.js"
 import GameObject from "./GameObject.js";
 import PointCollider from "../components/PointCollider.js";
 import Input from "./Input.js"
+import Globals from "./Globals.js"
 
 /**
  * A scene represents a level in a game.
@@ -15,23 +16,7 @@ class Scene extends NameableParent {
      * scene as static list after the program starts, we can remove any circular
      * dependencies.
      */
-    static gameObjects = [];
-
-    /**
-     * A static reference to all Components available in the game engine.
-     * This prevents a circular module dependency. By "linking" these to the
-     * scene as static list after the program starts, we can remove any circular
-     * dependencies.
-     */
-    static components = [];
-
-    /**
-     * A static reference to all Game Behaviors available in this game.
-     * This prevents a circular module dependency. By "linking" these to the
-     * scene as static list after the program starts, we can remove any circular
-     * dependencies.
-     */
-    static gameBehaviors = [];
+    
 
     /**
      * Scene constructor. Assigns the scene a name and starts it.
@@ -50,12 +35,7 @@ class Scene extends NameableParent {
      * @param {String} obj The string specifying the contents of the scene in
      * our declarative syntax.
      */
-    static parse(obj) {
-        let toReturn = new Scene(obj.name);
-        toReturn.objects = obj.objects;
-        return toReturn;
-
-    }
+     
     start2() {
 
         this.children = [];
@@ -94,11 +74,11 @@ class Scene extends NameableParent {
     buildChild2(obj, parent) {
 
         let gameObjectType = null;
-        let keys = Object.keys(Scene.gameObjects)
+        let keys = Object.keys(Globals.gameObjects)
         for (let i = 0; i < keys.length; i++) {
             let key = keys[i]
             if (key == obj.type) {
-                gameObjectType = Scene.gameObjects[key];
+                gameObjectType = Globals.gameObjects[key];
                 break;
             }
         }
@@ -153,12 +133,12 @@ class Scene extends NameableParent {
 
                 let componentString = componentInfo.type;
                 let componentType = null;
-                let componentKeys = Object.keys(Scene.components);
-                let behaviorKeys = Object.keys(Scene.gameBehaviors);
+                let componentKeys = Object.keys(Globals.components);
+                let behaviorKeys = Object.keys(Globals.gameBehaviors);
                 for (let i = 0; i < componentKeys.length; i++) {
                     let key = componentKeys[i];
                     if (key == componentString) {
-                        componentType = Scene.components[key];
+                        componentType = Globals.components[key];
                         break
                     }
                 }
@@ -166,7 +146,7 @@ class Scene extends NameableParent {
                     for (let i = 0; i < behaviorKeys.length; i++) {
                         let key = behaviorKeys[i]
                         if (key == componentString) {
-                            componentType = Scene.gameBehaviors[key]
+                            componentType = Globals.gameBehaviors[key]
                             break;
                         }
                     }
@@ -422,7 +402,7 @@ class Scene extends NameableParent {
 
         let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation);
         parent.push(gameObject);
-        let prefab = Scene.gameObjects[gameObjectType.name];
+        let prefab = Globals.gameObjects[gameObjectType.name];
         this.buildIt(prefab, gameObject)
         gameObject.name = prefab.name;
         gameObject.recursiveCall("start");
