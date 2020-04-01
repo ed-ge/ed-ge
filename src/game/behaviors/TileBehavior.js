@@ -4,11 +4,11 @@ import RectangleBehavior from "./RectangleBehavior.js";
 
 
 export default class TileBehavior extends Base.Behavior{
-    selected = false;
-    isWater = false;
-    hasCharacter = false;
+    
     start(){
-        
+        this.selected = false;
+        this.isWater = false;
+        this.hasCharacter = false;    
     }
     update(){
         let component = this.gameObject.getComponent(Engine.Components.RectangleComponent);

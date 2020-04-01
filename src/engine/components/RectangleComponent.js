@@ -1,12 +1,12 @@
 import Base from "../Base.js"
 
 class RectangleComponent extends Base.Component {
-    width;
-    height;
-    fill;
-    stroke;
     constructor() {
         super();
+        this.width;
+        this.height;
+        this.fill;
+        this.stroke;
     }
     draw(ctx) {
         ctx.save();

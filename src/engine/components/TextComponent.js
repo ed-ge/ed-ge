@@ -1,12 +1,11 @@
 import Base from "../Base.js"
 
 class TextComponent extends Base.Component {
-    text;
-    font;
-    fill;
-
     constructor() {
         super();
+        this.text;
+        this.font;
+        this.fill;
     }
     draw(ctx) {
         ctx.save();

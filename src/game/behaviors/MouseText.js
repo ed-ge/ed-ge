@@ -3,7 +3,7 @@ import Input from "../../engine/base/Input.js";
 
 
 export default class MouseText extends Base.Behavior {
-    text;
+    
     start() {
         this.text = this.gameObject.getComponent("TextComponent")
 

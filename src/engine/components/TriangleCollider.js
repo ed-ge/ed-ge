@@ -6,16 +6,17 @@ Axis - Aligned Bounding Box
 
 class TriangleCollider extends Collider {
     
-    points = [];
-    pointAX;
-    pointAY;
-    pointBX;
-    pointBY;
-    pointCX;
-    pointCY;
+    
     
     constructor() {
         super();
+        this.points = [];
+        this.pointAX;
+        this.pointAY;
+        this.pointBX;
+        this.pointBY;
+        this.pointCX;
+        this.pointCY;
     }
     update() {
         if(this.points.length == 0){

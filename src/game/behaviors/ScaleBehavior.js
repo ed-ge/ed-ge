@@ -1,8 +1,8 @@
 import Base from "../../engine/Base.js"
 
 export default class ScaleBehavior extends Base.Behavior{
-    tick = 0;
     start(){
+        this.tick = 0;
         
     }
     update(){

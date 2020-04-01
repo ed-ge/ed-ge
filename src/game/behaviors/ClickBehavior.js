@@ -3,8 +3,8 @@ import Input from "../../engine/base/Input.js";
 
 
 export default class ClickBehavior extends Base.Behavior {
-    scale = 200;
-   start() {
+    start() {
+        this.scale = 200;
     
     }
     update() {

@@ -1,10 +1,10 @@
 import Base from "../../engine/Base.js"
 
 export default class OrbitBehavior extends Base.Behavior{
-    time = 0;
-    distance = 75;
+    
     start(){
-        
+        this.time = 0;
+        this.distance = 75;    
     }
     update(){
         this.time+=.01;

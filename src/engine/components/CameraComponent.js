@@ -7,10 +7,9 @@ import Base from "../Base.js"
  * should only be one.
  */
 class CameraComponent extends Base.Component {
-    backgroundColor;
-
     constructor() {
         super();
+        this.backgroundColor;
 
     }
     

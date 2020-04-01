@@ -3,7 +3,9 @@
  */
 
 class Time {
-    static deltaTime = 0;
+    constructor() {
+        this.deltaTime = 0;
+    }
 }
 
 export default Time;

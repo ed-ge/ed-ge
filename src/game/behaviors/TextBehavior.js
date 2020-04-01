@@ -3,9 +3,9 @@ import Components from "../../engine/Components.js"
 import Input from "../../engine/base/Input.js";
 
 export default class TextBehavior extends Base.Behavior {
-    time = 10;
-
+    
     start() {
+        this.time = 10;
 
     }
     update() {

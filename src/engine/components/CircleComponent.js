@@ -2,11 +2,12 @@ import Base from "../Base.js"
 
 
 class CircleComponent extends Base.Component {
-    radius;
-    fill;
-    stroke;
+    
     constructor() {
         super();
+        this.radius;
+        this.fill;
+        this.stroke;
 
     }
     draw(ctx) {

@@ -3,9 +3,9 @@ import PointCollider from "./PointCollider.js"
 import AABBCollider from "./AABBCollider.js";
 import Point from "../base/Point.js";
 
-class CollisionHelper {
+const CollisionHelper ={
 
-    static inCollision(one, two) {
+     inCollision(one, two) {
         if (one.collider instanceof CircleCollider && two.collider instanceof PointCollider) {
             let distance = one.gameObject.location.distance(two.gameObject.location);
 

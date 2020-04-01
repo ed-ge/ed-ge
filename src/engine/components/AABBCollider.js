@@ -5,10 +5,10 @@ Axis - Aligned Bounding Box
 */
 
 class AABBCollider extends Collider {
-    width;
-    height;
     constructor() {
         super();
+        this.width;
+        this.height;
     }
 
 }

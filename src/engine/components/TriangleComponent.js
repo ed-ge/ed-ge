@@ -2,17 +2,18 @@ import Base from "../Base.js"
 
 
 class TriangleComponent extends Base.Component {
-    points = [];
-    pointAX;
-    pointAY;
-    pointBX;
-    pointBY;
-    pointCX;
-    pointCY;
-    fill;
-    stroke;
+   
     constructor() {
         super();
+        this.points = [];
+        this.pointAX;
+        this.pointAY;
+        this.pointBX;
+        this.pointBY;
+        this.pointCX;
+        this.pointCY;
+        this.fill;
+        this.stroke;
 
     }
     draw(ctx) {
