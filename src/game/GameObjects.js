@@ -9,11 +9,7 @@ import CollisionCircle from "./prefabs/CollisionCircle.js"
 import CollisionDot from "./prefabs/CollisionDot.js"
 import Napster from "./prefabs/Napster.js"
 import Tile from "./prefabs/Tile.js"
-import Rectangle from "./prefabs/Rectangle.js"
 import TestCollisionCircle from "./prefabs/TestCollisionCircle.js"
-import Camera from "./prefabs/Camera.js"
-import Canvas from "./prefabs/Canvas.js"
-import ScreenText from "./prefabs/ScreenText.js"
 
 export default {
   OscillatingCircle,
@@ -27,9 +23,6 @@ export default {
   CollisionDot,
   Napster,
   Tile,
-  Rectangle,
   TestCollisionCircle,
-  Camera,
-  Canvas,
-  ScreenText,
+  
 }

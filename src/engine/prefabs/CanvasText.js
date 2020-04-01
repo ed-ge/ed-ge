@@ -1,5 +1,5 @@
 export default {
-    name: "ScreenText",
+    name: "CanvasText",
     components: [
         {
             type: "RectTransform",
