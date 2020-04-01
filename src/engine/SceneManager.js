@@ -1,18 +1,22 @@
 import Engine from "./Engine.js"
+import Base from "./Base.js"
 import GameBehaviors from "../game/GameBehaviors.js";
 import GameObjects from "../game/GameObjects.js";
 
-export default class SceneManager {
-  static scenes = [];
-  static _currentSceneIndex = -1;
-  static get currentScene() {
+const SceneManager = {
+  /** Orginally from scene */
+  
+  scenes: [],
+  
+  _currentSceneIndex: -1,
+  get currentScene() {
     if (this._currentSceneIndex == -1) throw "Current scene index not set. Cannot get current scene."
     if (this.scenes.length == 0) throw "There are no scenes in the scene manager. Cannot get current scene."
     if (this._currentSceneIndex >= this.scenes.length) throw "Current scene index is out of bounds. Cannot get current scene."
     return this.scenes[this._currentSceneIndex];
-  }
+  },
 
-  static set currentScene(argument) {
+  set currentScene(argument) {
     if (argument instanceof Engine.Base.Scene) {
       let index = this.scenes.indexOf(argument);
       if (index != -1) {
@@ -38,19 +42,21 @@ export default class SceneManager {
         this._currentSceneIndex = +argument;
       }
     }
-    this.scenes[this._currentSceneIndex].start2(GameBehaviors, GameObjects, Engine.Components);
-  }
+    this.scenes[this._currentSceneIndex].start2(Base.Globals.GameBehaviors, Base.Globals.GameObjects, Engine.Components);
+  },
 
-  static addScene(scene) {
+  addScene(scene) {
     this.scenes.push(scene);
-  }
+  },
 
-  static destroy(gameObject) {
+  destroy(gameObject) {
     this.currentScene.destroy(gameObject);
-  }
-  static instantiate(gameObjectType, location, scale, rotation) {
-    return this.currentScene.instantiate(gameObjectType, location,scale,  rotation, this.currentScene.children);
+  },
+  instantiate(gameObjectType, location, scale, rotation) {
+    return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene.children);
   }
 
 
 }
+
+export default SceneManager;
