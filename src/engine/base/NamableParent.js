@@ -11,18 +11,19 @@ class NameableParent {
     /**
      * An array of children this instance has
      */
-    children = [];
+    //children = [];
 
     /**
      * The name of this instance
      */
-    name = "";
+    //name = "";
 
     /**
      * 
      * @param {String} Name of this instance
      */
     constructor(name) {
+        this.children = [];
         this.name = name;
     }
 

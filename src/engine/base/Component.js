@@ -29,7 +29,9 @@ class Component {
      * method. If instead you simple say gameObect.components.push(component),
      * you will invariably run into bugs.
      */
-    gameObject;
+    constructor() {
+        this.gameObject;
+    }
 
 
 }

@@ -11,27 +11,27 @@ class GameObject extends NameableParent {
     /**
      * The x position of the game object relative to its parent
      */
-    x;
+    //x;
 
     /**
      * The y position of the game object relative to its parent
      */
-    y;
+    //y;
 
     /**
      * The scale of the game object in x relative to its parent
      */
-    scaleX;
+    //scaleX;
 
     /**
      * The scale of the game object in y relative to its parent
      */
-    scaleY;
+    //scaleY;
 
     /**
      * The rotation of the game object relative to its parent
      */
-    rotation;
+    //rotation;
 
     /**
      * Array of components this game object has. Note, components should only be
@@ -39,7 +39,8 @@ class GameObject extends NameableParent {
      * Otherwise the components won't have their parent game object member
      * variable method populated.
      */
-    components = [];
+    //components = [];
+
 
     /**
      * Returns the location of the game object as a Point object rather than two
@@ -62,6 +63,7 @@ class GameObject extends NameableParent {
      */
     constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0) {
         super();
+        this.components = [];
         [this.x, this.y, this.scaleX, this.scaleY, this.rotation] = [x, y, scaleX, scaleY, rotation];
     }
     /**
