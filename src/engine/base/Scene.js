@@ -409,6 +409,8 @@ class Scene extends NameableParent {
         return gameObject
 
     }
+
+    
 }
 
 export default Scene;

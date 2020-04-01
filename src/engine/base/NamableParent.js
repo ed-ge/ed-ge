@@ -62,6 +62,17 @@ class NameableParent {
 
 
     }
+
+    findByName(name){
+        if(this.name == name)
+            return this;
+        for(let child of this.children){
+            let result = child.findByName(name);
+            if(result != null) return result;        
+        }
+        //We didn't find anything
+        return null;
+    }
 }
 
 export default NameableParent;

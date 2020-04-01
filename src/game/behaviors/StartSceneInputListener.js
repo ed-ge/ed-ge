@@ -34,5 +34,10 @@ export default class TextBehavior extends Engine.Base.Behavior {
             Engine.Base.SceneManager.currentScene = "MouseScene";
         }
 
+        let clickGameObject = Engine.Base.SceneManager.currentScene.findByName("Click");
+        if(clickGameObject != null){
+            console.log("I found the click game object");
+        }
+
     }
 }
