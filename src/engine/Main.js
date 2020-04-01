@@ -1,12 +1,5 @@
-import Base from "./Base.js"
-import Components from "./Components.js"
 
-
-
-
-
-
-export default function main(gameObjects, gameBehaviors, scenes) {
+export default function main(Base, Components, gameObjects, gameBehaviors, scenes) {
   Base.Globals.gameObjects = gameObjects;
   Base.Globals.components = Components;
   Base.Globals.gameBehaviors = gameBehaviors;

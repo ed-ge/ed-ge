@@ -19,16 +19,18 @@
 
 
   
-<script src="./rollup/Main.js"></script>
-<script src="./rollup/Base.js"></script>
-  <script type="module">
 
-    import Scenes from "./src/game/Scenes.js"
-    import GameBehaviors from "./src/game/GameBehaviors.js";
-    import GameObjects from "./src/game/GameObjects.js"
+  <script type="module">
+    import Main from "./rollup/Main.js"
+    import Base from "./rollup/Base.js"
+    import Components from "./rollup/Components.js"
+
+    import Scenes from "./src2/game/Scenes.js"
+    import GameBehaviors from "./src2/game/GameBehaviors.js";
+    import GameObjects from "./src2/game/GameObjects.js"
     
 
-    Main(GameObjects, GameBehaviors, Scenes);
+    Main(Base, Components, GameObjects, GameBehaviors, Scenes);
 
   </script>
 

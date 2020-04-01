@@ -986,7 +986,7 @@ const SceneManager = {
 
 };
 
-var Base = {
+var Base$1 = {
   Behavior,
   Component,
   GameObject,
@@ -999,4 +999,249 @@ var Base = {
   SceneManager,
 };
 
-export default Base;
+class CircleComponent extends Base$1.Component {
+    
+    constructor() {
+        super();
+        this.radius;
+        this.fill;
+        this.stroke;
+
+    }
+    draw(ctx) {
+        ctx.save();
+        ctx.fillStyle = this.fill;
+        ctx.strokeStyle = this.stroke;
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+    }
+    update() {
+
+    }
+}
+
+class RectangleComponent extends Base$1.Component {
+    constructor() {
+        super();
+        this.width;
+        this.height;
+        this.fill;
+        this.stroke;
+    }
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(-this.width / 2, -this.height / 2);
+        ctx.fillStyle = this.fill;
+        ctx.strokeStyle = this.stroke;
+        ctx.fillRect(0, 0, this.width, this.height);
+        ctx.strokeRect(0, 0, this.width, this.height);
+        ctx.restore();
+    }
+    update() {
+
+    }
+}
+
+class TextComponent extends Base$1.Component {
+    constructor() {
+        super();
+        this.text;
+        this.font;
+        this.fill;
+    }
+    draw(ctx) {
+        ctx.save();
+        ctx.fillStyle = this.fill;
+        ctx.font = this.font;
+        ctx.fillText(this.text, 0, 0);
+        ctx.restore();
+    }
+    update() {
+
+    }
+}
+
+class CircleCollider extends Collider {
+   
+    constructor() {
+        super();
+        this.radius = 0;
+    }
+
+}
+
+/**
+Axis - Aligned Bounding Box 
+*/
+
+class AABBCollider extends Collider {
+    constructor() {
+        super();
+        this.width;
+        this.height;
+    }
+
+}
+
+const CollisionHelper ={
+
+     inCollision(one, two) {
+        if (one.collider instanceof CircleCollider && two.collider instanceof PointCollider) {
+            let distance = one.gameObject.location.distance(two.gameObject.location);
+
+            if (distance < one.collider.radius)
+                return true;
+            return false;
+        } else if (one.collider instanceof PointCollider && two.collider instanceof CircleCollider) {
+            return this.inCollision(two, one);
+        } else if (one.collider instanceof AABBCollider && two.collider instanceof PointCollider) {
+            //console.log("Testing AABB")
+            let diff = one.gameObject.location.diff(two.gameObject.location);
+            return Math.abs(diff.x) < one.collider.width / 2 && Math.abs(diff.y) < one.collider.height / 2;
+
+        } else if (one.collider instanceof PointCollider && two.collider instanceof AABBCollider) {
+            return this.inCollision(two, one);
+        } else if (one.collider instanceof CircleCollider && two.collider instanceof CircleCollider) {
+            let distance = one.gameObject.location.distance(two.gameObject.location);
+
+            if (distance < +one.collider.radius + +two.collider.radius)
+                return true;
+            return false;
+        }
+
+    }
+
+};
+
+/**
+Axis - Aligned Bounding Box 
+*/
+
+class TriangleCollider extends Collider {
+    
+    
+    
+    constructor() {
+        super();
+        this.points = [];
+        this.pointAX;
+        this.pointAY;
+        this.pointBX;
+        this.pointBY;
+        this.pointCX;
+        this.pointCY;
+    }
+    update() {
+        if(this.points.length == 0){
+            this.points = [new Base.Point(this.pointAX, this.pointAY), new Base.Point(this.pointBX, this.pointBY), new Base.Point(this.pointCX, this.pointCY)];
+        }
+
+    }
+
+}
+
+/**
+Axis - Aligned Bounding Box 
+*/
+
+class ConvexCollider extends Collider {
+    constructor() {
+        super();
+    }
+
+}
+
+class TriangleComponent extends Base$1.Component {
+   
+    constructor() {
+        super();
+        this.points = [];
+        this.pointAX;
+        this.pointAY;
+        this.pointBX;
+        this.pointBY;
+        this.pointCX;
+        this.pointCY;
+        this.fill;
+        this.stroke;
+
+    }
+    draw(ctx) {
+        if(this.points.length == 0) return;
+        ctx.save();
+        ctx.fillStyle = this.fill;
+        ctx.strokeStyle = this.stroke;
+        ctx.beginPath();
+        ctx.moveTo(+this.points[0].x, +this.points[0].y);
+        ctx.lineTo(+this.points[1].x, +this.points[1].y);
+        ctx.lineTo(+this.points[2].x, +this.points[2].y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+    }
+    update() {
+        if(this.points.length == 0){
+            this.points = [new Base$1.Point(this.pointAX, this.pointAY), new Base$1.Point(this.pointBX, this.pointBY), new Base$1.Point(this.pointCX, this.pointCY)];
+        }
+
+    }
+}
+
+/**
+ * A game object with a camera component will be treated as the camera in the scene.
+ * Currently, this game object needs to be in the root of the scene graph and there
+ * should only be one.
+ */
+class CameraComponent extends Base$1.Component {
+    constructor() {
+        super();
+        this.backgroundColor;
+
+    }
+    
+    update() {
+
+    }
+}
+
+/**
+ * A gameObject with a CanvasComponent represents screen space.
+ * Currently, there should be no more than one game object with a canvas component 
+ * in the root of the scene graph.
+ */
+class CanvasComponent extends Base$1.Component {
+
+    constructor() {
+        super();
+
+    }
+    
+    update() {
+
+    }
+}
+
+var Components = {
+  CircleComponent,
+  RectangleComponent,
+  TextComponent,
+  CircleCollider,
+  Point: PointCollider,
+  Collider,
+  CollisionHelper,
+  AABBCollider,
+  TriangleCollider,
+  ConvexCollider,
+  TriangleComponent,
+  CameraComponent,
+  CanvasComponent,
+  RectTransform,
+
+ 
+};
+
+export default Components;
