@@ -6,6 +6,7 @@ import Time from "./base/Time.js"
 import Input from "./base/Input.js"
 import NameableParent from "./base/NamableParent.js"
 import Point from "./base/Point.js"
+import Globals from "./base/Globals.js"
 
 export default {
   Behavior,
@@ -16,5 +17,6 @@ export default {
   Input,
   NameableParent,
   Point,
+  Globals,
   
 }

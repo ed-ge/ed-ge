@@ -13,7 +13,7 @@ export default function main(gameObjects, gameBehaviors, scenes) {
   let canv, ctx;
 
   scenes.allScenes
-    .forEach(i => SceneManager.addScene(Base.Scene.parse(i)))
+    .forEach(i => SceneManager.addScene(Base.Globals.parse(i)))
 
   SceneManager.currentScene = scenes.startScene;
   canv = document.querySelector("#canv");
