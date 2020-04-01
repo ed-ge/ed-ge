@@ -2,19 +2,19 @@
  * Static holder for the state of the input
  */
 
-class Input {
+const Input = {
 
     //---------------------------------------------------
     //Key handling members
     //---------------------------------------------------
-    static keys = []; //What is the current state of each key?
+    keys : [], //What is the current state of each key?
 
-    static down = []; //Did the key go down this frame?
-    static up = []; //Did the key do up this frame?
+    down : [], //Did the key go down this frame?
+    up : [], //Did the key do up this frame?
 
     //When we start an update(), we shift to these arrays so we don't have mutating arrays mid-update
-    static frameDown = [];
-    static frameUp = [];
+    frameDown : [],
+    frameUp : [],
 
 
     //---------------------------------------------------
@@ -22,25 +22,25 @@ class Input {
     //---------------------------------------------------
 
 
-    static mouseButtons = []; //What is the current State of the each button?
+    mouseButtons :[], //What is the current State of the each button?
 
-    static mouseButtonsDown = []; //Did the mouse button go down this frame?
-    static mouseButtonsUp = []; //Did the mouse button go up this frame?
+     mouseButtonsDown : [], //Did the mouse button go down this frame?
+     mouseButtonsUp : [], //Did the mouse button go up this frame?
 
     //When we start an update(), we shift these arrays so we don't have mutating arrays mid-update
-    static frameMouseButtonsDown = [];
-    static frameMouseButtonsUp = [];
+     frameMouseButtonsDown : [],
+     frameMouseButtonsUp : [],
 
     //The location of the mouse in screen coordinates
-    static mousePosition = {x:0,y:0};
+     mousePosition : {x:0,y:0},
 
     //Handle the wheel state
-    static mouseScrollDelta = 0;
-    static frameScrollDelta;
+     mouseScrollDelta : 0,
+     frameScrollDelta: 0,
 
 
 
-    static swapUpDownArrays() {
+     swapUpDownArrays() {
         this.frameDown = this.down;
         this.frameUp = this.up;
         this.down = [];
@@ -54,26 +54,26 @@ class Input {
         this.mouseButtonsUp = [];
         
         
-    }
+    },
 
     //---------------------------------------------------
     //Key handling functions
     //---------------------------------------------------
 
     //Did the key come up this frame?
-    static getKeyUp(key) {
+    getKeyUp(key) {
         return this.frameUp[key];
-    }
+    },
 
     //Did the key go down the frame? [Remember, the OS may make it look like key repeated when they did not]
-    static getKeyDown(key) {
+     getKeyDown(key) {
         return this.frameDown[key];
-    }
+    },
 
     //Is the key pressed? Down (true) Up (false)
-    static getKey(key) {
+     getKey(key) {
         return this.keys[key];
-    }
+    },
 
     //---------------------------------------------------
     //Mouse handling functions
@@ -81,22 +81,22 @@ class Input {
 
 
     //Did the mouse button come up this frame?
-    static getMouseButtonUp(button) {
+     getMouseButtonUp(button) {
         return this.frameMouseButtonsUp[button];
-    }
+    },
 
     //Did the mouse button go down this frame?
-    static getMouseButtonDown(button) {
+     getMouseButtonDown(button) {
         return this.frameMouseButtonsDown[button];
-    }
+    },
 
     //Is the mouse button pressed? Down (true) Up (false)
-    static getMouseButton(button) {
+     getMouseButton(button) {
         return this.mouseButtons[button];
-    }
+    },
 
     //What is the current state of the scroll wheel?
-    static getMouseScrollWheel(){
+     getMouseScrollWheel(){
         return this.frameScrollDelta;
     }
 
