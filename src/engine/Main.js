@@ -1,6 +1,7 @@
 
-export default function main(Base, Components, gameObjects, gameBehaviors, scenes) {
-  Base.Globals.gameObjects = gameObjects;
+export default function main(Base, Components, Prefabs, gameObjects, gameBehaviors, scenes) {
+  //From https://flaviocopes.com/how-to-merge-objects-javascript/
+  Base.Globals.gameObjects = {...gameObjects, ...Prefabs};
   Base.Globals.components = Components;
   Base.Globals.gameBehaviors = gameBehaviors;
   let canv, ctx;
