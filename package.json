@@ -6,8 +6,8 @@
         "test": "jest",
         "build": "babel src -d production",
         "start": "webpack --config ./webpack.main.config.js --mode=development && webpack --config ./webpack.base.config.js --mode=development && webpack --config ./webpack.components.config.js --mode=development",
-        "rollup": "rollup src/engine/Main.js --file ./rollup/Main.js --format es --name 'Main' && rollup src/engine/Components.js --file ./rollup/Components.js --format es --name 'Components' && rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base'",
-        "free": "rollup src/engine/Main.js --file ./free/Main.js --format iife --name 'Main' && rollup src/engine/Components.js --file ./free/Components.js --format iife --name 'Components' && rollup src/engine/Base.js --file ./free/Base.js --format iife --name 'Base'",
+        "rollup": "rollup src/engine/Main.js --file ./rollup/Main.js --format es --name 'Main' && rollup src/engine/Components.js --file ./rollup/Components.js --format es --name 'Components' && rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base' && rollup src/engine/Prefabs.js --file ./rollup/Prefabs.js --format es --name 'Prefabs'",
+        "free": "rollup src/engine/Main.js --file ./free/Main.js --format iife --name 'Main' && rollup src/engine/Components.js --file ./free/Components.js --format iife --name 'Components' && rollup src/engine/Base.js --file ./free/Base.js --format iife --name 'Base'&& rollup src/engine/Prefabs.js --file ./free/Prefabs.js --format iife --name 'Prefabs'",
         "doc": "./node_modules/.bin/jsdoc -d ./docs -r ./src -c ./.jsdoc.json"
     },
     "keywords": [
