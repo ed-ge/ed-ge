@@ -7,9 +7,9 @@ import SceneManager from "./SceneManager.js"
 
 
 export default function main(gameObjects, gameBehaviors, scenes) {
-  Base.Scene.gameObjects = gameObjects;
-  Base.Scene.components = Components;
-  Base.Scene.gameBehaviors = gameBehaviors;
+  Base.Globals.gameObjects = gameObjects;
+  Base.Globals.components = Components;
+  Base.Globals.gameBehaviors = gameBehaviors;
   let canv, ctx;
 
   scenes.allScenes
