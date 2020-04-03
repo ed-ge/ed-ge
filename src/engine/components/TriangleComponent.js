@@ -1,7 +1,7 @@
-import Base from "../Base.js"
+import Component from "../base/Component.js"
 
 
-class TriangleComponent extends Base.Component {
+class TriangleComponent extends Component {
    
     constructor() {
         super();

@@ -1,6 +1,4 @@
 import Base from "../../engine/Base.js"
-import Prefabs from "../../engine/Prefabs.js"
-import CollisionCircle from "../prefabs/CollisionCircle.js"
 
 export default class DotBehavior extends Base.Behavior {
 

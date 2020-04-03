@@ -1,4 +1,4 @@
-import Base from "../Base.js"
+import Component from "../base/Component.js"
 
 
 /**
@@ -6,7 +6,7 @@ import Base from "../Base.js"
  * Currently, this game object needs to be in the root of the scene graph and there
  * should only be one.
  */
-class CameraComponent extends Base.Component {
+class CameraComponent extends Component {
     constructor() {
         super();
         this.backgroundColor;

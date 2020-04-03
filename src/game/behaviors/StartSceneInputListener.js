@@ -1,40 +1,40 @@
-import Engine from "../../engine/Engine.js"
+import Base from "../../engine/Base.js"
 
-export default class TextBehavior extends Engine.Base.Behavior {
+export default class TextBehavior extends Base.Behavior {
     
     start() {
 
     }
     update() {
-        if(Engine.Base.Input.getMouseButtonUp(0)){
-            Engine.Base.SceneManager.currentScene = "CollisionScene" ;
+        if(Base.Input.getMouseButtonUp(0)){
+            Base.SceneManager.currentScene = "CollisionScene" ;
         }
-        if(Engine.Base.Input.getKeyUp(' '))
+        if(Base.Input.getKeyUp(' '))
         {
-            Engine.Base.SceneManager.currentScene = "SceneOne";
+            Base.SceneManager.currentScene = "SceneOne";
         }
-        if(Engine.Base.Input.getKeyUp('a'))
+        if(Base.Input.getKeyUp('a'))
         {
-            Engine.Base.SceneManager.currentScene = "SceneTwo";
+            Base.SceneManager.currentScene = "SceneTwo";
         }
-        if(Engine.Base.Input.getKeyUp('Enter'))
+        if(Base.Input.getKeyUp('Enter'))
         {
-            Engine.Base.SceneManager.currentScene = "StrategyScene";
+            Base.SceneManager.currentScene = "StrategyScene";
         }
-        if(Engine.Base.Input.getKeyUp('r'))
+        if(Base.Input.getKeyUp('r'))
         {
-            Engine.Base.SceneManager.currentScene = "RoomScene";
+            Base.SceneManager.currentScene = "RoomScene";
         }
-        if(Engine.Base.Input.getKeyUp('c'))
+        if(Base.Input.getKeyUp('c'))
         {
-            Engine.Base.SceneManager.currentScene = "CircleCollisionScene";
+            Base.SceneManager.currentScene = "CircleCollisionScene";
         }
-        if(Engine.Base.Input.getKeyUp('m'))
+        if(Base.Input.getKeyUp('m'))
         {
-            Engine.Base.SceneManager.currentScene = "MouseScene";
+            Base.SceneManager.currentScene = "MouseScene";
         }
 
-        let clickGameObject = Engine.Base.SceneManager.currentScene.findByName("Click");
+        let clickGameObject = Base.SceneManager.currentScene.findByName("Click");
         if(clickGameObject != null){
             console.log("I found the click game object");
         }

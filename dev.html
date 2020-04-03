@@ -25,14 +25,12 @@
 
     import Main from "./src/engine/Main.js"
     import Base from "./src/engine/Base.js"
-    import Components from "./src/engine/Components.js"
-    import Prefabs from "./src/engine/Prefabs.js"
     import Scenes from "./src/game/Scenes.js"
     import GameBehaviors from "./src/game/GameBehaviors.js";
     import GameObjects from "./src/game/GameObjects.js"
     
 
-    Main(Base, Components, Prefabs, GameObjects, GameBehaviors, Scenes);
+    Main(Base, Base.Components, Base.Prefabs, GameObjects, GameBehaviors, Scenes);
 
   </script>
 

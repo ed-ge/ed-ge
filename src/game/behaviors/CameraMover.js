@@ -1,5 +1,4 @@
 import Base from "../../engine/Base.js"
-import Components from "../../engine/Components.js"
 
 export default class CameraMover extends Base.Behavior {
 
@@ -14,7 +13,7 @@ export default class CameraMover extends Base.Behavior {
         this.y = this.gameObject.y;
     }
     update() {
-        //let CameraComponent = this.gameObject.getComponent(Components.CameraComponent);
+        //let CameraComponent = this.gameObject.getComponent(Base.CameraComponent);
         this.time += .1;
         if (this.goingUp) {
             this.position -= this.speed;
