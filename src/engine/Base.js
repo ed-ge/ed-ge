@@ -29,6 +29,7 @@ import Canvas from "./prefabs/Canvas.js"
 import CanvasText from "./prefabs/CanvasText.js"
 import Rectangle from "./prefabs/Rectangle.js"
 import Circle from "./prefabs/Circle.js"
+import Main from "./Main.js"
 
 
 
@@ -67,5 +68,6 @@ export default {
     CanvasText,
     Rectangle,
     Circle,
-  }
+  },
+  main: Main,
 }
