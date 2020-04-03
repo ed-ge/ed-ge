@@ -5,6 +5,7 @@ const SceneManager = {
   /** Orginally from scene */
   
   scenes: [],
+  Base:{},
   
   _currentSceneIndex: -1,
   get currentScene() {
@@ -40,7 +41,7 @@ const SceneManager = {
         this._currentSceneIndex = +argument;
       }
     }
-    this.scenes[this._currentSceneIndex].start2(Globals.GameBehaviors, Globals.GameObjects, Globals.Components);
+    this.scenes[this._currentSceneIndex].start2(this.Base.Behaviors, this.Base.Prefabs, this.Base.Components);
   },
 
   addScene(scene) {
