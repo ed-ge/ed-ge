@@ -60,84 +60,46 @@ class Scene extends NameableParent {
 
     gameObject.name = obj.name;
     this.buildIt(obj, gameObject);
-
-
   }
-  buildIt(obj, gameObject) {
-    if (obj.children) {
-      for (let i = 0; i < obj.children.length; i++) {
-        let child = obj.children[i];
-        this.buildChild2(child, gameObject.children);
-      }
 
+  buildIt(obj, gameObject) {
+    //Recursively build children
+    if (obj.children) {
+      obj.children.forEach(i=>this.buildChild2(i, gameObject.children))
     }
 
     //Set the key-pair values on components already on prefabs
     if (obj.componentValues) {
-      for (let j = 0; j < obj.componentValues.length; j++) {
-        let componentValue = obj.componentValues[j]
-        let type = componentValue.type;
-        let component = gameObject.getComponent(type);
-        let values = componentValue.values;
-        for (let k = 0; k < values.length; k++) {
-          let value = values[k];
-          component[value.key] = value.value;
-        }
-      }
+      obj.componentValues.forEach(j=>{
+        let component = gameObject.getComponent(j.type);
+        j.values.forEach(k=>{
+          component[k.key] = k.value;
+        })
+      })      
     }
 
     //Add new components
     if (obj.components) {
-      for (let i = 0; i < obj.components.length; i++) {
-        let componentInfo = obj.components[i];
-
-        let componentString = componentInfo.type;
-        let componentType = null;
-        let componentKeys = Object.keys(this.components);
-        let behaviorKeys = Object.keys(this.behaviors);
-        for (let i = 0; i < componentKeys.length; i++) {
-          let key = componentKeys[i];
-          if (key == componentString) {
-            componentType = this.components[key];
-            break
-          }
-        }
-        if (componentType == null) {
-          for (let i = 0; i < behaviorKeys.length; i++) {
-            let key = behaviorKeys[i]
-            if (key == componentString) {
-              componentType = this.behaviors[key]
-              break;
-            }
-          }
-        }
+      obj.components.forEach(i=>{
+        let componentString = i.type;
+        //See if we have a component or behavior with that name
+        let componentType = this.components[componentString] || this.behaviors[componentString];
         if (componentType == null) throw "Could not find component " + componentString;
+        
         let component = new componentType();
         gameObject.addComponent(component);
-        if (componentInfo.values) {
-
+        
+        if (i.values) {
           //Now set the key-value pairs on the new component we just made
-          let componentValues = componentInfo.values;
-          for (let v = 0; v < componentValues.length; v++) {
-            let value = componentValues[v];
-            let key = value.key;
-            let val = value.value;
-            component[key] = val;
-          }
+          i.values.forEach(v=>{
+            component[v.key] = v.value;
+          })
         }
         if (component.start)
           component.start();
-
-      }
+      });
     }
   }
-
-
-
-
-
-
-
 
   draw(ctx, width, height) {
     //Before we draw, see if we have a camera game object and use that
