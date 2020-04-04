@@ -8,15 +8,7 @@ import Input from "./Input.js"
 /**
  * A scene represents a level in a game.
  */
-class Scene extends NameableParent {
-
-    /**
-     * A static reference to all gameObjects available in this game.
-     * This prevents a circular module dependency. By "linking" these to the
-     * scene as static list after the program starts, we can remove any circular
-     * dependencies.
-     */
-    
+class Scene extends NameableParent {    
 
     /**
      * Scene constructor. Assigns the scene a name and starts it.
@@ -62,14 +54,14 @@ class Scene extends NameableParent {
 
         //Load a scene from a declarative syntax
 
-        if (this.objects) {
-            this.children = [];
-            for (let i = 0; i < this.objects.length; i++) {
-                let obj = this.objects[i];
-                this.buildChild(obj, this.children)
+        // if (this.objects) {
+        //     this.children = [];
+        //     for (let i = 0; i < this.objects.length; i++) {
+        //         let obj = this.objects[i];
+        //         this.buildChild(obj, this.children)
 
-            }
-        }
+        //     }
+        // }
     }
 
     /**
@@ -184,39 +176,39 @@ class Scene extends NameableParent {
 
 
 
-    buildChild(obj, parent) {
-        let gameObject = this.instantiate(obj.type, obj.location, new Point(1, 1), 0, parent);
-        gameObject.name = obj.name;
+    // buildChild(obj, parent) {
+    //     let gameObject = this.instantiate(obj.type, obj.location, new Point(1, 1), 0, parent);
+    //     gameObject.name = obj.name;
 
-        if (obj.children) {
-            for (let i = 0; i < obj.children.length; i++) {
-                let child = obj.children[i];
-                this.buildChild(child, gameObject.children);
-            }
+    //     if (obj.children) {
+    //         for (let i = 0; i < obj.children.length; i++) {
+    //             let child = obj.children[i];
+    //             this.buildChild(child, gameObject.children);
+    //         }
 
-        }
+    //     }
 
-        if (obj.componentValues) {
-            for (let j = 0; j < obj.componentValues.length; j++) {
-                let componentValue = obj.componentValues[j]
-                let type = componentValue.type;
-                let component = gameObject.getComponent(type);
-                let values = componentValue.values;
-                for (let k = 0; k < values.length; k++) {
-                    let value = values[k];
-                    component[value.key] = value.value;
-                }
-            }
-        }
-        if (obj.components) {
-            for (let i = 0; i < obj.components.length; i++) {
-                let componentInfo = obj.components[i];
-                let component = new componentInfo.type();
-                gameObject.addComponent(component);
+    //     if (obj.componentValues) {
+    //         for (let j = 0; j < obj.componentValues.length; j++) {
+    //             let componentValue = obj.componentValues[j]
+    //             let type = componentValue.type;
+    //             let component = gameObject.getComponent(type);
+    //             let values = componentValue.values;
+    //             for (let k = 0; k < values.length; k++) {
+    //                 let value = values[k];
+    //                 component[value.key] = value.value;
+    //             }
+    //         }
+    //     }
+    //     if (obj.components) {
+    //         for (let i = 0; i < obj.components.length; i++) {
+    //             let componentInfo = obj.components[i];
+    //             let component = new componentInfo.type();
+    //             gameObject.addComponent(component);
 
-            }
-        }
-    }
+    //         }
+    //     }
+    // }
     draw(ctx, width, height) {
         //Before we draw, see if we have a camera game object and use that
         ctx.save();
