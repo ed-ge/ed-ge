@@ -10,7 +10,7 @@ function main(gameObjects, gameBehaviors, scenes) {
   let canv, ctx;
 
   scenes.allScenes
-    .forEach(i => this.SceneManager.addScene(makeScene(i)))
+    .forEach(i => this.SceneManager.addScene(new Scene(i.name, i.objects, this.Prefabs, gameBehaviors, this.Components)))
 
   this.SceneManager.currentScene = scenes.startScene;
   canv = document.querySelector("#canv");
@@ -42,11 +42,7 @@ function main(gameObjects, gameBehaviors, scenes) {
   document.body.addEventListener('wheel', wheelevent);
   document.body.addEventListener('contextmenu', contextmenu);
 
-  function makeScene(obj) {
-    let toReturn = new Scene(obj.name);
-    toReturn.objects = obj.objects;
-    return toReturn;
-  }
+  
 
   function keydown(event) {
     if (Input.keys[event.key] != true)
