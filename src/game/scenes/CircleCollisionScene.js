@@ -4,10 +4,7 @@ export default {
 
   objects: [
     {
-      name: "CollisionCircle",
-      location: { x: 50, y: 50 },
-      scale: { x: 2, y:1},
-      type: "CollisionCircle"
+      def:"CollisionCircle, 50, 50, 2, 1, CollisionCircle",
     },
     {
       name: "Rectangle",
