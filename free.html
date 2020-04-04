@@ -18,17 +18,15 @@
   <canvas id="canv" width="640px" height="480px"></canvas>
 
 
-  <script src="./free/Main.js"></script>
   <script src="./free/Base.js"></script>
-  <script src="./free/Components.js"></script>
-
+  
   <script type="module">
     import Scenes from "./freeGame/Scenes.js"
     import GameBehaviors from "./freeGame/GameBehaviors.js";
     import GameObjects from "./freeGame/GameObjects.js"
     
 
-    Main(Base, Components, GameObjects, GameBehaviors, Scenes);
+    Base.main(GameObjects, GameBehaviors, Scenes);
 
   </script>
 </body>
