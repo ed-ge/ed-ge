@@ -104,13 +104,13 @@ class GameObject extends NameableParent {
             let tx = 0; //Default to anchor left
             let ty = 0; //Default to anchor top
 
-            if(rectTransform.anchorHorizontal == RectTransform.CENTER)
+            if(rectTransform.anchorHorizontal == "center")
                 tx = width/2;
-            else if(rectTransform.anchorHorizontal == RectTransform.RIGHT)
+            else if(rectTransform.anchorHorizontal == "right")
                 tx = width;
-            if(rectTransform.anchorVertical == RectTransform.MIDDLE)
+            if(rectTransform.anchorVertical == "middle")
                 ty = height/2;
-            else if(rectTransform.anchorVertical == RectTransform.BOTTOM)
+            else if(rectTransform.anchorVertical == "bottom")
                 ty = height;
 
             ctx.translate(tx, ty);
@@ -144,7 +144,12 @@ class GameObject extends NameableParent {
             if (component) return component;
             throw "Error, couldn't find type " + type;
         } else {
-            let component = this.components.find(i => i instanceof type);
+          let component;
+          try{
+             component = this.components.find(i => i instanceof type);
+          }catch (e){
+            console.log(e)
+          }
             if (component) return component;
             throw "Error, couldn't find type " + type;
         }

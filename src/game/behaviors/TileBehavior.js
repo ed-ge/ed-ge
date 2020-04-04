@@ -1,4 +1,3 @@
-import Engine from "../../engine/Engine.js"
 import Base from "../../engine/Base.js"
 import RectangleBehavior from "./RectangleBehavior.js";
 
@@ -11,7 +10,7 @@ export default class TileBehavior extends Base.Behavior{
         this.hasCharacter = false;    
     }
     update(){
-        let component = this.gameObject.getComponent(Engine.Components.RectangleComponent);
+        let component = this.gameObject.getComponent(Base.Components.RectangleComponent);
         if(this.isWater){
             component.fill = "blue";
         }

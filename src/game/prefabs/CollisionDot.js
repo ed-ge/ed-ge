@@ -25,7 +25,7 @@ export default {
       type:"DotBehavior",
     },
     {
-      type:"Point",
+      type:"PointCollider",
     },
   ]
 }

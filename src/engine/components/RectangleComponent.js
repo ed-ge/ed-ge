@@ -1,6 +1,6 @@
-import Base from "../Base.js"
+import Component from "../base/Component.js"
 
-class RectangleComponent extends Base.Component {
+class RectangleComponent extends Component {
     constructor() {
         super();
         this.width;

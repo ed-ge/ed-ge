@@ -1,30 +1,35 @@
+import Scene from "./base/Scene.js"
+import Input from "./base/Input.js"
 
-export default function main(Base, Components, Prefabs, gameObjects, gameBehaviors, scenes) {
+
+
+function main(gameObjects, gameBehaviors, scenes) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
-  Base.Globals.gameObjects = {...gameObjects, ...Prefabs};
-  Base.Globals.components = Components;
-  Base.Globals.gameBehaviors = gameBehaviors;
+  this.Prefabs = { ...gameObjects, ...this.Prefabs };
+  this.Behaviors = gameBehaviors;
   let canv, ctx;
 
   scenes.allScenes
-    .forEach(i => Base.SceneManager.addScene(Base.Globals.parse(i)))
+    .forEach(i => this.SceneManager.addScene(makeScene(i)))
 
-  Base.SceneManager.currentScene = scenes.startScene;
+  this.SceneManager.currentScene = scenes.startScene;
   canv = document.querySelector("#canv");
   ctx = canv.getContext('2d');
 
+  let that = this;
+
   function gameLoop() {
-    Base.Input.swapUpDownArrays();
+    Input.swapUpDownArrays();
     update(ctx);
     draw(ctx);
   }
 
   function update() {
-    Base.SceneManager.currentScene.update(ctx, Components.Collider, Components.CollisionHelper);
+    that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
   }
 
   function draw(ctx) {
-    Base.SceneManager.currentScene.draw(ctx, canv.width, canv.height);
+    that.SceneManager.currentScene.draw(ctx, canv.width, canv.height);
   }
 
   //Setup event handling
@@ -37,39 +42,44 @@ export default function main(Base, Components, Prefabs, gameObjects, gameBehavio
   document.body.addEventListener('wheel', wheelevent);
   document.body.addEventListener('contextmenu', contextmenu);
 
+  function makeScene(obj) {
+    let toReturn = new Scene(obj.name);
+    toReturn.objects = obj.objects;
+    return toReturn;
+  }
 
   function keydown(event) {
-    if (Base.Input.keys[event.key] != true)
-      Base.Input.down[event.key] = true;
-    Base.Input.keys[event.key] = true;
+    if (Input.keys[event.key] != true)
+      Input.down[event.key] = true;
+    Input.keys[event.key] = true;
   }
 
   function keyup(event) {
-    if (Base.Input.keys[event.key] != false)
-      Base.Input.up[event.key] = true;
-    Base.Input.keys[event.key] = false;
+    if (Input.keys[event.key] != false)
+      Input.up[event.key] = true;
+    Input.keys[event.key] = false;
   }
 
   function mousedown(event) {
-    if (Base.Input.mouseButtons[event.button] != true)
-      Base.Input.mouseButtonsDown[event.button] = true;
-    Base.Input.mouseButtons[event.button] = true;
+    if (Input.mouseButtons[event.button] != true)
+      Input.mouseButtonsDown[event.button] = true;
+    Input.mouseButtons[event.button] = true;
   }
 
   function mouseup(event) {
-    if (Base.Input.mouseButtons[event.button] != false)
-      Base.Input.mouseButtonsUp[event.button] = true;
-    Base.Input.mouseButtons[event.button] = false;
+    if (Input.mouseButtons[event.button] != false)
+      Input.mouseButtonsUp[event.button] = true;
+    Input.mouseButtons[event.button] = false;
   }
 
   function mousemove(event) {
-    [Base.Input.mousePosition.x, Base.Input.mousePosition.y] = [event.clientX, event.clientY];
+    [Input.mousePosition.x, Input.mousePosition.y] = [event.clientX, event.clientY];
 
   }
 
   function wheelevent(event) {
     if (event.deltaY != 0)
-      Base.Input.mouseScrollDelta = event.deltaY;
+      Input.mouseScrollDelta = event.deltaY;
   }
 
   function keypress(event) {
@@ -105,13 +115,7 @@ export default function main(Base, Components, Prefabs, gameObjects, gameBehavio
 
   // So we fire it manually...
   resizeCanvas();
-
-
-
-
-
   setInterval(gameLoop, 33);
-
-
 };
 
+export default main;

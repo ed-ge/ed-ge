@@ -320,13 +320,13 @@ var Base = (function () {
                 let tx = 0; //Default to anchor left
                 let ty = 0; //Default to anchor top
 
-                if(rectTransform.anchorHorizontal == RectTransform.CENTER)
+                if(rectTransform.anchorHorizontal == "center")
                     tx = width/2;
-                else if(rectTransform.anchorHorizontal == RectTransform.RIGHT)
+                else if(rectTransform.anchorHorizontal == "right")
                     tx = width;
-                if(rectTransform.anchorVertical == RectTransform.MIDDLE)
+                if(rectTransform.anchorVertical == "middle")
                     ty = height/2;
-                else if(rectTransform.anchorVertical == RectTransform.BOTTOM)
+                else if(rectTransform.anchorVertical == "bottom")
                     ty = height;
 
                 ctx.translate(tx, ty);
@@ -360,7 +360,12 @@ var Base = (function () {
                 if (component) return component;
                 throw "Error, couldn't find type " + type;
             } else {
-                let component = this.components.find(i => i instanceof type);
+              let component;
+              try{
+                 component = this.components.find(i => i instanceof type);
+              }catch (e){
+                console.log(e);
+              }
                 if (component) return component;
                 throw "Error, couldn't find type " + type;
             }
@@ -520,17 +525,7 @@ var Base = (function () {
 
     };
 
-    const Globals={
-      gameObjects: [],
-      components: [],
-      gameBehaviors: [],
-      parse(obj) {
-        let toReturn = new Scene(obj.name);
-        toReturn.objects = obj.objects;
-        return toReturn;
-
-      },
-    };
+    // import Globals from "./Globals.js"
 
     /**
      * A scene represents a level in a game.
@@ -553,6 +548,9 @@ var Base = (function () {
         constructor(name) {
             super(name);
             this.start();
+            this.prefabs;
+            this.behaviors;
+            this.components;
 
         }
 
@@ -563,7 +561,10 @@ var Base = (function () {
          * our declarative syntax.
          */
          
-        start2() {
+        start2(behaviors, prefabs, components) {
+            this.behaviors = behaviors;
+            this.prefabs = prefabs;
+            this.components = components;
 
             this.children = [];
 
@@ -601,11 +602,11 @@ var Base = (function () {
         buildChild2(obj, parent) {
 
             let gameObjectType = null;
-            let keys = Object.keys(Globals.gameObjects);
+            let keys = Object.keys(this.prefabs);
             for (let i = 0; i < keys.length; i++) {
                 let key = keys[i];
                 if (key == obj.type) {
-                    gameObjectType = Globals.gameObjects[key];
+                    gameObjectType = this.prefabs[key];
                     break;
                 }
             }
@@ -660,12 +661,12 @@ var Base = (function () {
 
                     let componentString = componentInfo.type;
                     let componentType = null;
-                    let componentKeys = Object.keys(Globals.components);
-                    let behaviorKeys = Object.keys(Globals.gameBehaviors);
+                    let componentKeys = Object.keys(this.components);
+                    let behaviorKeys = Object.keys(this.behaviors);
                     for (let i = 0; i < componentKeys.length; i++) {
                         let key = componentKeys[i];
                         if (key == componentString) {
-                            componentType = Globals.components[key];
+                            componentType = this.components[key];
                             break
                         }
                     }
@@ -673,7 +674,7 @@ var Base = (function () {
                         for (let i = 0; i < behaviorKeys.length; i++) {
                             let key = behaviorKeys[i];
                             if (key == componentString) {
-                                componentType = Globals.gameBehaviors[key];
+                                componentType = this.behaviors[key];
                                 break;
                             }
                         }
@@ -925,7 +926,7 @@ var Base = (function () {
 
             let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation);
             parent.push(gameObject);
-            let prefab = Globals.gameObjects[gameObjectType.name];
+            let prefab = this.prefabs[gameObjectType.name];
             this.buildIt(prefab, gameObject);
             gameObject.name = prefab.name;
             gameObject.recursiveCall("start");
@@ -950,6 +951,7 @@ var Base = (function () {
       /** Orginally from scene */
       
       scenes: [],
+      Base:{},
       
       _currentSceneIndex: -1,
       get currentScene() {
@@ -985,7 +987,7 @@ var Base = (function () {
             this._currentSceneIndex = +argument;
           }
         }
-        this.scenes[this._currentSceneIndex].start2(Globals.GameBehaviors, Globals.GameObjects, Globals.Components);
+        this.scenes[this._currentSceneIndex].start2(this.Base.Behaviors, this.Base.Prefabs, this.Base.Components);
       },
 
       addScene(scene) {
@@ -1002,19 +1004,574 @@ var Base = (function () {
 
     };
 
-    var Base = {
+    class CircleComponent extends Component {
+        
+        constructor() {
+            super();
+            this.radius;
+            this.fill;
+            this.stroke;
+
+        }
+        draw(ctx) {
+            ctx.save();
+            ctx.fillStyle = this.fill;
+            ctx.strokeStyle = this.stroke;
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+        }
+        update() {
+
+        }
+    }
+
+    class RectangleComponent extends Component {
+        constructor() {
+            super();
+            this.width;
+            this.height;
+            this.fill;
+            this.stroke;
+        }
+        draw(ctx) {
+            ctx.save();
+            ctx.translate(-this.width / 2, -this.height / 2);
+            ctx.fillStyle = this.fill;
+            ctx.strokeStyle = this.stroke;
+            ctx.fillRect(0, 0, this.width, this.height);
+            ctx.strokeRect(0, 0, this.width, this.height);
+            ctx.restore();
+        }
+        update() {
+
+        }
+    }
+
+    class TextComponent extends Component {
+        constructor() {
+            super();
+            this.text;
+            this.font;
+            this.fill;
+        }
+        draw(ctx) {
+            ctx.save();
+            ctx.fillStyle = this.fill;
+            ctx.font = this.font;
+            ctx.fillText(this.text, 0, 0);
+            ctx.restore();
+        }
+        update() {
+
+        }
+    }
+
+    class CircleCollider extends Collider {
+       
+        constructor() {
+            super();
+            this.radius = 0;
+        }
+
+    }
+
+    /**
+    Axis - Aligned Bounding Box 
+    */
+
+    class AABBCollider extends Collider {
+        constructor() {
+            super();
+            this.width;
+            this.height;
+        }
+
+    }
+
+    const CollisionHelper ={
+
+         inCollision(one, two) {
+            if (one.collider instanceof CircleCollider && two.collider instanceof PointCollider) {
+                let distance = one.gameObject.location.distance(two.gameObject.location);
+
+                if (distance < one.collider.radius)
+                    return true;
+                return false;
+            } else if (one.collider instanceof PointCollider && two.collider instanceof CircleCollider) {
+                return this.inCollision(two, one);
+            } else if (one.collider instanceof AABBCollider && two.collider instanceof PointCollider) {
+                //console.log("Testing AABB")
+                let diff = one.gameObject.location.diff(two.gameObject.location);
+                return Math.abs(diff.x) < one.collider.width / 2 && Math.abs(diff.y) < one.collider.height / 2;
+
+            } else if (one.collider instanceof PointCollider && two.collider instanceof AABBCollider) {
+                return this.inCollision(two, one);
+            } else if (one.collider instanceof CircleCollider && two.collider instanceof CircleCollider) {
+                let distance = one.gameObject.location.distance(two.gameObject.location);
+
+                if (distance < +one.collider.radius + +two.collider.radius)
+                    return true;
+                return false;
+            }
+
+        }
+
+    };
+
+    /**
+    Axis - Aligned Bounding Box 
+    */
+
+    class TriangleCollider extends Collider {
+        
+        
+        
+        constructor() {
+            super();
+            this.points = [];
+            this.pointAX;
+            this.pointAY;
+            this.pointBX;
+            this.pointBY;
+            this.pointCX;
+            this.pointCY;
+        }
+        update() {
+            if(this.points.length == 0){
+                this.points = [new Base.Point(this.pointAX, this.pointAY), new Base.Point(this.pointBX, this.pointBY), new Base.Point(this.pointCX, this.pointCY)];
+            }
+
+        }
+
+    }
+
+    /**
+    Axis - Aligned Bounding Box 
+    */
+
+    class ConvexCollider extends Collider {
+        constructor() {
+            super();
+        }
+
+    }
+
+    class TriangleComponent extends Component {
+       
+        constructor() {
+            super();
+            this.points = [];
+            this.pointAX;
+            this.pointAY;
+            this.pointBX;
+            this.pointBY;
+            this.pointCX;
+            this.pointCY;
+            this.fill;
+            this.stroke;
+
+        }
+        draw(ctx) {
+            if(this.points.length == 0) return;
+            ctx.save();
+            ctx.fillStyle = this.fill;
+            ctx.strokeStyle = this.stroke;
+            ctx.beginPath();
+            ctx.moveTo(+this.points[0].x, +this.points[0].y);
+            ctx.lineTo(+this.points[1].x, +this.points[1].y);
+            ctx.lineTo(+this.points[2].x, +this.points[2].y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+        }
+        update() {
+            if(this.points.length == 0){
+                this.points = [new Point(this.pointAX, this.pointAY), new Point(this.pointBX, this.pointBY), new Point(this.pointCX, this.pointCY)];
+            }
+
+        }
+    }
+
+    /**
+     * A game object with a camera component will be treated as the camera in the scene.
+     * Currently, this game object needs to be in the root of the scene graph and there
+     * should only be one.
+     */
+    class CameraComponent extends Component {
+        constructor() {
+            super();
+            this.backgroundColor;
+
+        }
+        
+        update() {
+
+        }
+    }
+
+    /**
+     * A gameObject with a CanvasComponent represents screen space.
+     * Currently, there should be no more than one game object with a canvas component 
+     * in the root of the scene graph.
+     */
+    class CanvasComponent extends Component {
+
+        constructor() {
+            super();
+
+        }
+        
+        update() {
+
+        }
+    }
+
+    var EmptyGameObject = {
+        name: "EmptyGameObject",
+        components: []
+    };
+
+    var Text = {
+        name: "Text",
+        components:[
+          {
+            type:"TextComponent",
+            values:[
+              {
+                key:"text",
+                value:"10"
+              },
+              {
+                key:"font",
+                value:"20pt Times"
+              },
+              {
+                key:"fill",
+                value:"black"
+              },
+             
+            ]
+          }
+        ]
+      
+      };
+
+    var Camera = {
+        name: "Camera",
+        components: [
+            {
+                type: "CameraComponent",
+                values: [
+                    {
+                        key: "backgroundColor",
+                        value: "white"
+                    }
+                ]
+            }
+        ]
+    };
+
+    var Canvas = {
+        name: "Canvas",
+        components: [
+            {
+                type: "CanvasComponent",
+            }
+        ]
+    };
+
+    var CanvasText = {
+        name: "CanvasText",
+        components: [
+            {
+                type: "RectTransform",
+            },
+            {
+                type:"TextComponent",
+                values:[
+                  {
+                    key:"text",
+                    value:"10"
+                  },
+                  {
+                    key:"font",
+                    value:"20pt Times"
+                  },
+                  {
+                    key:"fill",
+                    value:"black"
+                  },
+                 
+                ]
+              }
+        ]
+    };
+
+    var Rectangle = {
+        name: "Rectangle",
+        components: [
+          {
+            type: "RectangleComponent",
+            values: [
+              {
+                key: "width",
+                value: "100"
+              },
+              {
+                key: "height",
+                value: "100"
+              },
+              {
+                key: "fill",
+                value: "red"
+              },
+              {
+                key: "stroke",
+                value: "blue"
+              },
+            ]
+          },
+          {
+            type: "AABBCollider",
+            values: [
+              {
+                key: "width",
+                value: "100",
+              },
+              {
+                key: "height",
+                value: "100"
+              }
+            ]
+          }
+        ]
+      };
+
+    var Circle = {
+        name: "Circle",
+        components:[
+          {
+            type:"CircleComponent",
+            values:[
+              {
+                key:"radius",
+                value:"50"
+              },
+              {
+                key:"fill",
+                value:"rgba(255,255,0,.5)"
+              },
+              {
+                key:"stroke",
+                value:"black"
+              },
+            ]
+          },
+          {
+            type:"CircleCollider",
+            values:[
+              {
+                key:"radius",
+                value:"50"
+              }
+            ]
+          },
+        ]
+      };
+
+    var ScreenText = {
+      name: "ScreenText",
+      components:[
+        {
+          type:"RectTransform",
+        },
+        {
+          type:"TextComponent",
+          values:[
+            {
+              key:"text",
+              value:"10"
+            },
+            {
+              key:"font",
+              value:"20pt Times"
+            },
+            {
+              key:"fill",
+              value:"black"
+            },
+           
+          ]
+        }
+      ]
+
+    };
+
+    function main(gameObjects, gameBehaviors, scenes) {
+      //From https://flaviocopes.com/how-to-merge-objects-javascript/
+      this.Prefabs = { ...gameObjects, ...this.Prefabs };
+      this.Behaviors = gameBehaviors;
+      let canv, ctx;
+
+      scenes.allScenes
+        .forEach(i => this.SceneManager.addScene(makeScene(i)));
+
+      this.SceneManager.currentScene = scenes.startScene;
+      canv = document.querySelector("#canv");
+      ctx = canv.getContext('2d');
+
+      let that = this;
+
+      function gameLoop() {
+        Input.swapUpDownArrays();
+        update();
+        draw(ctx);
+      }
+
+      function update() {
+        that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
+      }
+
+      function draw(ctx) {
+        that.SceneManager.currentScene.draw(ctx, canv.width, canv.height);
+      }
+
+      //Setup event handling
+      document.body.addEventListener('keydown', keydown);
+      document.body.addEventListener('keyup', keyup);
+      document.body.addEventListener('keypress', keypress);
+      document.body.addEventListener('mousedown', mousedown);
+      document.body.addEventListener('mouseup', mouseup);
+      document.body.addEventListener('mousemove', mousemove);
+      document.body.addEventListener('wheel', wheelevent);
+      document.body.addEventListener('contextmenu', contextmenu);
+
+      function makeScene(obj) {
+        let toReturn = new Scene(obj.name);
+        toReturn.objects = obj.objects;
+        return toReturn;
+      }
+
+      function keydown(event) {
+        if (Input.keys[event.key] != true)
+          Input.down[event.key] = true;
+        Input.keys[event.key] = true;
+      }
+
+      function keyup(event) {
+        if (Input.keys[event.key] != false)
+          Input.up[event.key] = true;
+        Input.keys[event.key] = false;
+      }
+
+      function mousedown(event) {
+        if (Input.mouseButtons[event.button] != true)
+          Input.mouseButtonsDown[event.button] = true;
+        Input.mouseButtons[event.button] = true;
+      }
+
+      function mouseup(event) {
+        if (Input.mouseButtons[event.button] != false)
+          Input.mouseButtonsUp[event.button] = true;
+        Input.mouseButtons[event.button] = false;
+      }
+
+      function mousemove(event) {
+        [Input.mousePosition.x, Input.mousePosition.y] = [event.clientX, event.clientY];
+
+      }
+
+      function wheelevent(event) {
+        if (event.deltaY != 0)
+          Input.mouseScrollDelta = event.deltaY;
+      }
+
+      function keypress(event) {
+        //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
+      }
+
+      // Based on https://stackoverflow.com/questions/381795/how-to-disable-right-click-context-menu-in-javascript
+      // Kills the right mouse context menu
+      function contextmenu(event) {
+        if (event.preventDefault != undefined)
+          event.preventDefault();
+        if (event.stopPropagation != undefined)
+          event.stopPropagation();
+        return false;
+      }
+
+      //Keep our canvas full screen
+      //from https://blog.codepen.io/2013/07/29/full-screen-canvas/
+
+      var can = document.getElementById("canv");
+
+      function resizeCanvas() {
+        can.style.width = window.innerWidth + "px";
+        setTimeout(function () {
+          can.style.height = window.innerHeight + "px";
+        }, 0);
+        can.width = window.innerWidth;
+        can.height = window.innerHeight;
+      }
+      // Webkit/Blink will fire this on load, but Gecko doesn't.
+      window.onresize = resizeCanvas;
+
+      // So we fire it manually...
+      resizeCanvas();
+      setInterval(gameLoop, 33);
+    }
+
+    let Components = {
+      CircleComponent,
+      RectangleComponent,
+      TextComponent,
+      CircleCollider,
+      PointCollider,
+      Collider,
+      CollisionHelper,
+      AABBCollider,
+      TriangleCollider,
+      ConvexCollider,
+      TriangleComponent,
+      CameraComponent,
+      CanvasComponent,
+      RectTransform,
+    };
+
+    const Prefabs = {
+      EmptyGameObject,
+      Text,
+      Camera,
+      Canvas,
+      CanvasText,
+      Rectangle,
+      Circle,
+      ScreenText,
+    };
+
+    const Base$1 = {
       Behavior,
       Component,
       GameObject,
       Scene,
-      Time,
-      Input,
+      Time ,
+      Input ,
       NameableParent,
-      Point,
-      Globals,
+      Point ,
       SceneManager,
+      Components ,
+      Prefabs ,
+      Behaviors:{},
+      main,
+
     };
 
-    return Base;
+    Base$1.SceneManager.Base = Base$1;
+
+    return Base$1;
 
 }());

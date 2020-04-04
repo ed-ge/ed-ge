@@ -1,6 +1,6 @@
-import Base from "../Base.js"
+import Component from "../base/Component.js"
 
-class TextComponent extends Base.Component {
+class TextComponent extends Component {
     constructor() {
         super();
         this.text;

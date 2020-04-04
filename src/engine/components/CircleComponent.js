@@ -1,7 +1,7 @@
-import Base from "../Base.js"
+import Component from "../base/Component.js"
 
 
-class CircleComponent extends Base.Component {
+class CircleComponent extends Component {
     
     constructor() {
         super();

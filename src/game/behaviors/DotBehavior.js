@@ -1,5 +1,4 @@
 import Base from "../../engine/Base.js"
-import Prefabs from "../../engine/Prefabs.js"
 import CollisionCircle from "../prefabs/CollisionCircle.js"
 
 export default class DotBehavior extends Base.Behavior {
@@ -26,7 +25,7 @@ export default class DotBehavior extends Base.Behavior {
         else if (collisionObject.gameObject.name == "Rectangle") {
 
             Base.SceneManager.destroy(collisionObject.gameObject);
-            let circle = Base.SceneManager.instantiate(Prefabs.Rectangle, new Base.Point(Math.random() * 400, Math.random() * 400), new Base.Point(1,1), 0);
+            let circle = Base.SceneManager.instantiate(Base.Prefabs.Rectangle, new Base.Point(Math.random() * 400, Math.random() * 400), new Base.Point(1,1), 0);
             circle.scaleX = Math.random() + 1;
             circle.scaleY = Math.random() + 1;
             
