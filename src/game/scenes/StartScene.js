@@ -9,12 +9,7 @@ export default  {
       componentValues: [
         {
           type: "TextComponent",
-          values: [
-            {
-              key: "text",
-              value: "Click the mouse to start the collision game.",
-            }
-          ]
+          values: ["text,Click the mouse to start the collision game."]
         }
       ]
     },
@@ -23,12 +18,7 @@ export default  {
       componentValues: [
         {
           type: "TextComponent",
-          values: [
-            {
-              key: "text",
-              value: "Push 'enter' ('return' on Mac) to start the strategy game.",
-            }
-          ]
+          values: ["text,Push 'enter' ('return' on Mac) to start the strategy game."]
         }
       ]
     },
@@ -37,12 +27,7 @@ export default  {
       componentValues: [
         {
           type: "TextComponent",
-          values: [
-            {
-              key: "text",
-              value: "Push space to start the drawing test game.",
-            }
-          ]
+          values: ["text,Push space to start the drawing test game."]
         }
       ]
     },
@@ -51,12 +36,7 @@ export default  {
       componentValues: [
         {
           type: "TextComponent",
-          values: [
-            {
-              key: "text",
-              value: "Push 'a' to start the scene test game.",
-            }
-          ]
+          values: ["text,Push 'a' to start the scene test game."]
         }
       ]
     },
@@ -65,12 +45,7 @@ export default  {
       componentValues: [
         {
           type: "TextComponent",
-          values: [
-            {
-              key: "text",
-              value: "Push 'r' to start the room test game.",
-            }
-          ]
+          values: ["text,Push 'r' to start the room test game."]
         }
       ]
     },
@@ -79,12 +54,7 @@ export default  {
       componentValues: [
         {
           type: "TextComponent",
-          values: [
-            {
-              key: "text",
-              value: "Push 'c' to start the circle collision test game.",
-            }
-          ]
+          values: ["text,Push 'c' to start the circle collision test game."]
         }
       ]
     },
@@ -93,12 +63,7 @@ export default  {
       componentValues: [
         {
           type: "TextComponent",
-          values: [
-            {
-              key: "text",
-              value: "Push 'm' to start the mouse test game.",
-            }
-          ]
+          values: ["text,Push 'm' to start the mouse test game."]
         }
       ]
     },

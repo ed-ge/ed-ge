@@ -11,12 +11,7 @@ export default {
       componentValues: [
         {
           type: "CameraComponent",
-          values: [
-            {
-              key: "backgroundColor",
-              value: "white"
-            }
-          ]
+          values: ["backgroundColor,white"]
         }
       ],
       components: [
@@ -37,26 +32,11 @@ export default {
           componentValues: [
             {
               type: "RectTransform",
-              values: [
-                {
-                  key: "anchorHorizontal",
-                  value: "left"
-                },
-                {
-                  key: "anchorVertical",
-                  value: "top"
-                },
-              ]
+              values: ["anchorHorizontal, left","anchorVertical,top"]
             },
             {
               type: "TextComponent",
-              values: [
-                {
-                  key: "text",
-                  value: "left top"
-                },
-
-              ]
+              values: ["text, left top"]
             },
           ]
         },
@@ -67,26 +47,11 @@ export default {
           componentValues: [
             {
               type: "RectTransform",
-              values: [
-                {
-                  key: "anchorHorizontal",
-                  value: "center"
-                },
-                {
-                  key: "anchorVertical",
-                  value: "top"
-                },
-              ]
+              values: ["anchorHorizontal,center","anchorVertical,top"]
             },
             {
               type: "TextComponent",
-              values: [
-                {
-                  key: "text",
-                  value: "center top"
-                },
-
-              ]
+              values: ["text,center top"]
             },
           ]
         },
@@ -97,26 +62,11 @@ export default {
           componentValues: [
             {
               type: "RectTransform",
-              values: [
-                {
-                  key: "anchorHorizontal",
-                  value: "right"
-                },
-                {
-                  key: "anchorVertical",
-                  value: "top"
-                },
-              ]
+              values: ["anchorHorizontal, right","anchorVertical,top"]
             },
             {
               type: "TextComponent",
-              values: [
-                {
-                  key: "text",
-                  value: "right top"
-                },
-
-              ]
+              values: ["text,right top"]
             },
           ]
         },
@@ -127,26 +77,11 @@ export default {
           componentValues: [
             {
               type: "RectTransform",
-              values: [
-                {
-                  key: "anchorHorizontal",
-                  value: "left"
-                },
-                {
-                  key: "anchorVertical",
-                  value: "middle"
-                },
-              ]
+              values: ["anchorHorizontal,left","anchorVertical,middle"]
             },
             {
               type: "TextComponent",
-              values: [
-                {
-                  key: "text",
-                  value: "left middle"
-                },
-
-              ]
+              values: ["text, left middle"]
             },
           ]
         },
@@ -157,26 +92,11 @@ export default {
           componentValues: [
             {
               type: "RectTransform",
-              values: [
-                {
-                  key: "anchorHorizontal",
-                  value: "center"
-                },
-                {
-                  key: "anchorVertical",
-                  value: "middle"
-                },
-              ]
+              values: ["anchorHorizontal,center","anchorVertical,middle"]
             },
             {
               type: "TextComponent",
-              values: [
-                {
-                  key: "text",
-                  value: "center middle"
-                },
-
-              ]
+              values: ["text,center middle" ]
             },
           ]
         },
@@ -187,26 +107,11 @@ export default {
           componentValues: [
             {
               type: "RectTransform",
-              values: [
-                {
-                  key: "anchorHorizontal",
-                  value: "right"
-                },
-                {
-                  key: "anchorVertical",
-                  value: "middle"
-                },
-              ]
+              values: ["anchorHorizontal,right","anchorVertical,middle"]
             },
             {
               type: "TextComponent",
-              values: [
-                {
-                  key: "text",
-                  value: "right middle"
-                },
-
-              ]
+              values: ["text,right middle"]
             },
           ]
         },
@@ -217,26 +122,11 @@ export default {
           componentValues: [
             {
               type: "RectTransform",
-              values: [
-                {
-                  key: "anchorHorizontal",
-                  value: "left"
-                },
-                {
-                  key: "anchorVertical",
-                  value: "bottom"
-                },
-              ]
+              values: ["anchorHorizontal,left","anchorVertical,bottom"]
             },
             {
               type: "TextComponent",
-              values: [
-                {
-                  key: "text",
-                  value: "left bottom"
-                },
-
-              ]
+              values: ["text,left bottom"]
             },
           ]
         },
@@ -247,26 +137,11 @@ export default {
           componentValues: [
             {
               type: "RectTransform",
-              values: [
-                {
-                  key: "anchorHorizontal",
-                  value: "center"
-                },
-                {
-                  key: "anchorVertical",
-                  value: "bottom"
-                },
-              ]
+              values: ["anchorHorizontal,center","anchorVertical,bottom"]
             },
             {
               type: "TextComponent",
-              values: [
-                {
-                  key: "text",
-                  value: "center bottom"
-                },
-
-              ]
+              values: ["text,center bottom"]
             },
           ]
         },
@@ -277,26 +152,11 @@ export default {
           componentValues: [
             {
               type: "RectTransform",
-              values: [
-                {
-                  key: "anchorHorizontal",
-                  value: "right"
-                },
-                {
-                  key: "anchorVertical",
-                  value: "bottom"
-                },
-              ]
+              values: ["anchorHorizontal,right","anchorVertical,bottom"]
             },
             {
               type: "TextComponent",
-              values: [
-                {
-                  key: "text",
-                  value: "right bottom"
-                },
-
-              ]
+              values: ["text,right bottom"]
             },
           ]
         },

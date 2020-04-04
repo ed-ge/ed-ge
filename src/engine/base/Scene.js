@@ -105,7 +105,8 @@ class Scene extends NameableParent {
       obj.componentValues.forEach(j => {
         let component = gameObject.getComponent(j.type);
         j.values.forEach(k => {
-          component[k.key] = k.value;
+          let split = k.split(",").map(i=>i.trim());
+          component[split[0]] = split[1];
         })
       })
     }

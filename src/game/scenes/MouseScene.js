@@ -13,10 +13,7 @@ export default {
                 {
                     type: "CameraComponent",
                     values: [
-                        {
-                            key: "backgroundColor",
-                            value: "white"
-                        }
+                        "backgroundColor, white"
                     ]
                 }
             ],

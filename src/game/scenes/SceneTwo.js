@@ -10,12 +10,7 @@ export default {
       componentValues: [
         {
           type: 'TextComponent',
-          values: [
-            {
-              key: "text",
-              value: "A"
-            }
-          ]
+          values: ["text,A"]
         }
       ]
     },
@@ -26,12 +21,7 @@ export default {
       componentValues: [
         {
           type: 'CountDownTimer',
-          values: [
-            {
-              key: "toSceneText",
-              value: "SceneTwoB"
-            }
-          ]
+          values: ["toSceneText,SceneTwoB"]
         }
       ]
     },
