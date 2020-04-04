@@ -33,9 +33,7 @@ export default  {
       ]
     },
     {
-      name: "Space",
-      location: {x:10, y:120},
-      type: "Text",
+      def:"Space, 10, 120, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -49,9 +47,7 @@ export default  {
       ]
     },
     {
-      name: "a",
-      location: {x:10,y:160},
-      type: "Text",
+      def:"a, 10, 160, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -65,9 +61,7 @@ export default  {
       ]
     },
     {
-      name: "r",
-      location: {x:10,y:200},
-      type: "Text",
+      def:"r, 10, 200, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -81,9 +75,7 @@ export default  {
       ]
     },
     {
-      name: "c",
-      location: {x:10,y:240},
-      type: "Text",
+      def:"c, 10, 240, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -97,9 +89,7 @@ export default  {
       ]
     },
     {
-      name: "m",
-      location: {x:10,y:280},
-      type: "Text",
+      def:"m, 10, 280, Text",
       componentValues: [
         {
           type: "TextComponent",

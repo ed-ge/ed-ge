@@ -50,8 +50,8 @@ class Scene extends NameableParent {
   buildChild(obj, parent) {
 
     if (obj.def) {
-      obj.location = {};
-      obj.scale = {};
+      obj.location = {x:0, y:0};
+      obj.scale = {x:1,y:1};
       let split = obj.def.split(",").map(i => i.trim());
       switch (split.length) {
         case 1:
