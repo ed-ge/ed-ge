@@ -10,7 +10,7 @@ function main(gameObjects, gameBehaviors, scenes) {
   let canv, ctx;
 
   scenes.allScenes
-    .forEach(i => this.SceneManager.addScene(new Scene(i.name, i.objects, this.Prefabs, gameBehaviors, this.Components)))
+    .forEach(i => this.SceneManager.addScene(new Scene(i, this.Prefabs, gameBehaviors, this.Components)))
 
   this.SceneManager.currentScene = scenes.startScene;
   canv = document.querySelector("#canv");

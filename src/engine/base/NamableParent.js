@@ -73,6 +73,8 @@ class NameableParent {
         //We didn't find anything
         return null;
     }
+
+    
 }
 
 export default NameableParent;

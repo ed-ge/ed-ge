@@ -2,14 +2,10 @@ export default  {
   name: "StartScene",  
   objects : [
     {
-      name: "Scene listener",
-      location: {x:0, y:0},
-      type: "StartSceneListener",
+      def : "StartSceneListener",
     },
     {
-      name: "Click",
-      location: {x:10, y:40},
-      type: "Text",
+      def : "Click, 10, 40, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -23,9 +19,7 @@ export default  {
       ]
     },
     {
-      name: "Enter",
-      location: {x:10, y:80},
-      type: "Text",
+      def: "Enter, 10, 80, 1, Text",
       componentValues: [
         {
           type: "TextComponent",

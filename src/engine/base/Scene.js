@@ -15,10 +15,13 @@ class Scene extends NameableParent {
    * 
    * @param {String} name Name of this scene
    */
-  constructor(name, objects, prefabs, behaviors, components) {
-    super(name);
+  constructor(definition, prefabs, behaviors, components) {
+    super(definition.name);
     this.children = [];
-    this.objects = objects;
+    this.objects = definition.objects;
+    //Inflate all the definitions
+
+
     this.prefabs = prefabs;
     this.behaviors = behaviors;
     this.components = components;
@@ -32,10 +35,10 @@ class Scene extends NameableParent {
   boot() {
     this.children = [];//Clear the children in case the scene has been built before
 
-    for (let i = 0; i < this.objects.length; i++) {
-      let obj = this.objects[i];
+    this.objects.forEach(obj => {
       this.buildChild(obj, this.children)
-    }
+    })
+
   }
 
 
@@ -46,11 +49,43 @@ class Scene extends NameableParent {
    */
   buildChild(obj, parent) {
 
-    let gameObjectType = this.prefabs["" + obj.type] 
+    if (obj.def) {
+      obj.location = {};
+      obj.scale = {};
+      let split = obj.def.split(",").map(i => i.trim());
+      switch (split.length) {
+        case 1:
+          obj.type = split[0];
+          obj.name = obj.type;
+          break;
+        case 2:
+          [obj.name, obj.type] = split;
+          break;
+        case 3:
+          throw "There is no shorthand object definition with 3 values.";
+        case 4:
+          [obj.name, obj.location.x, obj.location.y, obj.type] = split;
+          break;
+        case 5:
+          [obj.name, obj.location.x, obj.location.y, obj.scale.x, obj.type] = split;
+          obj.scale.y = obj.scale.x;
+          break;
+        case 6:
+          [obj.name, obj.location.x, obj.location.y, obj.scale.x, obj.scale.y, obj.type] = split;
+          break;
+        case 7:
+          [obj.name, obj.location.x, obj.location.y, obj.scale.x, obj.scale.y, obj.rotation, obj.type] = split;
+          break;
+        default:
+          throw "There is not a shorthand object definition with " + split.length + " arguments.";
+      }
+    }
+
+    let gameObjectType = this.prefabs["" + obj.type]
     if (gameObjectType == null) throw "Could now find game object of type " + obj.type;
 
-    obj.scale = obj.scale || {x:1, y:1}
-    
+    obj.location = obj.location || { x: 0, y: 0 }
+    obj.scale = obj.scale || { x: 1, y: 1 }
     obj.rotation = obj.rotation || 0;
 
     let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent);
@@ -62,32 +97,32 @@ class Scene extends NameableParent {
   buildIt(obj, gameObject) {
     //Recursively build children
     if (obj.children) {
-      obj.children.forEach(i=>this.buildChild(i, gameObject.children))
+      obj.children.forEach(i => this.buildChild(i, gameObject.children))
     }
 
     //Set the key-pair values on components already on prefabs
     if (obj.componentValues) {
-      obj.componentValues.forEach(j=>{
+      obj.componentValues.forEach(j => {
         let component = gameObject.getComponent(j.type);
-        j.values.forEach(k=>{
+        j.values.forEach(k => {
           component[k.key] = k.value;
         })
-      })      
+      })
     }
 
     //Add new components
     if (obj.components) {
-      obj.components.forEach(i=>{
+      obj.components.forEach(i => {
         //See if we have a component or behavior with that name
         let componentType = this.components[i.type] || this.behaviors[i.type];
         if (componentType == null) throw "Could not find component " + i.type;
-        
+
         let component = new componentType();
         gameObject.addComponent(component);
-        
+
         if (i.values) {
           //Now set the key-value pairs on the new component we just made
-          i.values.forEach(v=>{
+          i.values.forEach(v => {
             component[v.key] = v.value;
           })
         }
