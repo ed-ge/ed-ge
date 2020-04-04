@@ -41,7 +41,7 @@ const SceneManager = {
         this._currentSceneIndex = +argument;
       }
     }
-    this.scenes[this._currentSceneIndex].start2(this.Base.Behaviors, this.Base.Prefabs, this.Base.Components);
+    this.scenes[this._currentSceneIndex].boot();
   },
 
   addScene(scene) {
