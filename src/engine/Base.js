@@ -6,7 +6,6 @@ import Time from "./base/Time.js"
 import Input from "./base/Input.js"
 import NameableParent from "./base/NamableParent.js"
 import Point from "./base/Point.js"
-import Globals from "./base/Globals.js"
 import SceneManager from "./base/SceneManager.js"
 
 /** Components */
@@ -33,7 +32,11 @@ import Canvas from "./prefabs/Canvas.js"
 import CanvasText from "./prefabs/CanvasText.js"
 import Rectangle from "./prefabs/Rectangle.js"
 import Circle from "./prefabs/Circle.js"
+import ScreenText from "./prefabs/ScreenText.js"
+
+/** The main function */
 import main from "./Main.js"
+
 
 
 
@@ -54,7 +57,7 @@ let Components = {
   RectTransform,
 };
 
-let Prefabs = {
+const Prefabs = {
   EmptyGameObject,
   Text,
   Camera,
@@ -62,6 +65,7 @@ let Prefabs = {
   CanvasText,
   Rectangle,
   Circle,
+  ScreenText,
 };
 
 const Base = {
@@ -69,16 +73,19 @@ const Base = {
   Component,
   GameObject,
   Scene,
-  Time,
-  Input,
+  Time ,
+  Input ,
   NameableParent,
-  Point,
+  Point ,
   SceneManager,
-  Components,
-  Prefabs,
+  Components ,
+  Prefabs ,
   Behaviors:{},
   main,
+
 }
+
+Base.SceneManager.Base = Base;
 
 
 

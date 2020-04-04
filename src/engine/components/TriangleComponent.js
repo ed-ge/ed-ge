@@ -1,4 +1,5 @@
 import Component from "../base/Component.js"
+import Point from "../base/Point.js"
 
 
 class TriangleComponent extends Component {
@@ -32,7 +33,7 @@ class TriangleComponent extends Component {
     }
     update() {
         if(this.points.length == 0){
-            this.points = [new Base.Point(this.pointAX, this.pointAY), new Base.Point(this.pointBX, this.pointBY), new Base.Point(this.pointCX, this.pointCY)];
+            this.points = [new Point(this.pointAX, this.pointAY), new Point(this.pointBX, this.pointBY), new Point(this.pointCX, this.pointCY)];
         }
 
     }

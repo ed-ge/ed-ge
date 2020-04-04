@@ -25,7 +25,7 @@ function main(gameObjects, gameBehaviors, scenes) {
   }
 
   function update() {
-    that.SceneManager.currentScene.update(ctx, that.Collider, that.CollisionHelper);
+    that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
   }
 
   function draw(ctx) {

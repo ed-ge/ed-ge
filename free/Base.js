@@ -320,13 +320,13 @@ var Base = (function () {
                 let tx = 0; //Default to anchor left
                 let ty = 0; //Default to anchor top
 
-                if(rectTransform.anchorHorizontal == RectTransform.CENTER)
+                if(rectTransform.anchorHorizontal == "center")
                     tx = width/2;
-                else if(rectTransform.anchorHorizontal == RectTransform.RIGHT)
+                else if(rectTransform.anchorHorizontal == "right")
                     tx = width;
-                if(rectTransform.anchorVertical == RectTransform.MIDDLE)
+                if(rectTransform.anchorVertical == "middle")
                     ty = height/2;
-                else if(rectTransform.anchorVertical == RectTransform.BOTTOM)
+                else if(rectTransform.anchorVertical == "bottom")
                     ty = height;
 
                 ctx.translate(tx, ty);

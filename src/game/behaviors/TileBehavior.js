@@ -10,7 +10,7 @@ export default class TileBehavior extends Base.Behavior{
         this.hasCharacter = false;    
     }
     update(){
-        let component = this.gameObject.getComponent(Base.RectangleComponent);
+        let component = this.gameObject.getComponent(Base.Components.RectangleComponent);
         if(this.isWater){
             component.fill = "blue";
         }

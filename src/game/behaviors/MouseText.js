@@ -30,9 +30,9 @@ export default class MouseText extends Base.Behavior {
             
         }
 
-        str += Input.mousePosition.x + " " + Input.mousePosition.y + " ";
+        str += Base.Input.mousePosition.x + " " + Base.Input.mousePosition.y + " ";
 
-        str += Input.getMouseScrollWheel();
+        str += Base.Input.getMouseScrollWheel();
 
 
         this.text.text = str;
