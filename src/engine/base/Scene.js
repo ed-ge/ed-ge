@@ -34,7 +34,7 @@ class Scene extends NameableParent {
 
     for (let i = 0; i < this.objects.length; i++) {
       let obj = this.objects[i];
-      this.buildChild2(obj, this.children)
+      this.buildChild(obj, this.children)
     }
   }
 
@@ -44,17 +44,14 @@ class Scene extends NameableParent {
    * @param {String} obj The string giving the declarative syntax
    * @param {NameableParent} parent The parent of the object in the scene tree
    */
-  buildChild2(obj, parent) {
+  buildChild(obj, parent) {
 
-    let gameObjectType = this.prefabs["" + obj.type]
+    let gameObjectType = this.prefabs["" + obj.type] 
     if (gameObjectType == null) throw "Could now find game object of type " + obj.type;
+
+    obj.scale = obj.scale || {x:1, y:1}
     
-    if (!obj.scale)
-      obj.scale = {x:1, y:1};
-     
-    if (!obj.rotation) {
-      obj.rotation = 0;
-    }
+    obj.rotation = obj.rotation || 0;
 
     let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent);
 
@@ -65,7 +62,7 @@ class Scene extends NameableParent {
   buildIt(obj, gameObject) {
     //Recursively build children
     if (obj.children) {
-      obj.children.forEach(i=>this.buildChild2(i, gameObject.children))
+      obj.children.forEach(i=>this.buildChild(i, gameObject.children))
     }
 
     //Set the key-pair values on components already on prefabs
@@ -81,10 +78,9 @@ class Scene extends NameableParent {
     //Add new components
     if (obj.components) {
       obj.components.forEach(i=>{
-        let componentString = i.type;
         //See if we have a component or behavior with that name
-        let componentType = this.components[componentString] || this.behaviors[componentString];
-        if (componentType == null) throw "Could not find component " + componentString;
+        let componentType = this.components[i.type] || this.behaviors[i.type];
+        if (componentType == null) throw "Could not find component " + i.type;
         
         let component = new componentType();
         gameObject.addComponent(component);
