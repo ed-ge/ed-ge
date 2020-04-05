@@ -109,11 +109,14 @@ class Scene extends NameableParent {
     //Set the key-pair values on components already on prefabs
     if (obj.componentValues) {
       obj.componentValues.forEach(j => {
-        let component = gameObject.getComponent(j.type);
-        j.values.forEach(k => {
-          let split = k.split(",").map(i => i.trim());
-          component[split[0]] = split[1];
-        })
+        let split = j.split(",").map(i=>i.trim());
+        let component = gameObject.getComponent(split[0])
+        component[split[1]] = split[2];
+        // let component = gameObject.getComponent(j.type);
+        // j.values.forEach(k => {
+        //   let split = k.split(",").map(i => i.trim());
+        //   component[split[0]] = split[1];
+        // })
       })
     }
 

@@ -7,23 +7,13 @@ export default {
       name: "counter",
       type: 'Text',
       location: { x: 10, y:80},
-      componentValues: [
-        {
-          type: 'TextComponent',
-          values: ["text,B"]
-        }
-      ]
+      componentValues: ['TextComponent,text,B']
     },
     {
       name: "timer",
       type: 'Timer',
       location: { x: 10, y:40},
-      componentValues: [
-        {
-          type: 'CountDownTimer',
-          values: ["toSceneText,SceneTwo"]
-        }
-      ]
+      componentValues: ['CountDownTimer,toSceneText,SceneTwo']
     },
     {
       name: "Main Controller",

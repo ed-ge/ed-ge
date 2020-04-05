@@ -8,12 +8,9 @@ export default {
       scale: { x: 2, y: 2 },
       rotation: 0,
       type: "Camera",
-      componentValues: [
-        {
-          type: "CameraComponent",
-          values: ["backgroundColor,white"]
-        }
-      ],
+      componentValues: ["CameraComponent,backgroundColor,white"],
+
+
       components: [
         {
           type: "CameraMover"
@@ -29,136 +26,55 @@ export default {
           name: "ScreenText",
           location: { x: 50, y: 50 },
           type: "ScreenText",
-          componentValues: [
-            {
-              type: "RectTransform",
-              values: ["anchorHorizontal, left","anchorVertical,top"]
-            },
-            {
-              type: "TextComponent",
-              values: ["text, left top"]
-            },
-          ]
+          componentValues: ["RectTransform,anchorHorizontal, left", "RectTransform,anchorVertical,top", "TextComponent,text, left top"]
         },
         {
           name: "ScreenText",
           location: { x: 0, y: 50 },
           type: "ScreenText",
-          componentValues: [
-            {
-              type: "RectTransform",
-              values: ["anchorHorizontal,center","anchorVertical,top"]
-            },
-            {
-              type: "TextComponent",
-              values: ["text,center top"]
-            },
-          ]
+          componentValues: ["RectTransform,anchorHorizontal,center", "RectTransform,anchorVertical,top", "TextComponent,text,center top"]
         },
         {
           name: "ScreenText",
           location: { x: -150, y: 50 },
           type: "ScreenText",
-          componentValues: [
-            {
-              type: "RectTransform",
-              values: ["anchorHorizontal, right","anchorVertical,top"]
-            },
-            {
-              type: "TextComponent",
-              values: ["text,right top"]
-            },
-          ]
+          componentValues: ["RectTransform,anchorHorizontal, right", "RectTransform,anchorVertical,top", "TextComponent,text,right top"]
         },
         {
           name: "ScreenText",
           location: { x: 50, y: 0 },
           type: "ScreenText",
-          componentValues: [
-            {
-              type: "RectTransform",
-              values: ["anchorHorizontal,left","anchorVertical,middle"]
-            },
-            {
-              type: "TextComponent",
-              values: ["text, left middle"]
-            },
-          ]
+          componentValues: ["RectTransform,anchorHorizontal,left", "RectTransform,anchorVertical,middle", "TextComponent,text, left middle"]
         },
         {
           name: "ScreenText",
           location: { x: 0, y: 0 },
           type: "ScreenText",
-          componentValues: [
-            {
-              type: "RectTransform",
-              values: ["anchorHorizontal,center","anchorVertical,middle"]
-            },
-            {
-              type: "TextComponent",
-              values: ["text,center middle" ]
-            },
-          ]
+          componentValues: ["RectTransform,anchorHorizontal,center", "RectTransform,anchorVertical,middle", "TextComponent,text,center middle"]
         },
         {
           name: "ScreenText",
           location: { x: -150, y: 0 },
           type: "ScreenText",
-          componentValues: [
-            {
-              type: "RectTransform",
-              values: ["anchorHorizontal,right","anchorVertical,middle"]
-            },
-            {
-              type: "TextComponent",
-              values: ["text,right middle"]
-            },
-          ]
+          componentValues: ["RectTransform,anchorHorizontal,right", "RectTransform,anchorVertical,middle", "TextComponent,text,right middle"]
         },
         {
           name: "ScreenText",
           location: { x: 50, y: -50 },
           type: "ScreenText",
-          componentValues: [
-            {
-              type: "RectTransform",
-              values: ["anchorHorizontal,left","anchorVertical,bottom"]
-            },
-            {
-              type: "TextComponent",
-              values: ["text,left bottom"]
-            },
-          ]
+          componentValues: ["RectTransform,anchorHorizontal,left", "RectTransform,anchorVertical,bottom", "TextComponent,text,left bottom"]
         },
         {
           name: "ScreenText",
           location: { x: 0, y: -50 },
           type: "ScreenText",
-          componentValues: [
-            {
-              type: "RectTransform",
-              values: ["anchorHorizontal,center","anchorVertical,bottom"]
-            },
-            {
-              type: "TextComponent",
-              values: ["text,center bottom"]
-            },
-          ]
+          componentValues: ["RectTransform,anchorHorizontal,center", "RectTransform,anchorVertical,bottom", "TextComponent,text,center bottom"]
         },
         {
           name: "ScreenText",
           location: { x: -150, y: -50 },
           type: "ScreenText",
-          componentValues: [
-            {
-              type: "RectTransform",
-              values: ["anchorHorizontal,right","anchorVertical,bottom"]
-            },
-            {
-              type: "TextComponent",
-              values: ["text,right bottom"]
-            },
-          ]
+          componentValues: ["RectTransform,anchorHorizontal,right", "RectTransform,anchorVertical,bottom", "TextComponent,text,right bottom"]
         },
 
       ]
@@ -195,7 +111,7 @@ export default {
           type: "ScaleBehavior",
         },
         {
-          type: "TriangleComponent",
+          type:"TriangleComponent",
           values: [
             {
               key: "fill",
