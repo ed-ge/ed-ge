@@ -1,11 +1,20 @@
-export default  {
-  name: "StartScene",  
-  objects : [
+export default {
+  name: "StartScene",
+  objects: [
     {
-      def : "StartSceneListener",
+      def: "StartSceneListener",
     },
     {
-      def : "Click, 10, 40, Text",
+      def: "Circle",
+      componentValues: [
+        {
+          type: "CircleComponent",
+          values: ["radius, 1"]
+        }
+      ]
+    },
+    {
+      def: "Click, 10, 40, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -23,7 +32,7 @@ export default  {
       ]
     },
     {
-      def:"Space, 10, 120, Text",
+      def: "Space, 10, 120, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -32,7 +41,7 @@ export default  {
       ]
     },
     {
-      def:"a, 10, 160, Text",
+      def: "a, 10, 160, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -41,7 +50,7 @@ export default  {
       ]
     },
     {
-      def:"r, 10, 200, Text",
+      def: "r, 10, 200, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -50,7 +59,7 @@ export default  {
       ]
     },
     {
-      def:"c, 10, 240, Text",
+      def: "c, 10, 240, Text",
       componentValues: [
         {
           type: "TextComponent",
@@ -59,7 +68,7 @@ export default  {
       ]
     },
     {
-      def:"m, 10, 280, Text",
+      def: "m, 10, 280, Text",
       componentValues: [
         {
           type: "TextComponent",
