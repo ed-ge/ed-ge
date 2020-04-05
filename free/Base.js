@@ -636,30 +636,36 @@ var Base = (function () {
             let split = j.split(",").map(i=>i.trim());
             let component = gameObject.getComponent(split[0]);
             component[split[1]] = split[2];
-            // let component = gameObject.getComponent(j.type);
-            // j.values.forEach(k => {
-            //   let split = k.split(",").map(i => i.trim());
-            //   component[split[0]] = split[1];
-            // })
           });
         }
 
         //Add new components
         if (obj.components) {
           obj.components.forEach(i => {
+            if(!i.split){
+              console.log("error");
+            }
+            let split = i.split("|");
+            let type = split.shift();
             //See if we have a component or behavior with that name
-            let componentType = this.components[i.type] || this.behaviors[i.type];
+            let componentType = this.components[type] || this.behaviors[type];
             if (componentType == null) throw "Could not find component " + i.type;
 
             let component = new componentType();
             gameObject.addComponent(component);
 
-            if (i.values) {
-              //Now set the key-value pairs on the new component we just made
-              i.values.forEach(v => {
-                component[v.key] = v.value;
-              });
+            while(split.length >=2){
+              let key= split.shift();
+              let value = split.shift();
+              component[key]=value;
             }
+
+            // if (i.values) {
+            //   //Now set the key-value pairs on the new component we just made
+            //   i.values.forEach(v => {
+            //     component[v.key] = v.value;
+            //   })
+            // }
             if (component.start)
               component.start();
           });
@@ -1164,177 +1170,38 @@ var Base = (function () {
 
     var Text = {
         name: "Text",
-        components:[
-          {
-            type:"TextComponent",
-            values:[
-              {
-                key:"text",
-                value:"10"
-              },
-              {
-                key:"font",
-                value:"20pt Times"
-              },
-              {
-                key:"fill",
-                value:"black"
-              },
-             
-            ]
-          }
-        ]
+        components:["TextComponent|text|10|font|20pt Times|fill|black"]
       
       };
 
     var Camera = {
         name: "Camera",
-        components: [
-            {
-                type: "CameraComponent",
-                values: [
-                    {
-                        key: "backgroundColor",
-                        value: "white"
-                    }
-                ]
-            }
-        ]
+        components: ["CameraComponent|backgroundColor|white"]
     };
 
     var Canvas = {
         name: "Canvas",
-        components: [
-            {
-                type: "CanvasComponent",
-            }
-        ]
+        components: [ "CanvasComponent"]
     };
 
     var CanvasText = {
         name: "CanvasText",
-        components: [
-            {
-                type: "RectTransform",
-            },
-            {
-                type:"TextComponent",
-                values:[
-                  {
-                    key:"text",
-                    value:"10"
-                  },
-                  {
-                    key:"font",
-                    value:"20pt Times"
-                  },
-                  {
-                    key:"fill",
-                    value:"black"
-                  },
-                 
-                ]
-              }
-        ]
+        components: ["RectTransform","TextComponent|text|10|font|20pt Times|fill|black"]
     };
 
     var Rectangle = {
         name: "Rectangle",
-        components: [
-          {
-            type: "RectangleComponent",
-            values: [
-              {
-                key: "width",
-                value: "100"
-              },
-              {
-                key: "height",
-                value: "100"
-              },
-              {
-                key: "fill",
-                value: "red"
-              },
-              {
-                key: "stroke",
-                value: "blue"
-              },
-            ]
-          },
-          {
-            type: "AABBCollider",
-            values: [
-              {
-                key: "width",
-                value: "100",
-              },
-              {
-                key: "height",
-                value: "100"
-              }
-            ]
-          }
-        ]
+        components: ["RectangleComponent|width|100|height|100|fill|red|stroke|blue","AABBCollider|width|100|height|100"]
       };
 
     var Circle = {
         name: "Circle",
-        components:[
-          {
-            type:"CircleComponent",
-            values:[
-              {
-                key:"radius",
-                value:"50"
-              },
-              {
-                key:"fill",
-                value:"rgba(255,255,0,.5)"
-              },
-              {
-                key:"stroke",
-                value:"black"
-              },
-            ]
-          },
-          {
-            type:"CircleCollider",
-            values:[
-              {
-                key:"radius",
-                value:"50"
-              }
-            ]
-          },
-        ]
+        components:["CircleComponent|radius|50|fill|rgba(255,255,0,.5)|stroke|black","CircleCollider|radius|50"]
       };
 
     var ScreenText = {
       name: "ScreenText",
-      components:[
-        {
-          type:"RectTransform",
-        },
-        {
-          type:"TextComponent",
-          values:[
-            {
-              key:"text",
-              value:"10"
-            },
-            {
-              key:"font",
-              value:"20pt Times"
-            },
-            {
-              key:"fill",
-              value:"black"
-            },
-           
-          ]
-        }
-      ]
+      components:["RectTransform","TextComponent|text|10|font|20pt Times|fill|black"]
 
     };
 
