@@ -612,6 +612,14 @@ var Base = (function () {
         obj.scale = obj.scale || { x: 1, y: 1 };
         obj.rotation = obj.rotation || 0;
 
+        obj.location.x = +obj.location.x
+        obj.location.y = +obj.location.y
+
+        obj.scale.x = +obj.scale.x;
+        obj.scale.y = +obj.scale.y;
+
+        obj.rotation = +obj.rotation;
+
         let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent);
 
         gameObject.name = obj.name;
