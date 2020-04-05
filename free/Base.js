@@ -574,8 +574,8 @@ var Base = (function () {
       buildChild(obj, parent) {
 
         if (obj.def) {
-          obj.location = {x:0, y:0};
-          obj.scale = {x:1,y:1};
+          obj.location = { x: 0, y: 0 };
+          obj.scale = { x: 1, y: 1 };
           let split = obj.def.split(",").map(i => i.trim());
           switch (split.length) {
             case 1:
@@ -612,6 +612,12 @@ var Base = (function () {
         obj.scale = obj.scale || { x: 1, y: 1 };
         obj.rotation = obj.rotation || 0;
 
+        obj.location.x = +obj.location.x;
+        obj.location.y = +obj.location.y;
+        obj.scale.x = +obj.scale.x;
+        obj.scale.y = +obj.scale.y;
+        obj.rotation = +obj.rotation;
+
         let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent);
 
         gameObject.name = obj.name;
@@ -629,7 +635,7 @@ var Base = (function () {
           obj.componentValues.forEach(j => {
             let component = gameObject.getComponent(j.type);
             j.values.forEach(k => {
-              let split = k.split(",").map(i=>i.trim());
+              let split = k.split(",").map(i => i.trim());
               component[split[0]] = split[1];
             });
           });
