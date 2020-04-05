@@ -37,11 +37,7 @@ export default {
             location: { x: 100, y: 100 },
             type: "EmptyGameObject",
             children: [],
-            components: [
-                {
-                    type: "BackToStartSceneBehavior",
-                }
-            ]
+            components: [ "BackToStartSceneBehavior"]
         }
 
     ]

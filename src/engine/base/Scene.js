@@ -112,30 +112,36 @@ class Scene extends NameableParent {
         let split = j.split(",").map(i=>i.trim());
         let component = gameObject.getComponent(split[0])
         component[split[1]] = split[2];
-        // let component = gameObject.getComponent(j.type);
-        // j.values.forEach(k => {
-        //   let split = k.split(",").map(i => i.trim());
-        //   component[split[0]] = split[1];
-        // })
       })
     }
 
     //Add new components
     if (obj.components) {
       obj.components.forEach(i => {
+        if(!i.split){
+          console.log("error");
+        }
+        let split = i.split("|");
+        let type = split.shift();
         //See if we have a component or behavior with that name
-        let componentType = this.components[i.type] || this.behaviors[i.type];
+        let componentType = this.components[type] || this.behaviors[type];
         if (componentType == null) throw "Could not find component " + i.type;
 
         let component = new componentType();
         gameObject.addComponent(component);
 
-        if (i.values) {
-          //Now set the key-value pairs on the new component we just made
-          i.values.forEach(v => {
-            component[v.key] = v.value;
-          })
+        while(split.length >=2){
+          let key= split.shift();
+          let value = split.shift();
+          component[key]=value;
         }
+
+        // if (i.values) {
+        //   //Now set the key-value pairs on the new component we just made
+        //   i.values.forEach(v => {
+        //     component[v.key] = v.value;
+        //   })
+        // }
         if (component.start)
           component.start();
       });

@@ -10,11 +10,7 @@ export default {
             rotation: 0,
             type: "Camera",
             componentValues: ["CameraComponent,backgroundColor, white"],
-            components: [
-                {
-                    type: "CameraMover"
-                }
-            ]
+            components: ["CameraMover"]
         },
         {
             name: "Canvas",
@@ -25,11 +21,7 @@ export default {
                     name: "Text",
                     location: { x: 150, y: 50 },
                     type: "Text",
-                    components: [
-                        {
-                            type: "MouseText",
-                        }
-                    ]
+                    components: [ "MouseText"]
                 },
             ]
         },
@@ -37,52 +29,32 @@ export default {
             name: "Rectangle",
             location: { x: 300, y: 300 },
             type: "Rectangle",
-            components: [
-                {
-                    type: "ClickBehavior"
-                }
-            ]
+            components: ["ClickBehavior"]
         },
         {
             name: "Rectangle",
             location: { x: 200, y: 200 },
             type: "Rectangle",
-            components: [
-                {
-                    type: "ClickBehavior"
-                }
-            ]
+            components: [ "ClickBehavior"]
         },
         {
             name: "Rectangle",
             location: { x: 200, y: 300 },
             type: "Rectangle",
-            components: [
-                {
-                    type: "ClickBehavior"
-                }
-            ]
+            components: [ "ClickBehavior"]
         },
         {
             name: "Rectangle",
             location: { x: 300, y: 200 },
             type: "Rectangle",
-            components: [
-                {
-                    type: "ClickBehavior"
-                }
-            ]
+            components: [ "ClickBehavior"]
         },
         {
           name: "Main Controller",
           location: { x: 100, y: 100 },
           type: "EmptyGameObject",
           children: [],
-          components: [
-            {
-              type: "BackToStartSceneBehavior",
-            }
-          ]
+          components: [ "BackToStartSceneBehavior"]
         }
 
     ]
