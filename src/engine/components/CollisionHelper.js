@@ -15,7 +15,6 @@ class CollisionHelper {
         } else if (one.collider instanceof PointCollider && two.collider instanceof CircleCollider) {
             return this.inCollision(two, one);
         } else if (one.collider instanceof AABBCollider && two.collider instanceof PointCollider) {
-            console.log("Testing AABB")
             let diff = one.gameObject.location.diff(two.gameObject.location);
             return Math.abs(diff.x) < one.collider.width / 2 && Math.abs(diff.y) < one.collider.height / 2;
 

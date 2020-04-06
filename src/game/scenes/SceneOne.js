@@ -3,6 +3,11 @@ export default {
 
   objects: [
     {
+      name:"Main Camera",
+      location:{x:0,y:0},
+      type:"Camera",
+    },
+    {
       name: "Rotating Square",
       location: { x: 200, y: 200 },
       type: 'RotatingSquare',
