@@ -3,9 +3,32 @@ export default {
 
   objects: [
     {
-      name:"Main Camera",
-      location:{x:0,y:0},
-      type:"Camera",
+      name: "Main Camera",
+      location: { x: 0, y: 0 },
+      type: "Camera",
+    },
+    {
+      name: "GUI Canvas",
+      location: { x: 0, y: 0 },
+      type: "Canvas",
+      children: [
+        {
+          name: "Upper Left",
+          location: { x: 50, y: 50 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+
+                
+              ]
+            }
+
+          ]
+
+        }
+      ]
     },
     {
       name: "Rotating Square",
@@ -38,12 +61,12 @@ export default {
           type: "TriangleComponent",
           values: [
             {
-              key:"fill",
-              value:"white"
+              key: "fill",
+              value: "white"
             },
             {
-              key:"stroke",
-              value:"red"
+              key: "stroke",
+              value: "red"
             },
             {
               key: "pointAX",

@@ -261,6 +261,18 @@ class Scene extends NameableParent {
 
         ctx.restore();
 
+        /** Now handle the canvas */
+        ctx.save();
+        //Get any references to canvas in root objects
+        
+        //Respond to the case of no canvas
+
+        //Respond to the case of more than one canvas
+
+        //Call draw on the object with the canvas
+
+        ctx.restore();
+
     }
     update(collidableType, collisionHelper) {
         this.children.filter(i => i.update).forEach(i => i.update());

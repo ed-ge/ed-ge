@@ -87,7 +87,24 @@ class GameObject extends NameableParent {
      * deferred rendering.
      */
     draw(ctx) {
+
         ctx.save();
+
+        //Check if we have a RectTransform
+
+        
+
+        // Get the RectTransform
+        
+        //Get the dimensions of our canvas
+
+        //Determine our offset in screen space
+
+        //Translate by that amount
+
+        //Otherwise we are in world space
+
+        //The normal transforms become screen space offsets from the anchor.
         ctx.translate(this.x, this.y);
         ctx.scale(this.scaleX, this.scaleY);
         ctx.rotate(this.rotation);
