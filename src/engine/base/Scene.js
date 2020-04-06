@@ -264,10 +264,22 @@ class Scene extends NameableParent {
         /** Now handle the canvas */
         ctx.save();
         //Get any references to canvas in root objects
+        let canvases = this.children.filter(i=>i.draw && i.hasComponent("CanvasComponent"));
         
         //Respond to the case of no canvas
+        if(canvases.length == 0){
+            console.log("Can't draw to the canvas because you don't have one.")
+        }
 
         //Respond to the case of more than one canvas
+        else{
+            if(canvases.length > 2){
+                console.log("You have too many canvas components, you should only have one.")
+            }
+            let canvas = canvases[0];
+            canvas.draw(ctx);
+
+        }
 
         //Call draw on the object with the canvas
 

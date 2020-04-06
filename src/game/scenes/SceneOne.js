@@ -14,14 +14,62 @@ export default {
       children: [
         {
           name: "Upper Left",
-          location: { x: 50, y: 50 },
+          location: { x: 10, y: 20 },
           type: "ScreenText",
           componentValues: [
             {
               type: "RectTransform",
               values: [
-
+                {
+                  key:"anchorHorizontal",
+                  value:"left",
+                },
+                {
+                  key:"anchorVertical",
+                  value:"top"
+                }
                 
+              ]
+            },
+            {
+              type:"TextComponent",
+              values:[
+                {
+                  key:"text",
+                  value:"Text"
+                }
+              ]
+            }
+
+          ]
+
+        },
+        {
+          name: "Lower Right",
+          location: { x: -100, y: -10 },
+          type: "ScreenText",
+          componentValues: [
+            {
+              type: "RectTransform",
+              values: [
+                {
+                  key:"anchorHorizontal",
+                  value:"right",
+                },
+                {
+                  key:"anchorVertical",
+                  value:"bottom"
+                }
+                
+              ]
+            },
+            {
+              type:"TextComponent",
+              values:[
+                {
+                  key:"text",
+                  value:"Text"
+                }
               ]
             }
 

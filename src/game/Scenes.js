@@ -8,7 +8,7 @@ import RoomScene from "./scenes/RoomScene.js"
 import CircleCollisionScene from "./scenes/CircleCollisionScene.js"
 
 export default {
-  startScene: "StartScene",
+  startScene: "SceneOne",
   allScenes: [
     SceneOne,
     SceneTwo,
