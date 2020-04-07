@@ -36,5 +36,9 @@ export default {
       def: "m, 10, 280, Text",
       componentValues: ["TextComponent,text,Push 'm' to start the mouse test game."]
     },
+    {
+      def:"s, 10, 320, Text",
+      componentValues:["TextComponent, text, Push 's' to start the crowd simulation."]
+    }
   ]
 }

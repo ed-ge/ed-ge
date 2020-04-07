@@ -23,6 +23,8 @@ import TriangleComponent from "./components/TriangleComponent.js"
 import CameraComponent from "./components/CameraComponent.js"
 import CanvasComponent from "./components/CanvasComponent.js"
 import RectTransform from "./components/RectTransform.js"
+import _RVOAgent from "./components/RVOAgent.js"
+import _RVOSimulator from "./components/RVOSimulator.js"
 
 /** Prefabs */
 import EmptyGameObject from "./prefabs/EmptyGameObject.js"
@@ -33,6 +35,8 @@ import CanvasText from "./prefabs/CanvasText.js"
 import Rectangle from "./prefabs/Rectangle.js"
 import Circle from "./prefabs/Circle.js"
 import ScreenText from "./prefabs/ScreenText.js"
+import RVOAgent from "./prefabs/RVOAgent.js"
+import RVOSimulator from "./prefabs/RVOSimulator.js"
 
 /** The main function */
 import main from "./Main.js"
@@ -55,6 +59,8 @@ let Components = {
   CameraComponent,
   CanvasComponent,
   RectTransform,
+  RVOSimulator:_RVOSimulator,
+  RVOAgent:_RVOAgent,
 };
 
 const Prefabs = {
@@ -66,6 +72,8 @@ const Prefabs = {
   Rectangle,
   Circle,
   ScreenText,
+  RVOSimulator,
+  RVOAgent,
 };
 
 const Base = {
