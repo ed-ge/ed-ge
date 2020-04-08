@@ -220,10 +220,70 @@ class Scene extends NameableParent {
         }
     }
     draw(ctx, width, height) {
-        ctx.fillStyle = "cyan";
-        ctx.fillRect(0, 0, width, height)
+        ctx.save();
+        let tx, ty, sx, sy, r, hx, hy;
+        let cameras = this.children.filter(i => i.hasComponent("CameraComponent"))
+        if (cameras.length == 0) {
+            //You really should add a camera
+            //console.log("You should add a camera to the scene. C'mon.")
+            ctx.fillStyle = "cyan";
+            ctx.fillRect(0, 0, width, height)
+            tx = 0;
+            ty = 0;
+            sx = 1
+            sy = 1
+            r = 0;
+            hx = 0;
+            hy = 0;
+        }
+        else {
+            if (cameras.length > 1)
+                console.log("More than 1 camera detected in the scene. You should only have exactly one root game object with a camera component attached.")
+            let camera = cameras[0];
+            let cameraComponent = camera.getComponent("CameraComponent")
+            ctx.fillStyle = cameraComponent.backgroundColor;
+            ctx.fillRect(0, 0, width, height)
+            tx = camera.x;
+            ty = camera.y;
+            sx = camera.scaleX;
+            sy = camera.scaleY;
+            r = camera.rotation;
+            hx = width / 2;
+            hy = height / 2;
+        }
 
-        this.children.filter(i => i.draw).forEach(i => i.draw(ctx));
+        ctx.translate(hx, hy)
+        ctx.rotate(r)
+        ctx.scale(sx, sy)
+        ctx.translate(-tx, -ty)
+
+        this.children.filter(i => i.draw && !i.hasComponent("CanvasComponent")).forEach(i => i.draw(ctx));
+
+        ctx.restore();
+
+        /** Now handle the canvas */
+        ctx.save();
+        //Get any references to canvas in root objects
+        let canvases = this.children.filter(i=>i.draw && i.hasComponent("CanvasComponent"));
+        
+        //Respond to the case of no canvas
+        if(canvases.length == 0){
+            console.log("Can't draw to the canvas because you don't have one.")
+        }
+
+        //Respond to the case of more than one canvas
+        else{
+            if(canvases.length > 2){
+                console.log("You have too many canvas components, you should only have one.")
+            }
+            let canvas = canvases[0];
+            canvas.draw(ctx);
+
+        }
+
+        //Call draw on the object with the canvas
+
+        ctx.restore();
 
     }
     update(collidableType, collisionHelper) {

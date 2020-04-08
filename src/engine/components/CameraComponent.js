@@ -11,6 +11,7 @@ class CameraComponent extends Base.Component {
 
     constructor() {
         super();
+        this.backgroundColor = "white";
        
 
     }

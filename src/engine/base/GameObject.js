@@ -60,18 +60,18 @@ class GameObject extends NameableParent {
      * @param {Number} rotation The scale of the object relative to its parent.
      */
     constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0) {
-            super();
-            [this.x, this.y, this.scaleX, this.scaleY, this.rotation] = [x, y, scaleX, scaleY, rotation];
-        }
-        /**
-         * 
-         * @param {Component} component The component to be added to this game
-         * object's list of components
-         * 
-         * Call this method instead of GameObject.components.push() to add
-         * components so that components will have their gameObject parent member
-         * variable populated.
-         */
+        super();
+        [this.x, this.y, this.scaleX, this.scaleY, this.rotation] = [x, y, scaleX, scaleY, rotation];
+    }
+    /**
+     * 
+     * @param {Component} component The component to be added to this game
+     * object's list of components
+     * 
+     * Call this method instead of GameObject.components.push() to add
+     * components so that components will have their gameObject parent member
+     * variable populated.
+     */
     addComponent(component) {
         this.components.push(component);
         component.gameObject = this;
@@ -87,7 +87,55 @@ class GameObject extends NameableParent {
      * deferred rendering.
      */
     draw(ctx) {
+
         ctx.save();
+
+        //Check if we have a RectTransform
+        if (this.hasComponent("RectTransform")) {
+            let rectTransform = this.getComponent("RectTransform");
+            let anchorHorizontal = rectTransform.anchorHorizontal;
+            let anchorVertical = rectTransform.anchorVertical;
+
+            let screenWidth = ctx.canvas.width;
+            let screenHeight = ctx.canvas.height;
+
+            let tx = 0;
+            let ty = 0;
+
+            switch(anchorHorizontal){
+                case "left":
+                    tx = 0;
+                    break;
+                case "center":
+                    tx = screenWidth/2;
+                    break;
+                case "right":
+                    tx = screenWidth;
+                    break;
+                default:
+                    console.log("You have a had value for anchorHorizontal " + anchorHorizontal);
+            }
+
+            switch(anchorVertical){
+                case "top":
+                    ty = 0;
+                    break;
+                case "middle":
+                    ty = screenHeight/2;
+                    break;
+                case "bottom":
+                    ty = screenHeight;
+                    break;
+                default:
+                    console.log("You have a had value for anchorHorizontal " + anchorVertical);
+            }
+
+            ctx.translate(tx, ty);
+        }
+
+        //Otherwise we are in world space
+
+        //The normal transforms become screen space offsets from the anchor.
         ctx.translate(this.x, this.y);
         ctx.scale(this.scaleX, this.scaleY);
         ctx.rotate(this.rotation);
@@ -106,7 +154,7 @@ class GameObject extends NameableParent {
         this.children.forEach(i => i.update());
     }
     getComponent(type) {
-        if (typeof(type) === 'string' || type instanceof String) {
+        if (typeof (type) === 'string' || type instanceof String) {
             //The user passed us a string, not a type
             //https://stackoverflow.com/a/7772724/10047920
             let component = this.components.find(i => i.constructor.name === type);
@@ -119,7 +167,7 @@ class GameObject extends NameableParent {
         }
     }
     hasComponent(type) {
-        if (typeof(type) === 'string' || type instanceof String) {
+        if (typeof (type) === 'string' || type instanceof String) {
             //The user passed us a string, not a type
             //https://stackoverflow.com/a/7772724/10047920
             let component = this.components.find(i => i.constructor.name === type);
