@@ -1,4 +1,3 @@
-import GameObject from "./GameObject.js";
 
 /**
  * Parent interface for scenes and game objects.
@@ -8,21 +7,14 @@ import GameObject from "./GameObject.js";
 
 class NameableParent {
 
-    /**
-     * An array of children this instance has
-     */
-    children = [];
-
-    /**
-     * The name of this instance
-     */
-    name = "";
+   
 
     /**
      * 
      * @param {String} Name of this instance
      */
     constructor(name) {
+        this.children = [];
         this.name = name;
     }
 
@@ -62,6 +54,21 @@ class NameableParent {
 
 
     }
+
+    /** Recursively find a child by name
+    */
+    findByName(name){
+        if(this.name == name)
+            return this;
+        for(let child of this.children){
+            let result = child.findByName(name);
+            if(result != null) return result;        
+        }
+        //We didn't find anything
+        return null;
+    }
+
+    
 }
 
 export default NameableParent;
