@@ -9,7 +9,7 @@ export default {
             scale: { x: 1, y: 1 },
             rotation: 0,
             type: "Camera",
-            componentValues: ["CameraComponent,backgroundColor, white"],
+            componentValues: ["CameraComponent|backgroundColor|white"],
             components: ["CameraMover"]
         },
         {

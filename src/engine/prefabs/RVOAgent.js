@@ -1,4 +1,4 @@
 export default {
     name: "RVOAgent",
-    components: ["RVOAgent","CircleComponent|radius|10|fill|black"]
+    components: ["RVOAgent","CircleComponent|radius|5|fill|black"]
   }

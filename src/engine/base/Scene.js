@@ -3,6 +3,9 @@ import Point from "./Point.js"
 import GameObject from "./GameObject.js";
 import PointCollider from "../components/PointCollider.js";
 import Input from "./Input.js"
+import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../../lib/common.js"
+import Simulator from "../../../lib/simulator.js"
+
 // import Globals from "./Globals.js"
 
 /**
@@ -25,6 +28,8 @@ class Scene extends NameableParent {
     this.prefabs = prefabs;
     this.behaviors = behaviors;
     this.components = components;
+
+
   }
 
 
@@ -33,13 +38,62 @@ class Scene extends NameableParent {
    * 
    */
   boot() {
+    // Setup up the simulations within the scene
+    this.simulator = new Simulator();
+
+    this.simulator.setAgentDefaults(
+      400, // neighbor distance (min = radius * radius)
+      30, // max neighbors
+      600, // time horizon
+      600, // time horizon obstacles
+      5, // agent radius
+      1.0, // max speed
+      new Vector2(1, 1) // default velocity
+    );
+    this.simulator.setTimeStep(.25);
+    var velocity = new Vector2(1, 1);
+    var radius = 10
+
+    // var NUM_AGENTS = 10;
+    // for (var i = 0; i < NUM_AGENTS; i++) {
+    //   var angle = i * (2 * Math.PI) / NUM_AGENTS;
+    //   var x = Math.cos(angle) * 200;
+    //   var y = Math.sin(angle) * 200;
+    //   this.simulator.addAgent(new Vector2(x, y));
+
+    // }
+
+    // Create goals
+    // var goals = [];
+    // for (var i = 0; i < this.simulator.getNumAgents(); ++i) {
+    //   goals.push(this.simulator.getAgentPosition(i).scale(-1));
+    // }
+    // this.simulator.addGoals(goals);
+
+    // Add (polygonal) obstacle(s), specifying vertices in counterclockwise order.
+    var vertices = [];
+
+    this.simulator.addObstacle(vertices);
+
+    // Process obstacles so that they are accounted for in the simulation.
+    this.simulator.processObstacles();
+
+    // for (var i = 0; i < NUM_AGENTS; i++) {
+    //   this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))));
+
+    // }
+
+
     this.children = [];//Clear the children in case the scene has been built before
 
     this.objects.forEach(obj => {
       this.buildChild(obj, this.children)
     })
 
+
   }
+
+
 
 
   /**
@@ -94,10 +148,10 @@ class Scene extends NameableParent {
     obj.scale.y = +obj.scale.y;
     obj.rotation = +obj.rotation;
 
-    let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent);
+    let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent, obj);
 
-    gameObject.name = obj.name;
-    this.buildIt(obj, gameObject);
+    //gameObject.name = obj.name;
+    //this.buildIt(obj, gameObject);
   }
 
   buildIt(obj, gameObject) {
@@ -109,19 +163,25 @@ class Scene extends NameableParent {
     //Set the key-pair values on components already on prefabs
     if (obj.componentValues) {
       obj.componentValues.forEach(j => {
-        let split = j.split(",").map(i=>i.trim());
+        let split = j.split("|").map(i => i.trim());
         let component = gameObject.getComponent(split[0])
-        component[split[1]] = split[2];
+        let value = split[2];
+        try{
+          value = JSON.parse(split[2])
+        }catch(e){
+          //Looks like it wasn't JSON after all..
+        }
+        component[split[1]] = value;
       })
     }
 
     //Add new components
     if (obj.components) {
       obj.components.forEach(i => {
-        if(!i.split){
+        if (!i.split) {
           console.log("error");
         }
-        let split = i.split("|");
+        let split = i.split("|").map(i=>i.trim());
         let type = split.shift();
         //See if we have a component or behavior with that name
         let componentType = this.components[type] || this.behaviors[type];
@@ -130,10 +190,10 @@ class Scene extends NameableParent {
         let component = new componentType();
         gameObject.addComponent(component);
 
-        while(split.length >=2){
-          let key= split.shift();
+        while (split.length >= 2) {
+          let key = split.shift();
           let value = split.shift();
-          component[key]=value;
+          component[key] = value;
         }
 
         // if (i.values) {
@@ -212,7 +272,16 @@ class Scene extends NameableParent {
 
   }
   update(ctx, collidableType, collisionHelper) {
+    //Update all the objects
     this.children.filter(i => i.update).forEach(i => i.update());
+
+    /**
+     * Now run the simulators
+     */
+
+    //
+    //First we do collisions
+    //
 
     //Add collision behavior
     let collidableChildren = [];
@@ -239,6 +308,8 @@ class Scene extends NameableParent {
         }
       }
     }
+
+    //
     //Now go through and see if the point represented by the mouse collides with any of the colliders
     //
     //First get the world space position of the mouse
@@ -274,12 +345,7 @@ class Scene extends NameableParent {
       point.x = x;
       point.y = y;
 
-      //We have to reverse the transforms from when we draw
-      /*
-      ctx.translate(hx, hy)
-      ctx.rotate(r)
-      ctx.scale(sx, sy)
-      ctx.translate(-tx, -ty)*/
+
 
 
     }
@@ -306,6 +372,27 @@ class Scene extends NameableParent {
         }
       }
     }
+
+    //
+    // Now we simulate the crowds
+    //
+    this.simulator.run();
+
+    // Go back and update the gameObjects represented by the agents
+    let numAgents = this.simulator.getNumAgents();
+    for (let i = 0; i < numAgents; i++) {
+      let gameObject = this.simulator.getAgentGameObject(i);
+      let position = this.simulator.getAgentPosition(i);
+      gameObject.x = position.x;
+      gameObject.y = position.y;
+      if (RVOMath.absSq(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))) < 10) {
+        // Agent is within one radius of its goal, set preferred velocity to zero
+        this.simulator.setAgentPrefVelocity(i, new Vector2(0.0, 0.0));
+      } else {
+        // Agent is far away from its goal, set preferred velocity as unit vector towards agent's goal.
+        this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))));
+      }
+    }
   }
   getCollidable(gameObject, collidableChildren, type) {
 
@@ -329,21 +416,32 @@ class Scene extends NameableParent {
 
 
 
-  instantiate(gameObjectType, location, scale, rotation, parent) {
-    /*let gameObject = new gameObjectType(location.x, location.y);
-  gameObject.rotation = rotation;
-   
-  parent.push(gameObject);
-  gameObject.recursiveCall("start");
-  return gameObject*/
-
+  instantiate(gameObjectType, location, scale, rotation, parent, obj) {
     let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation);
     parent.push(gameObject);
     let prefab = this.prefabs[gameObjectType.name];
     this.buildIt(prefab, gameObject)
     gameObject.name = prefab.name;
+    if(obj){
+      this.buildIt(obj, gameObject)
+    }
     gameObject.recursiveCall("start");
-    return gameObject
+
+    /**
+     * See if the game object needs to be added to any of our simulators
+     */
+
+    if (gameObject.anyComponent("RVOAgent")) {
+      this.simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
+      let RVOAgent = gameObject.getComponent("RVOAgent");
+      let destination = RVOAgent.destination;
+      let goal = new Vector2(destination.x, destination.y)
+      this.simulator.addGoal(goal)
+      let i = this.simulator.getNumAgents() - 1
+
+      this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(this.simulator.getAgentPosition(i))));
+    }
+    return gameObject;
 
   }
 

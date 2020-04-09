@@ -19,7 +19,7 @@ class RVOSimulator extends Component {
 
     update() {
         if (this.setup) {
-            this.simulator.run();
+            //this.simulator.run();
         }
         else {
             this.setup = true;
