@@ -45,8 +45,8 @@ class Scene extends NameableParent {
       30, // neighbor distance (min = radius * radius)
       30, // max neighbors
       100, // time horizon
-      5, // time horizon obstacles
-      5, // agent radius
+      10, // time horizon obstacles
+      1.5, // agent radius
       1.0, // max speed
       new Vector2(1, 1) // default velocity
     );

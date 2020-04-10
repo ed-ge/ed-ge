@@ -4,45 +4,43 @@ export default {
   
     objects: [
       {
-        def:"Main Camera, 100, 100, 2,2, Camera",
+        def:"Main Camera, 15, 0, 8,8, Camera",
         componentValues: ["CameraComponent|backgroundColor|white"],
       },      
       {
-        name: "Main Controller",
-        location: { x: 100, y:100},
-        type: 'EmptyGameObject',
-        children: [],
+        def:"Spawner1, -40, 10, Rectangle",
+        components:["SpawnBehavior|goalX|300|color|yellow"],
+        componentValues:["RectangleComponent|width|5","RectangleComponent|height|25","RectangleComponent|fill|yellow","RectangleComponent|stroke|transparent",
+        "AABBCollider|width|5","AABBCollider|height|25"]
+      },
+      {
+        def:"Spawner2, 90, 10, Rectangle",
+        components:["SpawnBehavior|goalX|-100|color|blue"],
+        componentValues:["RectangleComponent|width|5","RectangleComponent|height|25","RectangleComponent|fill|blue","RectangleComponent|stroke|transparent","AABBCollider|width|5","AABBCollider|height|25"]
+      },
+      {
+        def:"MainController, EmptyGameObject",
         components: ['BackToStartSceneBehavior']
       },
       {
           def:"Controller, 0, 0, RVOSimulator"
       },
       {
-          def:"Agent, 100, 100, RVOAgent",
-          componentValues:['RVOAgent|destination|{"x":300, "y":100}']
+          def:"Agent, 0, 10, RVOAgent",
+          componentValues:['RVOAgent|destination|{"x":300, "y":10}']
       },
       {
-          def:"Agent, 150, 101, RVOAgent",
-          componentValues:['RVOAgent|destination|{"x":0, "y":98}']
+          def:"Agent, 50, 11, RVOAgent",
+          componentValues:['RVOAgent|destination|{"x":-100, "y":11}']
       },
       {
-        def:"Obstacle, 125, 75, 30, 1, RVOObstacle",
+        def:"Obstacle, 25, 0, 30, 1, RVOObstacle",
       },
       
       {
-        def:"Obstacle, 125, 125, 30, 1, RVOObstacle",
+        def:"Obstacle, 25, 25, 30, 1, RVOObstacle",
       },
-      {
-        def:"Spawner1, 60, 100, Rectangle",
-        components:["SpawnBehavior|goalX|300|color|yellow"],
-        componentValues:["RectangleComponent|width|5","RectangleComponent|height|50","RectangleComponent|fill|yellow","RectangleComponent|stroke|transparent",
-        "AABBCollider|width|5","AABBCollider|height|50"]
-      },
-      {
-        def:"Spawner2, 190, 100, Rectangle",
-        components:["SpawnBehavior|goalX|0|color|blue"],
-        componentValues:["RectangleComponent|width|5","RectangleComponent|height|50","RectangleComponent|fill|blue","RectangleComponent|stroke|transparent","AABBCollider|width|5","AABBCollider|height|50"]
-      }
+      
       
     ]
   }
