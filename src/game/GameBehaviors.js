@@ -14,6 +14,7 @@ import ScaleBehavior from "./behaviors/ScaleBehavior.js"
 import CameraMover from "./behaviors/CameraMover.js"
 import MouseText from "./behaviors/MouseText.js"
 import ClickBehavior from "./behaviors/ClickBehavior.js"
+import SpawnBehavior from "./behaviors/SpawnBehavior.js"
 
 export default{
   CircleBehavior,
@@ -32,4 +33,5 @@ export default{
   CameraMover,
   MouseText,
   ClickBehavior,
+  SpawnBehavior,
 }

@@ -44,8 +44,8 @@ class Scene extends NameableParent {
     this.simulator.setAgentDefaults(
       400, // neighbor distance (min = radius * radius)
       30, // max neighbors
-      600, // time horizon
-      600, // time horizon obstacles
+      50, // time horizon
+      50, // time horizon obstacles
       5, // agent radius
       1.0, // max speed
       new Vector2(1, 1) // default velocity
@@ -416,7 +416,7 @@ class Scene extends NameableParent {
 
 
 
-  instantiate(gameObjectType, location, scale, rotation, parent, obj) {
+  instantiate(gameObjectType, location, scale = new Point(1,1), rotation = 0, parent = this, obj = null) {
     let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation);
     parent.push(gameObject);
     let prefab = this.prefabs[gameObjectType.name];
@@ -438,11 +438,40 @@ class Scene extends NameableParent {
       let goal = new Vector2(destination.x, destination.y)
       this.simulator.addGoal(goal)
       let i = this.simulator.getNumAgents() - 1
+      RVOAgent._id = i;
+      this.updateRVOAgent(gameObject);
+     
+    }
+    if(gameObject.anyComponent("RVOObstacle"))
+    {
+      let rectangleComponent = gameObject.getComponent("RectangleComponent");
+      let width = +(rectangleComponent.width * gameObject.scaleX);
+      let height = +(rectangleComponent.height * gameObject.scaleY);
+      let rx = gameObject.x - width/2;
+      let ry = gameObject.y - height/2;
+      
+      let a = new Vector2(rx, ry);
+      let b = new Vector2(rx, ry + height);
+      let c = new Vector2(rx + width, ry + height)
+      let d = new Vector2(rx + width, ry);
+      
+      //this.simulator.addObstacle([a,b]);
+      //this.simulator.addObstacle([b,c]);
+      //this.simulator.addObstacle([c,d]);
+      this.simulator.addObstacle([d,a]);
 
-      this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(this.simulator.getAgentPosition(i))));
+      this.simulator.processObstacles();
     }
     return gameObject;
 
+  }
+  updateRVOAgent(gameObject){
+    let RVOAgent = gameObject.getComponent("RVOAgent");
+    let i = RVOAgent._id;
+    let destination = RVOAgent.destination;
+    let goal = new Vector2(destination.x, destination.y)
+    this.simulator.setGoal(goal, i)
+    this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(this.simulator.getAgentPosition(i))));
   }
 
 

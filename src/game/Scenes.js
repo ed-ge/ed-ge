@@ -10,7 +10,7 @@ import MouseScene from "./scenes/MouseScene.js"
 import RVOScene from "./scenes/RVOScene.js"
 
 export default {
-  startScene: "CircleCollisionScene",
+  startScene: "RVOScene",
   allScenes: [
     SceneOne,
     SceneTwo,

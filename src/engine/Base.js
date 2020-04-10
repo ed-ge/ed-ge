@@ -25,6 +25,7 @@ import CanvasComponent from "./components/CanvasComponent.js"
 import RectTransform from "./components/RectTransform.js"
 import _RVOAgent from "./components/RVOAgent.js"
 import _RVOSimulator from "./components/RVOSimulator.js"
+import _ROVObstacle from "./components/RVOObstacle.js"
 
 /** Prefabs */
 import EmptyGameObject from "./prefabs/EmptyGameObject.js"
@@ -37,6 +38,7 @@ import Circle from "./prefabs/Circle.js"
 import ScreenText from "./prefabs/ScreenText.js"
 import RVOAgent from "./prefabs/RVOAgent.js"
 import RVOSimulator from "./prefabs/RVOSimulator.js"
+import RVOObstacle from "./prefabs/RVOObstacle.js"
 
 /** The main function */
 import main from "./Main.js"
@@ -61,6 +63,7 @@ let Components = {
   RectTransform,
   RVOSimulator:_RVOSimulator,
   RVOAgent:_RVOAgent,
+  RVOObstacle:_ROVObstacle,
 };
 
 const Prefabs = {
@@ -74,6 +77,7 @@ const Prefabs = {
   ScreenText,
   RVOSimulator,
   RVOAgent,
+  RVOObstacle,
 };
 
 const Base = {
