@@ -4,35 +4,22 @@ export default {
 
   objects: [
     {
-      name: "CollisionCircle",
-      location: { x: 50, y: 50 },
-      type: "CollisionCircle"
+      def:"Collision Circle, 50, 50, CollisionCircle"
     },
     {
-      name: "Rectangle",
-      location: { x: 150, y: 50 },
-      type: "Rectangle"
+      def:"Rectangle, 150, 50, Rectangle"
     },
     {
-      name: "dot",
-      location: { x: 200, y: 200 },
-      type: "CollisionDot"
+      def:"dot, 200, 200, CollisionDot"
     },
     {
-      name: "CollisionCircle",
-      location: { x: 250, y: 50 },
-      type: "CollisionCircle"
+      def:"CollisionCircle, 250, 50, CollisionCircle",
     },
     {
-      name: "Rectangle",
-      location: { x: 350, y: 50 },
-      type: "Rectangle"
+      def:"Rectangle, 350, 50, Rectangle"
     },
     {
-      name: "Main Controller",
-      location: { x: 100, y: 100 },
-      type: "EmptyGameObject",
-      children: [],
+      def:"Main Controller, 100, 100, EmptyGameObject",
       components: ["BackToStartSceneBehavior"]
     }
 
