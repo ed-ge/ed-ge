@@ -8,12 +8,14 @@ class RVOAgent extends Component {
     constructor() {
         super();
         this.destination = new Point(0,0)
+        this._id;
 
     }
     
     update() {
 
     }
+    
 }
 
 export default RVOAgent;

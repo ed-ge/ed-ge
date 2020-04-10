@@ -42,10 +42,10 @@ class Scene extends NameableParent {
     this.simulator = new Simulator();
 
     this.simulator.setAgentDefaults(
-      400, // neighbor distance (min = radius * radius)
+      30, // neighbor distance (min = radius * radius)
       30, // max neighbors
-      50, // time horizon
-      50, // time horizon obstacles
+      100, // time horizon
+      5, // time horizon obstacles
       5, // agent radius
       1.0, // max speed
       new Vector2(1, 1) // default velocity
@@ -414,6 +414,27 @@ class Scene extends NameableParent {
     }
   }
 
+  /**
+   * 
+   * @param {*} location Proposed entry point for the game object
+   * @param {*} collider Collider for the proposed game object
+   */
+  canEnterSafely(location, collider, component){
+    let collidableChildren = [];
+    this.getCollidable(this, collidableChildren, this.components.Collider);
+    let proposed = new GameObject();
+    proposed.x = location.x;
+    proposed.y = location.y;
+
+    for (let i = 0; i < collidableChildren.length; i++) {
+      if(collidableChildren[i].gameObject.anyComponent(component))
+        if (this.components.CollisionHelper.inCollision(collidableChildren[i], {collider, gameObject:proposed})) {
+          return false;
+        }
+      }    
+    return true;    
+  }
+
 
 
   instantiate(gameObjectType, location, scale = new Point(1,1), rotation = 0, parent = this, obj = null) {
@@ -455,9 +476,9 @@ class Scene extends NameableParent {
       let c = new Vector2(rx + width, ry + height)
       let d = new Vector2(rx + width, ry);
       
-      //this.simulator.addObstacle([a,b]);
-      //this.simulator.addObstacle([b,c]);
-      //this.simulator.addObstacle([c,d]);
+      this.simulator.addObstacle([a,b]);
+      this.simulator.addObstacle([b,c]);
+      this.simulator.addObstacle([c,d]);
       this.simulator.addObstacle([d,a]);
 
       this.simulator.processObstacles();
@@ -473,6 +494,19 @@ class Scene extends NameableParent {
     this.simulator.setGoal(goal, i)
     this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(this.simulator.getAgentPosition(i))));
   }
+  removeRVOAgent(gameObject){
+    let RVOAgent = gameObject.getComponent("RVOAgent");
+    let i = RVOAgent._id;
+    this.simulator.removeRVOAgent(i);
+    for(let i = 0; i < this.simulator.getNumAgents(); i++){
+      let gameObject = this.simulator.getAgentGameObject(i); 
+      let component = gameObject.getComponent("RVOAgent");
+      component._id = i;
+    }
+
+  }
+
+  
 
 
 }
