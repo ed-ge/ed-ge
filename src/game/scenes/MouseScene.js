@@ -1,61 +1,42 @@
 
 export default {
-    name: "MouseScene",
+  name: "MouseScene",
 
-    objects: [
+  objects: [
+    {
+      def: "Main Camera, 300, 300, Camera",
+      componentValues: ["CameraComponent|backgroundColor|white"],
+      components: ["CameraMover"]
+    },
+    {
+      def: "Canvas",
+      children: [
         {
-            name: "Main Camera",
-            location: { x: 300, y: 300 },
-            scale: { x: 1, y: 1 },
-            rotation: 0,
-            type: "Camera",
-            componentValues: ["CameraComponent|backgroundColor|white"],
-            components: ["CameraMover"]
+          def: "Text, 150, 150, Text",
+          components: ["MouseText"]
         },
-        {
-            name: "Canvas",
-            location: { x: 0, y: 0 },
-            type: "Canvas",
-            children: [
-                {
-                    name: "Text",
-                    location: { x: 150, y: 50 },
-                    type: "Text",
-                    components: [ "MouseText"]
-                },
-            ]
-        },
-        {
-            name: "Rectangle",
-            location: { x: 300, y: 300 },
-            type: "Rectangle",
-            components: ["ClickBehavior"]
-        },
-        {
-            name: "Rectangle",
-            location: { x: 200, y: 200 },
-            type: "Rectangle",
-            components: [ "ClickBehavior"]
-        },
-        {
-            name: "Rectangle",
-            location: { x: 200, y: 300 },
-            type: "Rectangle",
-            components: [ "ClickBehavior"]
-        },
-        {
-            name: "Rectangle",
-            location: { x: 300, y: 200 },
-            type: "Rectangle",
-            components: [ "ClickBehavior"]
-        },
-        {
-          name: "Main Controller",
-          location: { x: 100, y: 100 },
-          type: "EmptyGameObject",
-          children: [],
-          components: [ "BackToStartSceneBehavior"]
-        }
+      ]
+    },
+    {
+      def:"Rectangle, 300, 300, Rectangle",
+      components: ["ClickBehavior"]
+    },
+    {
+      def:"Rectangle, 200, 200, Rectangle",
+      components: ["ClickBehavior"]
+    },
+    {
+      def:"Rectangle, 200, 300, Rectangle",
+      components: ["ClickBehavior"]
+    },
+    {
+      def:"Rectangle, 300, 200, Rectangle",
+      components: ["ClickBehavior"]
+    },
+    {
+      def:"Main Controller, 100, 100, EmptyGameObject",
+      components: ["BackToStartSceneBehavior"]
+    }
 
-    ]
+  ]
 }
