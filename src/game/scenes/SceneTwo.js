@@ -4,22 +4,15 @@ export default {
 
   objects: [
     {
-      name: "counter",
-      type: 'Text',
-      location: { x: 10, y:80},
+      def:"conter, 10, 80, Text",
       componentValues: ['TextComponent|text|A']
     },
     {
-      name: "timer",
-      type: 'Timer',
-      location: { x: 10, y:40},
+      def:"timer, 10, 40, Timer",
       componentValues: ['CountDownTimer|toSceneText|SceneTwoB']
     },
     {
-      name: "Main Controller",
-      location: { x: 100, y:100},
-      type: 'EmptyGameObject',
-      children: [],
+      def:"Main Controller, 100, 100, EmptyGameObject",
       components: ['BackToStartSceneBehavior']
     }
   ]

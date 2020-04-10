@@ -2,9 +2,14 @@ import Base from "../../engine/Base.js"
 
 export default class CountDownTimer extends Base.Behavior {
 
+    constructor(){
+      super();
+      this.toSceneText = "SceneTwoB";
+
+    }
+
     start() {
         this.time = 10;
-        this.toSceneText = "SceneTwoB";
 
     }
     update() {
