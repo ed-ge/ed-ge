@@ -1901,9 +1901,9 @@ var Base = (function () {
             let split = j.split("|").map(i => i.trim());
             let component = gameObject.getComponent(split[0]);
             let value = split[2];
-            try{
+            try {
               value = JSON.parse(split[2]);
-            }catch(e){
+            } catch (e) {
               //Looks like it wasn't JSON after all..
             }
             component[split[1]] = value;
@@ -1916,7 +1916,7 @@ var Base = (function () {
             if (!i.split) {
               console.log("error");
             }
-            let split = i.split("|").map(i=>i.trim());
+            let split = i.split("|").map(i => i.trim());
             let type = split.shift();
             //See if we have a component or behavior with that name
             let componentType = this.components[type] || this.behaviors[type];
@@ -2150,7 +2150,7 @@ var Base = (function () {
        * @param {*} location Proposed entry point for the game object
        * @param {*} collider Collider for the proposed game object
        */
-      canEnterSafely(location, collider, component){
+      canEnterSafely(location, collider, component) {
         let collidableChildren = [];
         this.getCollidable(this, collidableChildren, this.components.Collider);
         let proposed = new GameObject();
@@ -2158,23 +2158,26 @@ var Base = (function () {
         proposed.y = location.y;
 
         for (let i = 0; i < collidableChildren.length; i++) {
-          if(collidableChildren[i].gameObject.anyComponent(component))
-            if (this.components.CollisionHelper.inCollision(collidableChildren[i], {collider, gameObject:proposed})) {
+          if (collidableChildren[i].gameObject.anyComponent(component))
+            if (this.components.CollisionHelper.inCollision(collidableChildren[i], { collider, gameObject: proposed })) {
               return false;
             }
-          }    
-        return true;    
+        }
+        return true;
       }
 
 
 
-      instantiate(gameObjectType, location, scale = new Point(1,1), rotation = 0, parent = this, obj = null) {
+      instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
         let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation);
         parent.push(gameObject);
         let prefab = this.prefabs[gameObjectType.name];
         this.buildIt(prefab, gameObject);
-        gameObject.name = prefab.name;
-        if(obj){
+        if (obj)
+          gameObject.name = obj.name;
+        else
+          gameObject.name = prefab.name;
+        if (obj) {
           this.buildIt(obj, gameObject);
         }
         gameObject.recursiveCall("start");
@@ -2192,32 +2195,31 @@ var Base = (function () {
           let i = this.simulator.getNumAgents() - 1;
           RVOAgent._id = i;
           this.updateRVOAgent(gameObject);
-         
+
         }
-        if(gameObject.anyComponent("RVOObstacle"))
-        {
+        if (gameObject.anyComponent("RVOObstacle")) {
           let rectangleComponent = gameObject.getComponent("RectangleComponent");
           let width = +(rectangleComponent.width * gameObject.scaleX);
           let height = +(rectangleComponent.height * gameObject.scaleY);
-          let rx = gameObject.x - width/2;
-          let ry = gameObject.y - height/2;
-          
+          let rx = gameObject.x - width / 2;
+          let ry = gameObject.y - height / 2;
+
           let a = new Vector2(rx, ry);
           let b = new Vector2(rx, ry + height);
           let c = new Vector2(rx + width, ry + height);
           let d = new Vector2(rx + width, ry);
-          
-          this.simulator.addObstacle([a,b]);
-          this.simulator.addObstacle([b,c]);
-          this.simulator.addObstacle([c,d]);
-          this.simulator.addObstacle([d,a]);
+
+          this.simulator.addObstacle([a, b]);
+          this.simulator.addObstacle([b, c]);
+          this.simulator.addObstacle([c, d]);
+          this.simulator.addObstacle([d, a]);
 
           this.simulator.processObstacles();
         }
         return gameObject;
 
       }
-      updateRVOAgent(gameObject){
+      updateRVOAgent(gameObject) {
         let RVOAgent = gameObject.getComponent("RVOAgent");
         let i = RVOAgent._id;
         let destination = RVOAgent.destination;
@@ -2225,19 +2227,19 @@ var Base = (function () {
         this.simulator.setGoal(goal, i);
         this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(this.simulator.getAgentPosition(i))));
       }
-      removeRVOAgent(gameObject){
+      removeRVOAgent(gameObject) {
         let RVOAgent = gameObject.getComponent("RVOAgent");
         let i = RVOAgent._id;
         this.simulator.removeRVOAgent(i);
-        for(let i = 0; i < this.simulator.getNumAgents(); i++){
-          let gameObject = this.simulator.getAgentGameObject(i); 
+        for (let i = 0; i < this.simulator.getNumAgents(); i++) {
+          let gameObject = this.simulator.getAgentGameObject(i);
           let component = gameObject.getComponent("RVOAgent");
           component._id = i;
         }
 
       }
 
-      
+
 
 
     }
