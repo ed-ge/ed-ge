@@ -2699,7 +2699,7 @@ var Base = (function () {
         components: ["RVOObstacle","RectangleComponent|width|5|height|5|fill|black"]
       };
 
-    function main(gameObjects, gameBehaviors, scenes) {
+    function main(gameObjects, gameBehaviors, scenes, runUpdate=true) {
       //From https://flaviocopes.com/how-to-merge-objects-javascript/
       this.Prefabs = { ...gameObjects, ...this.Prefabs };
       this.Behaviors = gameBehaviors;
@@ -2716,7 +2716,8 @@ var Base = (function () {
 
       function gameLoop() {
         Input.swapUpDownArrays();
-        update();
+        if(runUpdate)
+          update();
         draw(ctx);
       }
 

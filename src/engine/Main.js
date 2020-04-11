@@ -3,7 +3,7 @@ import Input from "./base/Input.js"
 
 
 
-function main(gameObjects, gameBehaviors, scenes) {
+function main(gameObjects, gameBehaviors, scenes, runUpdate=true) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
   this.Prefabs = { ...gameObjects, ...this.Prefabs };
   this.Behaviors = gameBehaviors;
@@ -20,7 +20,8 @@ function main(gameObjects, gameBehaviors, scenes) {
 
   function gameLoop() {
     Input.swapUpDownArrays();
-    update(ctx);
+    if(runUpdate)
+      update(ctx);
     draw(ctx);
   }
 
