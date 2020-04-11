@@ -438,7 +438,7 @@ class Scene extends NameableParent {
 
 
   instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
-    let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation);
+    let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
     parent.push(gameObject);
     let prefab = this.prefabs[gameObjectType.name];
     this.buildIt(prefab, gameObject)

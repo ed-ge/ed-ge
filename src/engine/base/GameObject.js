@@ -61,10 +61,10 @@ class GameObject extends NameableParent {
      * parent. Scales to 1.
      * @param {Number} rotation The scale of the object relative to its parent.
      */
-    constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0) {
+    constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0, prefabName = "") {
         super();
         this.components = [];
-        [this.x, this.y, this.scaleX, this.scaleY, this.rotation] = [x, y, scaleX, scaleY, rotation];
+        [this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.prefabName] = [x, y, scaleX, scaleY, rotation, prefabName];
     }
     /**
      * 
