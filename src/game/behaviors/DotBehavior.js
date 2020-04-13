@@ -3,6 +3,7 @@ import SceneManager from "../SceneManager.js"
 import Point from "../../engine/base/Point.js";
 import CollisionCircle from "../prefabs/CollisionCircle.js"
 import Rectangle from "../prefabs/Rectangle.js";
+import Triangle from "../prefabs/Triangle.js"
 
 export default class DotBehavior extends Base.Behavior {
 
@@ -29,6 +30,12 @@ export default class DotBehavior extends Base.Behavior {
 
             SceneManager.destroy(collisionObject.gameObject);
             SceneManager.instantiate(Rectangle, new Point(Math.random() * 400, Math.random() * 400), 0);
+            
+        }
+        else if (collisionObject.gameObject.name == "Triangle") {
+
+            SceneManager.destroy(collisionObject.gameObject);
+            SceneManager.instantiate(Triangle, new Point(Math.random() * 400, Math.random() * 400), 0);
             
         }
         

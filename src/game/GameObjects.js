@@ -16,6 +16,7 @@ import TestCollisionCircle from "./prefabs/TestCollisionCircle.js"
 import Camera from "./prefabs/Camera.js"
 import Canvas from "./prefabs/Canvas.js"
 import ScreenText from "./prefabs/ScreenText.js"
+import Triangle from "./prefabs/Triangle.js"
 
 export default {
   OscillatingCircle,
@@ -36,4 +37,5 @@ export default {
   Camera,
   Canvas,
   ScreenText,
+  Triangle,
 }

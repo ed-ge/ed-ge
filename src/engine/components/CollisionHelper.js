@@ -1,7 +1,8 @@
 import CircleCollider from "./CircleCollider.js"
 import PointCollider from "./PointCollider.js"
 import AABBCollider from "./AABBCollider.js";
-import Point from "../base/Point.js";
+import TriangleCollider from "./TriangleCollider.js"
+
 
 class CollisionHelper {
 
@@ -27,12 +28,16 @@ class CollisionHelper {
                 return true;
             return false;
         }
-        else if (one.collider instanceof AABBCollider && two.collider instanceof CircleCollider){
-           return false;
-
-
+        else if (one.collider instanceof AABBCollider && two.collider instanceof CircleCollider) {
+            return false;
         }
-        else if(one.collider instanceof CircleCollider && two.collider instanceof AABBCollider){
+        else if (one.collider instanceof CircleCollider && two.collider instanceof AABBCollider) {
+            return this.inCollision(two, one);
+        }
+        else if (one.collider instanceof TriangleCollider && two.collider instanceof PointCollider) {
+            return false;
+        }
+        else if (one.collider instanceof PointCollider && two.collider instanceof TriangleCollider) {
             return this.inCollision(two, one);
         }
 

@@ -38,7 +38,12 @@ export default {
           type: "BackToStartSceneBehavior",
         }
       ]
-    }
+    },
+    {
+      name: "Triangle",
+      location: { x: 300, y: 300 },
+      type: "Triangle",
+    },
 
   ]
 }
