@@ -30,6 +30,12 @@ export default class DotBehavior extends Base.Behavior {
             circle.scaleY = Math.random() + 1;
             
         }
+        else if (collisionObject.gameObject.name == "Triangle") {
+
+            Base.SceneManager.destroy(collisionObject.gameObject);
+            Base.SceneManager.instantiate(Base.SceneManager.currentScene.prefabs.Triangle, new Base.Point(Math.random() * 400, Math.random() * 400), 0);
+            
+        }
         
     }
 }

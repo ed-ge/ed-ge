@@ -19,6 +19,9 @@ export default {
       def:"Rectangle, 350, 50, Rectangle"
     },
     {
+      def:"Triangle, 300, 300, Triangle"
+    },
+    {
       def:"Main Controller, 100, 100, EmptyGameObject",
       components: ["BackToStartSceneBehavior"]
     }

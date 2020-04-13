@@ -2,6 +2,8 @@ import CircleCollider from "./CircleCollider.js"
 import PointCollider from "./PointCollider.js"
 import AABBCollider from "./AABBCollider.js";
 import Point from "../base/Point.js"
+import Line from "../base/Line.js"
+import TriangleCollider from "./TriangleCollider.js"
 
 const CollisionHelper ={
 
