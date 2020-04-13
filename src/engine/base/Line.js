@@ -2,9 +2,9 @@ import Point from "./Point.js"
 
 class Line{
     constructor(one,two){
-        this.a = one.y - two.y;
-        this.b = two.x - one.x;
-        this.c = one.x*two.y - two.x*one.y;        
+        this.a = two.y - one.y;
+        this.b = one.x - two.x;
+        this.c = two.x*one.y - one.x*two.y ;        
     }
     distance(point){
         return this.a * point.x + this.b * point.y + this.c;

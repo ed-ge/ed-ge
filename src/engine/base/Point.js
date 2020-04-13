@@ -9,8 +9,8 @@ class Point {
      * @param {Number} y The y location of the point
      */
     constructor(x = 0, y = 0) {
-        this.x = x;
-        this.y = y;
+        this.x = +x;
+        this.y = +y;
     }
 
     /**
