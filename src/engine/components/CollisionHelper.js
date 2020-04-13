@@ -27,6 +27,14 @@ class CollisionHelper {
                 return true;
             return false;
         }
+        else if (one.collider instanceof AABBCollider && two.collider instanceof CircleCollider){
+           return false;
+
+
+        }
+        else if(one.collider instanceof CircleCollider && two.collider instanceof AABBCollider){
+            return this.inCollision(two, one);
+        }
 
     }
 
