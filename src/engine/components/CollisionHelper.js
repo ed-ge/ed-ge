@@ -2,6 +2,8 @@ import CircleCollider from "./CircleCollider.js"
 import PointCollider from "./PointCollider.js"
 import AABBCollider from "./AABBCollider.js";
 import Point from "../base/Point.js"
+import Line from "../base/Line.js"
+import TriangleCollider from "./TriangleCollider.js"
 
 const CollisionHelper ={
 
@@ -56,6 +58,25 @@ const CollisionHelper ={
         else if(one.collider instanceof CircleCollider && two.collider instanceof AABBCollider)
         {
           return this.inCollision(two, one);
+        }
+          else if (one.collider instanceof TriangleCollider && two.collider instanceof PointCollider) {
+            let pointA = new Point(+one.collider.pointAX + one.gameObject.x, +one.collider.pointAY + one.gameObject.y);
+            let pointB = new Point(+one.collider.pointBX + one.gameObject.x, +one.collider.pointBY + one.gameObject.y);
+            let pointC = new Point(+one.collider.pointCX + one.gameObject.x, +one.collider.pointCY + one.gameObject.y);
+
+            let lineOne = new Line(pointA, pointB);
+            let lineTwo = new Line(pointB, pointC);
+            let lineThree = new Line(pointC, pointA);
+
+            let distanceOne = lineOne.distance(two.gameObject.location)
+            let distanceTwo = lineTwo.distance(two.gameObject.location)
+            let distanceThree = lineThree.distance(two.gameObject.location)
+
+            return (distanceOne > 0 && distanceTwo > 0 && distanceThree > 0)
+            
+        }
+        else if (one.collider instanceof PointCollider && two.collider instanceof TriangleCollider) {
+            return this.inCollision(two, one);
         }
 
     }

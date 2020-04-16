@@ -11,6 +11,7 @@ import Napster from "./prefabs/Napster.js"
 import Tile from "./prefabs/Tile.js"
 import TestCollisionCircle from "./prefabs/TestCollisionCircle.js"
 import Text from "./prefabs/Text.js"
+import Triangle from "./prefabs/Triangle.js"
 
 export default {
   OscillatingCircle,
@@ -26,5 +27,6 @@ export default {
   Tile,
   TestCollisionCircle,
   Text,
+  Triangle,
   
 }
