@@ -279,10 +279,10 @@ var Base = (function () {
          * parent. Scales to 1.
          * @param {Number} rotation The scale of the object relative to its parent.
          */
-        constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0) {
+        constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0, prefabName = "") {
             super();
             this.components = [];
-            [this.x, this.y, this.scaleX, this.scaleY, this.rotation] = [x, y, scaleX, scaleY, rotation];
+            [this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.prefabName] = [x, y, scaleX, scaleY, rotation, prefabName];
         }
         /**
          * 
@@ -2169,7 +2169,7 @@ var Base = (function () {
 
 
       instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
-        let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation);
+        let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
         parent.push(gameObject);
         let prefab = this.prefabs[gameObjectType.name];
         this.buildIt(prefab, gameObject);
@@ -2398,6 +2398,41 @@ var Base = (function () {
 
     }
 
+    class Line$1{
+        constructor(one,two){
+            this.a = two.y - one.y;
+            this.b = one.x - two.x;
+            this.c = two.x*one.y - one.x*two.y ;        
+        }
+        distance(point){
+            return this.a * point.x + this.b * point.y + this.c;
+        }
+    }
+
+    /**
+    Axis - Aligned Bounding Box 
+    */
+
+    class TriangleCollider extends Collider {
+
+
+
+        constructor() {
+            super();
+            this.pointAX;
+            this.pointAY;
+            this.pointBX;
+            this.pointBY;
+            this.pointCX;
+            this.pointCY;
+        }
+        update() {
+            
+
+        }
+
+    }
+
     const CollisionHelper ={
 
          inCollision(one, two) {
@@ -2452,37 +2487,29 @@ var Base = (function () {
             {
               return this.inCollision(two, one);
             }
+              else if (one.collider instanceof TriangleCollider && two.collider instanceof PointCollider) {
+                let pointA = new Point(+one.collider.pointAX + one.gameObject.x, +one.collider.pointAY + one.gameObject.y);
+                let pointB = new Point(+one.collider.pointBX + one.gameObject.x, +one.collider.pointBY + one.gameObject.y);
+                let pointC = new Point(+one.collider.pointCX + one.gameObject.x, +one.collider.pointCY + one.gameObject.y);
 
-        }
+                let lineOne = new Line$1(pointA, pointB);
+                let lineTwo = new Line$1(pointB, pointC);
+                let lineThree = new Line$1(pointC, pointA);
 
-    };
+                let distanceOne = lineOne.distance(two.gameObject.location);
+                let distanceTwo = lineTwo.distance(two.gameObject.location);
+                let distanceThree = lineThree.distance(two.gameObject.location);
 
-    /**
-    Axis - Aligned Bounding Box 
-    */
-
-    class TriangleCollider extends Collider {
-        
-        
-        
-        constructor() {
-            super();
-            this.points = [];
-            this.pointAX;
-            this.pointAY;
-            this.pointBX;
-            this.pointBY;
-            this.pointCX;
-            this.pointCY;
-        }
-        update() {
-            if(this.points.length == 0){
-                this.points = [new Base.Point(this.pointAX, this.pointAY), new Base.Point(this.pointBX, this.pointBY), new Base.Point(this.pointCX, this.pointCY)];
+                return (distanceOne > 0 && distanceTwo > 0 && distanceThree > 0)
+                
+            }
+            else if (one.collider instanceof PointCollider && two.collider instanceof TriangleCollider) {
+                return this.inCollision(two, one);
             }
 
         }
 
-    }
+    };
 
     /**
     Axis - Aligned Bounding Box 
@@ -2699,7 +2726,7 @@ var Base = (function () {
         components: ["RVOObstacle","RectangleComponent|width|5|height|5|fill|black"]
       };
 
-    function main(gameObjects, gameBehaviors, scenes, runUpdate=true) {
+    function main(gameObjects, gameBehaviors, scenes, runUpdate = true) {
       //From https://flaviocopes.com/how-to-merge-objects-javascript/
       this.Prefabs = { ...gameObjects, ...this.Prefabs };
       this.Behaviors = gameBehaviors;
@@ -2716,7 +2743,7 @@ var Base = (function () {
 
       function gameLoop() {
         Input.swapUpDownArrays();
-        if(runUpdate)
+        if (runUpdate)
           update();
         draw(ctx);
       }
@@ -2739,7 +2766,7 @@ var Base = (function () {
       document.body.addEventListener('wheel', wheelevent);
       document.body.addEventListener('contextmenu', contextmenu);
 
-      
+
 
       function keydown(event) {
         if (Input.keys[event.key] != true)
@@ -2795,12 +2822,33 @@ var Base = (function () {
       var can = document.getElementById("canv");
 
       function resizeCanvas() {
-        can.style.width = window.innerWidth + "px";
-        setTimeout(function () {
-          can.style.height = window.innerHeight + "px";
-        }, 0);
-        can.width = window.innerWidth;
-        can.height = window.innerHeight;
+        let parent = can.parentNode;
+        if (parent == document.body) {
+          parent = window;
+          can.style.width = parent.innerWidth + "px";
+
+          can.width = parent.innerWidth;
+          can.height = parent.innerHeight;
+        }
+        else {
+          //Take the canvas out of the parent div sive calculation momentarily
+          can.style.height = "0px";
+          can.style.width = "0px";
+          can.width = 0;
+          can.height = 0;
+          //Then on the next tick put it back in.
+          setTimeout(function () {
+            let width = parent.clientWidth;
+            let height = parent.clientHeight;
+            can.style.width = width + "px";
+            can.style.height = height + "px";
+            can.width = width;
+            can.height = height;
+            //console.log(`${parent.clientWidth}-${parent.innerWidth}-${parent.offsetWidth}`)
+            console.log(`${can.style.height} ${can.height}`);
+          }, 0);
+
+        }
       }
       // Webkit/Blink will fire this on load, but Gecko doesn't.
       window.onresize = resizeCanvas;
@@ -2844,7 +2892,7 @@ var Base = (function () {
       RVOObstacle: RVOObstacle$1,
     };
 
-    const Base$1 = {
+    const Base = {
       Behavior,
       Component,
       GameObject,
@@ -2861,8 +2909,8 @@ var Base = (function () {
 
     };
 
-    Base$1.SceneManager.Base = Base$1;
+    Base.SceneManager.Base = Base;
 
-    return Base$1;
+    return Base;
 
 }());
