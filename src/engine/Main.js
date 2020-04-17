@@ -3,7 +3,7 @@ import Input from "./base/Input.js"
 
 
 
-function main(gameObjects, gameBehaviors, scenes, runUpdate=true) {
+function main(gameObjects, gameBehaviors, scenes, runUpdate = true) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
   this.Prefabs = { ...gameObjects, ...this.Prefabs };
   this.Behaviors = gameBehaviors;
@@ -20,7 +20,7 @@ function main(gameObjects, gameBehaviors, scenes, runUpdate=true) {
 
   function gameLoop() {
     Input.swapUpDownArrays();
-    if(runUpdate)
+    if (runUpdate)
       update(ctx);
     draw(ctx);
   }
@@ -43,7 +43,7 @@ function main(gameObjects, gameBehaviors, scenes, runUpdate=true) {
   document.body.addEventListener('wheel', wheelevent);
   document.body.addEventListener('contextmenu', contextmenu);
 
-  
+
 
   function keydown(event) {
     if (Input.keys[event.key] != true)
@@ -99,12 +99,33 @@ function main(gameObjects, gameBehaviors, scenes, runUpdate=true) {
   var can = document.getElementById("canv");
 
   function resizeCanvas() {
-    can.style.width = window.innerWidth + "px";
-    setTimeout(function () {
-      can.style.height = window.innerHeight + "px";
-    }, 0);
-    can.width = window.innerWidth;
-    can.height = window.innerHeight;
+    let parent = can.parentNode;
+    if (parent == document.body) {
+      parent = window;
+      can.style.width = parent.innerWidth + "px";
+
+      can.width = parent.innerWidth;
+      can.height = parent.innerHeight;
+    }
+    else {
+      //Take the canvas out of the parent div sive calculation momentarily
+      can.style.height = "0px";
+      can.style.width = "0px";
+      can.width = 0
+      can.height = 0;
+      //Then on the next tick put it back in.
+      setTimeout(function () {
+        let width = parent.clientWidth;
+        let height = parent.clientHeight;
+        can.style.width = width + "px";
+        can.style.height = height + "px";
+        can.width = width;
+        can.height = height;
+        //console.log(`${parent.clientWidth}-${parent.innerWidth}-${parent.offsetWidth}`)
+        console.log(`${can.style.height} ${can.height}`)
+      }, 0);
+
+    }
   };
 
   // Webkit/Blink will fire this on load, but Gecko doesn't.
