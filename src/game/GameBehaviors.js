@@ -10,6 +10,8 @@ import DotBehavior from "./behaviors/DotBehavior.js"
 import NapsterBehavior from "./behaviors/NapsterBehavior.js"
 import TileBehavior from "./behaviors/TileBehavior.js"
 import OrbitBehavior from "./behaviors/OrbitBehavior.js"
+import ClickBehavior from "./behaviors/ClickBehavior.js"
+import CameraMover from "./behaviors/CameraMover.js"
 
 export default{
   CircleBehavior,
@@ -24,4 +26,6 @@ export default{
   NapsterBehavior,
   TileBehavior,
   OrbitBehavior,
+  ClickBehavior,
+  CameraMover,
 }

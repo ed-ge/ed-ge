@@ -102,5 +102,21 @@ export default  {
         }
       ]
     },
+    {
+      name: "m",
+      location: {x:10,y:280},
+      type: "Text",
+      componentValues: [
+        {
+          type: "TextComponent",
+          values: [
+            {
+              key: "text",
+              value: "Push 'm' to start the mouse (picking) test game.",
+            }
+          ]
+        }
+      ]
+    },
   ]
 }

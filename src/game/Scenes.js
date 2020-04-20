@@ -6,6 +6,7 @@ import SceneTwoB from "./scenes/SceneTwoB.js"
 import CollisionScene from "./scenes/CollisionScene.js"
 import RoomScene from "./scenes/RoomScene.js"
 import CircleCollisionScene from "./scenes/CircleCollisionScene.js"
+import MouseScene from "./scenes/MouseScene.js"
 
 export default {
   startScene: "StartScene",
@@ -17,6 +18,7 @@ export default {
     SceneTwoB,
     CollisionScene,
     RoomScene,
-    CircleCollisionScene
+    CircleCollisionScene,
+    MouseScene
   ]
 }

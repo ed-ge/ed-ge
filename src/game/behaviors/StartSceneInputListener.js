@@ -30,6 +30,10 @@ export default class TextBehavior extends Engine.Base.Behavior {
         {
             SceneManager.currentScene = "CircleCollisionScene";
         }
+        if(Engine.Base.Input.getKeyUp('m'))
+        {
+            SceneManager.currentScene = "MouseScene";
+        }
 
     }
 }
