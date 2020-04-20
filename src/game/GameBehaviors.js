@@ -12,6 +12,7 @@ import TileBehavior from "./behaviors/TileBehavior.js"
 import OrbitBehavior from "./behaviors/OrbitBehavior.js"
 import ClickBehavior from "./behaviors/ClickBehavior.js"
 import CameraMover from "./behaviors/CameraMover.js"
+import MouseText from "./behaviors/MouseText.js"
 
 export default{
   CircleBehavior,
@@ -28,4 +29,5 @@ export default{
   OrbitBehavior,
   ClickBehavior,
   CameraMover,
+  MouseText,
 }
