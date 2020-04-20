@@ -32,6 +32,10 @@ class Input {
     static frameMouseButtonsUp = [];
 
     //store mouse position {x,y}
+    static mousePosition = {x:0, y:0}
+
+    static mouseScrollDelta = 0;
+    static frameMouseScrollDelta = 0;
 
     //mouseScrollDelta
     //frameScollDelta
@@ -46,8 +50,8 @@ class Input {
 
         this.frameMouseButtonsDown = this.mouseButtonsDown;
         this.frameMouseButtonsUp = this.mouseButtonsUp;
-        //Swap frameScollDelta
-        //Clear mouseScrollDelta
+        this.frameMouseScrollDelta = this.mouseScrollDelta;
+        this.mouseScrollDelta = 0;
         this.mouseButtonsDown = [];
         this.mouseButtonsUp = [];
     }
@@ -91,7 +95,9 @@ class Input {
         return this.mouseButtons[button];
     }
 
-    //Get the mouse scroll wheel
+    static getMouseScrollWheel(){
+        return this.frameMouseScrollDelta;
+    }
 
 
 }

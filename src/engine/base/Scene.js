@@ -1,6 +1,8 @@
 import NameableParent from "./NamableParent.js"
 import Point from "./Point.js"
 import GameObject from "./GameObject.js";
+import PointCollider from "../components/PointCollider.js";
+import Input from "./Input.js";
 
 /**
  * A scene represents a level in a game.
@@ -290,7 +292,7 @@ class Scene extends NameableParent {
     ctx.restore();
 
   }
-  update(collidableType, collisionHelper) {
+  update(collidableType, collisionHelper, ctx) {
     this.children.filter(i => i.update).forEach(i => i.update());
 
     //Add collision behavior
@@ -318,6 +320,68 @@ class Scene extends NameableParent {
         }
       }
     }
+
+    //Look for picking events
+    //
+    //We need to create a collision object for the mouse location
+    //Loop over collidable objects
+    //Find collisions
+
+    let cameras = this.children.filter(i => i.hasComponent("CameraComponent"));
+    let point = {x:0,y:0};
+    point.x = Input.mousePosition.x;
+    point.y = Input.mousePosition.y;
+    if(cameras.length == 0){
+      //Don't change anything
+    }
+    else{
+      let canvas = ctx.canvas;
+      let width = canvas.width;
+      let height = canvas.height;
+
+      let camera = cameras[0]
+      //let cameraComponent = camera.getComponent("CameraComponent");
+      let tx = camera.x;
+      let ty = camera.y;
+      let sx = camera.scaleX;
+      let sy = camera.scaleY;
+      let r = camera.rotation;
+      let hx = width / 2;
+      let hy = height / 2;
+
+      point.x -= hx;
+      point.y -= hy;
+      point.x /=sx;
+      point.y /= sy;
+      point.x += tx;
+      point.y += ty;
+    }
+
+    let colliderObject = {};
+    colliderObject.gameObject = new GameObject();
+    colliderObject.gameObject.x = point.x;
+    colliderObject.gameObject.y = point.y;
+    colliderObject.collider = new PointCollider();
+
+    for(let i = 0; i < collidableChildren.length; i++){
+      if(collisionHelper.inCollision(collidableChildren[i], colliderObject))
+      {
+        let gameObject = collidableChildren[i].gameObject;
+        for(let j = 0; j < gameObject.components.length; j++){
+          let component = gameObject.components[j];
+          if(component.onMouseOver){
+            component.onMouseOver();
+          }
+          if(component.onMouseDown){
+            if(Input.getMouseButtonDown(0)){
+              component.onMouseDown();
+            }
+          }
+        }
+      }
+    }
+
+
   }
   getCollidable(gameObject, collidableChildren, type) {
 

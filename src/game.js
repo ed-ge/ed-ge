@@ -25,7 +25,8 @@ document.body.addEventListener('keypress', keypress);
 document.body.addEventListener('mousedown', mousedown);
 document.body.addEventListener('mouseup', mouseup);
 document.body.addEventListener('contextmenu', contextmenu); //Kill the right mouse context menu
-//Add event listeners for mousemove and wheel
+document.body.addEventListener('mousemove', mousemove);
+document.body.addEventListener('wheel', wheel);
 
 let Input = Engine.Base.Input;
 
@@ -56,6 +57,16 @@ function mouseup(event) {
 function keypress(event) {
   //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
 }
+
+function mousemove(event){
+  Input.mousePosition.x = event.offsetX;
+  Input.mousePosition.y = event.offsetY;
+}
+
+function wheel(event){
+  Input.mouseScrollDelta = event.delta;
+}
+
 // Based on https://stackoverflow.com/questions/381795/how-to-disable-right-click-context-menu-in-javascript
   // Kills the right mouse context menu
   function contextmenu(event) {
@@ -99,12 +110,12 @@ function main() {
 
 function gameLoop() {
   Input.swapUpDownArrays();
-  update();
+  update(ctx);
   draw(ctx);
 }
 
-function update() {
-  SceneManager.currentScene.update(Engine.Components.Collider, Engine.Components.CollisionHelper);
+function update(ctx) {
+  SceneManager.currentScene.update(Engine.Components.Collider, Engine.Components.CollisionHelper, ctx);
 }
 
 function draw(ctx) {

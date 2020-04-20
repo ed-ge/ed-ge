@@ -1,6 +1,6 @@
-import Base from "../Base.js"
+import Component from "../base/Component.js"
 
-class Collider extends Base.Component {
+class Collider extends Component {
     constructor() {
         super();
     }
