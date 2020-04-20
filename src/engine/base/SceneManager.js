@@ -52,7 +52,7 @@ const SceneManager = {
     this.currentScene.destroy(gameObject);
   },
   instantiate(gameObjectType, location, scale, rotation) {
-    return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene.children);
+    return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
   }
 
 

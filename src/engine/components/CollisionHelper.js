@@ -9,7 +9,7 @@ const CollisionHelper ={
 
      inCollision(one, two) {
         if (one.collider instanceof CircleCollider && two.collider instanceof PointCollider) {
-            let distance = one.gameObject.location.distance(two.gameObject.location);
+            let distance = one.gameObject.worldLocation.distance(two.gameObject.location);
 
             if (distance < one.collider.radius)
                 return true;

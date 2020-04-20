@@ -87,7 +87,7 @@ class Scene extends NameableParent {
     this.children = [];//Clear the children in case the scene has been built before
 
     this.objects.forEach(obj => {
-      this.buildChild(obj, this.children)
+      this.buildChild(obj, this)
     })
 
 
@@ -157,7 +157,7 @@ class Scene extends NameableParent {
   buildIt(obj, gameObject) {
     //Recursively build children
     if (obj.children) {
-      obj.children.forEach(i => this.buildChild(i, gameObject.children))
+      obj.children.forEach(i => this.buildChild(i, gameObject))
     }
 
     //Set the key-pair values on components already on prefabs
@@ -439,7 +439,9 @@ class Scene extends NameableParent {
 
   instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
     let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
-    parent.push(gameObject);
+    parent.children.push(gameObject);
+    if(parent instanceof GameObject)
+      gameObject.parent = parent; //Only set the parent if it's not a scene.
     let prefab = this.prefabs[gameObjectType.name];
     this.buildIt(prefab, gameObject)
     if (obj)

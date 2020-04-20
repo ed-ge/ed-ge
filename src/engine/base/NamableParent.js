@@ -24,6 +24,7 @@ class NameableParent {
     constructor(name) {
         this.children = [];
         this.name = name;
+        this.parent = null;
     }
 
     /**

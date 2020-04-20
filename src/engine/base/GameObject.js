@@ -45,9 +45,25 @@ class GameObject extends NameableParent {
     /**
      * Returns the location of the game object as a Point object rather than two
      * variables x and y.
+     * 
      */
     get location() {
         return new Point(this.x, this.y);
+    }
+
+    /**
+     * Returns the world space location of the game object.
+     * This takes into account the transforms of the chain of parents
+     */
+    get worldLocation(){
+        if(!this.parent)
+            return this.location;
+        let parentTransform = parent.getTransform();
+
+    }
+
+    getTransform(){
+        return 1;
     }
 
     /**
