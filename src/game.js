@@ -24,6 +24,8 @@ document.body.addEventListener('keyup', keyup);
 document.body.addEventListener('keypress', keypress);
 document.body.addEventListener('mousedown', mousedown);
 document.body.addEventListener('mouseup', mouseup);
+document.body.addEventListener('contextmenu', contextmenu); //Kill the right mouse context menu
+//Add event listeners for mousemove and wheel
 
 let Input = Engine.Base.Input;
 
@@ -54,6 +56,15 @@ function mouseup(event) {
 function keypress(event) {
   //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
 }
+// Based on https://stackoverflow.com/questions/381795/how-to-disable-right-click-context-menu-in-javascript
+  // Kills the right mouse context menu
+  function contextmenu(event) {
+    if (event.preventDefault != undefined)
+      event.preventDefault();
+    if (event.stopPropagation != undefined)
+      event.stopPropagation();
+    return false;
+  }
 
 //Keep our canvas full screen
 //from https://blog.codepen.io/2013/07/29/full-screen-canvas/
