@@ -8,4 +8,12 @@ export default class ClickBehavior extends Base.Behavior{
     update(){
        
     }
+
+    onMouseOver(){
+        console.log("Mouse Over");
+    }
+
+    onMouseDown(){
+        console.log("Mouse down");
+    }
 }
