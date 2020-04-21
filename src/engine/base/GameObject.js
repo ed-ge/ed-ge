@@ -189,6 +189,7 @@ class GameObject extends NameableParent {
             return false;
         }
     }
+    
     recursiveCall(functionName) {
         for (let i = 0; i < this.components.length; i++) {
             let component = this.components[i];
