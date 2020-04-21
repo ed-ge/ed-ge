@@ -33,7 +33,18 @@ var Base = (function () {
          * you will invariably run into bugs.
          */
         constructor() {
+            this.uuid = this.uuidv4();
             this.gameObject;
+        }
+
+        /**Generate a uuid
+         * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
+         */
+        uuidv4() {
+          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+          });
         }
 
 
@@ -95,6 +106,8 @@ var Base = (function () {
         constructor(name) {
             this.children = [];
             this.name = name;
+            this.parent = null;
+            this.uuid = this.uuidv4();
         }
 
         /**
@@ -143,6 +156,16 @@ var Base = (function () {
             }
             //We didn't find anything
             return null;
+        }
+
+        /**Generate a uuid
+         * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
+         */
+        uuidv4() {
+          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+          });
         }
 
         
@@ -263,9 +286,25 @@ var Base = (function () {
         /**
          * Returns the location of the game object as a Point object rather than two
          * variables x and y.
+         * 
          */
         get location() {
             return new Point(this.x, this.y);
+        }
+
+        /**
+         * Returns the world space location of the game object.
+         * This takes into account the transforms of the chain of parents
+         */
+        get worldLocation(){
+            if(!this.parent)
+                return this.location;
+            let parentTransform = parent.getTransform();
+
+        }
+
+        getTransform(){
+            return 1;
         }
 
         /**
@@ -1822,7 +1861,7 @@ var Base = (function () {
         this.children = [];//Clear the children in case the scene has been built before
 
         this.objects.forEach(obj => {
-          this.buildChild(obj, this.children);
+          this.buildChild(obj, this);
         });
 
 
@@ -1892,7 +1931,7 @@ var Base = (function () {
       buildIt(obj, gameObject) {
         //Recursively build children
         if (obj.children) {
-          obj.children.forEach(i => this.buildChild(i, gameObject.children));
+          obj.children.forEach(i => this.buildChild(i, gameObject));
         }
 
         //Set the key-pair values on components already on prefabs
@@ -2170,7 +2209,9 @@ var Base = (function () {
 
       instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
         let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
-        parent.push(gameObject);
+        parent.children.push(gameObject);
+        if(parent instanceof GameObject)
+          gameObject.parent = parent; //Only set the parent if it's not a scene.
         let prefab = this.prefabs[gameObjectType.name];
         this.buildIt(prefab, gameObject);
         if (obj)
@@ -2305,7 +2346,7 @@ var Base = (function () {
         this.currentScene.destroy(gameObject);
       },
       instantiate(gameObjectType, location, scale, rotation) {
-        return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene.children);
+        return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
       }
 
 
@@ -2437,7 +2478,7 @@ var Base = (function () {
 
          inCollision(one, two) {
             if (one.collider instanceof CircleCollider && two.collider instanceof PointCollider) {
-                let distance = one.gameObject.location.distance(two.gameObject.location);
+                let distance = one.gameObject.worldLocation.distance(two.gameObject.location);
 
                 if (distance < one.collider.radius)
                     return true;
