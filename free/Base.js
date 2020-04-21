@@ -158,6 +158,18 @@ var Base = (function () {
             return null;
         }
 
+        /** Find a NameableParent by UUID */
+        findByUUID(uuid){
+          if(this.uuid == uuid)
+                return this;
+            for(let child of this.children){
+                let result = child.findByUUID(uuid);
+                if(result != null) return result;        
+            }
+            //We didn't find anything
+            return null;
+        }
+
         /**Generate a uuid
          * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
          */
@@ -430,6 +442,7 @@ var Base = (function () {
                 return false;
             }
         }
+        
         recursiveCall(functionName) {
             for (let i = 0; i < this.components.length; i++) {
                 let component = this.components[i];
