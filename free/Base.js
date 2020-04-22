@@ -509,6 +509,7 @@ var Base = (function () {
 
         //The location of the mouse in screen coordinates
          mousePosition : {x:0,y:0},
+         lastFrameMousePosition : {x:0,y:0},
 
         //Handle the wheel state
          mouseScrollDelta : 0,
@@ -521,6 +522,8 @@ var Base = (function () {
             this.frameUp = this.up;
             this.down = [];
             this.up = [];
+
+            this.lastFrameMousePosition = this.mousePosition;
 
             this.frameMouseButtonsDown = this.mouseButtonsDown;
             this.frameMouseButtonsUp = this.mouseButtonsUp;
@@ -574,7 +577,18 @@ var Base = (function () {
         //What is the current state of the scroll wheel?
          getMouseScrollWheel(){
             return this.frameScrollDelta;
+        },
+
+        //What is the mouse position?
+        //We return the previous frame's position for consistency
+        getMousePosition(){
+          return this.lastFrameMousePosition;
+        },
+        getMousePositionDelta(){
+          return new Point(this.mousePosition.x - this.lastFrameMousePosition.x, this.mousePosition.y - this.lastFrameMousePosition.y); 
         }
+
+
 
 
     };
