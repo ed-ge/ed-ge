@@ -46,6 +46,11 @@ class Point {
     diff(otherPoint) {
         return new Point(this.x - otherPoint.x, this.y - otherPoint.y);
     }
+
+    /** Duplicate the point */
+    clone(){
+      return new Point(this.x, this.y);
+    }
 }
 
 export default Point;

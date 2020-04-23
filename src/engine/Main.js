@@ -71,7 +71,7 @@ function main(gameObjects, gameBehaviors, scenes, runUpdate = true) {
 
   function mousemove(event) {
     [Input.mousePosition.x, Input.mousePosition.y] = [event.clientX, event.clientY];
-
+    
   }
 
   function wheelevent(event) {

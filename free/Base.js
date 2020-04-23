@@ -231,6 +231,11 @@ var Base = (function () {
         diff(otherPoint) {
             return new Point(this.x - otherPoint.x, this.y - otherPoint.y);
         }
+
+        /** Duplicate the point */
+        clone(){
+          return new Point(this.x, this.y);
+        }
     }
 
     /**
@@ -508,8 +513,9 @@ var Base = (function () {
          frameMouseButtonsUp : [],
 
         //The location of the mouse in screen coordinates
-         mousePosition : {x:0,y:0},
-         lastFrameMousePosition : {x:0,y:0},
+         mousePosition : new Point(),
+         frameMousePosition: new Point(),
+         lastFrameMousePosition : new Point(),
 
         //Handle the wheel state
          mouseScrollDelta : 0,
@@ -523,7 +529,8 @@ var Base = (function () {
             this.down = [];
             this.up = [];
 
-            this.lastFrameMousePosition = this.mousePosition;
+            this.lastFrameMousePosition = this.frameMousePosition.clone();
+            this.frameMousePosition = this.mousePosition.clone();
 
             this.frameMouseButtonsDown = this.mouseButtonsDown;
             this.frameMouseButtonsUp = this.mouseButtonsUp;
@@ -582,10 +589,10 @@ var Base = (function () {
         //What is the mouse position?
         //We return the previous frame's position for consistency
         getMousePosition(){
-          return this.lastFrameMousePosition;
+          return this.frameMousePosition;
         },
         getMousePositionDelta(){
-          return new Point(this.mousePosition.x - this.lastFrameMousePosition.x, this.mousePosition.y - this.lastFrameMousePosition.y); 
+          return new Point(this.frameMousePosition.x - this.lastFrameMousePosition.x, this.frameMousePosition.y - this.lastFrameMousePosition.y); 
         }
 
 
@@ -2862,7 +2869,7 @@ var Base = (function () {
 
       function mousemove(event) {
         [Input.mousePosition.x, Input.mousePosition.y] = [event.clientX, event.clientY];
-
+        
       }
 
       function wheelevent(event) {

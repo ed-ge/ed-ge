@@ -2,7 +2,7 @@
  * Static holder for the state of the input
  */
 
-import Point from "./Point";
+import Point from "./Point.js";
 
 const Input = {
 
@@ -34,8 +34,9 @@ const Input = {
      frameMouseButtonsUp : [],
 
     //The location of the mouse in screen coordinates
-     mousePosition : {x:0,y:0},
-     lastFrameMousePosition : {x:0,y:0},
+     mousePosition : new Point(),
+     frameMousePosition: new Point(),
+     lastFrameMousePosition : new Point(),
 
     //Handle the wheel state
      mouseScrollDelta : 0,
@@ -49,7 +50,8 @@ const Input = {
         this.down = [];
         this.up = [];
 
-        this.lastFrameMousePosition = this.mousePosition;
+        this.lastFrameMousePosition = this.frameMousePosition.clone();
+        this.frameMousePosition = this.mousePosition.clone();
 
         this.frameMouseButtonsDown = this.mouseButtonsDown;
         this.frameMouseButtonsUp = this.mouseButtonsUp;
@@ -108,10 +110,10 @@ const Input = {
     //What is the mouse position?
     //We return the previous frame's position for consistency
     getMousePosition(){
-      return this.lastFrameMousePosition;
+      return this.frameMousePosition;
     },
     getMousePositionDelta(){
-      return new Point(this.mousePosition.x - this.lastFrameMousePosition.x, this.mousePosition.y - this.lastFrameMousePosition.y); 
+      return new Point(this.frameMousePosition.x - this.lastFrameMousePosition.x, this.frameMousePosition.y - this.lastFrameMousePosition.y); 
     }
 
 

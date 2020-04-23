@@ -5,6 +5,7 @@ export default class MouseText extends Base.Behavior {
     
     start() {
         this.text = this.gameObject.getComponent("TextComponent")
+        this.text.font = "20px sans"
 
     }
     update() {
@@ -30,7 +31,8 @@ export default class MouseText extends Base.Behavior {
             
         }
 
-        str += Base.Input.mousePosition.x + " " + Base.Input.mousePosition.y + " ";
+        str += Base.Input.getMousePosition().x + " " + Base.Input.getMousePosition().y + " ";
+        str += Base.Input.getMousePositionDelta().x + " " + Base.Input.getMousePositionDelta().y + " ";
 
         str += Base.Input.getMouseScrollWheel();
 
