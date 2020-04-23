@@ -8,9 +8,10 @@ import RoomScene from "./scenes/RoomScene.js"
 import CircleCollisionScene from "./scenes/CircleCollisionScene.js"
 import MouseScene from "./scenes/MouseScene.js"
 import RVOScene from "./scenes/RVOScene.js"
+import TouchScene from "./scenes/TouchScene.js"
 
 export default {
-  startScene: "MouseScene",
+  startScene: "TouchScene",
   allScenes: [
     SceneOne,
     SceneTwo,
@@ -22,5 +23,6 @@ export default {
     CircleCollisionScene,
     MouseScene,
     RVOScene,
+    TouchScene,
   ]
 }

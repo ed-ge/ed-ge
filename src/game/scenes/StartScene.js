@@ -39,6 +39,10 @@ export default {
     {
       def:"s, 10, 320, Text",
       componentValues:["TextComponent| text| Push 's' to start the crowd simulation."]
+    },
+    {
+      def:"t, 10, 360, Text",
+      componentValues:["TextComponent| text| Push 't' to start the touch test game."]
     }
   ]
 }

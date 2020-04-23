@@ -37,6 +37,10 @@ export default class TextBehavior extends Base.Behavior {
         {
             Base.SceneManager.currentScene = "RVOScene";
         }
+        if(Base.Input.getKeyUp('t'))
+        {
+            Base.SceneManager.currentScene = "TouchScene";
+        }
 
         let clickGameObject = Base.SceneManager.currentScene.findByName("Click");
         if(clickGameObject != null){
