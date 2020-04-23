@@ -88,23 +88,39 @@ function main(gameObjects, gameBehaviors, scenes, runUpdate = true) {
   }
 
   function touchstart(event){
-    event.preventDefault();//Don't treat this as a mouse event
-    console.log("Touch start");
+    //event.preventDefault();//Don't treat this as a mouse event
+    Input.touches = copyTouches(event.changedTouches);
+    Input.touchesStart = copyTouches(event.changedTouches); //Simple deep copy
   }
 
   function touchend(event){
-    event.preventDefault();//Don't treat this as a mouse event
-    console.log("Touch End");
+    //event.preventDefault();//Don't treat this as a mouse event
+    Input.touches = copyTouches(event.changedTouches);
+    Input.touchesEnd = copyTouches(event.changedTouches); //Simple deep copy
   }
 
   function touchcancel(event){
-    event.preventDefault();//Don't treat this as a mouse event
+    //event.preventDefault();//Don't treat this as a mouse event
     console.log("Touch Cancel")
   }
 
   function touchmove(event){
-    event.preventDefault();//Don't treat this as a mouse event
-    console.log("Touch Move")
+    Input.touchPositions = copyTouches(event.changedTouches);
+    
+  }
+
+  function copyTouches(touches){
+    let toReturn = [];
+    for(let i = 0; i < touches.length; i++){
+      let touch = touches[i];
+      let toAdd = {}
+      for(let j in touch){
+        toAdd[j] = touch[j]
+      }
+
+      toReturn.push(toAdd);
+    }
+    return toReturn;
   }
 
   // Based on https://stackoverflow.com/questions/381795/how-to-disable-right-click-context-menu-in-javascript

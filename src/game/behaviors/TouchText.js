@@ -2,43 +2,29 @@ import Base from "../../engine/Base.js"
 
 
 export default class TouchText extends Base.Behavior {
-    
-    start() {
-        this.text = this.gameObject.getComponent("TextComponent")
-        this.text.font = "20px sans"
 
-    }
-    update() {
-        this.text.text = "Hello, World";
+  start() {
+    this.text = this.gameObject.getComponent("TextComponent")
+    this.text.font = "20px sans"
 
-        let str = "";
+  }
+  update() {
+    this.text.text = "Hello, World";
 
-        for (let i = 0; i < 3; i++) {
-
-
-            if (Base.Input.getMouseButtonUp(i)) {
-                str += i+" up just now "
-            }
-            else if (Base.Input.getMouseButtonDown(i)) {
-                str += i+" down just now ";
-            }
-            else{
-                str += i + " not changing ";
-            }
-
-            let state = Base.Input.getMouseButton(i)
-                str += i + " reports state " + state + " ";
-            
-        }
-
-        str += Base.Input.getMousePosition().x + " " + Base.Input.getMousePosition().y + " ";
-        str += Base.Input.getMousePositionDelta().x + " " + Base.Input.getMousePositionDelta().y + " ";
-
-        str += Base.Input.getMouseScrollWheel();
+    let str = "";
+    if (Base.Input.getTouchesStart().length > 0)
+      str += JSON.stringify(Base.Input.getTouchesStartSimple()) + " "
+    if (Base.Input.getTouchesEndSimple().length > 0)
+      str += JSON.stringify(Base.Input.getTouchesEndSimple()) + " "
+    if (Base.Input.getTouchPositionsSimple().length > 0)
+      str += JSON.stringify(Base.Input.getTouchPositionsSimple()) + " "
+    if (Base.Input.getTouchPositionDeltasSimple().length > 0)
+      str += JSON.stringify(Base.Input.getTouchPositionDeltasSimple()) + " "
+    str += JSON.stringify(Base.Input.getTouchesSimple()) + " "
 
 
-        this.text.text = str;
+    this.text.text = str;
 
-    }
+  }
 
 }
