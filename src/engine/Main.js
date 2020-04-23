@@ -42,6 +42,10 @@ function main(gameObjects, gameBehaviors, scenes, runUpdate = true) {
   document.body.addEventListener('mousemove', mousemove);
   document.body.addEventListener('wheel', wheelevent);
   document.body.addEventListener('contextmenu', contextmenu);
+  document.body.addEventListener("touchstart", touchstart, false);
+  document.body.addEventListener("touchend", touchend, false);
+  document.body.addEventListener("touchcancel", touchcancel, false);
+  document.body.addEventListener("touchmove", touchmove, false);
 
 
 
@@ -81,6 +85,26 @@ function main(gameObjects, gameBehaviors, scenes, runUpdate = true) {
 
   function keypress(event) {
     //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
+  }
+
+  function touchstart(event){
+    event.preventDefault();//Don't treat this as a mouse event
+    console.log("Touch start");
+  }
+
+  function touchend(event){
+    event.preventDefault();//Don't treat this as a mouse event
+    console.log("Touch End");
+  }
+
+  function touchcancel(event){
+    event.preventDefault();//Don't treat this as a mouse event
+    console.log("Touch Cancel")
+  }
+
+  function touchmove(event){
+    event.preventDefault();//Don't treat this as a mouse event
+    console.log("Touch Move")
   }
 
   // Based on https://stackoverflow.com/questions/381795/how-to-disable-right-click-context-menu-in-javascript

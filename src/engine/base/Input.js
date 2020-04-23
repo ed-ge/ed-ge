@@ -43,6 +43,11 @@ const Input = {
      frameScrollDelta: 0,
 
 
+     //-------------------------------------------------
+     // Touch handling members
+     //-------------------------------------------------
+
+
 
      swapUpDownArrays() {
         this.frameDown = this.down;
