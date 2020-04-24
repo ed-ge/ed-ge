@@ -653,7 +653,7 @@ var Base = (function () {
       //   return this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
       // },
       getTouchMove(){    
-        if(this.frameTouchPositions.length == 0 || this.lastFrameTouchPositions.length == 0) return [];
+        if(this.frameTouchPositions.length == 0 || this.lastFrameTouchPositions.length == 0) return [{x:0,y:0}];
         let frames = this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
         let currents = this.lastFrameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
         let toReturn = [];
