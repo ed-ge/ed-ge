@@ -141,33 +141,33 @@ const Input = {
 
   //Touch API----------------------------------
   //
-  getTouchesStart() {
+  getTouchesStartFull() {
     return this.frameTouchesStart;
   },
-  getTouchesEnd() {
+  getTouchesEndFull() {
     return this.frameTouchesEnd;
   },
-  getTouches() {
+  getTouchesFull() {
     return this.touches;
   },
   getTouchPositions() {
     return this.touchesMoved;
   },
-  getTouchesStartSimple() {
+  getTouchesStart() {
     return this.frameTouchesStart.map(i => { return { x: i.clientX, y: i.clientY } });
   },
-  getTouchesEndSimple() {
+  getTouchesEnd() {
     return this.frameTouchesEnd.map(i => { return { x: i.clientX, y: i.clientY } });
   },
   getTouchesSimple() {
     return this.touches.map(i => { return { x: i.clientX, y: i.clientY } });
   },
-  getTouchPositionsSimple() {
+  getTouchPositions() {
     return this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
   },
-  getTouchPositionDeltasSimple(){
+  getTouchMove(){
     
-    if(this.frameTouchPositions.length < 1 && this.lastFrameTouchPositions.length < 1) return[];
+    if(this.frameTouchPositions.length == 0 || this.lastFrameTouchPositions.length == 0) return[];
     let frames = this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
     let currents = this.lastFrameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
     let toReturn = []
@@ -176,8 +176,6 @@ const Input = {
       let current = currents[i]
       toReturn.push(new Point(frame.x - current.x, frame.y - current.y))
     }
-    if(toReturn.length > 0)
-      console.log(JSON.stringify(toReturn) + " " + Math.random());
     return toReturn;
   }
 

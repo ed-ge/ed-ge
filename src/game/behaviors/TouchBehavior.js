@@ -6,7 +6,7 @@ export default class ClickBehavior extends Base.Behavior {
 
   }
   update() {
-    let delta = Base.Input.getTouchPositionDeltasSimple();
+    let delta = Base.Input.getTouchMove();
     if (delta && delta.length > 0) {
       this.gameObject.x += delta[0].x;
       this.gameObject.y += delta[0].y;
