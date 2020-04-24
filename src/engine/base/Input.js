@@ -78,7 +78,7 @@ const Input = {
     this.frameTouchesStart = this.touchesStart;
     this.frameTouchesEnd = this.touchesEnd;
     this.lastFrameTouchPositions = this.frameTouchPositions;
-    this.frameTouchPositions = this.touchPositions;
+    this.frameTouchPositions = this.touches;
     this.touchesStart = [];
     this.touchesEnd = [];
     this.touchPositions = [];
@@ -144,29 +144,25 @@ const Input = {
   getTouchesStartFull() {
     return this.frameTouchesStart;
   },
-  getTouchesEndFull() {
-    return this.frameTouchesEnd;
-  },
-  getTouchesFull() {
-    return this.touches;
-  },
-  getTouchPositions() {
-    return this.touchesMoved;
-  },
   getTouchesStart() {
     return this.frameTouchesStart.map(i => { return { x: i.clientX, y: i.clientY } });
+  },
+  getTouchesEndFull() {
+    return this.frameTouchesEnd;
   },
   getTouchesEnd() {
     return this.frameTouchesEnd.map(i => { return { x: i.clientX, y: i.clientY } });
   },
+  getTouchesFull() {
+    return this.touches;
+  },
   getTouchesSimple() {
     return this.touches.map(i => { return { x: i.clientX, y: i.clientY } });
-  },
+  },  
   getTouchPositions() {
     return this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
   },
-  getTouchMove(){
-    
+  getTouchMove(){    
     if(this.frameTouchPositions.length == 0 || this.lastFrameTouchPositions.length == 0) return[];
     let frames = this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
     let currents = this.lastFrameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });

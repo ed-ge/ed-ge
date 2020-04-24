@@ -16,7 +16,9 @@ import MouseText from "./behaviors/MouseText.js"
 import ClickBehavior from "./behaviors/ClickBehavior.js"
 import SpawnBehavior from "./behaviors/SpawnBehavior.js"
 import TouchText from "./behaviors/TouchText.js"
-import TouchBehavior from "./behaviors/TouchBehavior.js"
+import TouchDelta from "./behaviors/TouchDelta.js"
+import TouchStart from "./behaviors/TouchStart.js"
+import TouchEnd from "./behaviors/TouchEnd.js"
 
 export default{
   CircleBehavior,
@@ -37,5 +39,7 @@ export default{
   ClickBehavior,
   SpawnBehavior,
   TouchText,
-  TouchBehavior,
+  TouchDelta,
+  TouchStart,
+  TouchEnd,
 }

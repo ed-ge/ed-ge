@@ -105,7 +105,7 @@ function main(gameObjects, gameBehaviors, scenes, runUpdate = true) {
   }
 
   function touchmove(event){
-    Input.touchPositions = copyTouches(event.changedTouches);
+    Input.touches = copyTouches(event.changedTouches);
     
   }
 

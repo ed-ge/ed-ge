@@ -1,6 +1,6 @@
 import Base from "../../engine/Base.js"
 
-export default class ClickBehavior extends Base.Behavior {
+export default class TouchDelta extends Base.Behavior {
   start() {
     this.scale = 200;
 

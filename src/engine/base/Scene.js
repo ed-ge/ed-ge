@@ -374,6 +374,71 @@ class Scene extends NameableParent {
     }
 
     //
+    //Now go through and see if the point represented by the touch point collides with any of the colliders
+    //
+    //First get the world space position of the touch
+    if (Input.getTouchPositions() && Input.getTouchPositions().length > 0) {
+      let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
+      let point = { x: 0, y: 0 };
+      point.x = parseInt(Input.getTouchPositions()[0].x);
+      point.y = parseInt(Input.getTouchPositions()[0].y);
+      if (cameras.length == 0) {
+      }
+      else {
+        /* point = Input.mousePosition;*/
+        //Put in transform code here
+        let camera = cameras[0];
+        
+        let tx = camera.x;
+        let ty = camera.y;
+        let sx = camera.scaleX;
+        let sy = camera.scaleY;
+        let r = camera.rotation;
+        let hx = ctx.canvas.width / 2;
+        let hy = ctx.canvas.height / 2;
+
+        let x = point.x;
+        let y = point.y;
+        x -= hx;
+        y -= hy;
+        x /= sx;
+        y /= sy;
+        x += tx;
+        y += ty;
+
+        point.x = x;
+        point.y = y;
+      }
+
+      let colliderObject = {};
+      colliderObject.gameObject = new GameObject();
+      colliderObject.gameObject.x = point.x;
+      colliderObject.gameObject.y = point.y;
+      colliderObject.collider = new PointCollider();
+
+      for (let i = 0; i < collidableChildren.length; i++) {
+        if (collisionHelper.inCollision(collidableChildren[i], colliderObject)) {
+          let gameObjectOne = collidableChildren[i].gameObject;
+
+          //Now loop over all the behaviors too see if any are listening for collision events
+          for (let i = 0; i < gameObjectOne.components.length; i++) {
+            let component = gameObjectOne.components[i];
+            if (component.onMouseOver)
+              component.onTouchOver();
+            if (component.onTouchStart) {
+              if (Input.getTouchesStart() && Input.getTouchesStart().length > 0)
+                component.onTouchStart()
+            }
+            if (component.onTouchEnd) {
+              if (Input.getTouchesEnd() && Input.getTouchesEnd().length > 0)
+                component.onTouchEnd()
+            }
+          }
+        }
+      }
+    }
+
+    //
     // Now we simulate the crowds
     //
     this.simulator.run();
@@ -440,7 +505,7 @@ class Scene extends NameableParent {
   instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
     let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
     parent.children.push(gameObject);
-    if(parent instanceof GameObject)
+    if (parent instanceof GameObject)
       gameObject.parent = parent; //Only set the parent if it's not a scene.
     let prefab = this.prefabs[gameObjectType.name];
     this.buildIt(prefab, gameObject)

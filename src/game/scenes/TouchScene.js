@@ -19,7 +19,15 @@ export default {
     },
     {
       def:"Rectangle, 300, 300, Rectangle",
-      components: ["TouchBehavior"]
+      components: ["TouchDelta"]
+    },
+    {
+      def:"Rectangle, 400, 400, Rectangle",
+      components: ["TouchStart"]
+    },
+    {
+      def:"Rectangle, 500, 500, Rectangle",
+      components: ["TouchEnd"]
     },
     
     {
