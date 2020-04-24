@@ -557,10 +557,17 @@ var Base = (function () {
         this.frameTouchesStart = this.touchesStart;
         this.frameTouchesEnd = this.touchesEnd;
         this.lastFrameTouchPositions = this.frameTouchPositions;
-        this.frameTouchPositions = this.touchPositions;
+        this.frameTouchPositions = this.touches;
         this.touchesStart = [];
         this.touchesEnd = [];
         this.touchPositions = [];
+
+        // if(this.frameTouchesEnd.length != 0){
+        //   console.log("Restart")
+        //   this.touches = [];
+        //   this.lastFrameTouchPositions = [];
+        //   this.frameTouchPositions = [];
+        // }
 
 
       },
@@ -623,29 +630,29 @@ var Base = (function () {
       getTouchesStartFull() {
         return this.frameTouchesStart;
       },
+      getTouchesStart() {
+        return this.frameTouchesStart.map(i => { return { x: i.clientX, y: i.clientY } });
+      },
       getTouchesEndFull() {
         return this.frameTouchesEnd;
+      },
+      getTouchesEnd() {
+        if(this.frameTouchesEnd.length == 0) return [];
+        return this.frameTouchesEnd.map(i => { return { x: i.clientX, y: i.clientY } });
       },
       getTouchesFull() {
         return this.touches;
       },
-      getTouchPositions() {
-        return this.touchesMoved;
-      },
-      getTouchesStart() {
-        return this.frameTouchesStart.map(i => { return { x: i.clientX, y: i.clientY } });
-      },
-      getTouchesEnd() {
-        return this.frameTouchesEnd.map(i => { return { x: i.clientX, y: i.clientY } });
-      },
-      getTouchesSimple() {
-        return this.touches.map(i => { return { x: i.clientX, y: i.clientY } });
-      },
-      getTouchPositions() {
-        return this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
-      },
-      getTouchMove(){
-        
+      getTouches() {
+        //If we have ending touches, merge those in here
+        let toReturn = this.touches.map(i => { return { x: i.clientX, y: i.clientY } });
+        toReturn.push(...this.frameTouchesEnd.map(i=>{return {x:i.clientX,y:i.clientY}}));
+        return toReturn;
+      },  
+      // getTouchPositions() {
+      //   return this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
+      // },
+      getTouchMove(){    
         if(this.frameTouchPositions.length == 0 || this.lastFrameTouchPositions.length == 0) return [];
         let frames = this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
         let currents = this.lastFrameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
@@ -2241,6 +2248,71 @@ var Base = (function () {
         }
 
         //
+        //Now go through and see if the point represented by the touch point collides with any of the colliders
+        //
+        //First get the world space position of the touch
+        let touches = Input.getTouches();
+        if (touches && touches.length > 0) {
+          let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
+          let point = { x: 0, y: 0 };
+          point.x = parseInt(touches[0].x);
+          point.y = parseInt(touches[0].y);
+          if (cameras.length == 0) ;
+          else {
+            /* point = Input.mousePosition;*/
+            //Put in transform code here
+            let camera = cameras[0];
+            
+            let tx = camera.x;
+            let ty = camera.y;
+            let sx = camera.scaleX;
+            let sy = camera.scaleY;
+            let r = camera.rotation;
+            let hx = ctx.canvas.width / 2;
+            let hy = ctx.canvas.height / 2;
+
+            let x = point.x;
+            let y = point.y;
+            x -= hx;
+            y -= hy;
+            x /= sx;
+            y /= sy;
+            x += tx;
+            y += ty;
+
+            point.x = x;
+            point.y = y;
+          }
+
+          let colliderObject = {};
+          colliderObject.gameObject = new GameObject();
+          colliderObject.gameObject.x = point.x;
+          colliderObject.gameObject.y = point.y;
+          colliderObject.collider = new PointCollider();
+
+          for (let i = 0; i < collidableChildren.length; i++) {
+            if (collisionHelper.inCollision(collidableChildren[i], colliderObject)) {
+              let gameObjectOne = collidableChildren[i].gameObject;
+
+              //Now loop over all the behaviors too see if any are listening for collision events
+              for (let i = 0; i < gameObjectOne.components.length; i++) {
+                let component = gameObjectOne.components[i];
+                if (component.onMouseOver)
+                  component.onTouchOver();
+                if (component.onTouchStart) {
+                  if (Input.getTouchesStart() && Input.getTouchesStart().length > 0)
+                    component.onTouchStart();
+                }
+                if (component.onTouchEnd) {
+                  if (Input.getTouchesEnd() && Input.getTouchesEnd().length > 0)
+                    component.onTouchEnd();
+                }
+              }
+            }
+          }
+        }
+
+        //
         // Now we simulate the crowds
         //
         this.simulator.run();
@@ -2307,7 +2379,7 @@ var Base = (function () {
       instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
         let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
         parent.children.push(gameObject);
-        if(parent instanceof GameObject)
+        if (parent instanceof GameObject)
           gameObject.parent = parent; //Only set the parent if it's not a scene.
         let prefab = this.prefabs[gameObjectType.name];
         this.buildIt(prefab, gameObject);
@@ -2956,7 +3028,7 @@ var Base = (function () {
 
       function touchend(event){
         //event.preventDefault();//Don't treat this as a mouse event
-        Input.touches = copyTouches(event.changedTouches);
+        Input.touches = [];//copyTouches(event.changedTouches);
         Input.touchesEnd = copyTouches(event.changedTouches); //Simple deep copy
       }
 
@@ -2966,7 +3038,7 @@ var Base = (function () {
       }
 
       function touchmove(event){
-        Input.touchPositions = copyTouches(event.changedTouches);
+        Input.touches = copyTouches(event.changedTouches);
         
       }
 
