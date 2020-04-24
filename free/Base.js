@@ -485,115 +485,178 @@ var Base = (function () {
 
     const Input = {
 
-        //---------------------------------------------------
-        //Key handling members
-        //---------------------------------------------------
-        keys : [], //What is the current state of each key?
+      //---------------------------------------------------
+      //Key handling members
+      //---------------------------------------------------
+      keys: [], //What is the current state of each key?
 
-        down : [], //Did the key go down this frame?
-        up : [], //Did the key do up this frame?
+      down: [], //Did the key go down this frame?
+      up: [], //Did the key do up this frame?
 
-        //When we start an update(), we shift to these arrays so we don't have mutating arrays mid-update
-        frameDown : [],
-        frameUp : [],
-
-
-        //---------------------------------------------------
-        //Mouse handling members
-        //---------------------------------------------------
+      //When we start an update(), we shift to these arrays so we don't have mutating arrays mid-update
+      frameDown: [],
+      frameUp: [],
 
 
-        mouseButtons :[], //What is the current State of the each button?
-
-         mouseButtonsDown : [], //Did the mouse button go down this frame?
-         mouseButtonsUp : [], //Did the mouse button go up this frame?
-
-        //When we start an update(), we shift these arrays so we don't have mutating arrays mid-update
-         frameMouseButtonsDown : [],
-         frameMouseButtonsUp : [],
-
-        //The location of the mouse in screen coordinates
-         mousePosition : new Point(),
-         frameMousePosition: new Point(),
-         lastFrameMousePosition : new Point(),
-
-        //Handle the wheel state
-         mouseScrollDelta : 0,
-         frameScrollDelta: 0,
+      //---------------------------------------------------
+      //Mouse handling members
+      //---------------------------------------------------
 
 
+      mouseButtons: [], //What is the current State of the each button?
 
-         swapUpDownArrays() {
-            this.frameDown = this.down;
-            this.frameUp = this.up;
-            this.down = [];
-            this.up = [];
+      mouseButtonsDown: [], //Did the mouse button go down this frame?
+      mouseButtonsUp: [], //Did the mouse button go up this frame?
 
-            this.lastFrameMousePosition = this.frameMousePosition.clone();
-            this.frameMousePosition = this.mousePosition.clone();
+      //When we start an update(), we shift these arrays so we don't have mutating arrays mid-update
+      frameMouseButtonsDown: [],
+      frameMouseButtonsUp: [],
 
-            this.frameMouseButtonsDown = this.mouseButtonsDown;
-            this.frameMouseButtonsUp = this.mouseButtonsUp;
-            this.frameScrollDelta = this.mouseScrollDelta;
-            this.mouseScrollDelta = 0;
-            this.mouseButtonsDown = [];
-            this.mouseButtonsUp = [];
-            
-            
-        },
+      //The location of the mouse in screen coordinates
+      mousePosition: new Point(),
+      frameMousePosition: new Point(),
+      lastFrameMousePosition: new Point(),
 
-        //---------------------------------------------------
-        //Key handling functions
-        //---------------------------------------------------
-
-        //Did the key come up this frame?
-        getKeyUp(key) {
-            return this.frameUp[key];
-        },
-
-        //Did the key go down the frame? [Remember, the OS may make it look like key repeated when they did not]
-         getKeyDown(key) {
-            return this.frameDown[key];
-        },
-
-        //Is the key pressed? Down (true) Up (false)
-         getKey(key) {
-            return this.keys[key];
-        },
-
-        //---------------------------------------------------
-        //Mouse handling functions
-        //---------------------------------------------------
+      //Handle the wheel state
+      mouseScrollDelta: 0,
+      frameScrollDelta: 0,
 
 
-        //Did the mouse button come up this frame?
-         getMouseButtonUp(button) {
-            return this.frameMouseButtonsUp[button];
-        },
+      //-------------------------------------------------
+      // Touch handling members
+      //-------------------------------------------------
 
-        //Did the mouse button go down this frame?
-         getMouseButtonDown(button) {
-            return this.frameMouseButtonsDown[button];
-        },
+      touches: [],
 
-        //Is the mouse button pressed? Down (true) Up (false)
-         getMouseButton(button) {
-            return this.mouseButtons[button];
-        },
+      touchesStart: [],
+      touchesEnd: [],
+      touchPositions: [],
+      frameTouchesStart: [],
+      frameTouchesEnd: [],
+      frameTouchPositions: [],
+      lastFrameTouchPositions:[],
 
-        //What is the current state of the scroll wheel?
-         getMouseScrollWheel(){
-            return this.frameScrollDelta;
-        },
 
-        //What is the mouse position?
-        //We return the previous frame's position for consistency
-        getMousePosition(){
-          return this.frameMousePosition;
-        },
-        getMousePositionDelta(){
-          return new Point(this.frameMousePosition.x - this.lastFrameMousePosition.x, this.frameMousePosition.y - this.lastFrameMousePosition.y); 
+      swapUpDownArrays() {
+        this.frameDown = this.down;
+        this.frameUp = this.up;
+        this.down = [];
+        this.up = [];
+
+        this.lastFrameMousePosition = this.frameMousePosition.clone();
+        this.frameMousePosition = this.mousePosition.clone();
+
+        this.frameMouseButtonsDown = this.mouseButtonsDown;
+        this.frameMouseButtonsUp = this.mouseButtonsUp;
+        this.frameScrollDelta = this.mouseScrollDelta;
+        this.mouseScrollDelta = 0;
+        this.mouseButtonsDown = [];
+        this.mouseButtonsUp = [];
+
+
+        this.frameTouchesStart = this.touchesStart;
+        this.frameTouchesEnd = this.touchesEnd;
+        this.lastFrameTouchPositions = this.frameTouchPositions;
+        this.frameTouchPositions = this.touchPositions;
+        this.touchesStart = [];
+        this.touchesEnd = [];
+        this.touchPositions = [];
+
+
+      },
+
+      //---------------------------------------------------
+      //Key handling functions
+      //---------------------------------------------------
+
+      //Did the key come up this frame?
+      getKeyUp(key) {
+        return this.frameUp[key];
+      },
+
+      //Did the key go down the frame? [Remember, the OS may make it look like key repeated when they did not]
+      getKeyDown(key) {
+        return this.frameDown[key];
+      },
+
+      //Is the key pressed? Down (true) Up (false)
+      getKey(key) {
+        return this.keys[key];
+      },
+
+      //---------------------------------------------------
+      //Mouse handling functions
+      //---------------------------------------------------
+
+
+      //Did the mouse button come up this frame?
+      getMouseButtonUp(button) {
+        return this.frameMouseButtonsUp[button];
+      },
+
+      //Did the mouse button go down this frame?
+      getMouseButtonDown(button) {
+        return this.frameMouseButtonsDown[button];
+      },
+
+      //Is the mouse button pressed? Down (true) Up (false)
+      getMouseButton(button) {
+        return this.mouseButtons[button];
+      },
+
+      //What is the current state of the scroll wheel?
+      getMouseScrollWheel() {
+        return this.frameScrollDelta;
+      },
+
+      //What is the mouse position?
+      //We return the previous frame's position for consistency
+      getMousePosition() {
+        return this.frameMousePosition;
+      },
+      getMousePositionDelta() {
+        return new Point(this.frameMousePosition.x - this.lastFrameMousePosition.x, this.frameMousePosition.y - this.lastFrameMousePosition.y);
+      },
+
+      //Touch API----------------------------------
+      //
+      getTouchesStartFull() {
+        return this.frameTouchesStart;
+      },
+      getTouchesEndFull() {
+        return this.frameTouchesEnd;
+      },
+      getTouchesFull() {
+        return this.touches;
+      },
+      getTouchPositions() {
+        return this.touchesMoved;
+      },
+      getTouchesStart() {
+        return this.frameTouchesStart.map(i => { return { x: i.clientX, y: i.clientY } });
+      },
+      getTouchesEnd() {
+        return this.frameTouchesEnd.map(i => { return { x: i.clientX, y: i.clientY } });
+      },
+      getTouchesSimple() {
+        return this.touches.map(i => { return { x: i.clientX, y: i.clientY } });
+      },
+      getTouchPositions() {
+        return this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
+      },
+      getTouchMove(){
+        
+        if(this.frameTouchPositions.length == 0 || this.lastFrameTouchPositions.length == 0) return [];
+        let frames = this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
+        let currents = this.lastFrameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
+        let toReturn = [];
+        for(let i=0; i < Math.min(frames.length, currents.length); i++){
+          let frame = frames[i];
+          let current = currents[i];
+          toReturn.push(new Point(frame.x - current.x, frame.y - current.y));
         }
+        return toReturn;
+      }
 
 
 
@@ -2840,6 +2903,10 @@ var Base = (function () {
       document.body.addEventListener('mousemove', mousemove);
       document.body.addEventListener('wheel', wheelevent);
       document.body.addEventListener('contextmenu', contextmenu);
+      document.body.addEventListener("touchstart", touchstart, false);
+      document.body.addEventListener("touchend", touchend, false);
+      document.body.addEventListener("touchcancel", touchcancel, false);
+      document.body.addEventListener("touchmove", touchmove, false);
 
 
 
@@ -2879,6 +2946,42 @@ var Base = (function () {
 
       function keypress(event) {
         //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
+      }
+
+      function touchstart(event){
+        //event.preventDefault();//Don't treat this as a mouse event
+        Input.touches = copyTouches(event.changedTouches);
+        Input.touchesStart = copyTouches(event.changedTouches); //Simple deep copy
+      }
+
+      function touchend(event){
+        //event.preventDefault();//Don't treat this as a mouse event
+        Input.touches = copyTouches(event.changedTouches);
+        Input.touchesEnd = copyTouches(event.changedTouches); //Simple deep copy
+      }
+
+      function touchcancel(event){
+        //event.preventDefault();//Don't treat this as a mouse event
+        console.log("Touch Cancel");
+      }
+
+      function touchmove(event){
+        Input.touchPositions = copyTouches(event.changedTouches);
+        
+      }
+
+      function copyTouches(touches){
+        let toReturn = [];
+        for(let i = 0; i < touches.length; i++){
+          let touch = touches[i];
+          let toAdd = {};
+          for(let j in touch){
+            toAdd[j] = touch[j];
+          }
+
+          toReturn.push(toAdd);
+        }
+        return toReturn;
       }
 
       // Based on https://stackoverflow.com/questions/381795/how-to-disable-right-click-context-menu-in-javascript
