@@ -55,6 +55,7 @@ const Input = {
   frameTouchesStart: [],
   frameTouchesEnd: [],
   frameTouchPositions: [],
+  lastFrameTouchPositions:[],
 
 
   swapUpDownArrays() {
@@ -73,9 +74,11 @@ const Input = {
     this.mouseButtonsDown = [];
     this.mouseButtonsUp = [];
 
+
     this.frameTouchesStart = this.touchesStart;
     this.frameTouchesEnd = this.touchesEnd;
-    this.frameTouchPositions = JSON.parse(JSON.stringify(this.touchPositions));
+    this.lastFrameTouchPositions = this.frameTouchPositions;
+    this.frameTouchPositions = this.touchPositions;
     this.touchesStart = [];
     this.touchesEnd = [];
     this.touchPositions = [];
@@ -163,9 +166,10 @@ const Input = {
     return this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
   },
   getTouchPositionDeltasSimple(){
-    if(this.frameTouchPositions.length < 1 || this.touchPositions.length < 1) return[];
+    
+    if(this.frameTouchPositions.length < 1 && this.lastFrameTouchPositions.length < 1) return[];
     let frames = this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
-    let currents = this.touchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
+    let currents = this.lastFrameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
     let toReturn = []
     for(let i=0; i < Math.min(frames.length, currents.length); i++){
       let frame = frames[i];
@@ -173,7 +177,7 @@ const Input = {
       toReturn.push(new Point(frame.x - current.x, frame.y - current.y))
     }
     if(toReturn.length > 0)
-      console.log(JSON.stringify(toReturn));
+      console.log(JSON.stringify(toReturn) + " " + Math.random());
     return toReturn;
   }
 
