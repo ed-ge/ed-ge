@@ -11,7 +11,6 @@ export default class TouchEnd extends Base.Behavior {
   }
 
   onTouchEnd() {
-    console.error("Touch End");
     this.gameObject.x += (Math.random() * 2 - 1) * this.scale;
     this.gameObject.y += (Math.random() * 2 - 1) * this.scale;
 

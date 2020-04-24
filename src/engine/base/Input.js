@@ -83,6 +83,13 @@ const Input = {
     this.touchesEnd = [];
     this.touchPositions = [];
 
+    // if(this.frameTouchesEnd.length != 0){
+    //   console.log("Restart")
+    //   this.touches = [];
+    //   this.lastFrameTouchPositions = [];
+    //   this.frameTouchPositions = [];
+    // }
+
 
   },
 
@@ -151,17 +158,21 @@ const Input = {
     return this.frameTouchesEnd;
   },
   getTouchesEnd() {
+    if(this.frameTouchesEnd.length == 0) return [];
     return this.frameTouchesEnd.map(i => { return { x: i.clientX, y: i.clientY } });
   },
   getTouchesFull() {
     return this.touches;
   },
-  getTouchesSimple() {
-    return this.touches.map(i => { return { x: i.clientX, y: i.clientY } });
+  getTouches() {
+    //If we have ending touches, merge those in here
+    let toReturn = this.touches.map(i => { return { x: i.clientX, y: i.clientY } });
+    toReturn.push(...this.frameTouchesEnd.map(i=>{return{x:i.clientX,y:i.clientY}}));
+    return toReturn;
   },  
-  getTouchPositions() {
-    return this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
-  },
+  // getTouchPositions() {
+  //   return this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });
+  // },
   getTouchMove(){    
     if(this.frameTouchPositions.length == 0 || this.lastFrameTouchPositions.length == 0) return[];
     let frames = this.frameTouchPositions.map(i => { return { x: i.clientX, y: i.clientY } });

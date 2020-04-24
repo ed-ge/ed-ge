@@ -16,8 +16,8 @@ export default class TouchText extends Base.Behavior {
       str += "Touch Start:" + JSON.stringify(Base.Input.getTouchesStart()) + " "
     if (Base.Input.getTouchesEnd().length > 0)
       str += "Touch End:" + JSON.stringify(Base.Input.getTouchesEnd()) + " "
-    if (Base.Input.getTouchPositions().length > 0)
-      str += JSON.stringify(Base.Input.getTouchPositions()) + " "
+    if (Base.Input.getTouches().length > 0)
+      str += JSON.stringify(Base.Input.getTouches()) + " "
     if (Base.Input.getTouchMove().length > 0)
       str += JSON.stringify(Base.Input.getTouchMove()) + " "
     str += JSON.stringify(Base.Input.getTouchesFull()) + " "

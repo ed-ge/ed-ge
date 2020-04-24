@@ -95,7 +95,7 @@ function main(gameObjects, gameBehaviors, scenes, runUpdate = true) {
 
   function touchend(event){
     //event.preventDefault();//Don't treat this as a mouse event
-    Input.touches = copyTouches(event.changedTouches);
+    Input.touches = [];//copyTouches(event.changedTouches);
     Input.touchesEnd = copyTouches(event.changedTouches); //Simple deep copy
   }
 

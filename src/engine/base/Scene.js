@@ -377,11 +377,12 @@ class Scene extends NameableParent {
     //Now go through and see if the point represented by the touch point collides with any of the colliders
     //
     //First get the world space position of the touch
-    if (Input.getTouchPositions() && Input.getTouchPositions().length > 0) {
+    let touches = Input.getTouches();
+    if (touches && touches.length > 0) {
       let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
       let point = { x: 0, y: 0 };
-      point.x = parseInt(Input.getTouchPositions()[0].x);
-      point.y = parseInt(Input.getTouchPositions()[0].y);
+      point.x = parseInt(touches[0].x);
+      point.y = parseInt(touches[0].y);
       if (cameras.length == 0) {
       }
       else {
