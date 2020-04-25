@@ -9,7 +9,7 @@ import Component from "../base/Component.js"
 class CameraComponent extends Component {
     constructor() {
         super();
-        this.backgroundColor;
+        this.backgroundColor="white";
 
     }
     

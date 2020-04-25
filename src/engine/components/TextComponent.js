@@ -3,9 +3,9 @@ import Component from "../base/Component.js"
 class TextComponent extends Component {
     constructor() {
         super();
-        this.text;
-        this.font;
-        this.fill;
+        this.text = "[Blank]";
+        this.font = "10pt Sans";
+        this.fill = "black";
     }
     draw(ctx) {
         ctx.save();

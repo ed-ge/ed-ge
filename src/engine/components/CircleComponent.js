@@ -5,9 +5,9 @@ class CircleComponent extends Component {
     
     constructor() {
         super();
-        this.radius;
-        this.fill;
-        this.stroke;
+        this.radius=50;
+        this.fill="gray";
+        this.stroke="black";
 
     }
     draw(ctx) {

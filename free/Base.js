@@ -2525,9 +2525,9 @@ var Base = (function () {
         
         constructor() {
             super();
-            this.radius;
-            this.fill;
-            this.stroke;
+            this.radius=50;
+            this.fill="gray";
+            this.stroke="black";
 
         }
         draw(ctx) {
@@ -2570,9 +2570,9 @@ var Base = (function () {
     class TextComponent extends Component {
         constructor() {
             super();
-            this.text;
-            this.font;
-            this.fill;
+            this.text = "[Blank]";
+            this.font = "10pt Sans";
+            this.fill = "black";
         }
         draw(ctx) {
             ctx.save();
@@ -2590,7 +2590,7 @@ var Base = (function () {
        
         constructor() {
             super();
-            this.radius;
+            this.radius=50;
         }
 
     }
@@ -2602,8 +2602,8 @@ var Base = (function () {
     class AABBCollider extends Collider {
         constructor() {
             super();
-            this.width;
-            this.height;
+            this.width=100;
+            this.height=100;
         }
 
     }
@@ -2629,12 +2629,12 @@ var Base = (function () {
 
         constructor() {
             super();
-            this.pointAX;
-            this.pointAY;
-            this.pointBX;
-            this.pointBY;
-            this.pointCX;
-            this.pointCY;
+            this.pointAX = 0;
+            this.pointAY = 0;
+            this.pointBX = 100;
+            this.pointBY = 100;
+            this.pointCX = 0;
+            this.pointCY = 100;
         }
         update() {
             
@@ -2737,14 +2737,14 @@ var Base = (function () {
         constructor() {
             super();
             this.points = [];
-            this.pointAX;
-            this.pointAY;
-            this.pointBX;
-            this.pointBY;
-            this.pointCX;
-            this.pointCY;
-            this.fill;
-            this.stroke;
+            this.pointAX = 0;
+            this.pointAY = 0;
+            this.pointBX = 100;
+            this.pointBY = 100;
+            this.pointCX = 0;
+            this.pointCY = 100;
+            this.fill = "gray";
+            this.stroke = "black";
 
         }
         draw(ctx) {
@@ -2777,7 +2777,7 @@ var Base = (function () {
     class CameraComponent extends Component {
         constructor() {
             super();
-            this.backgroundColor;
+            this.backgroundColor="white";
 
         }
         

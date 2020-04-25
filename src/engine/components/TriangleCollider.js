@@ -10,12 +10,12 @@ class TriangleCollider extends Collider {
 
     constructor() {
         super();
-        this.pointAX;
-        this.pointAY;
-        this.pointBX;
-        this.pointBY;
-        this.pointCX;
-        this.pointCY;
+        this.pointAX = 0;
+        this.pointAY = 0;
+        this.pointBX = 100;
+        this.pointBY = 100;
+        this.pointCX = 0;
+        this.pointCY = 100;
     }
     update() {
         

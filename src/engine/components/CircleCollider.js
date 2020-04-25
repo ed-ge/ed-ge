@@ -5,7 +5,7 @@ class CircleCollider extends Collider {
    
     constructor() {
         super();
-        this.radius;
+        this.radius=50;
     }
 
 }
