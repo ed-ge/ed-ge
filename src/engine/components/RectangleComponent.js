@@ -3,10 +3,10 @@ import Component from "../base/Component.js"
 class RectangleComponent extends Component {
     constructor() {
         super();
-        this.width;
-        this.height;
-        this.fill;
-        this.stroke;
+        this.width = 100;
+        this.height = 100;
+        this.fill = "gray";
+        this.stroke = "black";
     }
     draw(ctx) {
         ctx.save();
