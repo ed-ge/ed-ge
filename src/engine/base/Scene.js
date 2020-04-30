@@ -86,9 +86,10 @@ class Scene extends NameableParent {
 
     this.children = [];//Clear the children in case the scene has been built before
 
-    this.objects.forEach(obj => {
-      this.buildChild(obj, this)
-    })
+    if (this.objects)
+      this.objects.forEach(obj => {
+        this.buildChild(obj, this)
+      })
 
 
   }
@@ -389,7 +390,7 @@ class Scene extends NameableParent {
         /* point = Input.mousePosition;*/
         //Put in transform code here
         let camera = cameras[0];
-        
+
         let tx = camera.x;
         let ty = camera.y;
         let sx = camera.scaleX;
