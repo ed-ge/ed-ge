@@ -31,6 +31,7 @@ class Component {
      */
     constructor() {
         this.uuid = this.uuidv4();
+        this.type = this.constructor.name;
         this.gameObject;
     }
 
