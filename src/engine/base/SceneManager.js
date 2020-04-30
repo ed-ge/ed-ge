@@ -6,8 +6,12 @@ const SceneManager = {
   
   scenes: [],
   Base:{},
+
   
   _currentSceneIndex: -1,
+
+  
+
   get currentScene() {
     if (this._currentSceneIndex == -1) throw "Current scene index not set. Cannot get current scene."
     if (this.scenes.length == 0) throw "There are no scenes in the scene manager. Cannot get current scene."
@@ -42,6 +46,10 @@ const SceneManager = {
       }
     }
     this.scenes[this._currentSceneIndex].boot();
+  },
+  clearScenes(){
+    this.scenes = [];
+    this.currentSceneIndex = -1;
   },
 
   addScene(scene) {

@@ -24,6 +24,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   this.Behaviors = gameBehaviors;
   let canv, ctx;
 
+  this.SceneManager.clearScenes();
   scenes.allScenes
     .forEach(i => this.SceneManager.addScene(new Scene(i, this.Prefabs, gameBehaviors, this.Components)))
 
