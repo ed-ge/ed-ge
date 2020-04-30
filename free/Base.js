@@ -2936,7 +2936,23 @@ var Base = (function () {
         components: ["RVOObstacle","RectangleComponent|width|5|height|5|fill|black"]
       };
 
-    function main(gameObjects, gameBehaviors, scenes, runUpdate = true) {
+    /**
+     * Main function for the game.
+     * This functon takes in game-specific game objects, behaviors, and scenes
+     * and starts the game loop.
+     * 
+     * It also accepts an optional "options" parameter which can override the default behavior.
+     * 
+     * The options object can have the following key value pairs
+     * - startScene:{String} overrive the start scene provided in the scenes object
+     * - runUpdate:{bool} if true, prevents update from being called. The Engine wil only render the initial state.
+     * 
+     * @param {Array} gameObjects An array of game objects that can be in the game
+     * @param {Array} gameBehaviors An array of behaviors that can be in the game
+     * @param {Object} scenes An object specifying the start scenes and scene definitions
+     * @param {Object} options An object with options that override the defaults
+     */
+    function main(gameObjects, gameBehaviors, scenes, options = {}) {
       //From https://flaviocopes.com/how-to-merge-objects-javascript/
       this.Prefabs = { ...gameObjects, ...this.Prefabs };
       this.Behaviors = gameBehaviors;
@@ -2945,15 +2961,19 @@ var Base = (function () {
       scenes.allScenes
         .forEach(i => this.SceneManager.addScene(new Scene(i, this.Prefabs, gameBehaviors, this.Components)));
 
-      this.SceneManager.currentScene = scenes.startScene;
+      this.SceneManager.currentScene = options.startScene || scenes.startScene;
       canv = document.querySelector("#canv");
       ctx = canv.getContext('2d');
 
       let that = this;
 
       function gameLoop() {
+
+        let shouldUpdate = true;
+        if(typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
+          shouldUpdate = false;
         Input.swapUpDownArrays();
-        if (runUpdate)
+        if (shouldUpdate)
           update();
         draw(ctx);
       }
