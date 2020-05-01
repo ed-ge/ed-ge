@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "description": "The EDucational Game Engine, built with babel.",
     "scripts": {
-        "test": "npm run rollup && jest",
+        "jest": "node ./node_modules/jest/bin/jest.js",
+        "test": "npm run rollup && npm run jest",
         "build": "babel src -d production",
         "start": "webpack --config ./webpack.main.config.js --mode=development && webpack --config ./webpack.base.config.js --mode=development && webpack --config ./webpack.components.config.js --mode=development",
         "rollup": "./node_modules/rollup/dist/bin/rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base'",
@@ -28,6 +29,7 @@
         "babel-loader": "^8.1.0",
         "babel-preset-es2015": "^6.24.1",
         "chai": "^4.2.0",
+        "jest": "^25.5.3",
         "jsdoc": "^3.6.3",
         "mocha": "^7.1.0",
         "rollup": "^2.7.6",
