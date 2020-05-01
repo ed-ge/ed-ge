@@ -1,14 +1,11 @@
 import Engine from "../../../src/Engine/Engine.js"
-import Point from "../../../src/engine/base/Point.js";
-import AABBCollider from "../../../src/Engine/components/AABBCollider.js";
-import CollisionHelper from "../../../src/Engine/components/CollisionHelper.js";
-import CircleCollider from "../../../src/Engine/components/CircleCollider.js";
-import PointCollider from "../../../src/Engine/components/PointCollider.js";
-import TriangleCollider from "../../../src/Engine/components/TriangleCollider.js";
-import ConvexCollider from "../../../src/Engine/components/ConvexCollider.js";
-
-let assert = chai.assert;
-let expect = chai.expect;
+import AABBCollider from "../../src/Engine/components/AABBCollider.js";
+import CollisionHelper from "../../src/Engine/components/CollisionHelper.js";
+import CircleCollider from "../../src/Engine/components/CircleCollider.js";
+import PointCollider from "../../src/Engine/components/PointCollider.js";
+import TriangleCollider from "../../src/Engine/components/TriangleCollider.js";
+import ConvexCollider from "../../src/Engine/components/ConvexCollider.js";
+import chai from "chai";
 
 function quickBuild(x, y, scaleX, scaleY, rotate, collider) {
     let gameObject = new Engine.Base.GameObject();

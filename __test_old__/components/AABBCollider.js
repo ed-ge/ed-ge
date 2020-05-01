@@ -1,9 +1,7 @@
 import Engine from "../../../src/Engine/Engine.js"
-import Point from "../../../src/engine/base/Point.js";
-import AABBCollider from "../../../src/Engine/components/AABBCollider.js";
-
-let assert = chai.assert;
-let expect = chai.expect;
+import Point from "../../src/engine/base/Point.js";
+import AABBCollider from "../../src/Engine/components/AABBCollider.js";
+import chai from "chai"
 
 describe("AABBCollider class", function() {
     describe("Member Variables", function() {
