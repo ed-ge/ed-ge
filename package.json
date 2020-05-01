@@ -3,10 +3,10 @@
     "version": "1.0.0",
     "description": "The EDucational Game Engine, built with babel.",
     "scripts": {
-        "test": "jest",
+        "test": "npm run rollup && jest",
         "build": "babel src -d production",
         "start": "webpack --config ./webpack.main.config.js --mode=development && webpack --config ./webpack.base.config.js --mode=development && webpack --config ./webpack.components.config.js --mode=development",
-        "rollup": "rollup src/engine/Main.js --file ./rollup/Main.js --format es --name 'Main' && rollup src/engine/Components.js --file ./rollup/Components.js --format es --name 'Components' && rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base' && rollup src/engine/Prefabs.js --file ./rollup/Prefabs.js --format es --name 'Prefabs'",
+        "rollup": "rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base'",
         "free": "rollup src/engine/Base.js --file ./free/Base.js --format iife --name 'Base'",
         "doc": "./node_modules/.bin/jsdoc -d ./docs -r ./src -c ./.jsdoc.json"
     },
