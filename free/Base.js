@@ -2389,6 +2389,7 @@ var Base = (function () {
           gameObject.name = obj.name;
         else
           gameObject.name = prefab.name;
+        gameObject.prefabName = gameObjectType.name;
         if (obj) {
           this.buildIt(obj, gameObject);
         }
