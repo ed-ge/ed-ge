@@ -35,6 +35,14 @@ class Component {
         this.gameObject;
     }
 
+    serialize(){
+      let toReturn = this.constructor.name;
+      
+      Object.keys(this).filter(i=>i!='gameObject').forEach(i=>toReturn +=( "|" + i + "|" + this[i]));
+      return toReturn;
+
+    }
+
     /**Generate a uuid
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
      */
@@ -74,6 +82,7 @@ class Behavior extends Component {
      * the scene recursively call update on all their 
      * behaviors and then on all their child game object
      * behaviors.
+     * 
      */
     update() {}
 

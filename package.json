@@ -8,6 +8,7 @@
         "build": "babel src -d production",
         "start": "webpack --config ./webpack.main.config.js --mode=development && webpack --config ./webpack.base.config.js --mode=development && webpack --config ./webpack.components.config.js --mode=development",
         "rollup": "./node_modules/rollup/dist/bin/rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base'",
+        "rollupWatch": "./node_modules/rollup/dist/bin/rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base' -w",
         "free": "rollup src/engine/Base.js --file ./free/Base.js --format iife --name 'Base'",
         "doc": "./node_modules/.bin/jsdoc -d ./docs -r ./src -c ./.jsdoc.json"
     },
@@ -36,5 +37,8 @@
         "webpack": "^4.42.1",
         "webpack-cli": "^3.3.11",
         "webpack-dev-server": "^3.10.3"
+    },
+    "dependencies": {
+        "chai-string": "^1.5.0"
     }
 }

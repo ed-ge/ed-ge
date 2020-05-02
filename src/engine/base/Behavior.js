@@ -26,6 +26,7 @@ class Behavior extends Component {
      * the scene recursively call update on all their 
      * behaviors and then on all their child game object
      * behaviors.
+     * 
      */
     update() {}
 
