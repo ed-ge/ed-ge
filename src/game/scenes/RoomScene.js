@@ -7,10 +7,10 @@ export default {
       def: "room, 0, 0, EmptyGameObject",
       children: [
         {
-          def: "Rectangle, 100, 200, Rectangle",
+          def: "Rectangle1, 100, 200, Rectangle",
         },
         {
-          def: "Rectangle, 300, 100, Rectangle",
+          def: "Rectangle2, 300, 100, Rectangle",
           children: [
             {
               def: "moon, 0, 0, Moon"
