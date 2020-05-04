@@ -24,7 +24,6 @@
  * ```
  */
 
-import Base from "../../../rollup/Base";
 
 class Component {
 
@@ -50,13 +49,13 @@ class Component {
 
     }
 
-    deserialize(string){
-      let splits = string.split("|");
-      let type = splits[splits.length-1];
-      let componentType = Base.Components.find(i=>i.constructor.name == type)
-      let component = new componentType();
+    // deserialize(string){
+    //   let splits = string.split("|");
+    //   let type = splits[splits.length-1];
+    //   let componentType = Base.Components.find(i=>i.constructor.name == type)
+    //   let component = new componentType();
       
-    }
+    // }
 
     /**Generate a uuid
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
