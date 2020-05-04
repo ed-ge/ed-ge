@@ -24,6 +24,7 @@
  * ```
  */
 
+
 class Component {
 
     /**
@@ -47,6 +48,14 @@ class Component {
       return toReturn;
 
     }
+
+    // deserialize(string){
+    //   let splits = string.split("|");
+    //   let type = splits[splits.length-1];
+    //   let componentType = Base.Components.find(i=>i.constructor.name == type)
+    //   let component = new componentType();
+      
+    // }
 
     /**Generate a uuid
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
@@ -328,13 +337,13 @@ class GameObject extends NameableParent {
   get worldLocation() {
     if (!this.parent)
       return this.location;
-    let parentTransform = parent.getTransform();
+    let parentTransform = this.parent.worldLocation;
+    let toReturn = new Point(this.x + parentTransform.x, this.y + parentTransform.y);
+    return toReturn;
 
   }
 
-  getTransform() {
-    return 1;
-  }
+  
 
   /**
    * 
@@ -3002,25 +3011,37 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   this.Behaviors = gameBehaviors;
   let canv, ctx;
 
+  let shouldDraw = true;
+  if (typeof options.runDraw !== 'undefined' || options.runDraw === false)
+    shouldDraw = false;
+
   this.SceneManager.clearScenes();
   scenes.allScenes
     .forEach(i => this.SceneManager.addScene(new Scene(i, this.Prefabs, gameBehaviors, this.Components)));
 
   this.SceneManager.currentScene = options.startScene || scenes.startScene;
-  canv = document.querySelector("#canv");
-  ctx = canv.getContext('2d');
+
+  if (shouldDraw) {
+    canv = document.querySelector("#canv");
+    ctx = canv.getContext('2d');
+  }
 
   let that = this;
 
   function gameLoop() {
 
     let shouldUpdate = true;
-    if(typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
+
+
+    if (typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
       shouldUpdate = false;
+
+
     Input.swapUpDownArrays();
     if (shouldUpdate)
       update();
-    draw(ctx);
+    if (shouldDraw)
+      draw(ctx);
   }
 
   function update() {
@@ -3073,7 +3094,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
 
   function mousemove(event) {
     [Input.mousePosition.x, Input.mousePosition.y] = [event.clientX, event.clientY];
-    
+
   }
 
   function wheelevent(event) {
@@ -3085,34 +3106,34 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
   }
 
-  function touchstart(event){
+  function touchstart(event) {
     //event.preventDefault();//Don't treat this as a mouse event
     Input.touches = copyTouches(event.changedTouches);
     Input.touchesStart = copyTouches(event.changedTouches); //Simple deep copy
   }
 
-  function touchend(event){
+  function touchend(event) {
     //event.preventDefault();//Don't treat this as a mouse event
     Input.touches = [];//copyTouches(event.changedTouches);
     Input.touchesEnd = copyTouches(event.changedTouches); //Simple deep copy
   }
 
-  function touchcancel(event){
+  function touchcancel(event) {
     //event.preventDefault();//Don't treat this as a mouse event
     console.log("Touch Cancel");
   }
 
-  function touchmove(event){
+  function touchmove(event) {
     Input.touches = copyTouches(event.changedTouches);
-    
+
   }
 
-  function copyTouches(touches){
+  function copyTouches(touches) {
     let toReturn = [];
-    for(let i = 0; i < touches.length; i++){
+    for (let i = 0; i < touches.length; i++) {
       let touch = touches[i];
       let toAdd = {};
-      for(let j in touch){
+      for (let j in touch) {
         toAdd[j] = touch[j];
       }
 
@@ -3134,16 +3155,16 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //Keep our canvas full screen
   //from https://blog.codepen.io/2013/07/29/full-screen-canvas/
 
-  var can = document.getElementById("canv");
+  // var can = document.getElementById("canv");
 
   function resizeCanvas() {
-    let parent = can.parentNode;
+    let parent = canv.parentNode;
     if (parent == document.body) {
       parent = window;
-      can.style.width = parent.innerWidth + "px";
+      canv.style.width = parent.innerWidth + "px";
 
-      can.width = parent.innerWidth;
-      can.height = parent.innerHeight;
+      canv.width = parent.innerWidth;
+      canv.height = parent.innerHeight;
     }
     else {
       //Take the canvas out of the parent div sive calculation momentarily
@@ -3165,11 +3186,14 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
 
     }
   }
-  // Webkit/Blink will fire this on load, but Gecko doesn't.
-  window.onresize = resizeCanvas;
-
-  // So we fire it manually...
-  resizeCanvas();
+  //Don't look for or respond to the canvas if we're in "headless" mode
+  if (shouldDraw) {
+    window.onresize = resizeCanvas;
+    
+    // Webkit/Blink will fire this on load, but Gecko doesn't.
+    // So we fire it manually...
+    resizeCanvas();
+  }
   setInterval(gameLoop, 33);
 }
 

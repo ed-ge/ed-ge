@@ -58,13 +58,13 @@ class GameObject extends NameableParent {
   get worldLocation() {
     if (!this.parent)
       return this.location;
-    let parentTransform = parent.getTransform();
+    let parentTransform = this.parent.worldLocation;
+    let toReturn = new Point(this.x + parentTransform.x, this.y + parentTransform.y);
+    return toReturn;
 
   }
 
-  getTransform() {
-    return 1;
-  }
+  
 
   /**
    * 

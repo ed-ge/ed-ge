@@ -11,7 +11,7 @@ import RVOScene from "./scenes/RVOScene.js"
 import TouchScene from "./scenes/TouchScene.js"
 
 export default {
-  startScene: "TouchScene",
+  startScene: "StartScene",
   allScenes: [
     SceneOne,
     SceneTwo,

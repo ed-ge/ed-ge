@@ -39,6 +39,7 @@
         "webpack-dev-server": "^3.10.3"
     },
     "dependencies": {
-        "chai-string": "^1.5.0"
+        "chai-string": "^1.5.0",
+        "type-detect": "^4.0.8"
     }
 }
