@@ -14,10 +14,17 @@
  *          key:"<name of component member variable>",
  *          value:"<the desired value>"
  *        }
+ *      <...>
  *    ]
  * }
  * ```
+ * The brief version of the syntax is as follows:
+ * ```
+ * "<type name of the componenent>|key|value<...>"
+ * ```
  */
+
+import Base from "../../../rollup/Base";
 
 class Component {
 
@@ -38,9 +45,17 @@ class Component {
     serialize(){
       let toReturn = this.constructor.name;
       
-      Object.keys(this).filter(i=>i!='gameObject').forEach(i=>toReturn +=( "|" + i + "|" + this[i]));
+      Object.keys(this).filter(i=>i!='gameObject'&&i!='uuid').forEach(i=>toReturn +=( "|" + i + "|" + this[i]));
       return toReturn;
 
+    }
+
+    deserialize(string){
+      let splits = string.split("|");
+      let type = splits[splits.length-1];
+      let componentType = Base.Components.find(i=>i.constructor.name == type)
+      let component = new componentType();
+      
     }
 
     /**Generate a uuid
