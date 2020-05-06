@@ -17,10 +17,16 @@ var Base = (function () {
      *          key:"<name of component member variable>",
      *          value:"<the desired value>"
      *        }
+     *      <...>
      *    ]
      * }
      * ```
+     * The brief version of the syntax is as follows:
+     * ```
+     * "<type name of the componenent>|key|value<...>"
+     * ```
      */
+
 
     class Component {
 
@@ -37,6 +43,22 @@ var Base = (function () {
             this.type = this.constructor.name;
             this.gameObject;
         }
+
+        serialize(){
+          let toReturn = this.constructor.name;
+          
+          Object.keys(this).filter(i=>i!='gameObject'&&i!='uuid').forEach(i=>toReturn +=( "|" + i + "|" + this[i]));
+          return toReturn;
+
+        }
+
+        // deserialize(string){
+        //   let splits = string.split("|");
+        //   let type = splits[splits.length-1];
+        //   let componentType = Base.Components.find(i=>i.constructor.name == type)
+        //   let component = new componentType();
+          
+        // }
 
         /**Generate a uuid
          * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
@@ -77,6 +99,7 @@ var Base = (function () {
          * the scene recursively call update on all their 
          * behaviors and then on all their child game object
          * behaviors.
+         * 
          */
         update() {}
 
@@ -267,201 +290,223 @@ var Base = (function () {
      * or an invisible container for logic
      */
     class GameObject extends NameableParent {
-        /**
-         * The x position of the game object relative to its parent
-         */
-        //x;
+      /**
+       * The x position of the game object relative to its parent
+       */
+      //x;
 
-        /**
-         * The y position of the game object relative to its parent
-         */
-        //y;
+      /**
+       * The y position of the game object relative to its parent
+       */
+      //y;
 
-        /**
-         * The scale of the game object in x relative to its parent
-         */
-        //scaleX;
+      /**
+       * The scale of the game object in x relative to its parent
+       */
+      //scaleX;
 
-        /**
-         * The scale of the game object in y relative to its parent
-         */
-        //scaleY;
+      /**
+       * The scale of the game object in y relative to its parent
+       */
+      //scaleY;
 
-        /**
-         * The rotation of the game object relative to its parent
-         */
-        //rotation;
+      /**
+       * The rotation of the game object relative to its parent
+       */
+      //rotation;
 
-        /**
-         * Array of components this game object has. Note, components should only be
-         * added to this array used GameObject.addComponent() to components.push().
-         * Otherwise the components won't have their parent game object member
-         * variable method populated.
-         */
-        //components = [];
+      /**
+       * Array of components this game object has. Note, components should only be
+       * added to this array used GameObject.addComponent() to components.push().
+       * Otherwise the components won't have their parent game object member
+       * variable method populated.
+       */
+      //components = [];
 
 
-        /**
-         * Returns the location of the game object as a Point object rather than two
-         * variables x and y.
-         * 
-         */
-        get location() {
-            return new Point(this.x, this.y);
+      /**
+       * Returns the location of the game object as a Point object rather than two
+       * variables x and y.
+       * 
+       */
+      get location() {
+        return new Point(this.x, this.y);
+      }
+
+      /**
+       * Returns the world space location of the game object.
+       * This takes into account the transforms of the chain of parents
+       */
+      get worldLocation() {
+        if (!this.parent)
+          return this.location;
+        let parentTransform = this.parent.worldLocation;
+        let toReturn = new Point(this.x + parentTransform.x, this.y + parentTransform.y);
+        return toReturn;
+
+      }
+
+      
+
+      /**
+       * 
+       * @param {Number} x The x position of the game object relative to its parent. Defaults to 0
+       * @param {Number} y The y positon of the game object relative to its
+       * parent. Defaults to 0
+       * @param {Number} scaleX The scale of the objet in x relative to its
+       * parent. Defaults to 1.
+       * @param {Number} scaleY The scale of the object in y relative to its
+       * parent. Scales to 1.
+       * @param {Number} rotation The scale of the object relative to its parent.
+       */
+      constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0, prefabName = "") {
+        super();
+        this.components = [];
+        [this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.prefabName] = [x, y, scaleX, scaleY, rotation, prefabName];
+      }
+      /**
+       * 
+       * @param {Component} component The component to be added to this game
+       * object's list of components
+       * 
+       * Call this method instead of GameObject.components.push() to add
+       * components so that components will have their gameObject parent member
+       * variable populated.
+       */
+      addComponent(component) {
+        this.components.push(component);
+        component.gameObject = this;
+      }
+
+      /**
+       * 
+       * Render this game object to a canvas by calling the draw method on all its
+       * components and then recursively calling draw on its child components.
+       * 
+       * @param {Canvas_2D_Context} ctx The canvas context  to draw to. This may a
+       * literal reference to a canvas on the DOM or a background image for
+       * deferred rendering.
+       */
+      draw(ctx) {
+        ctx.save();
+
+        /** We first need to figure out if we are rendering in screen space or world space
+         * We know by checking for the presence of a RectTransform.        
+        */
+
+        if (this.anyComponent("RectTransform")) {
+          //We first need to move relative to the screen bounding box
+          let rectTransform = this.getComponent("RectTransform");
+          let width = ctx.canvas.width;
+          let height = ctx.canvas.height;
+          let tx = 0; //Default to anchor left
+          let ty = 0; //Default to anchor top
+
+          if (rectTransform.anchorHorizontal == "center")
+            tx = width / 2;
+          else if (rectTransform.anchorHorizontal == "right")
+            tx = width;
+          if (rectTransform.anchorVertical == "middle")
+            ty = height / 2;
+          else if (rectTransform.anchorVertical == "bottom")
+            ty = height;
+
+          ctx.translate(tx, ty);
+
         }
 
-        /**
-         * Returns the world space location of the game object.
-         * This takes into account the transforms of the chain of parents
-         */
-        get worldLocation(){
-            if(!this.parent)
-                return this.location;
-            let parentTransform = parent.getTransform();
+        //Otherwise we are in world space
+        ctx.translate(this.x, this.y);
+        ctx.scale(this.scaleX, this.scaleY);
+        ctx.rotate(this.rotation);
 
+
+        this.components.filter(i => i.draw).forEach(i => i.draw(ctx));
+
+        //Now draw all the children
+        this.children.filter(i => i.draw).forEach(i => i.draw(ctx));
+
+        ctx.restore();
+      }
+      update() {
+        this.components.filter(i => i.update).forEach(i => i.update());
+
+        //Now update all the children
+        this.children.forEach(i => i.update());
+      }
+      getComponent(type) {
+        if (typeof (type) === 'string' || type instanceof String) {
+          //The user passed us a string, not a type
+          //https://stackoverflow.com/a/7772724/10047920
+          let component = this.components.find(i => i.constructor.name === type);
+          if (component) return component;
+          throw "Error, couldn't find type " + type;
+        } else {
+          let component;
+          try {
+            component = this.components.find(i => i instanceof type);
+          } catch (e) {
+            console.log(e);
+          }
+          if (component) return component;
+          throw "Error, couldn't find type " + type;
         }
-
-        getTransform(){
-            return 1;
+      }
+      /**
+       * Returns true if there is at least one component of the given
+       * type attached to this GameObject.
+       * 
+       * @param {The type of the componet to search for. May be a string or object type} type 
+       */
+      anyComponent(type) {
+        if (typeof (type) === 'string' || type instanceof String) {
+          //The user passed us a string, not a type
+          //https://stackoverflow.com/a/7772724/10047920
+          let component = this.components.find(i => i.constructor.name === type);
+          if (component) return true;
+          return false;
+        } else {
+          let component = this.components.find(i => i instanceof type);
+          if (component) return true;
+          return false;
         }
+      }
 
-        /**
-         * 
-         * @param {Number} x The x position of the game object relative to its parent. Defaults to 0
-         * @param {Number} y The y positon of the game object relative to its
-         * parent. Defaults to 0
-         * @param {Number} scaleX The scale of the objet in x relative to its
-         * parent. Defaults to 1.
-         * @param {Number} scaleY The scale of the object in y relative to its
-         * parent. Scales to 1.
-         * @param {Number} rotation The scale of the object relative to its parent.
-         */
-        constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0, prefabName = "") {
-            super();
-            this.components = [];
-            [this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.prefabName] = [x, y, scaleX, scaleY, rotation, prefabName];
+      recursiveCall(functionName) {
+        for (let i = 0; i < this.components.length; i++) {
+          let component = this.components[i];
+          if (component[functionName]) {
+            component[functionName]();
+          }
         }
-        /**
-         * 
-         * @param {Component} component The component to be added to this game
-         * object's list of components
-         * 
-         * Call this method instead of GameObject.components.push() to add
-         * components so that components will have their gameObject parent member
-         * variable populated.
-         */
-        addComponent(component) {
-            this.components.push(component);
-            component.gameObject = this;
+        //Now call the function on the children
+        for (let i = 0; i < this.children.length; i++) {
+          let child = this.children[i];
+          child.recursiveCall(functionName);
         }
+      }
 
-        /**
-         * 
-         * Render this game object to a canvas by calling the draw method on all its
-         * components and then recursively calling draw on its child components.
-         * 
-         * @param {Canvas_2D_Context} ctx The canvas context  to draw to. This may a
-         * literal reference to a canvas on the DOM or a background image for
-         * deferred rendering.
-         */
-        draw(ctx) {
-            ctx.save();
+      serialize() {
+        let toReturn = {
+          def:`${this.name},${this.x},${this.y},${this.scaleX},${this.scaleY},${this.rotation},${this.type}`,
+          components:[],
+          componentValues:[],
+          children:[]
+        };
 
-            /** We first need to figure out if we are rendering in screen space or world space
-             * We know by checking for the presence of a RectTransform.        
-            */
-
-            if (this.anyComponent("RectTransform")) {
-                //We first need to move relative to the screen bounding box
-                let rectTransform = this.getComponent("RectTransform");
-                let width = ctx.canvas.width;
-                let height = ctx.canvas.height;
-                let tx = 0; //Default to anchor left
-                let ty = 0; //Default to anchor top
-
-                if(rectTransform.anchorHorizontal == "center")
-                    tx = width/2;
-                else if(rectTransform.anchorHorizontal == "right")
-                    tx = width;
-                if(rectTransform.anchorVertical == "middle")
-                    ty = height/2;
-                else if(rectTransform.anchorVertical == "bottom")
-                    ty = height;
-
-                ctx.translate(tx, ty);
-                
-            }
-
-            //Otherwise we are in world space
-            ctx.translate(this.x, this.y);
-            ctx.scale(this.scaleX, this.scaleY);
-            ctx.rotate(this.rotation);
-
-
-            this.components.filter(i => i.draw).forEach(i => i.draw(ctx));
-
-            //Now draw all the children
-            this.children.filter(i => i.draw).forEach(i => i.draw(ctx));
-
-            ctx.restore();
+        for (let i = 0; i < this.components.length; i++) {
+          let component = this.components[i];
+          let toAdd = component.serialize();
+          toRetur.components.push(toAdd);
         }
-        update() {
-            this.components.filter(i => i.update).forEach(i => i.update());
-
-            //Now update all the children
-            this.children.forEach(i => i.update());
+        //Now call the function on the children
+        for (let i = 0; i < this.children.length; i++) {
+          let child = this.children[i];
+          let toAdd = child.serialize();
+          toReturn.children.push(toAdd);
         }
-        getComponent(type) {
-            if (typeof (type) === 'string' || type instanceof String) {
-                //The user passed us a string, not a type
-                //https://stackoverflow.com/a/7772724/10047920
-                let component = this.components.find(i => i.constructor.name === type);
-                if (component) return component;
-                throw "Error, couldn't find type " + type;
-            } else {
-              let component;
-              try{
-                 component = this.components.find(i => i instanceof type);
-              }catch (e){
-                console.log(e);
-              }
-                if (component) return component;
-                throw "Error, couldn't find type " + type;
-            }
-        }
-        /**
-         * Returns true if there is at least one component of the given
-         * type attached to this GameObject.
-         * 
-         * @param {The type of the componet to search for. May be a string or object type} type 
-         */
-        anyComponent(type) {
-            if (typeof (type) === 'string' || type instanceof String) {
-                //The user passed us a string, not a type
-                //https://stackoverflow.com/a/7772724/10047920
-                let component = this.components.find(i => i.constructor.name === type);
-                if (component) return true;
-                return false;
-            } else {
-                let component = this.components.find(i => i instanceof type);
-                if (component) return true;
-                return false;
-            }
-        }
-        
-        recursiveCall(functionName) {
-            for (let i = 0; i < this.components.length; i++) {
-                let component = this.components[i];
-                if (component[functionName]) {
-                    component[functionName]();
-                }
-            }
-            //Now call the function on the children
-            for (let i = 0; i < this.children.length; i++) {
-                let child = this.children[i];
-                child.recursiveCall(functionName);
-            }
-        }
+        return toReturn;
+      }
     }
 
     class Collider extends Component {
@@ -2660,8 +2705,8 @@ var Base = (function () {
             if (one.collider instanceof CircleCollider && two.collider instanceof PointCollider) {
                 let distance = one.gameObject.worldLocation.distance(two.gameObject.location);
 
-                if (distance < one.collider.radius)
-                    return true;
+                if (distance < one.collider.radius * one.gameObject.scaleX)
+                    return true; 
                 return false;
             } else if (one.collider instanceof PointCollider && two.collider instanceof CircleCollider) {
                 return this.inCollision(two, one);
@@ -2969,25 +3014,37 @@ var Base = (function () {
       this.Behaviors = gameBehaviors;
       let canv, ctx;
 
+      let shouldDraw = true;
+      if (typeof options.runDraw !== 'undefined' || options.runDraw === false)
+        shouldDraw = false;
+
       this.SceneManager.clearScenes();
       scenes.allScenes
         .forEach(i => this.SceneManager.addScene(new Scene(i, this.Prefabs, gameBehaviors, this.Components)));
 
       this.SceneManager.currentScene = options.startScene || scenes.startScene;
-      canv = document.querySelector("#canv");
-      ctx = canv.getContext('2d');
+
+      if (shouldDraw) {
+        canv = document.querySelector("#canv");
+        ctx = canv.getContext('2d');
+      }
 
       let that = this;
 
       function gameLoop() {
 
         let shouldUpdate = true;
-        if(typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
+
+
+        if (typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
           shouldUpdate = false;
+
+
         Input.swapUpDownArrays();
         if (shouldUpdate)
           update();
-        draw(ctx);
+        if (shouldDraw)
+          draw(ctx);
       }
 
       function update() {
@@ -3040,7 +3097,7 @@ var Base = (function () {
 
       function mousemove(event) {
         [Input.mousePosition.x, Input.mousePosition.y] = [event.clientX, event.clientY];
-        
+
       }
 
       function wheelevent(event) {
@@ -3052,34 +3109,34 @@ var Base = (function () {
         //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
       }
 
-      function touchstart(event){
+      function touchstart(event) {
         //event.preventDefault();//Don't treat this as a mouse event
         Input.touches = copyTouches(event.changedTouches);
         Input.touchesStart = copyTouches(event.changedTouches); //Simple deep copy
       }
 
-      function touchend(event){
+      function touchend(event) {
         //event.preventDefault();//Don't treat this as a mouse event
         Input.touches = [];//copyTouches(event.changedTouches);
         Input.touchesEnd = copyTouches(event.changedTouches); //Simple deep copy
       }
 
-      function touchcancel(event){
+      function touchcancel(event) {
         //event.preventDefault();//Don't treat this as a mouse event
         console.log("Touch Cancel");
       }
 
-      function touchmove(event){
+      function touchmove(event) {
         Input.touches = copyTouches(event.changedTouches);
-        
+
       }
 
-      function copyTouches(touches){
+      function copyTouches(touches) {
         let toReturn = [];
-        for(let i = 0; i < touches.length; i++){
+        for (let i = 0; i < touches.length; i++) {
           let touch = touches[i];
           let toAdd = {};
-          for(let j in touch){
+          for (let j in touch) {
             toAdd[j] = touch[j];
           }
 
@@ -3101,16 +3158,16 @@ var Base = (function () {
       //Keep our canvas full screen
       //from https://blog.codepen.io/2013/07/29/full-screen-canvas/
 
-      var can = document.getElementById("canv");
+      // var can = document.getElementById("canv");
 
       function resizeCanvas() {
-        let parent = can.parentNode;
+        let parent = canv.parentNode;
         if (parent == document.body) {
           parent = window;
-          can.style.width = parent.innerWidth + "px";
+          canv.style.width = parent.innerWidth + "px";
 
-          can.width = parent.innerWidth;
-          can.height = parent.innerHeight;
+          canv.width = parent.innerWidth;
+          canv.height = parent.innerHeight;
         }
         else {
           //Take the canvas out of the parent div sive calculation momentarily
@@ -3132,11 +3189,14 @@ var Base = (function () {
 
         }
       }
-      // Webkit/Blink will fire this on load, but Gecko doesn't.
-      window.onresize = resizeCanvas;
-
-      // So we fire it manually...
-      resizeCanvas();
+      //Don't look for or respond to the canvas if we're in "headless" mode
+      if (shouldDraw) {
+        window.onresize = resizeCanvas;
+        
+        // Webkit/Blink will fire this on load, but Gecko doesn't.
+        // So we fire it manually...
+        resizeCanvas();
+      }
       setInterval(gameLoop, 33);
     }
 
