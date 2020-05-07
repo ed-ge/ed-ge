@@ -1,6 +1,8 @@
 
 ![Unit Test](https://github.com/ed-ge/ed-ge/workflows/Unit%20Test/badge.svg)
 ![JSDoc](https://github.com/ed-ge/ed-ge/workflows/JSDoc/badge.svg?branch=master)
+[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+[![codebeat badge](https://codebeat.co/badges/4d653397-8b7c-42ea-8e3b-bbd537810ed4)](https://codebeat.co/projects/github-com-ed-ge-ed-ge-master)
 # ed-ge
 
 ## The EDucational Game Engine
