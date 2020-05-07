@@ -174,7 +174,7 @@ class GameObject extends NameableParent {
    * Returns true if there is at least one component of the given
    * type attached to this GameObject.
    * 
-   * @param {The type of the componet to search for. May be a string or object type} type 
+   * @param {type} The type of the component to search for. May be a string or object type type 
    */
   anyComponent(type) {
     if (typeof (type) === 'string' || type instanceof String) {
