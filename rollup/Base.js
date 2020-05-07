@@ -453,7 +453,7 @@ class GameObject extends NameableParent {
    * Returns true if there is at least one component of the given
    * type attached to this GameObject.
    * 
-   * @param {The type of the componet to search for. May be a string or object type} type 
+   * @param {type} The type of the component to search for. May be a string or object type type 
    */
   anyComponent(type) {
     if (typeof (type) === 'string' || type instanceof String) {
@@ -2702,8 +2702,8 @@ const CollisionHelper ={
         if (one.collider instanceof CircleCollider && two.collider instanceof PointCollider) {
             let distance = one.gameObject.worldLocation.distance(two.gameObject.location);
 
-            if (distance < one.collider.radius)
-                return true;
+            if (distance < one.collider.radius * one.gameObject.scaleX)
+                return true; 
             return false;
         } else if (one.collider instanceof PointCollider && two.collider instanceof CircleCollider) {
             return this.inCollision(two, one);
