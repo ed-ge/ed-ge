@@ -1,5 +1,5 @@
 
-![Node.js CI](https://github.com/ed-ge/ed-ge/workflows/Node.js%20CI/badge.svg?branch=dev)
+![Unit Test](https://github.com/ed-ge/ed-ge/workflows/Unit%20Test/badge.svg)
 ![JSDoc](https://github.com/ed-ge/ed-ge/workflows/JSDoc/badge.svg?branch=master)
 # ed-ge
 
