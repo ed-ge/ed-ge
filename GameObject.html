@@ -271,7 +271,7 @@ parent. Scales to 1.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line62">line 62</a>
+        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -321,71 +321,6 @@ parent. Scales to 1.</p></td>
 
         
             
-<h4 class="name" id="components"><span class="type-signature"></span>components<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>Array of components this game object has. Note, components should only be
-added to this array used GameObject.addComponent() to components.push().
-Otherwise the components won't have their parent game object member
-variable method populated.</p>
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line41">line 41</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
 <h4 class="name" id="location"><span class="type-signature"></span>location<span class="type-signature"></span></h4>
 
 
@@ -431,7 +366,7 @@ variables x and y.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line47">line 47</a>
+        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line50">line 50</a>
     </li></ul></dd>
     
 
@@ -449,13 +384,14 @@ variables x and y.</p>
 
         
             
-<h4 class="name" id="rotation"><span class="type-signature"></span>rotation<span class="type-signature"></span></h4>
+<h4 class="name" id="worldLocation"><span class="type-signature"></span>worldLocation<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    <p>The rotation of the game object relative to its parent</p>
+    <p>Returns the world space location of the game object.
+This takes into account the transforms of the chain of parents</p>
 </div>
 
 
@@ -493,255 +429,7 @@ variables x and y.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line33">line 33</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="scaleX"><span class="type-signature"></span>scaleX<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>The scale of the game object in x relative to its parent</p>
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line23">line 23</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="scaleY"><span class="type-signature"></span>scaleY<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>The scale of the game object in y relative to its parent</p>
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line28">line 28</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="x"><span class="type-signature"></span>x<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>The x position of the game object relative to its parent</p>
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line13">line 13</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="y"><span class="type-signature"></span>y<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    <p>The y position of the game object relative to its parent</p>
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line18">line 18</a>
+        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line58">line 58</a>
     </li></ul></dd>
     
 
@@ -870,7 +558,145 @@ variable populated.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line75">line 75</a>
+        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line94">line 94</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="anyComponent"><span class="type-signature"></span>anyComponent<span class="signature">(The)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Returns true if there is at least one component of the given
+type attached to this GameObject.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>The</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">type</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>type of the component to search for. May be a string or object type type</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line179">line 179</a>
     </li></ul></dd>
     
 
@@ -1010,7 +836,7 @@ deferred rendering.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line89">line 89</a>
+        <a href="base_GameObject.js.html">base/GameObject.js</a>, <a href="base_GameObject.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -1056,13 +882,13 @@ deferred rendering.</p></td>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AABBCollider.html">AABBCollider</a></li><li><a href="Behavior.html">Behavior</a></li><li><a href="CameraComponent.html">CameraComponent</a></li><li><a href="CanvasComponent.html">CanvasComponent</a></li><li><a href="Component.html">Component</a></li><li><a href="ConvexCollider.html">ConvexCollider</a></li><li><a href="GameObject.html">GameObject</a></li><li><a href="Input.html">Input</a></li><li><a href="NameableParent.html">NameableParent</a></li><li><a href="Point.html">Point</a></li><li><a href="RectTransform.html">RectTransform</a></li><li><a href="Scene.html">Scene</a></li><li><a href="Time.html">Time</a></li><li><a href="TriangleCollider.html">TriangleCollider</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AABBCollider.html">AABBCollider</a></li><li><a href="Behavior.html">Behavior</a></li><li><a href="CameraComponent.html">CameraComponent</a></li><li><a href="CanvasComponent.html">CanvasComponent</a></li><li><a href="Component.html">Component</a></li><li><a href="ConvexCollider.html">ConvexCollider</a></li><li><a href="GameObject.html">GameObject</a></li><li><a href="NameableParent.html">NameableParent</a></li><li><a href="Point.html">Point</a></li><li><a href="RectTransform.html">RectTransform</a></li><li><a href="Scene.html">Scene</a></li><li><a href="Time.html">Time</a></li><li><a href="TriangleCollider.html">TriangleCollider</a></li></ul><h3>Global</h3><ul><li><a href="global.html#main">main</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri May 01 2020 10:55:03 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu May 07 2020 00:58:44 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>

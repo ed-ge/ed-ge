@@ -30,7 +30,11 @@
 import Point from "./Point.js"
 import GameObject from "./GameObject.js";
 import PointCollider from "../components/PointCollider.js";
-import Input from "./Input.js";
+import Input from "./Input.js"
+import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../../lib/common.js"
+import Simulator from "../../../lib/simulator.js"
+
+// import Globals from "./Globals.js"
 
 /**
  * A scene represents a level in a game.
@@ -38,225 +42,206 @@ import Input from "./Input.js";
 class Scene extends NameableParent {
 
   /**
-   * A static reference to all gameObjects available in this game.
-   * This prevents a circular module dependency. By "linking" these to the
-   * scene as static list after the program starts, we can remove any circular
-   * dependencies.
-   */
-  static gameObjects = [];
-
-  /**
-   * A static reference to all Components available in the game engine.
-   * This prevents a circular module dependency. By "linking" these to the
-   * scene as static list after the program starts, we can remove any circular
-   * dependencies.
-   */
-  static components = [];
-
-  /**
-   * A static reference to all Game Behaviors available in this game.
-   * This prevents a circular module dependency. By "linking" these to the
-   * scene as static list after the program starts, we can remove any circular
-   * dependencies.
-   */
-  static gameBehaviors = [];
-
-  /**
    * Scene constructor. Assigns the scene a name and starts it.
    * 
    * @param {String} name Name of this scene
    */
-  constructor(name) {
-    super(name);
-    this.start();
+  constructor(definition, prefabs, behaviors, components) {
+    super(definition.name);
+    this.children = [];
+    this.objects = definition.objects;
+    //Inflate all the definitions
+
+
+    this.prefabs = prefabs;
+    this.behaviors = behaviors;
+    this.components = components;
+
 
   }
+
 
   /**
-   * Assign the scene its scene tree using our declarative syntax.
+   * Load the scene from its declarative syntax
    * 
-   * @param {String} obj The string specifying the contents of the scene in
-   * our declarative syntax.
    */
-  static parse(obj) {
-    let toReturn = new Scene(obj.name);
-    toReturn.objects = obj.objects;
-    return toReturn;
+  boot() {
+    // Setup up the simulations within the scene
+    this.simulator = new Simulator();
+
+    this.simulator.setAgentDefaults(
+      30, // neighbor distance (min = radius * radius)
+      30, // max neighbors
+      100, // time horizon
+      10, // time horizon obstacles
+      1.5, // agent radius
+      1.0, // max speed
+      new Vector2(1, 1) // default velocity
+    );
+    this.simulator.setTimeStep(.25);
+    var velocity = new Vector2(1, 1);
+    var radius = 10
+
+    // var NUM_AGENTS = 10;
+    // for (var i = 0; i &lt; NUM_AGENTS; i++) {
+    //   var angle = i * (2 * Math.PI) / NUM_AGENTS;
+    //   var x = Math.cos(angle) * 200;
+    //   var y = Math.sin(angle) * 200;
+    //   this.simulator.addAgent(new Vector2(x, y));
+
+    // }
+
+    // Create goals
+    // var goals = [];
+    // for (var i = 0; i &lt; this.simulator.getNumAgents(); ++i) {
+    //   goals.push(this.simulator.getAgentPosition(i).scale(-1));
+    // }
+    // this.simulator.addGoals(goals);
+
+    // Add (polygonal) obstacle(s), specifying vertices in counterclockwise order.
+    var vertices = [];
+
+    this.simulator.addObstacle(vertices);
+
+    // Process obstacles so that they are accounted for in the simulation.
+    this.simulator.processObstacles();
+
+    // for (var i = 0; i &lt; NUM_AGENTS; i++) {
+    //   this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))));
+
+    // }
+
+
+    this.children = [];//Clear the children in case the scene has been built before
+
+    if (this.objects)
+      this.objects.forEach(obj => {
+        this.buildChild(obj, this)
+      })
+
 
   }
-  start2() {
 
-    this.children = [];
 
-    //Load a scene from a declarative syntax
 
-    if (this.objects) {
-      this.children = [];
-      for (let i = 0; i &lt; this.objects.length; i++) {
-        let obj = this.objects[i];
-        this.buildChild2(obj, this.children)
-
-      }
-    }
-  }
-  start() {
-    this.children = [];
-
-    //Load a scene from a declarative syntax
-
-    if (this.objects) {
-      this.children = [];
-      for (let i = 0; i &lt; this.objects.length; i++) {
-        let obj = this.objects[i];
-        this.buildChild(obj, this.children)
-
-      }
-    }
-  }
 
   /**
    * 
    * @param {String} obj The string giving the declarative syntax
    * @param {NameableParent} parent The parent of the object in the scene tree
    */
-  buildChild2(obj, parent) {
+  buildChild(obj, parent) {
 
-    let gameObjectType = null;
-    let keys = Object.keys(Scene.gameObjects)
-    for (let i = 0; i &lt; keys.length; i++) {
-      let key = keys[i]
-      if (key == obj.type) {
-        gameObjectType = Scene.gameObjects[key];
-        break;
+    if (obj.def) {
+      obj.location = { x: 0, y: 0 };
+      obj.scale = { x: 1, y: 1 };
+      let split = obj.def.split(",").map(i => i.trim());
+      switch (split.length) {
+        case 1:
+          obj.type = split[0];
+          obj.name = obj.type;
+          break;
+        case 2:
+          [obj.name, obj.type] = split;
+          break;
+        case 3:
+          throw "There is no shorthand object definition with 3 values.";
+        case 4:
+          [obj.name, obj.location.x, obj.location.y, obj.type] = split;
+          break;
+        case 5:
+          [obj.name, obj.location.x, obj.location.y, obj.scale.x, obj.type] = split;
+          obj.scale.y = obj.scale.x;
+          break;
+        case 6:
+          [obj.name, obj.location.x, obj.location.y, obj.scale.x, obj.scale.y, obj.type] = split;
+          break;
+        case 7:
+          [obj.name, obj.location.x, obj.location.y, obj.scale.x, obj.scale.y, obj.rotation, obj.type] = split;
+          break;
+        default:
+          throw "There is not a shorthand object definition with " + split.length + " arguments.";
       }
     }
+
+    let gameObjectType = this.prefabs["" + obj.type]
     if (gameObjectType == null) throw "Could now find game object of type " + obj.type;
 
-    let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), 0, parent);
-    /*let gameObject = new GameObject(obj.location.x, obj.location.y, 1, 1, 0);
-    parent.push(gameObject);
-    let prefab = gameObjects[gameObjectType.name];
-    this.buildIt(prefab, gameObject, gameBehaviors, gameObjects, components);*/
+    obj.location = obj.location || { x: 0, y: 0 }
+    obj.scale = obj.scale || { x: 1, y: 1 }
+    obj.rotation = obj.rotation || 0;
 
-    gameObject.name = obj.name;
-    this.buildIt(obj, gameObject);
+    obj.location.x = +obj.location.x;
+    obj.location.y = +obj.location.y;
+    obj.scale.x = +obj.scale.x;
+    obj.scale.y = +obj.scale.y;
+    obj.rotation = +obj.rotation;
 
+    let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent, obj);
 
+    //gameObject.name = obj.name;
+    //this.buildIt(obj, gameObject);
   }
-  buildIt(obj, gameObject) {
-    if (obj.children) {
-      for (let i = 0; i &lt; obj.children.length; i++) {
-        let child = obj.children[i];
-        this.buildChild2(child, gameObject.children);
-      }
 
+  buildIt(obj, gameObject) {
+    //Recursively build children
+    if (obj.children) {
+      obj.children.forEach(i => this.buildChild(i, gameObject))
     }
 
     //Set the key-pair values on components already on prefabs
     if (obj.componentValues) {
-      for (let j = 0; j &lt; obj.componentValues.length; j++) {
-        let componentValue = obj.componentValues[j]
-        let type = componentValue.type;
-        let component = gameObject.getComponent(type);
-        let values = componentValue.values;
-        for (let k = 0; k &lt; values.length; k++) {
-          let value = values[k];
-          component[value.key] = value.value;
+      obj.componentValues.forEach(j => {
+        let split = j.split("|").map(i => i.trim());
+        let component = gameObject.getComponent(split[0])
+        let value = split[2];
+        try {
+          value = JSON.parse(split[2])
+        } catch (e) {
+          //Looks like it wasn't JSON after all..
         }
-      }
+        component[split[1]] = value;
+      })
     }
 
     //Add new components
     if (obj.components) {
-      for (let i = 0; i &lt; obj.components.length; i++) {
-        let componentInfo = obj.components[i];
+      obj.components.forEach(i => {
+        if (!i.split) {
+          console.log("error");
+        }
+        let split = i.split("|").map(i => i.trim());
+        let type = split.shift();
+        //See if we have a component or behavior with that name
+        let componentType = this.components[type] || this.behaviors[type];
+        if (componentType == null) throw "Could not find component " + i.type;
 
-        let componentString = componentInfo.type;
-        let componentType = null;
-        let componentKeys = Object.keys(Scene.components);
-        let behaviorKeys = Object.keys(Scene.gameBehaviors);
-        for (let i = 0; i &lt; componentKeys.length; i++) {
-          let key = componentKeys[i];
-          if (key == componentString) {
-            componentType = Scene.components[key];
-            break
-          }
-        }
-        if (componentType == null) {
-          for (let i = 0; i &lt; behaviorKeys.length; i++) {
-            let key = behaviorKeys[i]
-            if (key == componentString) {
-              componentType = Scene.gameBehaviors[key]
-              break;
-            }
-          }
-        }
-        if (componentType == null) throw "Could not find component " + componentString;
         let component = new componentType();
         gameObject.addComponent(component);
-        if (componentInfo.values) {
 
-          //Now set the key-value pairs on the new component we just made
-          let componentValues = componentInfo.values;
-          for (let v = 0; v &lt; componentValues.length; v++) {
-            let value = componentValues[v];
-            let key = value.key;
-            let val = value.value;
-            component[key] = val;
-          }
+        while (split.length >= 2) {
+          let key = split.shift();
+          let value = split.shift();
+          component[key] = value;
         }
+
+        // if (i.values) {
+        //   //Now set the key-value pairs on the new component we just made
+        //   i.values.forEach(v => {
+        //     component[v.key] = v.value;
+        //   })
+        // }
         if (component.start)
           component.start();
-
-      }
+      });
     }
   }
 
-
-
-
-
-
-
-  buildChild(obj, parent) {
-    let gameObject = this.instantiate(obj.type, obj.location, 0, parent);
-    gameObject.name = obj.name;
-
-    if (obj.children) {
-      for (let i = 0; i &lt; obj.children.length; i++) {
-        let child = obj.children[i];
-        this.buildChild(child, gameObject.children);
-      }
-
-    }
-
-    if (obj.componentValues) {
-      for (let j = 0; j &lt; obj.componentValues.length; j++) {
-        let componentValue = obj.componentValues[j]
-        let type = componentValue.type;
-        let component = gameObject.getComponent(type);
-        let values = componentValue.values;
-        for (let k = 0; k &lt; values.length; k++) {
-          let value = values[k];
-          component[value.key] = value.value;
-        }
-      }
-    }
-    if (obj.components) {
-      for (let i = 0; i &lt; obj.components.length; i++) {
-        let componentInfo = obj.components[i];
-        let component = new componentInfo.type();
-        gameObject.addComponent(component);
-        if (component.start)
-          component.start();
-
-      }
-    }
-  }
   draw(ctx, width, height) {
+    //Before we draw, see if we have a camera game object and use that
     ctx.save();
     let tx, ty, sx, sy, r, hx, hy;
-    let cameras = this.children.filter(i => i.hasComponent("CameraComponent"))
+    let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
     if (cameras.length == 0) {
       //You really should add a camera
       //console.log("You should add a camera to the scene. C'mon.")
@@ -291,37 +276,41 @@ class Scene extends NameableParent {
     ctx.scale(sx, sy)
     ctx.translate(-tx, -ty)
 
-    this.children.filter(i => i.draw &amp;&amp; !i.hasComponent("CanvasComponent")).forEach(i => i.draw(ctx));
+    //Draw children that are not in screen space
+    this.children.filter(i => i.draw &amp;&amp; !i.anyComponent("CanvasComponent")).forEach(i => i.draw(ctx));
 
     ctx.restore();
 
-    /** Now handle the canvas */
+    //We're now back in screen space. It's time to draw any GUI components
+    //if we have a gameObject with an attached CanvasComponent
     ctx.save();
-    //Get any references to canvas in root objects
-    let canvases = this.children.filter(i => i.draw &amp;&amp; i.hasComponent("CanvasComponent"));
-
-    //Respond to the case of no canvas
+    let canvases = this.children.filter(i => i.anyComponent("CanvasComponent"))
     if (canvases.length == 0) {
-      console.log("Can't draw to the canvas because you don't have one.")
+      //You really should have *something* in screen space
+      //console.log("You don't have a canvas object. That means you can't draw anything in screen space.");
     }
-
-    //Respond to the case of more than one canvas
     else {
-      if (canvases.length > 2) {
-        console.log("You have too many canvas components, you should only have one.")
+      if (canvases.length > 1) {
+        console.log("More than 1 canvas object found in the root of your scene graph. You should only have exactly one game object with a canvas component. The other object(s) and its children will not be rendered.")
       }
       let canvas = canvases[0];
       canvas.draw(ctx);
-
     }
-
-    //Call draw on the object with the canvas
-
     ctx.restore();
 
+
   }
-  update(collidableType, collisionHelper, ctx) {
+  update(ctx, collidableType, collisionHelper) {
+    //Update all the objects
     this.children.filter(i => i.update).forEach(i => i.update());
+
+    /**
+     * Now run the simulators
+     */
+
+    //
+    //First we do collisions
+    //
 
     //Add collision behavior
     let collidableChildren = [];
@@ -349,40 +338,45 @@ class Scene extends NameableParent {
       }
     }
 
-    //Look for picking events
     //
-    //We need to create a collision object for the mouse location
-    //Loop over collidable objects
-    //Find collisions
-
-    let cameras = this.children.filter(i => i.hasComponent("CameraComponent"));
-    let point = {x:0,y:0};
-    point.x = Input.mousePosition.x;
-    point.y = Input.mousePosition.y;
-    if(cameras.length == 0){
-      //Don't change anything
+    //Now go through and see if the point represented by the mouse collides with any of the colliders
+    //
+    //First get the world space position of the mouse
+    let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
+    let point = { x: 0, y: 0 };
+    point.x = parseInt(Input.mousePosition.x);
+    point.y = parseInt(Input.mousePosition.y);
+    if (cameras.length == 0) {
     }
-    else{
-      let canvas = ctx.canvas;
-      let width = canvas.width;
-      let height = canvas.height;
+    else {
+      /* point = Input.mousePosition;*/
+      //Put in transform code here
+      let camera = cameras[0];
+      let cameraComponent = camera.getComponent("CameraComponent")
 
-      let camera = cameras[0]
-      //let cameraComponent = camera.getComponent("CameraComponent");
       let tx = camera.x;
       let ty = camera.y;
       let sx = camera.scaleX;
       let sy = camera.scaleY;
       let r = camera.rotation;
-      let hx = width / 2;
-      let hy = height / 2;
+      let hx = ctx.canvas.width / 2;
+      let hy = ctx.canvas.height / 2;
 
-      point.x -= hx;
-      point.y -= hy;
-      point.x /=sx;
-      point.y /= sy;
-      point.x += tx;
-      point.y += ty;
+      let x = point.x;
+      let y = point.y;
+      x -= hx;
+      y -= hy;
+      x /= sx;
+      y /= sy;
+      x += tx;
+      y += ty;
+
+      point.x = x;
+      point.y = y;
+
+
+
+
     }
 
     let colliderObject = {};
@@ -391,25 +385,109 @@ class Scene extends NameableParent {
     colliderObject.gameObject.y = point.y;
     colliderObject.collider = new PointCollider();
 
-    for(let i = 0; i &lt; collidableChildren.length; i++){
-      if(collisionHelper.inCollision(collidableChildren[i], colliderObject))
-      {
-        let gameObject = collidableChildren[i].gameObject;
-        for(let j = 0; j &lt; gameObject.components.length; j++){
-          let component = gameObject.components[j];
-          if(component.onMouseOver){
+    for (let i = 0; i &lt; collidableChildren.length; i++) {
+      if (collisionHelper.inCollision(collidableChildren[i], colliderObject)) {
+        let gameObjectOne = collidableChildren[i].gameObject;
+
+        //Now loop over all the behaviors too see if any are listening for collision events
+        for (let i = 0; i &lt; gameObjectOne.components.length; i++) {
+          let component = gameObjectOne.components[i];
+          if (component.onMouseOver)
             component.onMouseOver();
+          if (component.onMouseDown) {
+            if (Input.getMouseButtonDown(0))
+              component.onMouseDown()
           }
-          if(component.onMouseDown){
-            if(Input.getMouseButtonDown(0)){
-              component.onMouseDown();
+        }
+      }
+    }
+
+    //
+    //Now go through and see if the point represented by the touch point collides with any of the colliders
+    //
+    //First get the world space position of the touch
+    let touches = Input.getTouches();
+    if (touches &amp;&amp; touches.length > 0) {
+      let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
+      let point = { x: 0, y: 0 };
+      point.x = parseInt(touches[0].x);
+      point.y = parseInt(touches[0].y);
+      if (cameras.length == 0) {
+      }
+      else {
+        /* point = Input.mousePosition;*/
+        //Put in transform code here
+        let camera = cameras[0];
+
+        let tx = camera.x;
+        let ty = camera.y;
+        let sx = camera.scaleX;
+        let sy = camera.scaleY;
+        let r = camera.rotation;
+        let hx = ctx.canvas.width / 2;
+        let hy = ctx.canvas.height / 2;
+
+        let x = point.x;
+        let y = point.y;
+        x -= hx;
+        y -= hy;
+        x /= sx;
+        y /= sy;
+        x += tx;
+        y += ty;
+
+        point.x = x;
+        point.y = y;
+      }
+
+      let colliderObject = {};
+      colliderObject.gameObject = new GameObject();
+      colliderObject.gameObject.x = point.x;
+      colliderObject.gameObject.y = point.y;
+      colliderObject.collider = new PointCollider();
+
+      for (let i = 0; i &lt; collidableChildren.length; i++) {
+        if (collisionHelper.inCollision(collidableChildren[i], colliderObject)) {
+          let gameObjectOne = collidableChildren[i].gameObject;
+
+          //Now loop over all the behaviors too see if any are listening for collision events
+          for (let i = 0; i &lt; gameObjectOne.components.length; i++) {
+            let component = gameObjectOne.components[i];
+            if (component.onMouseOver)
+              component.onTouchOver();
+            if (component.onTouchStart) {
+              if (Input.getTouchesStart() &amp;&amp; Input.getTouchesStart().length > 0)
+                component.onTouchStart()
+            }
+            if (component.onTouchEnd) {
+              if (Input.getTouchesEnd() &amp;&amp; Input.getTouchesEnd().length > 0)
+                component.onTouchEnd()
             }
           }
         }
       }
     }
 
+    //
+    // Now we simulate the crowds
+    //
+    this.simulator.run();
 
+    // Go back and update the gameObjects represented by the agents
+    let numAgents = this.simulator.getNumAgents();
+    for (let i = 0; i &lt; numAgents; i++) {
+      let gameObject = this.simulator.getAgentGameObject(i);
+      let position = this.simulator.getAgentPosition(i);
+      gameObject.x = position.x;
+      gameObject.y = position.y;
+      if (RVOMath.absSq(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))) &lt; 10) {
+        // Agent is within one radius of its goal, set preferred velocity to zero
+        this.simulator.setAgentPrefVelocity(i, new Vector2(0.0, 0.0));
+      } else {
+        // Agent is far away from its goal, set preferred velocity as unit vector towards agent's goal.
+        this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))));
+      }
+    }
   }
   getCollidable(gameObject, collidableChildren, type) {
 
@@ -431,25 +509,106 @@ class Scene extends NameableParent {
     }
   }
 
+  /**
+   * 
+   * @param {*} location Proposed entry point for the game object
+   * @param {*} collider Collider for the proposed game object
+   */
+  canEnterSafely(location, collider, component) {
+    let collidableChildren = [];
+    this.getCollidable(this, collidableChildren, this.components.Collider);
+    let proposed = new GameObject();
+    proposed.x = location.x;
+    proposed.y = location.y;
+
+    for (let i = 0; i &lt; collidableChildren.length; i++) {
+      if (collidableChildren[i].gameObject.anyComponent(component))
+        if (this.components.CollisionHelper.inCollision(collidableChildren[i], { collider, gameObject: proposed })) {
+          return false;
+        }
+    }
+    return true;
+  }
 
 
-  instantiate(gameObjectType, location, rotation, parent) {
-    /*let gameObject = new gameObjectType(location.x, location.y);
-gameObject.rotation = rotation;
- 
-parent.push(gameObject);
-gameObject.recursiveCall("start");
-return gameObject*/
 
-    let gameObject = new GameObject(location.x, location.y, 1, 1, rotation);
-    parent.push(gameObject);
-    let prefab = Scene.gameObjects[gameObjectType.name];
+  instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
+    let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
+    parent.children.push(gameObject);
+    if (parent instanceof GameObject)
+      gameObject.parent = parent; //Only set the parent if it's not a scene.
+    let prefab = this.prefabs[gameObjectType.name];
     this.buildIt(prefab, gameObject)
-    gameObject.name = prefab.name;
+    if (obj)
+      gameObject.name = obj.name;
+    else
+      gameObject.name = prefab.name;
+    gameObject.prefabName = gameObjectType.name;
+    if (obj) {
+      this.buildIt(obj, gameObject)
+    }
     gameObject.recursiveCall("start");
-    return gameObject
+
+    /**
+     * See if the game object needs to be added to any of our simulators
+     */
+
+    if (gameObject.anyComponent("RVOAgent")) {
+      this.simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
+      let RVOAgent = gameObject.getComponent("RVOAgent");
+      let destination = RVOAgent.destination;
+      let goal = new Vector2(destination.x, destination.y)
+      this.simulator.addGoal(goal)
+      let i = this.simulator.getNumAgents() - 1
+      RVOAgent._id = i;
+      this.updateRVOAgent(gameObject);
+
+    }
+    if (gameObject.anyComponent("RVOObstacle")) {
+      let rectangleComponent = gameObject.getComponent("RectangleComponent");
+      let width = +(rectangleComponent.width * gameObject.scaleX);
+      let height = +(rectangleComponent.height * gameObject.scaleY);
+      let rx = gameObject.x - width / 2;
+      let ry = gameObject.y - height / 2;
+
+      let a = new Vector2(rx, ry);
+      let b = new Vector2(rx, ry + height);
+      let c = new Vector2(rx + width, ry + height)
+      let d = new Vector2(rx + width, ry);
+
+      this.simulator.addObstacle([a, b]);
+      this.simulator.addObstacle([b, c]);
+      this.simulator.addObstacle([c, d]);
+      this.simulator.addObstacle([d, a]);
+
+      this.simulator.processObstacles();
+    }
+    return gameObject;
 
   }
+  updateRVOAgent(gameObject) {
+    let RVOAgent = gameObject.getComponent("RVOAgent");
+    let i = RVOAgent._id;
+    let destination = RVOAgent.destination;
+    let goal = new Vector2(destination.x, destination.y)
+    this.simulator.setGoal(goal, i)
+    this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(this.simulator.getAgentPosition(i))));
+  }
+  removeRVOAgent(gameObject) {
+    let RVOAgent = gameObject.getComponent("RVOAgent");
+    let i = RVOAgent._id;
+    this.simulator.removeRVOAgent(i);
+    for (let i = 0; i &lt; this.simulator.getNumAgents(); i++) {
+      let gameObject = this.simulator.getAgentGameObject(i);
+      let component = gameObject.getComponent("RVOAgent");
+      component._id = i;
+    }
+
+  }
+
+
+
+
 }
 
 export default Scene;</code></pre>
@@ -462,13 +621,13 @@ export default Scene;</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AABBCollider.html">AABBCollider</a></li><li><a href="Behavior.html">Behavior</a></li><li><a href="CameraComponent.html">CameraComponent</a></li><li><a href="CanvasComponent.html">CanvasComponent</a></li><li><a href="Component.html">Component</a></li><li><a href="ConvexCollider.html">ConvexCollider</a></li><li><a href="GameObject.html">GameObject</a></li><li><a href="Input.html">Input</a></li><li><a href="NameableParent.html">NameableParent</a></li><li><a href="Point.html">Point</a></li><li><a href="RectTransform.html">RectTransform</a></li><li><a href="Scene.html">Scene</a></li><li><a href="Time.html">Time</a></li><li><a href="TriangleCollider.html">TriangleCollider</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AABBCollider.html">AABBCollider</a></li><li><a href="Behavior.html">Behavior</a></li><li><a href="CameraComponent.html">CameraComponent</a></li><li><a href="CanvasComponent.html">CanvasComponent</a></li><li><a href="Component.html">Component</a></li><li><a href="ConvexCollider.html">ConvexCollider</a></li><li><a href="GameObject.html">GameObject</a></li><li><a href="NameableParent.html">NameableParent</a></li><li><a href="Point.html">Point</a></li><li><a href="RectTransform.html">RectTransform</a></li><li><a href="Scene.html">Scene</a></li><li><a href="Time.html">Time</a></li><li><a href="TriangleCollider.html">TriangleCollider</a></li></ul><h3>Global</h3><ul><li><a href="global.html#main">main</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri May 01 2020 10:55:03 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu May 07 2020 00:58:44 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
