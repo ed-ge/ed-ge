@@ -1,5 +1,6 @@
 
 ![Node.js CI](https://github.com/ed-ge/ed-ge/workflows/Node.js%20CI/badge.svg?branch=dev)
+![JSDoc](https://github.com/ed-ge/ed-ge/workflows/JSDoc/badge.svg?branch=master)
 # ed-ge
 
 ## The EDucational Game Engine
