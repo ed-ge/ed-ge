@@ -1,9 +1,6 @@
 import chai from "chai";
 
 import Base from "../src/engine/Base.js"
-import Scenes from "../src/game/Scenes.js"
-import GameBehaviors from "../src/game/GameBehaviors.js";
-import GameObjects from "../src/game/GameObjects.js"
 
 
 
@@ -28,12 +25,14 @@ describe('Base', function () {
       });
 
     })
-    // describe('deserialize', function () {
-    //   it('should deseralize a componnt', function () {
-    //     let component = new Base.Component().fromString("AABBCollider|type|AABBCollider|width|100|height|100");
-
-    //   })
-    // })
+    describe('deserialize', function () {
+      it('should deserialize a component', function () {
+        let component = Base.Serializer.deserializeComponent("AABBCollider|type|AABBCollider|width|111|height|20");
+        chai.expect(component.width).to.equal("111");
+        chai.expect(component.height).to.equal("20");
+        chai.expect(component.type).to.equal("AABBCollider");
+      })
+    })
   })
 })
 

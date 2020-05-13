@@ -5,7 +5,7 @@
     "description": "The EDucational Game Engine, built with babel.",
     "scripts": {
         "jest": "node ./node_modules/jest/bin/jest.js",
-        "test": "nyc ./node_modules/mocha/bin/mocha",
+        "test": "./node_modules/mocha/bin/mocha",
         "build": "babel src -d production",
         "start": "webpack --config ./webpack.main.config.js --mode=development && webpack --config ./webpack.base.config.js --mode=development && webpack --config ./webpack.components.config.js --mode=development",
         "rollup": "./node_modules/rollup/dist/bin/rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base'",

@@ -7,6 +7,7 @@ import Input from "./base/Input.js"
 import NameableParent from "./base/NamableParent.js"
 import Point from "./base/Point.js"
 import SceneManager from "./base/SceneManager.js"
+import Serializer from "./base/Serializer.js"
 
 /** Components */
 import CircleComponent from "./components/CircleComponent.js"
@@ -94,10 +95,12 @@ const Base = {
   Prefabs ,
   Behaviors:{},
   main,
+  Serializer: new Serializer(Components, Prefabs),
 
 }
 
 Base.SceneManager.Base = Base;
+
 
 
 
