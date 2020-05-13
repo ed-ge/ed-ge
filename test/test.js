@@ -20,7 +20,8 @@ describe('Base', function () {
       });
       it('should return a string in the correct DSL for TextComponent', function () {
         let component = new Base.Components.TextComponent();
-        let string = component.serialize();
+        // let string = component.serialize();
+        let string = Base.Serializer.serializeComponent(component);
         chai.expect(string).to.equal("TextComponent|type|TextComponent|text|[Blank]|font|10pt Sans|fill|black");
       });
 
