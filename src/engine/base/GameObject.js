@@ -205,25 +205,6 @@ class GameObject extends NameableParent {
   }
 
   serialize() {
-    let toReturn = {
-      def:`${this.name},${this.x},${this.y},${this.scaleX},${this.scaleY},${this.rotation},${this.type}`,
-      components:[],
-      componentValues:[],
-      children:[]
-    }
-
-    for (let i = 0; i < this.components.length; i++) {
-      let component = this.components[i];
-      let toAdd = component.serialize();
-      toRetur.components.push(toAdd);
-    }
-    //Now call the function on the children
-    for (let i = 0; i < this.children.length; i++) {
-      let child = this.children[i];
-      let toAdd = child.serialize();
-      toReturn.children.push(toAdd);
-    }
-    return toReturn;
   }
 }
 

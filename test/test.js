@@ -10,17 +10,16 @@ describe('Base', function () {
     describe('serialize', function () {
       it('should return a string in the correct DSL', function () {
         let component = new Base.Component();
-        let string = component.serialize();
+        let string = Base.Serializer.serializeComponent(component);
         chai.expect(string).to.equal("Component|type|Component");
       });
       it('should return a string in the correct DSL for AABB', function () {
         let component = new Base.Components.AABBCollider();
-        let string = component.serialize();
+        let string = Base.Serializer.serializeComponent(component);
         chai.expect(string).to.equal("AABBCollider|type|AABBCollider|width|100|height|100");
       });
       it('should return a string in the correct DSL for TextComponent', function () {
         let component = new Base.Components.TextComponent();
-        // let string = component.serialize();
         let string = Base.Serializer.serializeComponent(component);
         chai.expect(string).to.equal("TextComponent|type|TextComponent|text|[Blank]|font|10pt Sans|fill|black");
       });
@@ -33,6 +32,16 @@ describe('Base', function () {
         chai.expect(component.height).to.equal("20");
         chai.expect(component.type).to.equal("AABBCollider");
       })
+    })
+  })
+})
+
+describe("GameObject", function(){
+  describe("deserialieze", function(){
+    it("Should return the correct object and strings", function(){
+      let description = Base.Prefabs.EmptyGameObject;
+      let gameObject = Base.Serializer.deserializeGameObject(description);
+      chai.expect(gameObject.name).to.equal("EmptyGameObject");
     })
   })
 })
