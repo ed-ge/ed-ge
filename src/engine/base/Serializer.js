@@ -1,3 +1,5 @@
+import GameObject from "./GameObject.js"
+
 class Serializer {
   constructor(components, prefabs) {
     this.components = components;
@@ -41,6 +43,13 @@ class Serializer {
       toReturn.children.push(toAdd);
     }
     return toReturn;
+  }
+  deserializeGameObject(obj){
+    
+    let gameObject = new GameObject();
+    
+    return gameObject;
+
   }
 
 }

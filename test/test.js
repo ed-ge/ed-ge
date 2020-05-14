@@ -37,11 +37,24 @@ describe('Base', function () {
 })
 
 describe("GameObject", function(){
-  describe("deserialieze", function(){
+  describe("deserialize", function(){
     it("Should return the correct object and strings", function(){
-      let description = Base.Prefabs.EmptyGameObject;
+      let description = {
+        def: "Circle"
+      };
       let gameObject = Base.Serializer.deserializeGameObject(description);
-      chai.expect(gameObject.name).to.equal("EmptyGameObject");
+      chai.expect(gameObject.name).to.equal("Circle");
+      chai.expect(gameObject.children.length).to.equal(0);
+      chai.expect(gameObjects.components.length).to.equal(2);
+      chai.expect(gameObject.x).to.equal(0);
+      chai.expect(gameObject.y).to.equal(0);
+      chai.expect(gameObject.scaleX).to.equal(1);
+      chai.expect(gameObject.scaleY).to.equal(1);
+      chai.expect(gameObject.rotation).to.equal(0);
+      let component = gameObject.components[0];
+      chai.expect(component.constructor.name).to.equal("CircleComponent");
+      chai.expect(component.constructor.name).to.equal("CircleCollider");
+      
     })
   })
 })
