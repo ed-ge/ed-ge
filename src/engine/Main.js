@@ -1,5 +1,6 @@
 import Scene from "./base/Scene.js"
 import Input from "./base/Input.js"
+import Base from "./Base.js"
 
 
 /**
@@ -21,6 +22,8 @@ import Input from "./base/Input.js"
 function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
   this.Prefabs = { ...gameObjects, ...this.Prefabs };
+  Base.Serializer.prefabs = this.Prefabs;
+  Base.Serializer.components = {...Base.Serializer.components, ...gameBehaviors};
   this.Behaviors = gameBehaviors;
   let canv, ctx;
 

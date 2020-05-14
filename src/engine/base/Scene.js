@@ -5,6 +5,8 @@ import PointCollider from "../components/PointCollider.js";
 import Input from "./Input.js"
 import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../../lib/common.js"
 import Simulator from "../../../lib/simulator.js"
+import Serializer from "./Serializer.js"
+import Base from "../Base.js"
 
 // import Globals from "./Globals.js"
 
@@ -22,14 +24,10 @@ class Scene extends NameableParent {
     super(definition.name);
     this.children = [];
     this.objects = definition.objects;
-    //Inflate all the definitions
-
-
+    
     this.prefabs = prefabs;
     this.behaviors = behaviors;
     this.components = components;
-
-
   }
 
 
@@ -50,48 +48,21 @@ class Scene extends NameableParent {
       1.0, // max speed
       new Vector2(1, 1) // default velocity
     );
+
     this.simulator.setTimeStep(.25);
-    var velocity = new Vector2(1, 1);
-    var radius = 10
-
-    // var NUM_AGENTS = 10;
-    // for (var i = 0; i < NUM_AGENTS; i++) {
-    //   var angle = i * (2 * Math.PI) / NUM_AGENTS;
-    //   var x = Math.cos(angle) * 200;
-    //   var y = Math.sin(angle) * 200;
-    //   this.simulator.addAgent(new Vector2(x, y));
-
-    // }
-
-    // Create goals
-    // var goals = [];
-    // for (var i = 0; i < this.simulator.getNumAgents(); ++i) {
-    //   goals.push(this.simulator.getAgentPosition(i).scale(-1));
-    // }
-    // this.simulator.addGoals(goals);
-
-    // Add (polygonal) obstacle(s), specifying vertices in counterclockwise order.
-    var vertices = [];
-
-    this.simulator.addObstacle(vertices);
-
-    // Process obstacles so that they are accounted for in the simulation.
+    this.simulator.addObstacle([]);
     this.simulator.processObstacles();
-
-    // for (var i = 0; i < NUM_AGENTS; i++) {
-    //   this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))));
-
-    // }
-
-
     this.children = [];//Clear the children in case the scene has been built before
 
-    if (this.objects)
-      this.objects.forEach(obj => {
-        this.buildChild(obj, this)
+    // if (this.objects)
+    //   this.objects.forEach(obj => {
+    //     this.buildChild(obj, this)
+    //   })
+    if(this.objects){
+      this.objects.forEach(obj=>{
+        Base.Serializer.deserializeGameObject(obj);
       })
-
-
+    }
   }
 
 
