@@ -45,14 +45,17 @@ describe("GameObject", function(){
       let gameObject = Base.Serializer.deserializeGameObject(description);
       chai.expect(gameObject.name).to.equal("Circle");
       chai.expect(gameObject.children.length).to.equal(0);
-      chai.expect(gameObjects.components.length).to.equal(2);
+      chai.expect(gameObject.components.length).to.equal(2);
       chai.expect(gameObject.x).to.equal(0);
       chai.expect(gameObject.y).to.equal(0);
       chai.expect(gameObject.scaleX).to.equal(1);
       chai.expect(gameObject.scaleY).to.equal(1);
       chai.expect(gameObject.rotation).to.equal(0);
+      
       let component = gameObject.components[0];
       chai.expect(component.constructor.name).to.equal("CircleComponent");
+
+      component = gameObject.components[1];
       chai.expect(component.constructor.name).to.equal("CircleCollider");
       
     })
