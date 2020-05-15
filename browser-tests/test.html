@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>ed-ge, the Education Game Engine</title>
+    <link rel="stylesheet" href="node_modules/mocha/mocha.css">
+    <style>
+        html,
+        body {
+           
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mocha"></div>
+    <script src="node_modules/mocha/mocha.js"></script>
+    <script src="node_modules/chai/chai.js"></script>
+    <script type="module" class="mocha-init">
+        mocha.setup('bdd')
+    </script>
+
+    <!-- load code you want to test here -->
+    <script type="module" src="./test/engine/base/Point.js"></script>
+    <script type="module" src="./test/engine/components/AABBCollider.js"></script>
+    <script type="module" src="./test/engine/components/CollisionHelper.js"></script>
+
+
+
+    <script type="module">
+        mocha.run();
+    </script>
+</body>
+
+</html>
