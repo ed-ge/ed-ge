@@ -10,7 +10,7 @@ export default {
     },
     {
       def: "Click, 10, 40, Text",
-      componentValues: ["TextComponent|text|Click the mouse to start the collision game."]
+      componentValues: ["TextComponent|text|Push 'z' to start the collision scene."]
     },
     {
       def: "Enter, 10, 80, 1, Text",

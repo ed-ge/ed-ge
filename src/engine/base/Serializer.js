@@ -45,7 +45,7 @@ class Serializer {
     }
     return toReturn;
   }
-  deserializeGameObject(obj) {
+  deserializeGameObject(obj, parent = null) {
 
     if (obj.def) {
       obj.location = { x: 0, y: 0 };
@@ -92,14 +92,13 @@ class Serializer {
     obj.scale.y = +obj.scale.y;
     obj.rotation = +obj.rotation;
 
-    let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, null, obj);
+    let gameObject = this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent, obj);
     return gameObject;
   }
 
   instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
     let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
-    if (parent)
-      parent.children.push(gameObject);
+    
 
     let prefab = this.prefabs[gameObjectType.name];
     this.buildIt(prefab, gameObject)
@@ -111,6 +110,15 @@ class Serializer {
     if (obj) {
       this.buildIt(obj, gameObject)
     }
+
+    if (parent){
+      parent.children.push(gameObject);
+      if(parent.newChildEvent){
+        parent.newChildEvent(gameObject);
+      }
+    }
+
+    
     return gameObject;
 
   }

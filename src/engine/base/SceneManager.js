@@ -60,7 +60,8 @@ const SceneManager = {
     this.currentScene.destroy(gameObject);
   },
   instantiate(gameObjectType, location, scale, rotation) {
-    return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
+    return this.Base.Serializer.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
+    // return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
   }
 
 

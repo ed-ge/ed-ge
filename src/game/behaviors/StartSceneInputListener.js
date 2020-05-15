@@ -6,7 +6,7 @@ export default class TextBehavior extends Base.Behavior {
 
     }
     update() {
-        if(Base.Input.getMouseButtonUp(0)){
+        if(Base.Input.getKeyUp('z')){
             Base.SceneManager.currentScene = "CollisionScene" ;
         }
         if(Base.Input.getKeyUp(' '))
