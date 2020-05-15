@@ -58,9 +58,15 @@ class Scene extends NameableParent {
     //   this.objects.forEach(obj => {
     //     this.buildChild(obj, this)
     //   })
+    let that = this;
     if(this.objects){
       this.objects.forEach(obj=>{
-        Base.Serializer.deserializeGameObject(obj);
+        that.children.push(Base.Serializer.deserializeGameObject(obj));
+      })
+    }
+    if(this.children){
+      this.children.forEach(child=>{
+        child.recursiveCall("start");
       })
     }
   }
