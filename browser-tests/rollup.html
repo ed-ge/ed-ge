@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>ed-ge, the Education Game Engine</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canv" width="640px" height="480px"></canvas>
+
+
+  
+
+  <script type="module">
+    import Base from "./rollup/Base.js"
+    
+    import Scenes from "./src2/game/Scenes.js"
+    import GameBehaviors from "./src2/game/GameBehaviors.js";
+    import GameObjects from "./src2/game/GameObjects.js"
+    
+
+    Main(GameObjects, GameBehaviors, Scenes);
+
+  </script>
+
+  <!--<script type="module" src="./src/engine/game.js"></script>-->
+
+</body>
+
+</html>

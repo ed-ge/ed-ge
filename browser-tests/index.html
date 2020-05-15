@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>ed-ge, the Education Game Engine</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canv" width="640px" height="480px"></canvas>
+
+  <script src="./production/engine/Base.js"></script>
+  <script src="./production/engine/Components.js"></script>
+  <script src="./production/engine/SceneManager.js"></script>
+  <script src="./production/engine/Main.js"></script>
+  <script src="./production/game/GameBehaviors.js"></script>
+  <script src="./production/game/GameObjects.js"></script>
+  <script src="./production/game/Scenes.js"></script>
+  <script>
+    Main.default(GameObjects.default, GameBehaviors.default, Scenes.default);
+  </script>
+
+</body>
+
+</html>

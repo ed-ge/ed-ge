@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>ed-ge, the Education Game Engine</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canv" width="640px" height="480px"></canvas>
+
+
+  <script src="./webpack/Main.js"></script>
+  <script src="./webpack/Base.js"></script>
+  <script src="./webpack/Components.js"></script>
+  <script src="./wpkg/Behaviors.js"></script>
+  <script src="./wpkg/Prefabs.js"></script>
+  <script src="./wpkg/Scenes.js"></script>
+
+  <script>
+
+    Main.main(GameObjects, GameBehaviors, Scenes);
+
+  </script>
+
+</body>
+
+</html>
