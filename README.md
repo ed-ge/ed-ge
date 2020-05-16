@@ -26,6 +26,6 @@ Below are the goals for this project. Note that not all of them are complete yet
     * Use collider components
     * Include both a collision event and collision polling system
 * Include a basic discrete physics system
-* Clearly document the code
+* Clearly document the code 
 
 Builds of the code can be found in the build branch.
