@@ -16,19 +16,15 @@
 
 <body>
   <canvas id="canv" width="640px" height="480px"></canvas>
-
-
-  
-
   <script type="module">
-    import Base from "./rollup/Base.js"
-    
-    import Scenes from "./src2/game/Scenes.js"
-    import GameBehaviors from "./src2/game/GameBehaviors.js";
-    import GameObjects from "./src2/game/GameObjects.js"
+    //import Main from "./src/engine/Main.js"
+    import Base from "../../src/engine/Base.js"
+    import Scenes from "../game/Scenes.js"
+    import GameBehaviors from "../game/GameBehaviors.js";
+    import GameObjects from "../game/GameObjects.js"
     
 
-    Main(GameObjects, GameBehaviors, Scenes);
+    Base.main(GameObjects, GameBehaviors, Scenes);
 
   </script>
 
