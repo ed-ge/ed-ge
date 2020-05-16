@@ -47,6 +47,6 @@
         "webpack-dev-server": "^3.10.3"
     },
     "dependencies": {
-        "codecov": "^3.6.5"
+        
     }
 }
