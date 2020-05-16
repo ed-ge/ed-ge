@@ -1,7 +1,7 @@
-import Base from "../src/engine/Base.js"
-import Scenes from "../src/game/Scenes.js"
-import GameBehaviors from "../src/game/GameBehaviors.js";
-import GameObjects from "../src/game/GameObjects.js"
+import Base from "../../../src/engine/Base.js"
+import Scenes from "../game/Scenes.js"
+import GameBehaviors from "../game/GameBehaviors.js";
+import GameObjects from "../game/GameObjects.js"
 
 
 
