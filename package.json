@@ -4,16 +4,9 @@
     "type": "module",
     "description": "The EDucational Game Engine, built with babel.",
     "scripts": {
-        "jest": "node ./node_modules/jest/bin/jest.js",
-        "test": "./node_modules/mocha/bin/mocha 'test/mocha/*.js'",
-        "cover": "npm run cover_main && npm run cover_start && npm run cover_end",
-        "nyc": "nyc npm run test",
-        "cover_main": "set CODECOV_TOKEN=\"3c73ea91-4a13-40dc-a259-3ec53b2ae5d1\" && nyc ./node_modules/mocha/bin/mocha test/mocha/**/*.js --report lcovonly -- -R spec && ./node_modules/codecov/bin/codecov",
-        "cover_start": "",
-        "cover_end": "curl -s https://codecov.io/bash | bash",
-        "build": "babel src -d production",
-        "start": "webpack --config ./webpack.main.config.js --mode=development && webpack --config ./webpack.base.config.js --mode=development && webpack --config ./webpack.components.config.js --mode=development",
-        "rollup": "./node_modules/rollup/dist/bin/rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base'",
+       "test": "./node_modules/mocha/bin/mocha 'test/mocha/*.js'",
+       "cover": "./node_modules/.bin/coverage ./node_modules/.bin/mocha ./test/mocha/**/*.js",
+       "rollup": "./node_modules/rollup/dist/bin/rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base'",
         "rollupWatch": "./node_modules/rollup/dist/bin/rollup src/engine/Base.js --file ./rollup/Base.js --format es --name 'Base' -w",
         "free": "rollup src/engine/Base.js --file ./free/Base.js --format iife --name 'Base'",
         "doc": "./node_modules/.bin/jsdoc -d ./docs -r ./src -c ./config/.jsdoc.json"
@@ -32,11 +25,9 @@
         "istanbul": "^0.4.5",
         "jsdoc": "^3.6.3",
         "mocha": "^7.1.0",
-        "nyc": "^15.0.1",
         "rollup": "^2.7.6",
-        "type-detect": "^4.0.8"
-    },
-    "dependencies": {
+        "type-detect": "^4.0.8",
         "coverage": "^0.4.1"
-    }
+    },
+    "dependencies": {}
 }
