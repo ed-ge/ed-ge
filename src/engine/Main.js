@@ -23,7 +23,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
   this.Prefabs = { ...gameObjects, ...this.Prefabs };
   Base.Serializer.prefabs = this.Prefabs;
-  Base.Serializer.components = {...Base.Serializer.components, ...gameBehaviors};
+  Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
   this.Behaviors = gameBehaviors;
   let canv, ctx;
 
@@ -72,79 +72,81 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   }
 
   //Setup event handling
-  document.body.addEventListener('keydown', keydown);
-  document.body.addEventListener('keyup', keyup);
-  document.body.addEventListener('keypress', keypress);
-  document.body.addEventListener('mousedown', mousedown);
-  document.body.addEventListener('mouseup', mouseup);
-  document.body.addEventListener('mousemove', mousemove);
-  document.body.addEventListener('wheel', wheelevent);
-  document.body.addEventListener('contextmenu', contextmenu);
-  document.body.addEventListener("touchstart", touchstart, false);
-  document.body.addEventListener("touchend", touchend, false);
-  document.body.addEventListener("touchcancel", touchcancel, false);
-  document.body.addEventListener("touchmove", touchmove, false);
+  if (options.runUpdate === undefined || options.runUpdate == true) {
+    document.body.addEventListener('keydown', keydown);
+    document.body.addEventListener('keyup', keyup);
+    document.body.addEventListener('keypress', keypress);
+    document.body.addEventListener('mousedown', mousedown);
+    document.body.addEventListener('mouseup', mouseup);
+    document.body.addEventListener('mousemove', mousemove);
+    document.body.addEventListener('wheel', wheelevent);
+    document.body.addEventListener('contextmenu', contextmenu);
+    document.body.addEventListener("touchstart", touchstart, false);
+    document.body.addEventListener("touchend", touchend, false);
+    document.body.addEventListener("touchcancel", touchcancel, false);
+    document.body.addEventListener("touchmove", touchmove, false);
 
 
 
-  function keydown(event) {
-    if (Input.keys[event.key] != true)
-      Input.down[event.key] = true;
-    Input.keys[event.key] = true;
-  }
+    function keydown(event) {
+      if (Input.keys[event.key] != true)
+        Input.down[event.key] = true;
+      Input.keys[event.key] = true;
+    }
 
-  function keyup(event) {
-    if (Input.keys[event.key] != false)
-      Input.up[event.key] = true;
-    Input.keys[event.key] = false;
-  }
+    function keyup(event) {
+      if (Input.keys[event.key] != false)
+        Input.up[event.key] = true;
+      Input.keys[event.key] = false;
+    }
 
-  function mousedown(event) {
-    if (Input.mouseButtons[event.button] != true)
-      Input.mouseButtonsDown[event.button] = true;
-    Input.mouseButtons[event.button] = true;
-  }
+    function mousedown(event) {
+      if (Input.mouseButtons[event.button] != true)
+        Input.mouseButtonsDown[event.button] = true;
+      Input.mouseButtons[event.button] = true;
+    }
 
-  function mouseup(event) {
-    if (Input.mouseButtons[event.button] != false)
-      Input.mouseButtonsUp[event.button] = true;
-    Input.mouseButtons[event.button] = false;
-  }
+    function mouseup(event) {
+      if (Input.mouseButtons[event.button] != false)
+        Input.mouseButtonsUp[event.button] = true;
+      Input.mouseButtons[event.button] = false;
+    }
 
-  function mousemove(event) {
-    [Input.mousePosition.x, Input.mousePosition.y] = [event.clientX, event.clientY];
+    function mousemove(event) {
+      [Input.mousePosition.x, Input.mousePosition.y] = [event.clientX, event.clientY];
 
-  }
+    }
 
-  function wheelevent(event) {
-    if (event.deltaY != 0)
-      Input.mouseScrollDelta = event.deltaY;
-  }
+    function wheelevent(event) {
+      if (event.deltaY != 0)
+        Input.mouseScrollDelta = event.deltaY;
+    }
 
-  function keypress(event) {
-    //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
-  }
+    function keypress(event) {
+      //console.log(`Modifier keys: Control: ${event.ctrlKey}, Alt: ${event.altKey}, Shift: ${event.shiftKey}, Meta Key: ${event.metaKey}`);
+    }
 
-  function touchstart(event) {
-    //event.preventDefault();//Don't treat this as a mouse event
-    Input.touches = copyTouches(event.changedTouches);
-    Input.touchesStart = copyTouches(event.changedTouches); //Simple deep copy
-  }
+    function touchstart(event) {
+      //event.preventDefault();//Don't treat this as a mouse event
+      Input.touches = copyTouches(event.changedTouches);
+      Input.touchesStart = copyTouches(event.changedTouches); //Simple deep copy
+    }
 
-  function touchend(event) {
-    //event.preventDefault();//Don't treat this as a mouse event
-    Input.touches = [];//copyTouches(event.changedTouches);
-    Input.touchesEnd = copyTouches(event.changedTouches); //Simple deep copy
-  }
+    function touchend(event) {
+      //event.preventDefault();//Don't treat this as a mouse event
+      Input.touches = [];//copyTouches(event.changedTouches);
+      Input.touchesEnd = copyTouches(event.changedTouches); //Simple deep copy
+    }
 
-  function touchcancel(event) {
-    //event.preventDefault();//Don't treat this as a mouse event
-    console.log("Touch Cancel")
-  }
+    function touchcancel(event) {
+      //event.preventDefault();//Don't treat this as a mouse event
+      console.log("Touch Cancel")
+    }
 
-  function touchmove(event) {
-    Input.touches = copyTouches(event.changedTouches);
+    function touchmove(event) {
+      Input.touches = copyTouches(event.changedTouches);
 
+    }
   }
 
   function copyTouches(touches) {
@@ -209,12 +211,13 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //Don't look for or respond to the canvas if we're in "headless" mode
   if (shouldDraw) {
     window.onresize = resizeCanvas;
-    
+
     // Webkit/Blink will fire this on load, but Gecko doesn't.
     // So we fire it manually...
     resizeCanvas();
   }
-  setInterval(gameLoop, 33);
+  if (options.runUpdate === undefined || options.runUpdate == true) 
+    setInterval(gameLoop, 33);
 };
 
 export default main;
