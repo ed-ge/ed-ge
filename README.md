@@ -1,9 +1,14 @@
 
+[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+![GitHub repo size](https://img.shields.io/github/repo-size/ed-ge/ed-ge)
+
 ![Unit Test](https://github.com/ed-ge/ed-ge/workflows/Unit%20Test/badge.svg)
 ![JSDoc](https://github.com/ed-ge/ed-ge/workflows/JSDoc/badge.svg?branch=master)
-[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+![Build](https://github.com/ed-ge/ed-ge/workflows/Build/badge.svg)
+
 [![codebeat badge](https://codebeat.co/badges/4d653397-8b7c-42ea-8e3b-bbd537810ed4)](https://codebeat.co/projects/github-com-ed-ge-ed-ge-master)
-![GitHub repo size](https://img.shields.io/github/repo-size/ed-ge/ed-ge)
+![Codecov](https://img.shields.io/codecov/c/github/ed-ge/ed-ge)
+
 # ed-ge
 
 ## The EDucational Game Engine
