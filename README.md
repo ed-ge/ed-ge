@@ -6,8 +6,7 @@
 ![Build](https://github.com/ed-ge/ed-ge/workflows/Build/badge.svg)
 
 [![codebeat badge](https://codebeat.co/badges/4d653397-8b7c-42ea-8e3b-bbd537810ed4)](https://codebeat.co/projects/github-com-ed-ge-ed-ge-master)
-![Codecov](https://img.shields.io/codecov/c/github/ed-ge/ed-ge)
-
+[![codecov](https://codecov.io/gh/ed-ge/ed-ge/branch/master/graph/badge.svg)](https://codecov.io/gh/ed-ge/ed-ge)
 # ed-ge
 
 ## The EDucational Game Engine
