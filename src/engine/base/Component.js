@@ -41,21 +41,7 @@ class Component {
         this.gameObject;
     }
 
-    serialize(){
-      let toReturn = this.constructor.name;
-      
-      Object.keys(this).filter(i=>i!='gameObject'&&i!='uuid').forEach(i=>toReturn +=( "|" + i + "|" + this[i]));
-      return toReturn;
-
-    }
-
-    // deserialize(string){
-    //   let splits = string.split("|");
-    //   let type = splits[splits.length-1];
-    //   let componentType = Base.Components.find(i=>i.constructor.name == type)
-    //   let component = new componentType();
-      
-    // }
+    
 
     /**Generate a uuid
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
