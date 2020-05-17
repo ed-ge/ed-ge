@@ -1,44 +1,39 @@
+
+
 import chai from "chai";
 
-import Base from "../../src/engine/Base.js"
+
+import Base from "../../../../src/engine/Base.js"
 
 
 
 
 describe('Base', function () {
-  describe('Component', function () {
-    describe('serialize', function () {
-      it('should return a string in the correct DSL', function () {
-        let component = new Base.Component();
-        let string = Base.Serializer.serializeComponent(component);
-        chai.expect(string).to.equal("Component|type|Component");
-      });
-      it('should return a string in the correct DSL for AABB', function () {
-        let component = new Base.Components.AABBCollider();
-        let string = Base.Serializer.serializeComponent(component);
-        chai.expect(string).to.equal("AABBCollider|type|AABBCollider|width|100|height|100");
-      });
-      it('should return a string in the correct DSL for TextComponent', function () {
-        let component = new Base.Components.TextComponent();
-        let string = Base.Serializer.serializeComponent(component);
-        chai.expect(string).to.equal("TextComponent|type|TextComponent|text|[Blank]|font|10pt Sans|fill|black");
-      });
+  describe('Serializer', function () {
+    it('should return a string in the correct DSL', function () {
+      let component = new Base.Component();
+      let string = Base.Serializer.serializeComponent(component);
+      chai.expect(string).to.equal("Component|type|Component");
+    });
+    it('should return a string in the correct DSL for AABB', function () {
+      let component = new Base.Components.AABBCollider();
+      let string = Base.Serializer.serializeComponent(component);
+      chai.expect(string).to.equal("AABBCollider|type|AABBCollider|width|100|height|100");
+    });
+    it('should return a string in the correct DSL for TextComponent', function () {
+      let component = new Base.Components.TextComponent();
+      let string = Base.Serializer.serializeComponent(component);
+      chai.expect(string).to.equal("TextComponent|type|TextComponent|text|[Blank]|font|10pt Sans|fill|black");
+    });
 
+    it('should deserialize a component', function () {
+      let component = Base.Serializer.deserializeComponent("AABBCollider|type|AABBCollider|width|111|height|20");
+      chai.expect(component.width).to.equal("111");
+      chai.expect(component.height).to.equal("20");
+      chai.expect(component.type).to.equal("AABBCollider");
     })
-    describe('deserialize', function () {
-      it('should deserialize a component', function () {
-        let component = Base.Serializer.deserializeComponent("AABBCollider|type|AABBCollider|width|111|height|20");
-        chai.expect(component.width).to.equal("111");
-        chai.expect(component.height).to.equal("20");
-        chai.expect(component.type).to.equal("AABBCollider");
-      })
-    })
-  })
-})
 
-describe("GameObject", function(){
-  describe("deserialize", function(){
-    it("Should return the correct object and strings", function(){
+    it("Should return the correct object and strings", function () {
       let description = {
         def: "Circle"
       };
@@ -51,38 +46,20 @@ describe("GameObject", function(){
       chai.expect(gameObject.scaleX).to.equal(1);
       chai.expect(gameObject.scaleY).to.equal(1);
       chai.expect(gameObject.rotation).to.equal(0);
-      
+
       let component = gameObject.components[0];
       chai.expect(component.constructor.name).to.equal("CircleComponent");
 
       component = gameObject.components[1];
       chai.expect(component.constructor.name).to.equal("CircleCollider");
-      
+
     })
   })
 })
 
-// describe('GameObject', function () {
-//   describe('serialize', function () {
-//     it('should return a string in the correct DSL', function () {
-//       let gameObject = new Base.Prefabs.EmptyGameObject();
-//       let string = gameObject.serialize();
-//       console.log(string);
-//       chai.expect(string).to.equal("");
-//     });
 
-//   })
-// })
 
-// describe("SceneManager", function () {
-//   describe("Get Current Scene", function () {
-//     it("Should return the current scene", function () {
-//       Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
-//       let currentScene = Base.SceneManager.currentScene;
-//       chai.expect(currentScene).to.equal(Base.SceneManager.scenes.find(i => i.name == 'RoomScene'));
-//     })
-//   })
-// })
+
 
 // let _scenes = {
 //   startScene: "RoomScene",
