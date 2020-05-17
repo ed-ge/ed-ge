@@ -5,8 +5,9 @@
     "description": "The EDucational Game Engine, built with babel.",
     "scripts": {
         "jest": "node ./node_modules/jest/bin/jest.js",
-        "test": "./node_modules/mocha/bin/mocha test/mocha/**/*.js",
+        "test": "./node_modules/mocha/bin/mocha 'test/mocha/*.js'",
         "cover": "npm run cover_main && npm run cover_start && npm run cover_end",
+        "nyc": "nyc npm run test",
         "cover_main": "set CODECOV_TOKEN=\"3c73ea91-4a13-40dc-a259-3ec53b2ae5d1\" && nyc ./node_modules/mocha/bin/mocha test/mocha/**/*.js --report lcovonly -- -R spec && ./node_modules/codecov/bin/codecov",
         "cover_start": "",
         "cover_end": "curl -s https://codecov.io/bash | bash",
@@ -26,27 +27,16 @@
     "author": "B. Ricks, and CSCI 2510 @ unomaha.edu",
     "license": "MIT",
     "devDependencies": {
-        "@babel/cli": "^7.8.4",
-        "@babel/core": "^7.8.7",
-        "@babel/plugin-proposal-class-properties": "^7.8.3",
-        "@babel/plugin-transform-modules-umd": "^7.9.0",
-        "@babel/preset-env": "^7.8.7",
-        "@babel/register": "^7.8.6",
-        "babel-loader": "^8.1.0",
-        "babel-preset-es2015": "^6.24.1",
         "chai": "^4.2.0",
         "chai-string": "^1.5.0",
-        "jest": "^25.5.3",
+        "istanbul": "^0.4.5",
         "jsdoc": "^3.6.3",
         "mocha": "^7.1.0",
         "nyc": "^15.0.1",
         "rollup": "^2.7.6",
-        "type-detect": "^4.0.8",
-        "webpack": "^4.42.1",
-        "webpack-cli": "^3.3.11",
-        "webpack-dev-server": "^3.10.3"
+        "type-detect": "^4.0.8"
     },
     "dependencies": {
-        
+        "coverage": "^0.4.1"
     }
 }
