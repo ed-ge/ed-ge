@@ -1,4 +1,4 @@
-import Base from "../../../src/engine/Base.js"
+import Base from "../../../src/Base.js"
 import Scenes from "../game/Scenes.js"
 import GameBehaviors from "../game/GameBehaviors.js";
 import GameObjects from "../game/GameObjects.js"
