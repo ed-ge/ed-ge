@@ -5,6 +5,7 @@
     "description": "The EDucational Game Engine, built with babel.",
     "scripts": {
         "test": "./node_modules/.bin/coverage --reporter=text-summary ./node_modules/.bin/mocha ./test/mocha/**/*.js",
+        "testit": "./node_modules/.bin/mocha ./test/mocha/**/*.js",
         "cover": "./node_modules/.bin/coverage ./node_modules/.bin/mocha ./test/mocha/**/*.js",
         "rollup": "./node_modules/rollup/dist/bin/rollup src/Base.js --file ./rollup/Base.js --format es --name 'Base'",
         "rollupWatch": "./node_modules/rollup/dist/bin/rollup src/Base.js --file ./rollup/Base.js --format es --name 'Base' -w",
