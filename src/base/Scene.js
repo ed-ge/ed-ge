@@ -2,8 +2,8 @@ import NameableParent from "./NamableParent.js"
 import GameObject from "./GameObject.js";
 import PointCollider from "../components/PointCollider.js";
 import Input from "./Input.js"
-import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../../lib/common.js"
-import Simulator from "../../../lib/simulator.js"
+import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../lib/common.js"
+import Simulator from "../../lib/simulator.js"
 import Base from "../Base.js"
 
 // import Globals from "./Globals.js"

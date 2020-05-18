@@ -1,4 +1,4 @@
-import Base from "../../../../src/Base.js"
+import Base from "../../../src/Base.js"
 import chai from "chai";
 
 let assert = chai.assert;

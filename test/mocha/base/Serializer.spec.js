@@ -3,7 +3,7 @@
 import chai from "chai";
 
 
-import Base from "../../../../src/Base.js"
+import Base from "../../../src/Base.js"
 
 
 

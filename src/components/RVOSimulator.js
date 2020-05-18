@@ -1,8 +1,8 @@
 import Component from "../base/Component.js"
-import Agent from "../../../lib/agent.js"
-import KdTree from "../../../lib/kdtree.js"
-import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../../lib/common.js"
-import Simulator from "../../../lib/simulator.js"
+import Agent from "../../lib/agent.js"
+import KdTree from "../../lib/kdtree.js"
+import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../lib/common.js"
+import Simulator from "../../lib/simulator.js"
 
 
 
