@@ -1,4 +1,4 @@
-import Base from "../../../src/engine/Base.js"
+import Base from "../../../src/Base.js"
 import TileBehavior from "./TileBehavior.js";
 import Tile from "../prefabs/Tile.js"
 import GameObjects from "../GameObjects.js"

@@ -1,4 +1,4 @@
-import Base from "../../../src/engine/Base.js"
+import Base from "../../../src/Base.js"
 import StartSceneInputListener from "../behaviors/StartSceneInputListener.js"
 
 export default{

@@ -1,4 +1,4 @@
-import Base from "../../../src/engine/Base.js"
+import Base from "../../../src/Base.js"
 
 export default class ScaleBehavior extends Base.Behavior{
     start(){
