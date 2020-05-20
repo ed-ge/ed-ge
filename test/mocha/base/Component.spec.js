@@ -6,11 +6,17 @@ import Base from "../../../src/Base.js"
 import Scenes from "../../game/Scenes.js"
 import GameObjects from "../../game/GameObjects.js"
 import GameBehaviors from "../../game/GameBehaviors.js"
+import Component from "../../../src/base/Component.js";
 
 describe("Base", function () {
   describe("Component", function () {
-    it("Creates an instance with two functions", function(done){
-      done(new Error("Not implemented."))
-    })
+    describe("constructor", function () {
+      let component = new Component();
+      it("Generates a uuid", function () {
+        component.uuid.should.not.be.undefined;
+
+        
+      })
+    });
   });
 });

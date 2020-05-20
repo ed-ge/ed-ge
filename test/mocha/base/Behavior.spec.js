@@ -9,10 +9,16 @@ import GameBehaviors from "../../game/GameBehaviors.js"
 
 describe("Base", function () {
   describe("Behavior.js", function () {
-    it("Creates an instance with two functions", function(){
+    it("Has a function start that returns undefined", function () {
       let behavior = new Base.Behavior();
       (behavior.start).should.be.a('function');
+      should.equal(behavior.start(), undefined);
+    });
+    it("Has a function update that returns undefined ", function () {
+      let behavior = new Base.Behavior();
       (behavior.update).should.be.a('function');
+      should.equal(behavior.update(), undefined);
+
     })
   });
 });
