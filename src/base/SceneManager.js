@@ -1,5 +1,5 @@
 import Scene from "./Scene.js"
-import Globals from "./Globals.js"
+// import Globals from "./Globals.js"
 
 const SceneManager = {
   /** Orginally from scene */
