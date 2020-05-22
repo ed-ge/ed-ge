@@ -2430,6 +2430,8 @@ class Time {
     }
 }
 
+// import Globals from "./Globals.js"
+
 const SceneManager = {
   /** Orginally from scene */
   
