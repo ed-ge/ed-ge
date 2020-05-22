@@ -41,7 +41,7 @@ var Base = (function () {
         constructor() {
             this.uuid = this.uuidv4();
             this.type = this.constructor.name;
-            this.gameObject;
+            this.gameObject = null;
         }
 
         
