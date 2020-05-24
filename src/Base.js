@@ -1,13 +1,14 @@
 import Behavior from "./base/Behavior.js"
 import Component from "./base/Component.js"
 import GameObject from "./base/GameObject.js"
-import Scene from "./base/Scene.js"
-import Time from "./base/Time.js"
 import Input from "./base/Input.js"
+import Line from "./base/Line.js"
 import NameableParent from "./base/NamableParent.js"
 import Point from "./base/Point.js"
+import Scene from "./base/Scene.js"
 import SceneManager from "./base/SceneManager.js"
 import Serializer from "./base/Serializer.js"
+import Time from "./base/Time.js"
 
 /** Components */
 import CircleComponent from "./components/CircleComponent.js"
@@ -62,9 +63,9 @@ let Components = {
   CameraComponent,
   CanvasComponent,
   RectTransform,
-  RVOSimulator:_RVOSimulator,
-  RVOAgent:_RVOAgent,
-  RVOObstacle:_ROVObstacle,
+  RVOSimulator: _RVOSimulator,
+  RVOAgent: _RVOAgent,
+  RVOObstacle: _ROVObstacle,
 };
 
 const Prefabs = {
@@ -83,20 +84,20 @@ const Prefabs = {
 
 const Base = {
   Behavior,
+  Behaviors: {},
   Component,
+  Components,
   GameObject,
-  Scene,
-  Time ,
-  Input ,
-  NameableParent,
-  Point ,
-  SceneManager,
-  Components ,
-  Prefabs ,
-  Behaviors:{},
+  Input,
+  Line,
   main,
+  NameableParent,
+  Point,
+  Prefabs,
+  Scene,
+  SceneManager,
   Serializer: new Serializer(Components, Prefabs),
-
+  Time,
 }
 
 Base.SceneManager.Base = Base;

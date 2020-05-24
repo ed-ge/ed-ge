@@ -51,6 +51,13 @@ class Point {
     clone(){
       return new Point(this.x, this.y);
     }
+    /**
+     * Returns a new point with normalized values
+     */
+    toNormalized(){
+        let length = this.distance();
+        return new Point(this.x/length, this.y/length);
+    }
 }
 
 export default Point;

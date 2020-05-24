@@ -243,6 +243,13 @@ class Point {
     clone(){
       return new Point(this.x, this.y);
     }
+    /**
+     * Returns a new point with normalized values
+     */
+    toNormalized(){
+        let length = this.distance();
+        return new Point(this.x/length, this.y/length);
+    }
 }
 
 /**
@@ -473,22 +480,6 @@ class GameObject extends NameableParent {
   }
 }
 
-class Collider extends Component {
-    constructor() {
-        super();
-    }
-
-
-
-}
-
-class PointCollider extends Collider {
-    constructor() {
-        super();
-    }
-
-}
-
 /**
  * Static holder for the state of the input
  */
@@ -680,6 +671,61 @@ const Input = {
 
 };
 
+/**
+ * Create a line from two points and store the line in 
+ * ax+bc+c=0 form
+ */
+class Line {
+    /**
+     * 
+     * @param {Point} one The first point on the line
+     * @param {Point} two The second point on the line
+     * The two points must be at different locations or an exception is thrown
+     * 
+     */
+    constructor(one, two) {
+        this.a = two.y - one.y;
+        this.b = one.x - two.x;
+        //Now normalize the values
+        let tempPoint = new Point(this.a,this.b);
+        tempPoint = tempPoint.toNormalized();
+        this.a = tempPoint.x;
+        this.b = tempPoint.y;
+        this.c = two.x * one.y - one.x * two.y;
+        
+    }
+    /**
+     * Return a. 
+     * Created as a getter so that a cannot be set
+     */
+    
+    /**
+     * 
+     * @param {Point} point The point whose distance from the line is to be calculated
+     * 
+     * Returns the distance to this line.
+     */
+    distance(point) {
+        return this.a * point.x + this.b * point.y + this.c;
+    }
+}
+
+class Collider extends Component {
+    constructor() {
+        super();
+    }
+
+
+
+}
+
+class PointCollider extends Collider {
+    constructor() {
+        super();
+    }
+
+}
+
 function Vector2(x, y) {
     this.x = x;
     this.y = y;
@@ -701,7 +747,7 @@ function Vector2(x, y) {
     };
 }
 
-function Line() {
+function Line$1() {
 	/*
 	this.point; // Vector2
 	this.direction; // Vector2
@@ -1244,7 +1290,7 @@ function Agent() {
             let s = relativePosition1.scale(-1).multiply(obstacleVector) / RVOMath.absSq(obstacleVector); //  (-relativePosition1 * obstacleVector) / RVOMath.absSq(obstacleVector);
             let distSqLine = RVOMath.absSq(relativePosition1.scale(-1).minus(obstacleVector.scale(s))); // RVOMath.absSq(-relativePosition1 - s * obstacleVector);
 
-            var line = new Line();
+            var line = new Line$1();
 
             if (s < 0 && distSq1 <= radiusSq) {
                 /* Collision with left vertex. Ignore if non-convex. */
@@ -1444,7 +1490,7 @@ function Agent() {
             let combinedRadius = this.radius + other.radius;
             let combinedRadiusSq = RVOMath.sqr(combinedRadius);
 
-            var line = new Line(); // Line
+            var line = new Line$1(); // Line
             var u; // Vector2
 
             if (distSq > combinedRadiusSq) {
@@ -1672,7 +1718,7 @@ function Agent() {
                 }
 
                 for (var j = numObstLines; j < i; ++j) {
-                    var line = new Line();
+                    var line = new Line$1();
 
                     let determinant = RVOMath.det(lines[i].direction, lines[j].direction);
 
@@ -2420,16 +2466,6 @@ class Scene extends NameableParent {
 
 }
 
-/**
- * Static class that holds all the time variables related to the game.
- */
-
-class Time {
-    constructor() {
-        this.deltaTime = 0;
-    }
-}
-
 // import Globals from "./Globals.js"
 
 const SceneManager = {
@@ -2727,6 +2763,16 @@ class Serializer {
 
 }
 
+/**
+ * Static class that holds all the time variables related to the game.
+ */
+
+class Time {
+    constructor() {
+        this.deltaTime = 0;
+    }
+}
+
 class CircleComponent extends Component {
     
     constructor() {
@@ -2812,17 +2858,6 @@ class AABBCollider extends Collider {
         this.height=100;
     }
 
-}
-
-class Line$1{
-    constructor(one,two){
-        this.a = two.y - one.y;
-        this.b = one.x - two.x;
-        this.c = two.x*one.y - one.x*two.y ;        
-    }
-    distance(point){
-        return this.a * point.x + this.b * point.y + this.c;
-    }
 }
 
 /**
@@ -2927,9 +2962,9 @@ const CollisionHelper = {
         let pointB = new Point(+triangle.collider.pointBX + triangle.gameObject.x, +triangle.collider.pointBY + triangle.gameObject.y);
         let pointC = new Point(+triangle.collider.pointCX + triangle.gameObject.x, +triangle.collider.pointCY + triangle.gameObject.y);
 
-        let lineOne = new Line$1(pointA, pointB);
-        let lineTwo = new Line$1(pointB, pointC);
-        let lineThree = new Line$1(pointC, pointA);
+        let lineOne = new Line(pointA, pointB);
+        let lineTwo = new Line(pointB, pointC);
+        let lineThree = new Line(pointC, pointA);
 
         let distanceOne = lineOne.distance(point.gameObject.location);
         let distanceTwo = lineTwo.distance(point.gameObject.location);
@@ -3386,9 +3421,9 @@ let Components = {
   CameraComponent,
   CanvasComponent,
   RectTransform,
-  RVOSimulator:RVOSimulator,
-  RVOAgent:RVOAgent,
-  RVOObstacle:RVOObstacle,
+  RVOSimulator: RVOSimulator,
+  RVOAgent: RVOAgent,
+  RVOObstacle: RVOObstacle,
 };
 
 const Prefabs = {
@@ -3407,20 +3442,20 @@ const Prefabs = {
 
 const Base = {
   Behavior,
+  Behaviors: {},
   Component,
+  Components,
   GameObject,
-  Scene,
-  Time ,
-  Input ,
-  NameableParent,
-  Point ,
-  SceneManager,
-  Components ,
-  Prefabs ,
-  Behaviors:{},
+  Input,
+  Line,
   main,
+  NameableParent,
+  Point,
+  Prefabs,
+  Scene,
+  SceneManager,
   Serializer: new Serializer(Components, Prefabs),
-
+  Time,
 };
 
 Base.SceneManager.Base = Base;
