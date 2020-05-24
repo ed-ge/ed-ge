@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/CanvasComponent.js</title>
+    <title>JSDoc: Source: base/Line.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/CanvasComponent.js</h1>
+    <h1 class="page-title">Source: base/Line.js</h1>
 
     
 
@@ -26,27 +26,49 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import Component from "../base/Component.js"
-
+            <pre class="prettyprint source linenums"><code>import Point from "./Point.js"
 
 /**
- * A gameObject with a CanvasComponent represents screen space.
- * Currently, there should be no more than one game object with a canvas component 
- * in the root of the scene graph.
+ * Create a line from two points and store the line in 
+ * ax+bc+c=0 form
  */
-class CanvasComponent extends Component {
-
-    constructor() {
-        super();
-
+class Line {
+    /**
+     * 
+     * @param {Point} one The first point on the line
+     * @param {Point} two The second point on the line
+     * The two points must be at different locations or an exception is thrown
+     * 
+     */
+    constructor(one, two) {
+        this.a = two.y - one.y;
+        this.b = one.x - two.x;
+        //Now normalize the values
+        let tempPoint = new Point(this.a,this.b);
+        tempPoint = tempPoint.toNormalized();
+        this.a = tempPoint.x;
+        this.b = tempPoint.y;
+        this.c = two.x * one.y - one.x * two.y;
+        
     }
+    /**
+     * Return a. 
+     * Created as a getter so that a cannot be set
+     */
     
-    update() {
-
+    /**
+     * 
+     * @param {Point} point The point whose distance from the line is to be calculated
+     * 
+     * Returns the distance to this line.
+     */
+    distance(point) {
+        return this.a * point.x + this.b * point.y + this.c;
     }
 }
 
-export default CanvasComponent;</code></pre>
+export default Line;
+</code></pre>
         </article>
     </section>
 
