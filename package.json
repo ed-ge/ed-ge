@@ -31,6 +31,7 @@
         "coverage": "^0.4.1"
     },
     "dependencies": {
+        "chai-almost": "^1.0.1",
         "recursive-readdir": "^2.2.2"
     }
 }
