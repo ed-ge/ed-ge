@@ -65,6 +65,13 @@ class NameableParent {
 
     }
 
+    addChild(child){
+        if(!child || child.parent === undefined) throw  new Error("addChild requires one argument that have a parent member variable");
+        if(this.children.includes(child)) return console.log("Warning: This parent already has that child. Child not added");
+        this.children.push(child);
+        child.parent = this;
+    }
+
     findByName(name){
         if(this.name == name)
             return this;
