@@ -3,6 +3,7 @@ import Component from "./base/Component.js"
 import GameObject from "./base/GameObject.js"
 import Input from "./base/Input.js"
 import Line from "./base/Line.js"
+import Matrix3 from "./base/Matrix3.js"
 import NameableParent from "./base/NamableParent.js"
 import Point from "./base/Point.js"
 import Scene from "./base/Scene.js"
@@ -91,6 +92,7 @@ const Base = {
   Input,
   Line,
   main,
+  Matrix3,
   NameableParent,
   Point,
   Prefabs,
@@ -98,6 +100,7 @@ const Base = {
   SceneManager,
   Serializer: new Serializer(Components, Prefabs),
   Time,
+
 }
 
 Base.SceneManager.Base = Base;

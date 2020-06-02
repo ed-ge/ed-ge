@@ -97,6 +97,19 @@ describe("Base", function () {
         expect(()=>gameObject.location = new  Point(0,0)).to.throw();       
       })
     })
+    describe("scale", function(){
+      it("Gets the local x and y scale", function(){
+        let gameObject = new GameObject(-34.6, 99.8, -2, -3, 10, "name");
+        let scale = gameObject.scale;
+        expect(scale).to.be.an.instanceof(Point);
+        expect(scale.x).to.equal(-2);
+        expect(scale.y).to.equal(-3);
+      })
+      it("Does not allow you to set the scale", function(){
+        let gameObject = new GameObject(-34.6, 99.8, -2, -3, 10, "name");
+        expect(()=>gameObject.scale = new  Point(0,0)).to.throw();       
+      })
+    })
     describe("worldLocation", function(){
       it("Gets the world location", function(){
         let gameObjectParent = new GameObject(10, 10);
@@ -106,12 +119,12 @@ describe("Base", function () {
 
         let worldLocationParent = gameObjectParent.worldLocation;
         let worldLocationChild = gameObjectChild.worldLocation;
+        expect(worldLocationParent).to.be.an.instanceOf(Point)
+        expect(worldLocationChild).to.be.an.instanceOf(Point)
         expect(worldLocationParent.x).to.equal(10);
         expect(worldLocationParent.y).to.equal(10);
         expect(worldLocationChild.x).to.equal(20);
         expect(worldLocationChild.y).to.equal(20);
-
-
       })
       it("Does not let you set the worldLocation", function(){
         let gameObject = new GameObject(-34.6, 99.8, -2, -3, 10, "name");
