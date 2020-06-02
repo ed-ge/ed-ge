@@ -21,8 +21,7 @@ describe("Base", function () {
         expect(gameObject.scaleY).to.equal(1);
         expect(gameObject.rotation).to.equal(0);
         expect(gameObject.prefabName).to.equal("");
-        expect(gameObject.components).to.be.an('array');
-        expect(gameObject.components.length).to.equal(0);
+        expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there is one arguments", function(){
         let gameObject = new GameObject(27);
@@ -32,8 +31,7 @@ describe("Base", function () {
         expect(gameObject.scaleY).to.equal(1);
         expect(gameObject.rotation).to.equal(0);
         expect(gameObject.prefabName).to.equal("");        
-        expect(gameObject.components).to.be.an('array');
-        expect(gameObject.components.length).to.equal(0);
+        expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there are two arguments", function(){
         let gameObject = new GameObject(12, 33.4);
@@ -43,8 +41,7 @@ describe("Base", function () {
         expect(gameObject.scaleY).to.equal(1);
         expect(gameObject.rotation).to.equal(0);
         expect(gameObject.prefabName).to.equal("");
-        expect(gameObject.components).to.be.an('array');
-        expect(gameObject.components.length).to.equal(0);
+        expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there are three arguments", function(){
         let gameObject = new GameObject(-10, 44, 2);
@@ -54,8 +51,7 @@ describe("Base", function () {
         expect(gameObject.scaleY).to.equal(1);
         expect(gameObject.rotation).to.equal(0);
         expect(gameObject.prefabName).to.equal("");
-        expect(gameObject.components).to.be.an('array');
-        expect(gameObject.components.length).to.equal(0);
+        expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there are four arguments", function(){
         let gameObject = new GameObject(.1, -.2, 4, 6);
@@ -65,8 +61,7 @@ describe("Base", function () {
         expect(gameObject.scaleY).to.equal(6);
         expect(gameObject.rotation).to.equal(0);
         expect(gameObject.prefabName).to.equal("");
-        expect(gameObject.components).to.be.an('array');
-        expect(gameObject.components.length).to.equal(0);
+        expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there are five arguments", function(){
         let gameObject = new GameObject(.1, -.2, 4, 6, 1);
@@ -76,8 +71,7 @@ describe("Base", function () {
         expect(gameObject.scaleY).to.equal(6);
         expect(gameObject.rotation).to.equal(1);
         expect(gameObject.prefabName).to.equal("");
-        expect(gameObject.components).to.be.an('array');
-        expect(gameObject.components.length).to.equal(0);
+        expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Correctly handles six arguments", function(){
         let gameObject = new GameObject(-34.6, 99.8, -2, -3, 10, "name");
@@ -87,14 +81,14 @@ describe("Base", function () {
         expect(gameObject.scaleY).to.equal(-3);
         expect(gameObject.rotation).to.equal(10);
         expect(gameObject.prefabName).to.equal("name");
-        expect(gameObject.components).to.be.an('array');
-        expect(gameObject.components.length).to.equal(0);
+        expect(gameObject.components).to.be.an('array').that.is.empty;
       })
     })
     describe("location", function(){
       it("Gets the local x and y location", function(){
         let gameObject = new GameObject(-34.6, 99.8, -2, -3, 10, "name");
         let location = gameObject.location;
+        expect(location).to.be.an.instanceof(Point);
         expect(location.x).to.equal(-34.6);
         expect(location.y).to.equal(99.8);
       })

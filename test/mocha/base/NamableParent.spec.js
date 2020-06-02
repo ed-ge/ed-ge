@@ -25,6 +25,9 @@ describe("Base", function () {
       })
     })
     describe("addChild method", function(){
+      it("Has an addChild method", function(){
+        expect(new NameableParent()).to.respondTo("addChild");
+      })
       it("Throws an error if there is no argument", function(){
         expect(()=>new NameableParent().addChild()).to.throw();
       })
@@ -36,9 +39,9 @@ describe("Base", function () {
         let child  = new GameObject();
         expect(nameableParent.children).to.be.an('array').that.is.empty;
         nameableParent.addChild(child);
-        expect(nameableParent.children).to.be.an('array').of.length(1);
+        expect(nameableParent.children).to.be.an('array').with.a.lengthOf(1);
         nameableParent.addChild(child);
-        expect(nameableParent.children).to.be.an('array').of.length(1);
+        expect(nameableParent.children).to.be.an('array').with.a.lengthOf(1);
       })
       it("Correctly adds a child", function(){
         let nameableParent = new NameableParent();
@@ -50,9 +53,15 @@ describe("Base", function () {
       })
     })
     describe("destroy method", function(){
+      it("Has a destroy method", function(){
+        expect(new NameableParent()).to.respondTo("destroy");
+      })
 
     })
     describe("findByName method", function(){
+      it("Has a findByName method", function(){
+        expect(new NameableParent()).to.respondTo("findByName");
+      })
       it("Finds the root object by uuid", function(){
         let np = new NameableParent();
         let uuid = np.uuid;
@@ -86,9 +95,15 @@ describe("Base", function () {
       });
     })
     describe("findByUUID", function(){
+      it("Has a findByUUID method", function(){
+        expect(new NameableParent()).to.respondTo("findByUUID");
+      })
 
     })
     describe("uuidv4", function(){
+      it("Has an uuidv4 method", function(){
+        expect(new NameableParent()).to.respondTo("uuidv4");
+      })
       describe("uuid generation", function () {
         //Copied from Component.spec.js
         let np = new NameableParent();
