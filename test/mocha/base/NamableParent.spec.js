@@ -7,6 +7,7 @@ import Scenes from "../../game/Scenes.js"
 import GameObjects from "../../game/GameObjects.js"
 import GameBehaviors from "../../game/GameBehaviors.js"
 import NameableParent from "../../../src/base/NamableParent.js";
+import GameObject from "../../../src/base/GameObject.js";
 
 describe("Base", function () {
   describe("NamableParent.js", function () {
@@ -17,11 +18,35 @@ describe("Base", function () {
         expect(np).to.be.not.undefined;
         expect(np).to.be.not.null;
         expect(np).to.be.an('object');
-        expect(np.children).to.be.an('array');
-        expect(np.children.length).to.equal(0);
+        expect(np.children).to.be.an('array').that.is.empty;
         expect(np.name).to.equal(argument);
         expect(np.parent).to.be.null;
         expect(np.uuid).to.be.a('string');
+      })
+    })
+    describe("addChild method", function(){
+      it("Throws an error if there is no argument", function(){
+        expect(()=>new NameableParent().addChild()).to.throw();
+      })
+      it("Throws an error if the argument doesn't have a parent member variable", function(){
+        expect(()=>new NameableParent().addChild({a:"b"})).to.throw();
+      })
+      it("Doesn't change the list of children if the argument already is in the list of children", function(){
+        let nameableParent = new NameableParent();
+        let child  = new GameObject();
+        expect(nameableParent.children).to.be.an('array').that.is.empty;
+        nameableParent.addChild(child);
+        expect(nameableParent.children).to.be.an('array').of.length(1);
+        nameableParent.addChild(child);
+        expect(nameableParent.children).to.be.an('array').of.length(1);
+      })
+      it("Correctly adds a child", function(){
+        let nameableParent = new NameableParent();
+        let child  = new GameObject();
+        expect(nameableParent.children).to.be.an('array').that.is.empty;
+        nameableParent.addChild(child);
+        expect(nameableParent.children).to.be.an('array').of.length(1).that.includes(child);
+        expect(child.parent).to.equal(nameableParent);
       })
     })
     describe("destroy method", function(){
