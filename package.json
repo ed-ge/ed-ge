@@ -13,7 +13,7 @@
         "doc": "./node_modules/.bin/jsdoc -d ./docs -r ./src -c ./config/.jsdoc.json"
     },
     "keywords": [
-        "Gamengin",
+        "Gam Engine",
         "Games",
         "Education",
         "unomaha.edu"
