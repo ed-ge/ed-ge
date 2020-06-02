@@ -333,6 +333,15 @@ var Base = (function () {
         return new Point(this.x, this.y);
       }
 
+      get scale(){
+        return new Point(this.scaleX, this.scaleY);
+      }
+
+      get localTransform(){
+        
+
+      }
+
       /**
        * Returns the world space location of the game object.
        * This takes into account the transforms of the chain of parents
@@ -345,6 +354,15 @@ var Base = (function () {
         return toReturn;
 
       }
+
+      get worldScale(){
+        if (!this.parent)
+          return this.scale;
+        let parentTransform = this.parent.scale;
+        let toReturn = new Point(this.x * parentTransform.x, this.y * parentTransform.y);
+        return toReturn;
+      }
+
 
       
 
@@ -717,6 +735,13 @@ var Base = (function () {
          */
         distance(point) {
             return this.a * point.x + this.b * point.y + this.c;
+        }
+    }
+
+    class Matrix3{
+        constructor()
+        {
+
         }
     }
 
@@ -3459,6 +3484,7 @@ var Base = (function () {
       Input,
       Line,
       main,
+      Matrix3,
       NameableParent,
       Point,
       Prefabs,
@@ -3466,6 +3492,7 @@ var Base = (function () {
       SceneManager,
       Serializer: new Serializer(Components, Prefabs),
       Time,
+
     };
 
     Base.SceneManager.Base = Base;

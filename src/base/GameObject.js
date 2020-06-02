@@ -51,6 +51,15 @@ class GameObject extends NameableParent {
     return new Point(this.x, this.y);
   }
 
+  get scale(){
+    return new Point(this.scaleX, this.scaleY);
+  }
+
+  get localTransform(){
+    
+
+  }
+
   /**
    * Returns the world space location of the game object.
    * This takes into account the transforms of the chain of parents
@@ -63,6 +72,15 @@ class GameObject extends NameableParent {
     return toReturn;
 
   }
+
+  get worldScale(){
+    if (!this.parent)
+      return this.scale;
+    let parentTransform = this.parent.scale;
+    let toReturn = new Point(this.x * parentTransform.x, this.y * parentTransform.y);
+    return toReturn;
+  }
+
 
   
 
