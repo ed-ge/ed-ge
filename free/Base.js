@@ -852,7 +852,7 @@ var Base = (function () {
             throw new Error("mult requires 1 argument that is either a Point or a Matrix3.")
         }
         multPoint(point) {
-            if (!point instanceof Point || arguments.length != 1) {
+            if (!(point instanceof Point) || arguments.length != 1) {
                 throw new Error("multPoint takes exactly one argument of type Point.")
             }
 

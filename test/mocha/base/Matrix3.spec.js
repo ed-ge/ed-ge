@@ -80,10 +80,87 @@ describe("Base", function () {
             })
         })
         describe("mult", function () {
+            it("Multiplies a point", function(){
+                let m = new Matrix3();
+                m.set(0,0,1);
+                m.set(1,0,2);
+                m.set(2,0,3);
+
+                m.set(0,1,4);
+                m.set(1,1,5);
+                m.set(2,1,6);
+
+                m.set(0,2,7);
+                m.set(1,2,8);
+                m.set(2,2,9);
+
+                let p = new Base.Point(10, 11);
+                let p2 = m.mult(p);
+                expect(p2).to.be.an.instanceOf(Base.Point).and.to.include({x:(35/167),y:(101/167)});
+            })
+            it("Multiplies other matrices", function () {
+                let m = new Matrix3();
+                m.set(0,0,1);
+                m.set(1,0,2);
+                m.set(2,0,3);
+
+                m.set(0,1,4);
+                m.set(1,1,5);
+                m.set(2,1,6);
+
+                m.set(0,2,7);
+                m.set(1,2,8);
+                m.set(2,2,9);
+
+                let m2 = new Matrix3();
+
+                m2.set(0,0,10);
+                m2.set(1,0,11);
+                m2.set(2,0,12);
+
+                m2.set(0,1,13);
+                m2.set(1,1,14);
+                m2.set(2,1,15);
+
+                m2.set(0,2,16);
+                m2.set(1,2,17);
+                m2.set(2,2,18);
+
+
+                let m3 = m.mult(m2);
+                let e = new Matrix3();
+
+                e.set(0,0,84);
+                e.set(1,0,90);
+                e.set(2,0,96);
+
+                e.set(0,1,201);
+                e.set(1,1,216);
+                e.set(2,1,231);
+
+                e.set(0,2,318);
+                e.set(1,2,342);
+                e.set(2,2,366);
+
+                expect(m3.equals(e)).to.be.true;
+            })
+            it("Throws an error on mismatched arguments", function () {
+                let m = new Matrix3();
+                expect(()=>m.mult()).to.throw();
+                expect(()=>m.mult(1)).to.throw();
+                expect(()=>m.mult(new Point(0,0), 1)).to.throw();
+            })
 
 
         })
         describe("multPoint", function () {
+            it("Throws an error on mismatched arguments", function () {
+                let m = new Matrix3();
+                expect(()=>m.multPoint()).to.throw();
+                expect(()=>m.multPoint(1)).to.throw();
+                expect(()=>m.multPoint(new Matrix3())).to.throw();
+                expect(()=>m.multPoint(new Point(0,0), new Matrix3())).to.throw();
+            })
             it("Doesn't change the point with an identity matrix", function(){
                 let m = new Matrix3();
                 let point = new Base.Point(1,2);
