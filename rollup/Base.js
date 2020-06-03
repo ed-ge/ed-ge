@@ -865,8 +865,8 @@ class Matrix3 {
             for (let x = 0; x < 3; x++) {
                 let newValue = 0;
                 for(let i = 0; i < 3; i++){
-                    let a = this.at(x,i);
-                    let b = matrix.at(i,y);
+                    let a = this.at(i,y);
+                    let b = matrix.at(x,i);
                     let product = a*b;
                     newValue += product;
                 }
