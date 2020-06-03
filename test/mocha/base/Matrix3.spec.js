@@ -96,9 +96,48 @@ describe("Base", function () {
             })
             it("Multiplies other matrices", function () {
                 let m = new Matrix3();
+                m.set(0,0,1);
+                m.set(1,0,2);
+                m.set(2,0,3);
+
+                m.set(0,1,4);
+                m.set(1,1,5);
+                m.set(2,1,6);
+
+                m.set(0,2,7);
+                m.set(1,2,8);
+                m.set(2,2,9);
+
                 let m2 = new Matrix3();
+
+                m2.set(0,0,10);
+                m2.set(1,0,11);
+                m2.set(2,0,12);
+
+                m2.set(0,1,13);
+                m2.set(1,1,14);
+                m2.set(2,1,15);
+
+                m2.set(0,2,16);
+                m2.set(1,2,17);
+                m2.set(2,2,18);
+
+
                 let m3 = m.multMatrix3(m2);
                 let e = new Matrix3();
+
+                e.set(0,0,84);
+                e.set(1,0,90);
+                e.set(2,0,96);
+
+                e.set(0,1,201);
+                e.set(1,1,216);
+                e.set(2,1,231);
+
+                e.set(0,2,318);
+                e.set(1,2,342);
+                e.set(2,2,366);
+
                 expect(m3.equals(e)).to.be.true;
             })
 
