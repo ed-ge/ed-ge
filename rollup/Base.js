@@ -853,6 +853,27 @@ class Matrix3 {
             throw new Error("multPoint takes exactly one argument of type Point.")
         }
 
+        let matrix = [point.x, point.y, 1];
+
+        let done = [];
+        for(let y= 0; y < 3; y++){
+            let sum = 0;
+            for(let i = 0; i < 3; i++){
+                let a = this.at(i,y);
+                let b = matrix[i];
+                let product = a*b;
+                sum += product;
+            }
+            done.push(sum);
+        }
+
+        //Handle the w value if it's not 1
+        done[0]/=done[2];
+        done[1]/=done[2];
+
+        let toReturn = new Point(done[0], done[1]);
+        return toReturn;
+
     }
     multMatrix3(matrix) {
         if (!matrix instanceof Matrix3 || arguments.length != 1) {

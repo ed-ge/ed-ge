@@ -84,6 +84,31 @@ describe("Base", function () {
 
         })
         describe("multPoint", function () {
+            it("Doesn't change the point with an identity matrix", function(){
+                let m = new Matrix3();
+                let point = new Base.Point(1,2);
+                let p2 = m.multPoint(point);
+                expect(p2).to.be.an.instanceOf(Base.Point).and.to.include({x:1,y:2})
+            })
+            it("Multiplies appropriately", function(){
+                let m = new Matrix3();
+                m.set(0,0,1);
+                m.set(1,0,2);
+                m.set(2,0,3);
+
+                m.set(0,1,4);
+                m.set(1,1,5);
+                m.set(2,1,6);
+
+                m.set(0,2,7);
+                m.set(1,2,8);
+                m.set(2,2,9);
+
+                let p = new Base.Point(10, 11);
+                let p2 = m.multPoint(p);
+                expect(p2).to.be.an.instanceOf(Base.Point).and.to.include({x:(35/167),y:(101/167)});
+
+            })
 
         })
         describe("multiMatrix3", function () {
