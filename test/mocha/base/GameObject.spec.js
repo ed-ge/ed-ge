@@ -171,6 +171,59 @@ describe("Base", function () {
         })
 
       })
+      describe("Combined world getters", function(){
+        it("Handles scale and translation", function(){
+          let parent = new GameObject(10, 10, 2, 3);
+          let child = new GameObject(10, 10, 1, 1);
+          parent.addChild(child);
+          expect(child.worldLocation.x).to.equal(30);
+          expect(child.worldLocation.y).to.equal(40);
+        })
+        it("Handles deep scale and translation", function(){
+          let parent = new GameObject(10, 10, 1, 1);
+          let middle = new GameObject(0, 0, 2,3);
+          let child = new GameObject(10, 10, 1, 1);
+          parent.addChild(middle);
+          middle.addChild(child);
+          expect(child.worldLocation.x).to.equal(30);
+          expect(child.worldLocation.y).to.equal(40);
+        })
+        it("Handles rotation and translation", function(){
+          let parent = new GameObject(0, 0, 1, 1, Math.PI/2);
+          let child = new GameObject(10, 0,);
+          parent.addChild(child);
+          expect(child.worldLocation.x).to.be.closeTo(0, .00001);
+          expect(child.worldLocation.y).to.be.closeTo(10, .00001);
+        })
+        it("Handles everything", function(){
+          let parent = new GameObject(0, 0, 2, 1, Math.PI/2);
+          let child = new GameObject(10, 0,);
+          parent.addChild(child);
+          expect(child.worldLocation.x).to.be.closeTo(0, .00001);
+          expect(child.worldLocation.y).to.be.closeTo(20, .00001);
+        })
+      })
+    })
+    describe("addComponent function", function(){
+
+    })
+    describe("draw function", function(){
+
+    })
+    describe("update function", function(){
+
+    })
+    describe("getComponent function", function(){
+
+    })
+    describe("anyComponent function", function(){
+
+    })
+    describe("recursiveCall function", function(){
+
+    })
+    describe("serialize function", function(){
+      
     })
 
   });
