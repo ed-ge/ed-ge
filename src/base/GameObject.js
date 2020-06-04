@@ -1,6 +1,7 @@
 import NameableParent from "./NamableParent.js"
 import Point from "./Point.js";
 import RectTransform from "../components/RectTransform.js";
+import Matrix3 from "./Matrix3.js";
 
 /**
  * A game object represents a "thing" in a game.
@@ -51,13 +52,23 @@ class GameObject extends NameableParent {
     return new Point(this.x, this.y);
   }
 
-  get scale(){
+  get scale() {
     return new Point(this.scaleX, this.scaleY);
   }
 
-  get localTransform(){
-    
+  get localTransform() {
+    let matrix = new Matrix3();
+    matrix.from(this.x, this.y, this.scaleX, this.scaleY, this.rotation);
+    return matrix;
 
+  }
+
+  get worldTransform() {
+    if (!this.parent)
+      return this.localTransform;
+    let parentTransform = this.parent.worldTransform;
+    let toReturn = parentTransform.mult(this.localTransform);
+    return toReturn;
   }
 
   /**
@@ -65,24 +76,23 @@ class GameObject extends NameableParent {
    * This takes into account the transforms of the chain of parents
    */
   get worldLocation() {
-    if (!this.parent)
-      return this.location;
-    let parentTransform = this.parent.worldLocation;
-    let toReturn = new Point(this.x + parentTransform.x, this.y + parentTransform.y);
-    return toReturn;
+    let world = this.worldTransform;
+    return world.translation;
 
   }
 
-  get worldScale(){
-    if (!this.parent)
-      return this.scale;
-    let parentTransform = this.parent.scale;
-    let toReturn = new Point(this.x * parentTransform.x, this.y * parentTransform.y);
-    return toReturn;
+  get worldScale() {
+    let world = this.worldTransform;
+    return world.translation;
+  }
+
+  get worldRotation() {
+    let world = this.worldTransform;
+    return world.rotation;
   }
 
 
-  
+
 
   /**
    * 

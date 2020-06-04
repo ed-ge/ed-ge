@@ -114,13 +114,12 @@ describe("Base", function () {
       it("Gets the world location", function(){
         let gameObjectParent = new GameObject(10, 10);
         let gameObjectChild = new GameObject(10, 10);
-        gameObjectParent.children.push(gameObjectChild);
-        gameObjectChild.parent = gameObjectParent;
-
+        gameObjectParent.addChild(gameObjectChild)
+        
         let worldLocationParent = gameObjectParent.worldLocation;
         let worldLocationChild = gameObjectChild.worldLocation;
-        expect(worldLocationParent).to.be.an.instanceOf(Point)
-        expect(worldLocationChild).to.be.an.instanceOf(Point)
+        expect(worldLocationParent).to.be.an.instanceOf(Base.Point)
+        expect(worldLocationChild).to.be.an.instanceOf(Base.Point)
         expect(worldLocationParent.x).to.equal(10);
         expect(worldLocationParent.y).to.equal(10);
         expect(worldLocationChild.x).to.equal(20);
@@ -128,7 +127,7 @@ describe("Base", function () {
       })
       it("Does not let you set the worldLocation", function(){
         let gameObject = new GameObject(-34.6, 99.8, -2, -3, 10, "name");
-        expect(()=>gameObject.worldLocation = new  Point(0,0)).to.throw();   
+        expect(()=>gameObject.worldLocation = new  Base.Point(0,0)).to.throw();   
       })
 
     })
