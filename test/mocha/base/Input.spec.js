@@ -40,7 +40,7 @@ describe("Base", function () {
 
         expect(input.touchesStart).to.be.an('array').and.to.be.empty;
         expect(input.touchesEnd).to.be.an('array').and.to.be.empty;
-        expect(input.touchPositions).to.be.an('array').and.to.be.empty;
+        // expect(input.touchPositions).to.be.an('array').and.to.be.empty;
         expect(input.frameTouchesStart).to.be.an('array').and.to.be.empty;
         expect(input.frameTouchesEnd).to.be.an('array').and.to.be.empty;
         expect(input.frameTouchPositions).to.be.an('array').and.to.be.empty;
@@ -118,16 +118,32 @@ describe("Base", function () {
 
         expect(input.touchesStart).to.equal(touchStartEvent);
         expect(input.touchesEnd).to.equal(touchEndEvent);
-        // expect(input.touchPositions).to.equal(touchPositionsEvent);
 
         input.swapUpDownArrays();
         expect(input.touchesStart).to.be.an('array').that.is.empty;
         expect(input.touchesEnd).to.be.an('array').that.is.empty;
-        // expect(input.touchPositions).to.be.an('array').that.is.empty;
         expect(input.frameTouchesStart).to.equal(touchStartEvent);
         expect(input.frameTouchesEnd).to.equal(touchEndEvent);
         expect(input.frameTouchPositions).to.equal(touchPositionsEvent);
-        expect(input.lastFrametouchPositions).to.be.an('array').that.is.empty;
+        expect(input.lastFrameTouchPositions).to.be.an('array').that.is.empty;
+        
+        input.touches = [];
+
+        input.swapUpDownArrays();
+        expect(input.touchesStart).to.be.an('array').that.is.empty;
+        expect(input.touchesEnd).to.be.an('array').that.is.empty;
+        expect(input.frameTouchesStart).to.be.an('array').that.is.empty;
+        expect(input.frameTouchesEnd).to.be.an('array').that.is.empty;
+        expect(input.frameTouchPositions).to.be.an('array').that.is.empty;
+        expect(input.lastFrameTouchPositions).to.equal(touchPositionsEvent);
+        
+        input.swapUpDownArrays();
+        expect(input.touchesStart).to.be.an('array').that.is.empty;
+        expect(input.touchesEnd).to.be.an('array').that.is.empty;
+        expect(input.frameTouchesStart).to.be.an('array').that.is.empty;
+        expect(input.frameTouchesEnd).to.be.an('array').that.is.empty;
+        expect(input.frameTouchPositions).to.be.an('array').that.is.empty;
+        expect(input.lastFrameTouchPositions).to.be.an('array').that.is.empty;
       })
     })
   });
