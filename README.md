@@ -1,7 +1,8 @@
 
-[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
 ![Unit Test](https://github.com/ed-ge/ed-ge/workflows/Unit%20Test/badge.svg)
+
 ![JSDoc](https://github.com/ed-ge/ed-ge/workflows/JSDoc/badge.svg?branch=master)
 ![Build](https://github.com/ed-ge/ed-ge/workflows/Build/badge.svg)
 
