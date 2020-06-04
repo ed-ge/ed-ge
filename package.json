@@ -23,12 +23,13 @@
     "devDependencies": {
         "chai": "^4.2.0",
         "chai-string": "^1.5.0",
+        "coverage": "^0.4.1",
         "istanbul": "^0.4.5",
         "jsdoc": "^3.6.3",
         "mocha": "^7.1.0",
         "rollup": "^2.7.6",
         "type-detect": "^4.0.8",
-        "coverage": "^0.4.1"
+        "window": "^4.2.7"
     },
     "dependencies": {
         "chai-almost": "^1.0.1",

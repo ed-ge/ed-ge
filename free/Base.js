@@ -559,7 +559,7 @@ var Base = (function () {
 
       touchesStart: [],
       touchesEnd: [],
-      touchPositions: [],
+      // touchPositions: [],
       frameTouchesStart: [],
       frameTouchesEnd: [],
       frameTouchPositions: [],
@@ -585,11 +585,12 @@ var Base = (function () {
 
         this.frameTouchesStart = this.touchesStart;
         this.frameTouchesEnd = this.touchesEnd;
-        this.lastFrameTouchPositions = this.frameTouchPositions;
-        this.frameTouchPositions = this.touches;
         this.touchesStart = [];
         this.touchesEnd = [];
-        this.touchPositions = [];
+        
+        this.lastFrameTouchPositions = this.frameTouchPositions;
+        this.frameTouchPositions = this.touches;
+        //this.touchPositions = [];
 
         // if(this.frameTouchesEnd.length != 0){
         //   console.log("Restart")
