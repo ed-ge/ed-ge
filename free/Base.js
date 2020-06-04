@@ -541,7 +541,7 @@ var Base = (function () {
 
       get worldScale() {
         let world = this.worldTransform;
-        return world.translation;
+        return world.scale;
       }
 
       get worldRotation() {
