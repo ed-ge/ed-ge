@@ -86,12 +86,39 @@ describe("Base", function () {
         expect(np.children).to.be.of.length(1).and.include(go);
         expect(go.children).to.be.of.length(1).and.include(go2);
       })
-
     })
     describe("findByName method", function(){
-      it("Has a findByName method", function(){
-        expect(new NameableParent()).to.respondTo("findByName");
+      it("Finds an immediate ancestor by name", function(){
+        let np = new NameableParent();
+        let go = new GameObject();
+        np.addChild(go);
+        go.name = "Bob";
+        let found = np.findByName("Bob");
+        expect(found).to.equal(go);
       })
+      it("Finds a deep ancestor by name", function(){
+        let np = new NameableParent();
+        let go = new GameObject();
+        let go2 = new GameObject();
+        np.addChild(go);
+        go.addChild(go2)
+        go.name = "Bob";
+        go2.name = "Alice";
+        let found = np.findByName("Alice");
+        expect(found).to.equal(go2);
+      })
+      it("Fails to find a non-ancestor", function(){
+        let np = new NameableParent();
+        let go = new GameObject();
+        go.name = "Bob";
+        let go2 = new GameObject();
+        go2.name = "Alice";
+        let found = np.findByName("Eve");
+        expect(found).to.be.null;
+      })
+      
+    })
+    describe("findByUUID", function(){
       it("Finds the root object by uuid", function(){
         let np = new NameableParent();
         let uuid = np.uuid;
@@ -123,11 +150,6 @@ describe("Base", function () {
         expect(found).to.be.not.undefined;
         expect(found).to.be.null;
       });
-    })
-    describe("findByUUID", function(){
-      it("Has a findByUUID method", function(){
-        expect(new NameableParent()).to.respondTo("findByUUID");
-      })
 
     })
     describe("uuidv4", function(){
