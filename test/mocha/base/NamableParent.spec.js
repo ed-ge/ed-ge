@@ -53,8 +53,38 @@ describe("Base", function () {
       })
     })
     describe("destroy method", function(){
-      it("Has a destroy method", function(){
-        expect(new NameableParent()).to.respondTo("destroy");
+      it("Destroys an object at the root", function(){
+        let np = new NameableParent();
+        let go = new GameObject();
+        np.addChild(go);
+        expect(np.children).to.be.of.length(1).and.include(go);
+        np.destroy(go);
+        expect(np.children).to.be.empty;
+      })
+      it("Destroys an object deeper than the root", function(){
+        let np = new NameableParent();
+        let go = new GameObject();
+        let go2 = new GameObject();
+        np.addChild(go);
+        go.addChild(go2);
+        expect(np.children).to.be.of.length(1).and.include(go);
+        expect(go.children).to.be.of.length(1).and.include(go2);
+        np.destroy(go2);
+        expect(np.children).to.be.of.length(1).and.include(go);
+        expect(go.children).to.be.empty;
+      })
+      it("Doesn't change when a non-included object is passed", function(){
+        let np = new NameableParent();
+        let go = new GameObject();
+        let go2 = new GameObject();
+        let go3 = new GameObject();
+        np.addChild(go);
+        go.addChild(go2);
+        expect(np.children).to.be.of.length(1).and.include(go);
+        expect(go.children).to.be.of.length(1).and.include(go2);
+        np.destroy(go3);
+        expect(np.children).to.be.of.length(1).and.include(go);
+        expect(go.children).to.be.of.length(1).and.include(go2);
       })
 
     })
@@ -106,7 +136,7 @@ describe("Base", function () {
       })
       describe("uuid generation", function () {
         //Copied from Component.spec.js
-        let np = new NameableParent();
+        let np = new NameableParent("");
         it("Generates a valid uuid", function(){
           let uuid = np.uuid;
           //From https://stackoverflow.com/questions/7905929/how-to-test-valid-uuid-guid
