@@ -83,7 +83,7 @@ class GameObject extends NameableParent {
 
   get worldScale() {
     let world = this.worldTransform;
-    return world.translation;
+    return world.scale;
   }
 
   get worldRotation() {
