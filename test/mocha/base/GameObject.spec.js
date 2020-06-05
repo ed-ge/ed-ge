@@ -256,11 +256,38 @@ describe("Base", function () {
         expect(ctx.rotate).to.have.been.calledOnceWith(0);
         expect(ctx.restore).to.have.been.calledOnce;
       })
+      it("Mocks draw calls with child", function(){
+        let parent = new GameObject(1,2,3,4,5)
+        let child = new GameObject();
+        parent.addChild(child);
+        let ctx = {
+          save: sinon.fake(),
+          translate: sinon.fake(),
+          scale: sinon.fake(),
+          rotate: sinon.fake(),
+          restore: sinon.fake()
+        }
+
+        parent.draw(ctx);
+        expect(ctx.save).to.have.been.calledTwice;
+        expect(ctx.translate).to.have.been.calledWith(1,2);
+        expect(ctx.scale).to.have.been.calledTwice.calledWith(3,4);
+        expect(ctx.rotate).to.have.been.calledTwice.calledWith(5);
+        expect(ctx.restore).to.have.been.calledTwice;
+      })
     })
     describe("update function", function(){
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.update(1)).to.throw();
+      })
+      it("Mocks update calls to children", function(){
+        let parent = new GameObject();
+        let child = new GameObject();
+        child.update = sinon.fake();
+        parent.addChild(child);
+        parent.update();
+        expect(child.update).to.have.been.calledOnce;
       })
     })
     describe("getComponent function", function(){
@@ -282,6 +309,14 @@ describe("Base", function () {
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.recursiveCall()).to.throw();
         expect(() => go.recursiveCall(1,2)).to.throw();
+      })
+      it("Mocks recursive calls to children", function(){
+        let parent = new GameObject();
+        let child = new GameObject();
+        child.recursiveCall = sinon.fake();
+        parent.addChild(child);
+        parent.recursiveCall("sinon");
+        expect(child.recursiveCall).to.have.been.calledOnceWith("sinon");
       })
     })
     describe("serialize function", function(){
