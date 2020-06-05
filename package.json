@@ -33,6 +33,7 @@
     },
     "dependencies": {
         "chai-almost": "^1.0.1",
-        "recursive-readdir": "^2.2.2"
+        "recursive-readdir": "^2.2.2",
+        "sinon": "^9.0.2"
     }
 }

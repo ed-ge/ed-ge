@@ -578,6 +578,8 @@ var Base = (function () {
        * variable populated.
        */
       addComponent(component) {
+        if(arguments.length != 1) throw new Error("addComponent takes exactly one argument.")
+        if(!(component instanceof Component)) throw new Error("addComponent takes exactly one argument of type Component.")
         this.components.push(component);
         component.gameObject = this;
       }
@@ -592,6 +594,7 @@ var Base = (function () {
        * deferred rendering.
        */
       draw(ctx) {
+        if(arguments.length != 1) throw new Error("draw expects exactly one argument of type context2d.")
         ctx.save();
 
         /** We first need to figure out if we are rendering in screen space or world space
@@ -633,12 +636,16 @@ var Base = (function () {
         ctx.restore();
       }
       update() {
+        if(arguments.length != 0) throw new Error("draw function expects no arguments.")
+        
         this.components.filter(i => i.update).forEach(i => i.update());
 
         //Now update all the children
         this.children.forEach(i => i.update());
       }
       getComponent(type) {
+        if(arguments.length != 1) throw new Error("getComponent function expects exactly one argument that is a string or a type.")
+        
         if (typeof (type) === 'string' || type instanceof String) {
           //The user passed us a string, not a type
           //https://stackoverflow.com/a/7772724/10047920
@@ -663,6 +670,9 @@ var Base = (function () {
        * @param {type} The type of the component to search for. May be a string or object type type 
        */
       anyComponent(type) {
+        if(arguments.length != 1) throw new Error("anyComponent function expects exactly one argument that is a string or a type.")
+        
+        
         if (typeof (type) === 'string' || type instanceof String) {
           //The user passed us a string, not a type
           //https://stackoverflow.com/a/7772724/10047920
@@ -677,6 +687,8 @@ var Base = (function () {
       }
 
       recursiveCall(functionName) {
+        if(arguments.length != 1) throw new Error("recursiveCall function expects exactly one argument that is the name of a function.")
+        
         for (let i = 0; i < this.components.length; i++) {
           let component = this.components[i];
           if (component[functionName]) {
@@ -691,6 +703,8 @@ var Base = (function () {
       }
 
       serialize() {
+        if(arguments.length != 0) throw new Error("seralize expects no arguments")
+        
       }
     }
 
