@@ -2,6 +2,8 @@
 import chai from "chai";
 const expect = chai.expect;
 import sinon from "sinon"
+import sinonChai from "sinon-chai"
+chai.use(sinonChai);
 
 import Base from "../../../src/Base.js"
 import Scenes from "../../game/Scenes.js"
@@ -237,6 +239,22 @@ describe("Base", function () {
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.draw()).to.throw();
         expect(() => go.draw(1,2)).to.throw();
+      })
+      it("Mocks draw calls", function(){
+        let ctx = {
+          save: sinon.fake(),
+          translate: sinon.fake(),
+          scale: sinon.fake(),
+          rotate: sinon.fake(),
+          restore: sinon.fake()
+        }
+
+        go.draw(ctx);
+        expect(ctx.save).to.have.been.calledOnce;
+        expect(ctx.translate).to.have.been.calledOnceWith(0,0);
+        expect(ctx.scale).to.have.been.calledOnceWith(1,1);
+        expect(ctx.rotate).to.have.been.calledOnceWith(0);
+        expect(ctx.restore).to.have.been.calledOnce;
       })
     })
     describe("update function", function(){
