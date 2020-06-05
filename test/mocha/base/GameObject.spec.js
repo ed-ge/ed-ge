@@ -1,6 +1,7 @@
 
 import chai from "chai";
 const expect = chai.expect;
+import sinon from "sinon"
 
 import Base from "../../../src/Base.js"
 import Scenes from "../../game/Scenes.js"
@@ -8,6 +9,18 @@ import GameObjects from "../../game/GameObjects.js"
 import GameBehaviors from "../../game/GameBehaviors.js"
 import GameObject from "../../../src/base/GameObject.js";
 import Point from "../../../src/base/Point.js";
+import Component from "../../../src/base/Component.js";
+
+function once(fn) {
+  var returnValue, called = false;
+  return function () {
+      if (!called) {
+          called = true;
+          returnValue = fn.apply(this, arguments);
+      }
+      return returnValue;
+  };
+}
 
 describe("Base", function () {
   this.timeout(0);
@@ -205,25 +218,59 @@ describe("Base", function () {
       })
     })
     describe("addComponent function", function(){
+      let go = new GameObject();
+      it("Throws an error on mismatched arguments", function () {
+        expect(() => go.addComponent()).to.throw();
+        expect(() => go.addComponent(1,2)).to.throw();
+      })
+      it("Adds a component", function(){
+        let co = new Component();
+        go.addComponent(co);
+        expect(co.gameObject).to.equal(go);
+        expect(go.components).to.be.an('array').with.lengthOf(1)
+        expect(go.components[0]).to.equal(co);
+      })
 
     })
     describe("draw function", function(){
-
+      let go = new GameObject();
+      it("Throws an error on mismatched arguments", function () {
+        expect(() => go.draw()).to.throw();
+        expect(() => go.draw(1,2)).to.throw();
+      })
     })
     describe("update function", function(){
-
+      let go = new GameObject();
+      it("Throws an error on mismatched arguments", function () {
+        expect(() => go.update(1)).to.throw();
+      })
     })
     describe("getComponent function", function(){
-
+      let go = new GameObject();
+      it("Throws an error on mismatched arguments", function () {
+        expect(() => go.getComponent()).to.throw();
+        expect(() => go.getComponent(1,2)).to.throw();
+      })
     })
     describe("anyComponent function", function(){
-
+      let go = new GameObject();
+      it("Throws an error on mismatched arguments", function () {
+        expect(() => go.anyComponent()).to.throw();
+        expect(() => go.anyComponent(1,2)).to.throw();
+      })
     })
     describe("recursiveCall function", function(){
-
+      let go = new GameObject();
+      it("Throws an error on mismatched arguments", function () {
+        expect(() => go.recursiveCall()).to.throw();
+        expect(() => go.recursiveCall(1,2)).to.throw();
+      })
     })
     describe("serialize function", function(){
-      
+      let go = new GameObject();
+      it("Throws an error on mismatched arguments", function () {
+        expect(() => go.serialize(1)).to.throw();
+      })
     })
 
   });
