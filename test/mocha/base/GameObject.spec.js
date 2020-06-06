@@ -326,10 +326,10 @@ describe("Base", function () {
         expect(() => go.getComponent(1, 2)).to.throw();
       })
       it("Throws an error on not-found string search", function () {
-        expect(()=>gameObject.getComponent("Missing")).to.throw;
+        expect(()=>gameObject.getComponent("Missing")).to.throw();
       })
       it("Throws an error on not-found type search", function () {
-        expect(()=>gameObject.getComponent(Base.Point)).to.throw;
+        expect(()=>gameObject.getComponent(Base.Point)).to.throw();
       })
       it("Finds a component using a string", function () {
         let co = gameObject.getComponent("QuickComponent")
@@ -345,6 +345,20 @@ describe("Base", function () {
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.anyComponent()).to.throw();
         expect(() => go.anyComponent(1, 2)).to.throw();
+      })
+      it("Returns false on not-found string search", function () {
+        expect(gameObject.anyComponent("Missing")).to.be.false;
+      })
+      it("Returns false on not-found type search", function () {
+        expect(gameObject.anyComponent(Base.Point)).to.be.false;
+      })
+      it("Finds a component using a string", function () {
+        let co = gameObject.anyComponent("QuickComponent")
+        expect(co).to.be.true;
+      })
+      it("Finds a component using a type", function () {
+        let co = gameObject.anyComponent(QuickComponent)
+        expect(co).to.be.true;
       })
     })
     describe("recursiveCall function", function () {
