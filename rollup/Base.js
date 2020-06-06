@@ -2740,20 +2740,23 @@ const SceneManager = {
         this._currentSceneIndex == this.scenes.length - 1;
       }
     }
-    else {
-      if (typeof argument === "string") {
+    else if (typeof argument === "string") {
         let index = this.scenes.findIndex(i => i.name == argument);
         if (index != -1) {
           this._currentSceneIndex = index;
         }
         else throw "No scene has that name. Current scene index not set."
       }
-      else {
+      else if (isInteger(argument)){
         let index = +argument;
         if (index < 0) throw "Index is out of bounds. Current scene index not set."
         if (index >= this.scenes.length) throw "Index is out of bounds. Current scene index not set."
         this._currentSceneIndex = +argument;
       }
+    
+    else {
+      //Bad argument
+      throw new Error("The currentScene setter expects an instance of a scene, a string, or an integer")
     }
     this.scenes[this._currentSceneIndex].boot();
   },
