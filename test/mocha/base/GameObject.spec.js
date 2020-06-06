@@ -16,13 +16,42 @@ import Component from "../../../src/base/Component.js";
 function once(fn) {
   var returnValue, called = false;
   return function () {
-      if (!called) {
-          called = true;
-          returnValue = fn.apply(this, arguments);
-      }
-      return returnValue;
+    if (!called) {
+      called = true;
+      returnValue = fn.apply(this, arguments);
+    }
+    return returnValue;
   };
 }
+
+let gameObject;
+class QuickComponent extends Component { constructor() { super() } }
+beforeEach(() => {
+  gameObject = new GameObject(100, 200, 2, 2, Math.PI / 4)
+  let child1 = new GameObject();
+  let child2 = new GameObject(10, 10, 1, 1, Math.PI / 2);
+  let grandChild = new GameObject(100, 300, 4, 5, Math.PI / 6);
+  gameObject.addChild(child1);
+  gameObject.addChild(child2);
+  child1.addChild(grandChild);
+
+  let gameObjectComponent = new QuickComponent();
+  gameObject.addComponent(gameObjectComponent);
+
+  let child1Component = new Component();
+  child1.addComponent(child1Component);
+
+
+  let child2Component = new Component();
+  child2.addComponent(child2Component);
+  let child2Component2 = new Component();
+  child2.addComponent(child2Component2);
+
+  let grandchildComponent = new QuickComponent();
+  grandChild.addComponent(grandchildComponent);
+
+
+})
 
 describe("Base", function () {
   this.timeout(0);
@@ -170,15 +199,15 @@ describe("Base", function () {
       })
       describe("worldRotation getter", function () {
         it("Gets the world rotation", function () {
-          let gameObjectParent = new GameObject(0, 0, 1, 1, Math.PI/6);
-          let gameObjectChild = new GameObject(0, 0, 1, 1, Math.PI/3);
+          let gameObjectParent = new GameObject(0, 0, 1, 1, Math.PI / 6);
+          let gameObjectChild = new GameObject(0, 0, 1, 1, Math.PI / 3);
           gameObjectParent.addChild(gameObjectChild)
 
           let worldRotationParent = gameObjectParent.worldRotation;
           let worldRotationChild = gameObjectChild.worldRotation;
-          expect(worldRotationParent).to.be.closeTo(Math.PI/6, .0000001);
-          expect(worldRotationChild).to.be.closeTo(Math.PI/6+Math.PI/3, .000001);
-          
+          expect(worldRotationParent).to.be.closeTo(Math.PI / 6, .0000001);
+          expect(worldRotationChild).to.be.closeTo(Math.PI / 6 + Math.PI / 3, .000001);
+
         })
         it("Does not let you set the worldScale", function () {
           let gameObject = new GameObject(-34.6, 99.8, -2, -3, 10, "name");
@@ -186,46 +215,46 @@ describe("Base", function () {
         })
 
       })
-      describe("Combined world getters", function(){
-        it("Handles scale and translation", function(){
+      describe("Combined world getters", function () {
+        it("Handles scale and translation", function () {
           let parent = new GameObject(10, 10, 2, 3);
           let child = new GameObject(10, 10, 1, 1);
           parent.addChild(child);
           expect(child.worldLocation.x).to.equal(30);
           expect(child.worldLocation.y).to.equal(40);
         })
-        it("Handles deep scale and translation", function(){
+        it("Handles deep scale and translation", function () {
           let parent = new GameObject(10, 10, 1, 1);
-          let middle = new GameObject(0, 0, 2,3);
+          let middle = new GameObject(0, 0, 2, 3);
           let child = new GameObject(10, 10, 1, 1);
           parent.addChild(middle);
           middle.addChild(child);
           expect(child.worldLocation.x).to.equal(30);
           expect(child.worldLocation.y).to.equal(40);
         })
-        it("Handles rotation and translation", function(){
-          let parent = new GameObject(0, 0, 1, 1, Math.PI/2);
-          let child = new GameObject(10, 0,);
+        it("Handles rotation and translation", function () {
+          let parent = new GameObject(0, 0, 1, 1, Math.PI / 2);
+          let child = new GameObject(10, 0);
           parent.addChild(child);
           expect(child.worldLocation.x).to.be.closeTo(0, .00001);
           expect(child.worldLocation.y).to.be.closeTo(10, .00001);
         })
-        it("Handles everything", function(){
-          let parent = new GameObject(0, 0, 2, 1, Math.PI/2);
-          let child = new GameObject(10, 0,);
+        it("Handles everything", function () {
+          let parent = new GameObject(0, 0, 2, 1, Math.PI / 2);
+          let child = new GameObject(10, 0);
           parent.addChild(child);
           expect(child.worldLocation.x).to.be.closeTo(0, .00001);
           expect(child.worldLocation.y).to.be.closeTo(20, .00001);
         })
       })
     })
-    describe("addComponent function", function(){
+    describe("addComponent function", function () {
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.addComponent()).to.throw();
-        expect(() => go.addComponent(1,2)).to.throw();
+        expect(() => go.addComponent(1, 2)).to.throw();
       })
-      it("Adds a component", function(){
+      it("Adds a component", function () {
         let co = new Component();
         go.addComponent(co);
         expect(co.gameObject).to.equal(go);
@@ -234,13 +263,13 @@ describe("Base", function () {
       })
 
     })
-    describe("draw function", function(){
+    describe("draw function", function () {
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.draw()).to.throw();
-        expect(() => go.draw(1,2)).to.throw();
+        expect(() => go.draw(1, 2)).to.throw();
       })
-      it("Mocks draw calls", function(){
+      it("Mocks draw calls", function () {
         let ctx = {
           save: sinon.fake(),
           translate: sinon.fake(),
@@ -251,13 +280,13 @@ describe("Base", function () {
 
         go.draw(ctx);
         expect(ctx.save).to.have.been.calledOnce;
-        expect(ctx.translate).to.have.been.calledOnceWith(0,0);
-        expect(ctx.scale).to.have.been.calledOnceWith(1,1);
+        expect(ctx.translate).to.have.been.calledOnceWith(0, 0);
+        expect(ctx.scale).to.have.been.calledOnceWith(1, 1);
         expect(ctx.rotate).to.have.been.calledOnceWith(0);
         expect(ctx.restore).to.have.been.calledOnce;
       })
-      it("Mocks draw calls with child", function(){
-        let parent = new GameObject(1,2,3,4,5)
+      it("Mocks draw calls with child", function () {
+        let parent = new GameObject(1, 2, 3, 4, 5)
         let child = new GameObject();
         parent.addChild(child);
         let ctx = {
@@ -270,18 +299,18 @@ describe("Base", function () {
 
         parent.draw(ctx);
         expect(ctx.save).to.have.been.calledTwice;
-        expect(ctx.translate).to.have.been.calledWith(1,2);
-        expect(ctx.scale).to.have.been.calledTwice.calledWith(3,4);
+        expect(ctx.translate).to.have.been.calledWith(1, 2);
+        expect(ctx.scale).to.have.been.calledTwice.calledWith(3, 4);
         expect(ctx.rotate).to.have.been.calledTwice.calledWith(5);
         expect(ctx.restore).to.have.been.calledTwice;
       })
     })
-    describe("update function", function(){
+    describe("update function", function () {
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.update(1)).to.throw();
       })
-      it("Mocks update calls to children", function(){
+      it("Mocks update calls to children", function () {
         let parent = new GameObject();
         let child = new GameObject();
         child.update = sinon.fake();
@@ -290,27 +319,41 @@ describe("Base", function () {
         expect(child.update).to.have.been.calledOnce;
       })
     })
-    describe("getComponent function", function(){
+    describe("getComponent function", function () {
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.getComponent()).to.throw();
-        expect(() => go.getComponent(1,2)).to.throw();
+        expect(() => go.getComponent(1, 2)).to.throw();
+      })
+      it("Throws an error on not-found string search", function () {
+        expect(()=>gameObject.getComponent("Missing")).to.throw;
+      })
+      it("Throws an error on not-found type search", function () {
+        expect(()=>gameObject.getComponent(Base.Point)).to.throw;
+      })
+      it("Finds a component using a string", function () {
+        let co = gameObject.getComponent("QuickComponent")
+        expect(co).to.not.be.null;
+      })
+      it("Finds a component using a type", function () {
+        let co = gameObject.getComponent(QuickComponent)
+        expect(co).to.not.be.null;
       })
     })
-    describe("anyComponent function", function(){
+    describe("anyComponent function", function () {
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.anyComponent()).to.throw();
-        expect(() => go.anyComponent(1,2)).to.throw();
+        expect(() => go.anyComponent(1, 2)).to.throw();
       })
     })
-    describe("recursiveCall function", function(){
+    describe("recursiveCall function", function () {
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.recursiveCall()).to.throw();
-        expect(() => go.recursiveCall(1,2)).to.throw();
+        expect(() => go.recursiveCall(1, 2)).to.throw();
       })
-      it("Mocks recursive calls to children", function(){
+      it("Mocks recursive calls to children", function () {
         let parent = new GameObject();
         let child = new GameObject();
         child.recursiveCall = sinon.fake();
@@ -319,7 +362,7 @@ describe("Base", function () {
         expect(child.recursiveCall).to.have.been.calledOnceWith("sinon");
       })
     })
-    describe("serialize function", function(){
+    describe("serialize function", function () {
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.serialize(1)).to.throw();

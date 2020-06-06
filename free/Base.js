@@ -651,7 +651,7 @@ var Base = (function () {
           //https://stackoverflow.com/a/7772724/10047920
           let component = this.components.find(i => i.constructor.name === type);
           if (component) return component;
-          throw "Error, couldn't find type " + type;
+          throw new Error("Error, couldn't find type " + type);
         } else {
           let component;
           try {
@@ -660,7 +660,7 @@ var Base = (function () {
             console.log(e);
           }
           if (component) return component;
-          throw "Error, couldn't find type " + type;
+          throw new Error("Error, couldn't find type " + type);
         }
       }
       /**
