@@ -2713,14 +2713,14 @@ class Scene extends NameableParent {
 
 const SceneManager = {
   /** Orginally from scene */
-  
-  scenes: [],
-  Base:{},
 
-  
+  scenes: [],
+  Base: {},
+
+
   _currentSceneIndex: -1,
 
-  
+
 
   get currentScene() {
     if (this._currentSceneIndex == -1) throw "Current scene index not set. Cannot get current scene."
@@ -2730,37 +2730,16 @@ const SceneManager = {
   },
 
   set currentScene(argument) {
-    if (argument instanceof Scene) {
-      let index = this.scenes.indexOf(argument);
-      if (index != -1) {
-        this._currentSceneIndex = index;
-      }
-      else {
-        this.scenes.push(argument);
-        this._currentSceneIndex == this.scenes.length - 1;
-      }
+    if (typeof argument !== "string") throw new Error("The currentScene setter expects an instance  a string");
+
+    let index = this.scenes.findIndex(i => i.name == argument);
+    if (index != -1) {
+      this._currentSceneIndex = index;
     }
-    else if (typeof argument === "string") {
-        let index = this.scenes.findIndex(i => i.name == argument);
-        if (index != -1) {
-          this._currentSceneIndex = index;
-        }
-        else throw "No scene has that name. Current scene index not set."
-      }
-      else if (isInteger(argument)){
-        let index = +argument;
-        if (index < 0) throw "Index is out of bounds. Current scene index not set."
-        if (index >= this.scenes.length) throw "Index is out of bounds. Current scene index not set."
-        this._currentSceneIndex = +argument;
-      }
-    
-    else {
-      //Bad argument
-      throw new Error("The currentScene setter expects an instance of a scene, a string, or an integer")
-    }
+    else throw "No scene has that name. Current scene index not set."
     this.scenes[this._currentSceneIndex].boot();
   },
-  clearScenes(){
+  clearScenes() {
     this.scenes = [];
     this.currentSceneIndex = -1;
   },
