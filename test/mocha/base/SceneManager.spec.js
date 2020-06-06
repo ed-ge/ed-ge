@@ -51,8 +51,40 @@ describe("Base", function () {
     describe("currentScene setter", function(){
       it("Throws an error on mismatched arguments", function () {
         expect(()=>sceneManager.currentScene = new Base.Point()).to.throw();
+        expect(()=>sceneManager.currentScene = 0).to.throw();
       })
-      
+      it("Updates the current scene", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let beforeIndex = sceneManager._currentSceneIndex;
+        Base.SceneManager.currentScene = "StartScene";
+        let afterIndex = sceneManager._currentSceneIndex;
+        expect(beforeIndex).to.equal(6);
+        expect(afterIndex).to.equal(3);
+      })
+      it("Does not update the current scene on a bad name", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let beforeIndex = sceneManager._currentSceneIndex;
+        expect(()=>Base.SceneManager.currentScene = "Chai").to.throw();
+        let afterIndex = sceneManager._currentSceneIndex;
+        expect(beforeIndex).to.equal(6);
+        expect(afterIndex).to.equal(6);
+      })
+    })
+    describe("clearScenes function", function(){
+      it("Throws an error on mismatched arguments", function () {
+        expect(()=>sceneManager.clearScenes(1)).to.throw();
+      })
+      it("Clears the scenes", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let beforeLength = sceneManager.scenes.length;
+        let beforeIndex = sceneManager._currentSceneIndex;
+        sceneManager.clearScenes();
+        let afterLength = sceneManager.scenes.length;
+        let afterIndex = sceneManager._currentSceneIndex;
+        expect(afterLength).to.equal(0);
+        expect(afterIndex).to.equal(-1);
+        expect(()=>sceneManager.currentScene).to.throw();
+      })
     })
   })
 })
