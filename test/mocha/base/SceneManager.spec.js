@@ -52,24 +52,7 @@ describe("Base", function () {
       it("Throws an error on mismatched arguments", function () {
         expect(()=>sceneManager.currentScene = new Base.Point()).to.throw();
       })
-      it("Updates the current scene if passed an existing Scene instance", function(){
-        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
-        let length = sceneManager.scenes.length;
-        sceneManager.currentScene = sceneManager.scenes[0];
-        expect(sceneManager._currentSceneIndex).to.equal(0);
-        expect(sceneManager.scenes.length).to.equal(length);
-      })
-      it("Add a new scene if passed an non-existing Scene instance", function(){
-        let allScenes = Scenes.allScenes;
-        Scenes.allScenes = Scenes.allScenes.slice(0,1);
-        Scenes.startScene = 'SceneOne'
-        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: Scenes.allScenes[0].name });
-        let length = sceneManager.scenes.length;
-        expect(sceneManager._currentSceneIndex).to.equal(0);
-        sceneManager.currentScene = allScenes[1];
-        expect(sceneManager.scenes.length).to.equal(length+1);
-        expect(sceneManager._currentSceneIndex).to.equal(1);
-      })
+      
     })
   })
 })
