@@ -563,6 +563,7 @@ class GameObject extends NameableParent {
   constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0, prefabName = "") {
     super(prefabName);
     this.components = [];
+    this.layer = null;
     [this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.prefabName] = [x, y, scaleX, scaleY, rotation, prefabName];
   }
   /**
@@ -2205,6 +2206,8 @@ class Scene extends NameableParent {
     this.prefabs = prefabs;
     this.behaviors = behaviors;
     this.components = components;
+
+    this.layers = ["background", null, "foreground"];
   }
 
 
@@ -2380,7 +2383,10 @@ class Scene extends NameableParent {
     ctx.translate(-tx, -ty);
 
     //Draw children that are not in screen space
-    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent")).forEach(i => i.draw(ctx));
+    //Sort them by layer
+    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Background").forEach(i => i.draw(ctx));
+    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && !i.layer).forEach(i => i.draw(ctx));
+    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Foreground").forEach(i => i.draw(ctx));
 
     ctx.restore();
 

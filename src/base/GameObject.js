@@ -109,6 +109,7 @@ class GameObject extends NameableParent {
   constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0, prefabName = "") {
     super(prefabName);
     this.components = [];
+    this.layer = null;
     [this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.prefabName] = [x, y, scaleX, scaleY, rotation, prefabName];
   }
   /**
