@@ -154,6 +154,32 @@ describe("Base", function () {
         expect(()=>sceneManager.instantiate(1,2,3)).to.throw();
         expect(()=>sceneManager.instantiate(1,2,3,4,5)).to.throw();
       })
+      it("Instantiates a new empty game object", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let AScene = sceneManager.currentScene;
+        let beforeCountRootObjects = AScene.children.length;
+        expect(beforeCountRootObjects).to.equal(3);
+        sceneManager.instantiate("EmptyGameObject", new Base.Point(0,0), new Base.Point(1,1), 0);
+        let afterCountRootObjects = AScene.children.length;
+        expect(afterCountRootObjects).to.equal(4);
+      })
+      it("Instantiates a new game object", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let AScene = sceneManager.currentScene;
+        let beforeCountRootObjects = AScene.children.length;
+        expect(beforeCountRootObjects).to.equal(3);
+        sceneManager.instantiate("EmptyGameObject", new Base.Point(1,2), new Base.Point(3,4), 5);
+        let afterCountRootObjects = AScene.children.length;
+        expect(afterCountRootObjects).to.equal(4);
+        let gameObject = AScene.children[3];
+        expect(gameObject.x).to.equal(1);
+        expect(gameObject.y).to.equal(2);
+        expect(gameObject.scaleX).to.equal(3);
+        expect(gameObject.scaleY).to.equal(4);
+        expect(gameObject.rotation).to.equal(5);
+        expect(gameObject.prefabName).to.equal("EmptyGameObject");
+
+      })
     })
   })
 })
