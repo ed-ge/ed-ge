@@ -1,69 +1,73 @@
 import Base from "../../../src/Base.js"
+import Scene from "../../../src/base/Scene.js"
 
 let Board = [
 
 ]
 
-//Add Corners
-Board.push({ x: 0, y: 0, name: "Go", type: "Corner" })
-Board.push({ x: 10, y: 0, name: "Jail", type: "Corner" })
-Board.push({ x: 10, y: 10, name: "Free Parking", type: "Corner" })
-Board.push({ x: 0, y: 10, name: "Go to Jail", type: "Corner" })
+function bootBoard() {
+  //Add Corners
+  Board.push({ x: 0, y: 0, name: "Go", type: "Corner" })
+  Board.push({ x: 10, y: 0, name: "Jail", type: "Corner" })
+  Board.push({ x: 10, y: 10, name: "Free Parking", type: "Corner" })
+  Board.push({ x: 0, y: 10, name: "Go to Jail", type: "Corner" })
 
 
-//Draw Cards
-Board.push({ x: 2, y: 0, name: "Community Chest", type: "DrawCard" })
-Board.push({ x: 10, y: 7, name: "Community Chest", type: "DrawCard" })
-Board.push({ x: 0, y: 7, name: "Community Chest", type: "DrawCard" })
-Board.push({ x: 7, y: 0, name: "Chance", type: "DrawCard" })
-Board.push({ x: 8, y: 10, name: "Chance", type: "DrawCard" })
-Board.push({ x: 0, y: 4, name: "Chance", type: "DrawCard" })
+  //Draw Cards
+  Board.push({ x: 2, y: 0, name: "Community Chest", type: "DrawCard" })
+  Board.push({ x: 10, y: 7, name: "Community Chest", type: "DrawCard" })
+  Board.push({ x: 0, y: 7, name: "Community Chest", type: "DrawCard" })
+  Board.push({ x: 7, y: 0, name: "Chance", type: "DrawCard" })
+  Board.push({ x: 8, y: 10, name: "Chance", type: "DrawCard" })
+  Board.push({ x: 0, y: 4, name: "Chance", type: "DrawCard" })
 
-//Taxes
-Board.push({ x: 3, y: 0, name: "Income Tax", type: "Tax" })
-Board.push({ x: 0, y: 2, name: "Luxury Tax", type: "Tax" })
+  //Taxes
+  Board.push({ x: 3, y: 0, name: "Income Tax", type: "Tax" })
+  Board.push({ x: 0, y: 2, name: "Luxury Tax", type: "Tax" })
 
-//RailRoads
-Board.push({ x: 5, y: 0, name: "Reading RailRoad", type: "property", class: "RailRoad" })
-Board.push({ x: 10, y: 5, name: "Pennsylvania RailRoad", type: "property", class: "RailRoad" })
-Board.push({ x: 5, y: 10, name: "B&O RailRoad", type: "property", class: "RailRoad" })
-Board.push({ x: 0, y: 5, name: "Short Line", type: "property", class: "RailRoad" })
+  //RailRoads
+  Board.push({ x: 5, y: 0, name: "Reading RailRoad", type: "property", class: "RailRoad" })
+  Board.push({ x: 10, y: 5, name: "Pennsylvania RailRoad", type: "property", class: "RailRoad" })
+  Board.push({ x: 5, y: 10, name: "B&O RailRoad", type: "property", class: "RailRoad" })
+  Board.push({ x: 0, y: 5, name: "Short Line", type: "property", class: "RailRoad" })
 
-//Utilities
-Board.push({ x: 10, y: 2, name: "Electric Company", type: "property", class: "Utility" })
-Board.push({ x: 2, y: 10, name: "Water Works", type: "property", class: "Utility" })
+  //Utilities
+  Board.push({ x: 10, y: 2, name: "Electric Company", type: "property", class: "Utility" })
+  Board.push({ x: 2, y: 10, name: "Water Works", type: "property", class: "Utility" })
 
-//Normal Properties
-Board.push({ x: 1, y: 0, name: "Medditeranian Avenue", type: "property", class: 0 });
-Board.push({ x: 4, y: 0, name: "Baltic Avenue", type: "property", class: 0 });
+  //Normal Properties
+  Board.push({ x: 1, y: 0, name: "Medditeranian Avenue", type: "property", class: 0 });
+  Board.push({ x: 4, y: 0, name: "Baltic Avenue", type: "property", class: 0 });
 
-Board.push({ x: 6, y: 0, name: "Oriental Avenue", type: "property", class: 1 });
-Board.push({ x: 8, y: 0, name: "Vermont Avenue", type: "property", class: 1 });
-Board.push({ x: 9, y: 0, name: "Connecticut Avenue", type: "property", class: 1 });
+  Board.push({ x: 6, y: 0, name: "Oriental Avenue", type: "property", class: 1 });
+  Board.push({ x: 8, y: 0, name: "Vermont Avenue", type: "property", class: 1 });
+  Board.push({ x: 9, y: 0, name: "Connecticut Avenue", type: "property", class: 1 });
 
-Board.push({ x: 10, y: 1, name: "St. Pail Avenue", type: "property", class: 2 });
-Board.push({ x: 10, y: 3, name: "States Avenue", type: "property", class: 2 });
-Board.push({ x: 10, y: 4, name: "Virginia Avenue", type: "property", class: 2 });
+  Board.push({ x: 10, y: 1, name: "St. Pail Avenue", type: "property", class: 2 });
+  Board.push({ x: 10, y: 3, name: "States Avenue", type: "property", class: 2 });
+  Board.push({ x: 10, y: 4, name: "Virginia Avenue", type: "property", class: 2 });
 
-Board.push({ x: 10, y: 6, name: "St. James Place", type: "property", class: 3 });
-Board.push({ x: 10, y: 8, name: "Tennessee Avenue", type: "property", class: 3 });
-Board.push({ x: 10, y: 9, name: "New York Avenue", type: "property", class: 3 });
+  Board.push({ x: 10, y: 6, name: "St. James Place", type: "property", class: 3 });
+  Board.push({ x: 10, y: 8, name: "Tennessee Avenue", type: "property", class: 3 });
+  Board.push({ x: 10, y: 9, name: "New York Avenue", type: "property", class: 3 });
 
-Board.push({ x: 9, y: 10, name: "Kentucky Avenue", type: "property", class: 4 })
-Board.push({ x: 7, y: 10, name: "Indiana Avenue", type: "property", class: 4 })
-Board.push({ x: 6, y: 10, name: "Illinois Avenue", type: "property", class: 4 })
+  Board.push({ x: 9, y: 10, name: "Kentucky Avenue", type: "property", class: 4 })
+  Board.push({ x: 7, y: 10, name: "Indiana Avenue", type: "property", class: 4 })
+  Board.push({ x: 6, y: 10, name: "Illinois Avenue", type: "property", class: 4 })
 
-Board.push({ x: 4, y: 10, name: "Atlantic Avenue", type: "property", class: 5 })
-Board.push({ x: 3, y: 10, name: "Ventor Avenue", type: "property", class: 5 })
-Board.push({ x: 1, y: 10, name: "Marvin Gardens", type: "property", class: 5 })
+  Board.push({ x: 4, y: 10, name: "Atlantic Avenue", type: "property", class: 5 })
+  Board.push({ x: 3, y: 10, name: "Ventor Avenue", type: "property", class: 5 })
+  Board.push({ x: 1, y: 10, name: "Marvin Gardens", type: "property", class: 5 })
 
-Board.push({ x: 0, y: 9, name: "Pacific Avenue", type: "property", class: 6 })
-Board.push({ x: 0, y: 8, name: "North Carolina Avenue", type: "property", class: 6 })
-Board.push({ x: 0, y: 6, name: "Pennsylvania Avenue", type: "property", class: 6 })
+  Board.push({ x: 0, y: 9, name: "Pacific Avenue", type: "property", class: 6 })
+  Board.push({ x: 0, y: 8, name: "North Carolina Avenue", type: "property", class: 6 })
+  Board.push({ x: 0, y: 6, name: "Pennsylvania Avenue", type: "property", class: 6 })
 
-Board.push({ x: 0, y: 3, name: "Park Place", type: "property", class: 7 })
-Board.push({ x: 0, y: 1, name: "Boardwalk", type: "property", class: 7 })
+  Board.push({ x: 0, y: 3, name: "Park Place", type: "property", class: 7 })
+  Board.push({ x: 0, y: 1, name: "Boardwalk", type: "property", class: 7 })
+}
 
+bootBoard();
 
 let Scenes = {
   startScene: "StartScene",
@@ -72,7 +76,15 @@ let Scenes = {
       name: "StartScene",
       objects: [
         {
-          def:"Camera, 0, 0, Camera",
+          def: "Camera, 0, 0, Camera",
+        },
+        {
+          def:"CashDisplayPlayer1, 0, 0, CashDisplay",
+          componentValues:["CashDisplayBehavior|player|1"]
+        },
+        {
+          def:"CashDisplayPlayer2, 0, 50, CashDisplay",
+          componentValues:["CashDisplayBehavior|player|2"]
         },
         {
           def: "PropertyBuilderGameObject, EmptyGameObject",
@@ -101,7 +113,7 @@ function positionToX(position) {
     return 10;
   }
   else if (position <= 30) {
-    return 10 - (position-20);
+    return 10 - (position - 20);
   }
   else {
     return 0;
@@ -125,17 +137,24 @@ function positionToY(position) {
 }
 
 let GameBehaviors = {
+  CashDisplayBehavior: class CashDisplayBehavior extends Base.Behavior {
+    update() {
+      let foundPlayer = Base.SceneManager.currentScene.findByName("Player" + this.player);
+      let cash = foundPlayer.getComponent("PlayerBehavior").cash;
+      this.gameObject.getComponent("TextComponent").text = this.player + " " + cash;
+    }
+  },
   PlayerBehavior: class PlayerBehavior extends Base.Behavior {
     start() {
       this.position = 0;
       this.cash = 1500;
-      this.player = 0;
+      this.gameObject.layer = "Foreground";
     }
     update() {
       let newX = positionToX(this.position);
       let newY = positionToY(this.position);
-      this.gameObject.x = (5-newX) * 50 + 25;
-      this.gameObject.y = (5-newY) * 50 + 25;
+      this.gameObject.x = (5 - newX) * 50 + 25 - this.player * 10;
+      this.gameObject.y = (5 - newY) * 50 + 40;
     }
   },
 
@@ -144,8 +163,8 @@ let GameBehaviors = {
       let size = 50;
       for (let i = 0; i < Board.length; i++) {
         let property = Board[i];
-        let x = (5-property.x) * size;
-        let y = (5-property.y) * size;
+        let x = (5 - property.x) * size;
+        let y = (5 - property.y) * size;
         let propertyGameObject = Base.SceneManager.instantiate(Base.Prefabs.Rectangle, new Base.Point(x + 25, y + 25), new Base.Point(.5, .5), 0);
         let fill = "magenta";
         switch (property.type) {
@@ -206,7 +225,7 @@ let GameBehaviors = {
           }
         }
       }
-  }
+    }
 
   }
 }
@@ -216,4 +235,11 @@ let Player = {
   components: ["CircleComponent|fill|black", "PlayerBehavior"]
 }
 
-Base.main({ Player }, GameBehaviors, Scenes);
+let CashDisplay = {
+  name: "CashDisplay",
+  components: ["TextComponent", "CashDisplayBehavior"]
+}
+
+
+let Prefabs = { Player, CashDisplay };
+Base.main(Prefabs, GameBehaviors, Scenes);
