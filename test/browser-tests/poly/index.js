@@ -202,31 +202,6 @@ let GameBehaviors = {
             titleObject.getComponent("TextComponent").fill = "white";
           }
         }
-        if(position <= 10){
-
-        }
-        else if(position <= 20){
-      
-        }
-        else if(position <= 30){
-      
-        }
-        else{
-          
-        }
-        if(position <= 10){
-
-        }
-        else if(position <= 20){
-      
-        }
-        else if(position <= 30){
-      
-        }
-        else{
-          
-        }
-
       }
   }
 
