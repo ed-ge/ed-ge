@@ -309,7 +309,7 @@ describe("Base", function () {
         expect(ctx.rotate).to.have.been.calledBefore(ctx.restore);
 
         expect(ctx.save).to.have.been.calledOnce;
-        expect(ctx.translate.getCall(0)).to.have.been.calledWith(0,0);
+        expect(ctx.translate.getCall(0)).to.have.been.calledWith(0, 0);
         expect(ctx.translate.getCall(1)).to.have.been.calledWith(0, 0);
         expect(ctx.scale).to.have.been.calledOnceWith(1, 1);
         expect(ctx.rotate).to.have.been.calledOnceWith(0);
@@ -325,13 +325,13 @@ describe("Base", function () {
         expect(ctx.rotate).to.have.been.calledBefore(ctx.restore);
 
         expect(ctx.save).to.have.been.calledOnce;
-        expect(ctx.translate.getCall(0)).to.have.been.calledWith(width,height);
+        expect(ctx.translate.getCall(0)).to.have.been.calledWith(width, height);
         expect(ctx.translate.getCall(1)).to.have.been.calledWith(0, 0);
         expect(ctx.scale).to.have.been.calledOnceWith(1, 1);
         expect(ctx.rotate).to.have.been.calledOnceWith(0);
         expect(ctx.restore).to.have.been.calledOnce;
       })
-     
+
     })
     describe("draw function", function () {
       let go = new GameObject();
@@ -451,6 +451,20 @@ describe("Base", function () {
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.serialize(1)).to.throw();
+      })
+    })
+    describe("onDestroy function", function () {
+      let go = new GameObject();
+      it("Throws an error on mismatched arguments", function () {
+        expect(() => go.onDestroy(1)).to.throw();
+      })
+      it("Calls on destroy on its components", function () {
+        let go = new GameObject();
+        let co = new Component();
+        co.onDestroy = sinon.fake();
+        go.addComponent(co);
+        go.onDestroy();
+        expect(co.onDestroy).to.have.been.calledOnce;
       })
     })
 

@@ -5,6 +5,7 @@
  * The Scene class and the GameObject class both descend from this class.
  */
 
+
 class NameableParent {
 
     /**
@@ -38,6 +39,7 @@ class NameableParent {
      */
 
     destroy(gameObject) {
+        if(arguments.length != 1 || !(gameObject instanceof NameableParent)) throw new Error("destroy takes exactly one argument of type NameableParent")
         let found = false;
         for (let i = 0; i < this.children.length && !found; i++) {
             let child = this.children[i];
@@ -66,6 +68,7 @@ class NameableParent {
     }
 
     addChild(child){
+        if(arguments.length != 1 || !(child instanceof NameableParent)) throw new Error("addChild requires exactly one argument of type NameableParent")
         if(!child || child.parent === undefined) throw  new Error("addChild requires one argument that have a parent member variable");
         if(this.children.includes(child)) return console.log("Warning: This parent already has that child. Child not added");
         this.children.push(child);
@@ -73,6 +76,7 @@ class NameableParent {
     }
 
     findByName(name){
+        if(arguments.length != 1 || !(typeof name == 'string' || name instanceof String)) throw new Error("findByName expects exactly one string argument.")
         if(this.name == name)
             return this;
         for(let child of this.children){
@@ -85,6 +89,8 @@ class NameableParent {
 
     /** Find a NameableParent by UUID */
     findByUUID(uuid){
+        if(arguments.length != 1 || !(typeof uuid == 'string' || uuid instanceof String)) throw new Error("findByUUID expects exactly one string argument.")
+         
       if(this.uuid == uuid)
             return this;
         for(let child of this.children){
@@ -99,6 +105,8 @@ class NameableParent {
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
      */
     uuidv4() {
+        if(arguments.length != 0) throw new Error("uuidv4 takes no arguments.")
+        
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
