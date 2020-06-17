@@ -275,7 +275,7 @@ var Base = (function () {
             this.anchorHorizontal = "center";
 
             /** Where the object will be anchored vertically */
-            this.anchorVertical = "middle ";
+            this.anchorVertical = "middle";
 
         }
 
@@ -301,7 +301,7 @@ var Base = (function () {
             return new Point(this.at(2,0), this.at(2,1));
         }
         set translation(point){
-            if(!point instanceof Point) throw new Error("You must set translation to be of type Point");
+            if(!(point instanceof Point)) throw new Error("You must set translation to be of type Point");
             this.set(2,0,point.x);
             this.set(2,1,point.y);
 
@@ -318,7 +318,7 @@ var Base = (function () {
 
         }
         set scale(point){
-            if(!point instanceof Point) throw new Error("You must set scale to be of type Point");
+            if(!(point instanceof Point)) throw new Error("You must set scale to be of type Point");
             //We first have to get the scale we currently have and reinsert the new one
             let t = this.translation;
             let r = this.rotation;
@@ -425,7 +425,7 @@ var Base = (function () {
 
         }
         multMatrix3(matrix) {
-            if (!matrix instanceof Matrix3 || arguments.length != 1) {
+            if (!(matrix instanceof Matrix3) || arguments.length != 1) {
                 throw new Error("multMatrix takes exactly one argument of type Matrix3.")
             }
 
@@ -610,14 +610,16 @@ var Base = (function () {
           let tx = 0; //Default to anchor left
           let ty = 0; //Default to anchor top
 
-          if (rectTransform.anchorHorizontal == "center")
+          if (rectTransform.anchorHorizontal.trim().toLowerCase() == "center")
             tx = width / 2;
-          else if (rectTransform.anchorHorizontal == "right")
+          else if (rectTransform.anchorHorizontal.trim().toLowerCase() == "right")
             tx = width;
-          if (rectTransform.anchorVertical == "middle")
+          if (rectTransform.anchorVertical.trim().toLowerCase() == "middle")
             ty = height / 2;
-          else if (rectTransform.anchorVertical == "bottom")
+          else if (rectTransform.anchorVertical.trim().toLowerCase() == "bottom")
             ty = height;
+
+            
 
           ctx.translate(tx, ty);
 

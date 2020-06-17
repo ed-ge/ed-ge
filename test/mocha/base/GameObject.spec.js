@@ -25,6 +25,9 @@ function once(fn) {
 }
 
 let gameObject;
+let ctx;
+let width = 100;
+let height = 100;
 class QuickComponent extends Component { constructor() { super() } }
 beforeEach(() => {
   gameObject = new GameObject(100, 200, 2, 2, Math.PI / 4)
@@ -49,6 +52,20 @@ beforeEach(() => {
 
   let grandchildComponent = new QuickComponent();
   grandChild.addComponent(grandchildComponent);
+
+  ctx = {
+    save: sinon.fake(),
+    translate: sinon.fake(),
+    scale: sinon.fake(),
+    rotate: sinon.fake(),
+    restore: sinon.fake(),
+    width: width,
+    height: height,
+    canvas: {
+      width: width,
+      height: height
+    }
+  }
 
 
 })
@@ -252,6 +269,7 @@ describe("Base", function () {
       let go = new GameObject();
       it("Throws an error on mismatched arguments", function () {
         expect(() => go.addComponent()).to.throw();
+        expect(() => go.addComponent(1)).to.throw();
         expect(() => go.addComponent(1, 2)).to.throw();
       })
       it("Adds a component", function () {
@@ -262,6 +280,58 @@ describe("Base", function () {
         expect(go.components[0]).to.equal(co);
       })
 
+    })
+    describe("draw function with RectTransform", function () {
+      let go = new GameObject();
+      let component = new Base.Components.RectTransform();
+      go.addComponent(component);
+      it("Mock draws with default anchors", function () {
+        go.draw(ctx);
+        expect(ctx.save).to.have.been.calledBefore(ctx.translate);
+        expect(ctx.translate).to.have.been.calledBefore(ctx.scale);
+        expect(ctx.scale).to.have.been.calledBefore(ctx.rotate);
+        expect(ctx.rotate).to.have.been.calledBefore(ctx.restore);
+
+        expect(ctx.save).to.have.been.calledOnce;
+        expect(ctx.translate.getCall(0)).to.have.been.calledWith(width / 2, height / 2);
+        expect(ctx.translate.getCall(1)).to.have.been.calledWith(0, 0);
+        expect(ctx.scale).to.have.been.calledOnceWith(1, 1);
+        expect(ctx.rotate).to.have.been.calledOnceWith(0);
+        expect(ctx.restore).to.have.been.calledOnce;
+      })
+      it("Mock draws on a top left anchors", function () {
+        go.getComponent("RectTransform").anchorHorizontal = "left";
+        go.getComponent("RectTransform").anchorVertical = "top";
+        go.draw(ctx);
+        expect(ctx.save).to.have.been.calledBefore(ctx.translate);
+        expect(ctx.translate).to.have.been.calledBefore(ctx.scale);
+        expect(ctx.scale).to.have.been.calledBefore(ctx.rotate);
+        expect(ctx.rotate).to.have.been.calledBefore(ctx.restore);
+
+        expect(ctx.save).to.have.been.calledOnce;
+        expect(ctx.translate.getCall(0)).to.have.been.calledWith(0,0);
+        expect(ctx.translate.getCall(1)).to.have.been.calledWith(0, 0);
+        expect(ctx.scale).to.have.been.calledOnceWith(1, 1);
+        expect(ctx.rotate).to.have.been.calledOnceWith(0);
+        expect(ctx.restore).to.have.been.calledOnce;
+      })
+      it("Mock draws on a bottom right anchors", function () {
+        go.getComponent("RectTransform").anchorHorizontal = "right";
+        go.getComponent("RectTransform").anchorVertical = "bottom";
+        go.draw(ctx);
+        expect(ctx.save).to.have.been.calledBefore(ctx.translate);
+        expect(ctx.translate).to.have.been.calledBefore(ctx.scale);
+        expect(ctx.scale).to.have.been.calledBefore(ctx.rotate);
+        expect(ctx.rotate).to.have.been.calledBefore(ctx.restore);
+
+        expect(ctx.save).to.have.been.calledOnce;
+        expect(ctx.translate.getCall(0)).to.have.been.calledWith(width,height);
+        expect(ctx.translate.getCall(1)).to.have.been.calledWith(0, 0);
+        expect(ctx.scale).to.have.been.calledOnceWith(1, 1);
+        expect(ctx.rotate).to.have.been.calledOnceWith(0);
+        expect(ctx.restore).to.have.been.calledOnce;
+      })
+     
     })
     describe("draw function", function () {
       let go = new GameObject();
@@ -326,10 +396,11 @@ describe("Base", function () {
         expect(() => go.getComponent(1, 2)).to.throw();
       })
       it("Throws an error on not-found string search", function () {
-        expect(()=>gameObject.getComponent("Missing")).to.throw();
+        expect(() => gameObject.getComponent("Missing")).to.throw();
       })
       it("Throws an error on not-found type search", function () {
-        expect(()=>gameObject.getComponent(Base.Point)).to.throw();
+        expect(() => gameObject.getComponent(Base.Point)).to.throw();
+        expect(() => gameObject.getComponent(new Component)).to.throw();
       })
       it("Finds a component using a string", function () {
         let co = gameObject.getComponent("QuickComponent")
