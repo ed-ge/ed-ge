@@ -26,6 +26,8 @@ class Scene extends NameableParent {
     this.prefabs = prefabs;
     this.behaviors = behaviors;
     this.components = components;
+
+    this.layers = ["background", null, "foreground"];
   }
 
 
@@ -201,7 +203,10 @@ class Scene extends NameableParent {
     ctx.translate(-tx, -ty)
 
     //Draw children that are not in screen space
-    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent")).forEach(i => i.draw(ctx));
+    //Sort them by layer
+    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Background").forEach(i => i.draw(ctx));
+    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && !i.layer).forEach(i => i.draw(ctx));
+    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Foreground").forEach(i => i.draw(ctx));
 
     ctx.restore();
 
