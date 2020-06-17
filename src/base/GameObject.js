@@ -252,6 +252,15 @@ class GameObject extends NameableParent {
     if(arguments.length != 0) throw new Error("seralize expects no arguments")
     
   }
+
+  onDestroy(){
+    if(arguments.length != 0) throw new Error("onDestroy expects no arguments");
+    for(let component of this.components){
+      if(component.onDestroy)
+        component.onDestroy();
+    }
+
+  }
 }
 
 export default GameObject;

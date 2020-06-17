@@ -1,6 +1,9 @@
 
 import chai from "chai";
 const expect = chai.expect;
+import sinon from "sinon"
+import sinonChai from "sinon-chai"
+chai.use(sinonChai);
 
 import Base from "../../../src/Base.js"
 import Scenes from "../../game/Scenes.js"
@@ -8,6 +11,7 @@ import GameObjects from "../../game/GameObjects.js"
 import GameBehaviors from "../../game/GameBehaviors.js"
 import NameableParent from "../../../src/base/NamableParent.js";
 import GameObject from "../../../src/base/GameObject.js";
+import Component from "../../../src/base/Component.js";
 
 describe("Base", function () {
   describe("NamableParent.js", function () {
@@ -25,6 +29,15 @@ describe("Base", function () {
       })
     })
     describe("addChild method", function(){
+      it("Throws an error on mismatched arguments", function () {
+        let np = new NameableParent();
+        let go = new GameObject();
+        delete go.parent;
+        expect(()=>np.addChild()).to.throw();
+        expect(()=>np.addChild(1)).to.throw();
+        expect(()=>np.addChild(go)).to.throw();
+        expect(()=>np.addChild(go,1)).to.throw();
+      })
       it("Has an addChild method", function(){
         expect(new NameableParent()).to.respondTo("addChild");
       })
@@ -53,6 +66,13 @@ describe("Base", function () {
       })
     })
     describe("destroy method", function(){
+      it("Throws an error on mismatched arguments", function () {
+        let np = new NameableParent();
+        let go = new GameObject();
+        expect(()=>np.destroy()).to.throw();
+        expect(()=>np.destroy(1)).to.throw();
+        expect(()=>np.destroy(go,1)).to.throw();
+      })
       it("Destroys an object at the root", function(){
         let np = new NameableParent();
         let go = new GameObject();
@@ -60,6 +80,16 @@ describe("Base", function () {
         expect(np.children).to.be.of.length(1).and.include(go);
         np.destroy(go);
         expect(np.children).to.be.empty;
+      })
+      it("Destroys and calls onDestroy", function(){
+        let np = new NameableParent();
+        let go = new GameObject();
+        let co = new Component();
+        co.onDestroy = sinon.fake();
+        go.addComponent(co);
+        np.addChild(go);
+        np.destroy(go);
+        expect(co.onDestroy).to.have.been.calledOnce;
       })
       it("Destroys an object deeper than the root", function(){
         let np = new NameableParent();
@@ -88,6 +118,12 @@ describe("Base", function () {
       })
     })
     describe("findByName method", function(){
+      it("Throws an error on mismatched arguments", function () {
+        let np = new NameableParent();
+        expect(()=>np.findByName()).to.throw();
+        expect(()=>np.findByName(1)).to.throw();
+        expect(()=>np.findByName("hello",1)).to.throw();
+      })
       it("Finds an immediate ancestor by name", function(){
         let np = new NameableParent();
         let go = new GameObject();
@@ -119,6 +155,12 @@ describe("Base", function () {
       
     })
     describe("findByUUID", function(){
+      it("Throws an error on mismatched arguments", function () {
+        let np = new NameableParent();
+        expect(()=>np.findByUUID()).to.throw();
+        expect(()=>np.findByUUID(1)).to.throw();
+        expect(()=>np.findByUUID("hello",1)).to.throw();
+      })
       it("Finds the root object by uuid", function(){
         let np = new NameableParent();
         let uuid = np.uuid;
@@ -153,6 +195,10 @@ describe("Base", function () {
 
     })
     describe("uuidv4", function(){
+      it("Throws an error on mismatched arguments", function () {
+        let np = new NameableParent();
+        expect(()=>np.uuidv4(1)).to.throw();
+      })
       it("Has an uuidv4 method", function(){
         expect(new NameableParent()).to.respondTo("uuidv4");
       })
