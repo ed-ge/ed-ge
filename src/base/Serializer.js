@@ -47,6 +47,7 @@ class Serializer {
   }
   deserializeGameObject(obj, parent = null) {
 
+    if(obj.new) obj.def = obj.new; //Let new be shorthand for def
     if (obj.def) {
       obj.location = { x: 0, y: 0 };
       obj.scale = { x: 1, y: 1 };
@@ -130,6 +131,7 @@ class Serializer {
     }
 
     //Set the key-pair values on components already on prefabs
+    if(obj.edit) obj.componentValues = obj.edit; //let edit be shorthand for componentValues
     if (obj.componentValues) {
       obj.componentValues.forEach(j => {
         let split = j.split("|").map(i => i.trim());
@@ -145,6 +147,7 @@ class Serializer {
     }
 
     //Add new components
+    if(obj.add) obj.components = obj.add; //let add be shorthand for components
     if (obj.components) {
       obj.components.forEach(i => {
         if (!i.split) {
@@ -177,6 +180,7 @@ class Serializer {
    */
   buildChild(obj, parent) {
 
+    if(obj.new) obj.def = obj.new; //Add new as a shorthand for def
     if (obj.def) {
       obj.location = { x: 0, y: 0 };
       obj.scale = { x: 1, y: 1 };

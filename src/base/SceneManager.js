@@ -1,4 +1,6 @@
 import Scene from "./Scene.js"
+import GameObject from "./GameObject.js"
+import Point from "./Point.js"
 // import Globals from "./Globals.js"
 
 const SceneManager = {
@@ -30,18 +32,32 @@ const SceneManager = {
     this.scenes[this._currentSceneIndex].boot();
   },
   clearScenes() {
+    if (arguments.length != 0) throw new Error("clearScenes does not take any arguments.")
     this.scenes = [];
-    this.currentSceneIndex = -1;
+    this._currentSceneIndex = -1;
   },
 
   addScene(scene) {
-    this.scenes.push(scene);
+    if (arguments.length != 1 || !(scene instanceof Scene)) throw new Error("addScene expects one argument of type scene")
+
+    if (!this.scenes.includes(scene))
+      this.scenes.push(scene);
   },
 
   destroy(gameObject) {
+    if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("destroy expects one argument of type GameObject")
+
     this.currentScene.destroy(gameObject);
   },
   instantiate(gameObjectType, location, scale, rotation) {
+    if (arguments.length != 4 ||
+      !(typeof gameObjectType == "string") ||
+      !(location instanceof Point) ||
+      !(scale instanceof Point) ||
+      !(typeof rotation == "number")
+
+    ) throw new Error("SceneManager.instantiate expects four arguments of type string, Base.Point, Base.Point, and float")
+
     return this.Base.Serializer.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
     // return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
   }

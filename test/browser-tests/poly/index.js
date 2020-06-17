@@ -75,46 +75,46 @@ let Scenes = {
       name: "StartScene",
       objects: [
         {
-          def: "Camera, 0, 0, Camera",
+          new: "Camera, 0, 0, Camera",
         },
         {
-          def: "GameController"
+          new: "GameController"
         },
         {
-          def: "CashDisplayPlayer1, 0, -50, CashDisplay",
-          componentValues: ["CashDisplayBehavior|player|1"]
+          new: "CashDisplayPlayer1, 0, -50, CashDisplay",
+          edit: ["CashDisplayBehavior|player|1"]
         },
         {
-          def: "CashDisplayPlayer2, 0, 0, CashDisplay",
-          componentValues: ["CashDisplayBehavior|player|2"]
+          new: "CashDisplayPlayer2, 0, 0, CashDisplay",
+          edit: ["CashDisplayBehavior|player|2"]
         },
         {
-          def:"StatusText, 0, 50, .5, .5, Text",
-          components:["StatusTextBehavior"]
+          new:"StatusText, 0, 50, .5, .5, Text",
+          add:["StatusTextBehavior"]
         },
         {
-          def:"RollButton, 0, 100, Button",
-          components:["RollButtonBehavior"]
+          new:"RollButton, 0, 100, Button",
+          add:["RollButtonBehavior"]
         },
         {
-          def:"Dice, 0, 150, Text",
-          components:["DiceBehavior"],
+          new:"Dice, 0, 150, Text",
+          add:["DiceBehavior"],
         },
         {
-          def:"EndTurnButton, 0, 200, Button",
-          components:["EndTurnButtonBehavior"],
+          new:"EndTurnButton, 0, 200, Button",
+          add:["EndTurnButtonBehavior"],
         },
         {
-          def: "PropertyBuilderGameObject, EmptyGameObject",
-          components: ["PropertyBuilder"]
+          new: "PropertyBuilderGameObject, EmptyGameObject",
+          add: ["PropertyBuilder"]
         },
         {
-          def: "Player1, 100, 100, .1, .1, Player",
-          componentValues: ["PlayerBehavior|player|0", "CircleComponent|fill|blue"]
+          new: "Player1, 100, 100, .1, .1, Player",
+          edit: ["PlayerBehavior|player|0", "CircleComponent|fill|blue"]
         },
         {
-          def: "Player2, 100, 100, .1, .1, Player",
-          componentValues: ["PlayerBehavior|player|1", "CircleComponent|fill|red"]
+          new: "Player2, 100, 100, .1, .1, Player",
+          edit: ["PlayerBehavior|player|1", "CircleComponent|fill|red"]
         },
 
 
@@ -173,7 +173,7 @@ let GameBehaviors = {
       this.roll = this.die1 + this.die2;
     }
     endTurnEvent(){
-      
+
     }
 
   },

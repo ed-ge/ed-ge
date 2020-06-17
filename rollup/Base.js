@@ -970,6 +970,7 @@ class PointCollider extends Collider {
 
 }
 
+/* c8 ignore next 1000 */
 function Vector2(x, y) {
     this.x = x;
     this.y = y;
@@ -1058,7 +1059,7 @@ RVOMath.leftOf = function(a, b, c) {
 	return RVOMath.det(a.minus(c), b.minus(a));
 };
 
-///From https://github.com/palmerabollo/rvo2-js/tree/master/lib
+/* c8 ignore next 1000 */
 
 
 function KdTree() {
@@ -1458,6 +1459,8 @@ function KdTree() {
         }
     };
 }
+
+/* c8 ignore next 1000 */
 
 function Agent() {
     this.agentNeighbors = []; //  new List<KeyValuePair<float, Agent>>();
@@ -2001,6 +2004,8 @@ function Agent() {
         }
     };
 }
+
+/* c8 ignore next 1000 */
 
 function Simulator() {
   this.agents = []; // Agent[]
@@ -2746,18 +2751,32 @@ const SceneManager = {
     this.scenes[this._currentSceneIndex].boot();
   },
   clearScenes() {
+    if (arguments.length != 0) throw new Error("clearScenes does not take any arguments.")
     this.scenes = [];
-    this.currentSceneIndex = -1;
+    this._currentSceneIndex = -1;
   },
 
   addScene(scene) {
-    this.scenes.push(scene);
+    if (arguments.length != 1 || !(scene instanceof Scene)) throw new Error("addScene expects one argument of type scene")
+
+    if (!this.scenes.includes(scene))
+      this.scenes.push(scene);
   },
 
   destroy(gameObject) {
+    if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("destroy expects one argument of type GameObject")
+
     this.currentScene.destroy(gameObject);
   },
   instantiate(gameObjectType, location, scale, rotation) {
+    if (arguments.length != 4 ||
+      !(typeof gameObjectType == "string") ||
+      !(location instanceof Point) ||
+      !(scale instanceof Point) ||
+      !(typeof rotation == "number")
+
+    ) throw new Error("SceneManager.instantiate expects four arguments of type string, Base.Point, Base.Point, and float")
+
     return this.Base.Serializer.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
     // return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
   }
@@ -2811,6 +2830,7 @@ class Serializer {
   }
   deserializeGameObject(obj, parent = null) {
 
+    if(obj.new) obj.def = obj.new; //Let new be shorthand for def
     if (obj.def) {
       obj.location = { x: 0, y: 0 };
       obj.scale = { x: 1, y: 1 };
@@ -2894,6 +2914,7 @@ class Serializer {
     }
 
     //Set the key-pair values on components already on prefabs
+    if(obj.edit) obj.componentValues = obj.edit; //let edit be shorthand for componentValues
     if (obj.componentValues) {
       obj.componentValues.forEach(j => {
         let split = j.split("|").map(i => i.trim());
@@ -2909,6 +2930,7 @@ class Serializer {
     }
 
     //Add new components
+    if(obj.add) obj.components = obj.add; //let add be shorthand for components
     if (obj.components) {
       obj.components.forEach(i => {
         if (!i.split) {
@@ -2941,6 +2963,7 @@ class Serializer {
    */
   buildChild(obj, parent) {
 
+    if(obj.new) obj.def = obj.new; //Add new as a shorthand for def
     if (obj.def) {
       obj.location = { x: 0, y: 0 };
       obj.scale = { x: 1, y: 1 };
