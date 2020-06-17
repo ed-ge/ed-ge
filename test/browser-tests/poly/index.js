@@ -72,6 +72,9 @@ let Scenes = {
       name: "StartScene",
       objects: [
         {
+          def:"Camera, 0, 0, Camera",
+        },
+        {
           def: "PropertyBuilderGameObject, EmptyGameObject",
           components: ["PropertyBuilder"]
         },
@@ -131,8 +134,8 @@ let GameBehaviors = {
     update() {
       let newX = positionToX(this.position);
       let newY = positionToY(this.position);
-      this.gameObject.x = newX * 50 + 25;
-      this.gameObject.y = newY * 50 + 25;
+      this.gameObject.x = (5-newX) * 50 + 25;
+      this.gameObject.y = (5-newY) * 50 + 25;
     }
   },
 
@@ -141,8 +144,8 @@ let GameBehaviors = {
       let size = 50;
       for (let i = 0; i < Board.length; i++) {
         let property = Board[i];
-        let x = property.x * size;
-        let y = property.y * size;
+        let x = (5-property.x) * size;
+        let y = (5-property.y) * size;
         let propertyGameObject = Base.SceneManager.instantiate(Base.Prefabs.Rectangle, new Base.Point(x + 25, y + 25), new Base.Point(.5, .5), 0);
         let fill = "magenta";
         switch (property.type) {
