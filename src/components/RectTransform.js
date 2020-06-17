@@ -14,7 +14,7 @@ class RectTransform extends Component {
         this.anchorHorizontal = "center";
 
         /** Where the object will be anchored vertically */
-        this.anchorVertical = "middle ";
+        this.anchorVertical = "middle";
 
     }
 

@@ -153,14 +153,16 @@ class GameObject extends NameableParent {
       let tx = 0; //Default to anchor left
       let ty = 0; //Default to anchor top
 
-      if (rectTransform.anchorHorizontal == "center")
+      if (rectTransform.anchorHorizontal.trim().toLowerCase() == "center")
         tx = width / 2;
-      else if (rectTransform.anchorHorizontal == "right")
+      else if (rectTransform.anchorHorizontal.trim().toLowerCase() == "right")
         tx = width;
-      if (rectTransform.anchorVertical == "middle")
+      if (rectTransform.anchorVertical.trim().toLowerCase() == "middle")
         ty = height / 2;
-      else if (rectTransform.anchorVertical == "bottom")
+      else if (rectTransform.anchorVertical.trim().toLowerCase() == "bottom")
         ty = height;
+
+        
 
       ctx.translate(tx, ty);
 

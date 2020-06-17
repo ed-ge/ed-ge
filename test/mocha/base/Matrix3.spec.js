@@ -244,10 +244,10 @@ describe("Base", function () {
             })
             it("Throws an error on mismatched arguments", function () {
                 let m = new Matrix3();
-                expect(()=>m.multPoint()).to.throw();
-                expect(()=>m.multPoint(1)).to.throw();
-                expect(()=>m.multPoint(new Point(0,0))).to.throw();
-                expect(()=>m.multPoint(new Point(0,0), new Matrix3())).to.throw();
+                expect(()=>m.multMatrix3()).to.throw();
+                expect(()=>m.multMatrix3(1)).to.throw();
+                expect(()=>m.multMatrix3(new Point(0,0))).to.throw();
+                expect(()=>m.multMatrix3(new Point(0,0), new Matrix3())).to.throw();
             })
 
         })

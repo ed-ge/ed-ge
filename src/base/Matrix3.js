@@ -17,7 +17,7 @@ class Matrix3 {
         return new Point(this.at(2,0), this.at(2,1));
     }
     set translation(point){
-        if(!point instanceof Point) throw new Error("You must set translation to be of type Point");
+        if(!(point instanceof Point)) throw new Error("You must set translation to be of type Point");
         this.set(2,0,point.x);
         this.set(2,1,point.y);
 
@@ -34,7 +34,7 @@ class Matrix3 {
 
     }
     set scale(point){
-        if(!point instanceof Point) throw new Error("You must set scale to be of type Point");
+        if(!(point instanceof Point)) throw new Error("You must set scale to be of type Point");
         //We first have to get the scale we currently have and reinsert the new one
         let t = this.translation;
         let r = this.rotation;
@@ -141,7 +141,7 @@ class Matrix3 {
 
     }
     multMatrix3(matrix) {
-        if (!matrix instanceof Matrix3 || arguments.length != 1) {
+        if (!(matrix instanceof Matrix3) || arguments.length != 1) {
             throw new Error("multMatrix takes exactly one argument of type Matrix3.")
         }
 
