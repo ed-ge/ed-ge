@@ -1,5 +1,4 @@
 import Base from "../../../src/Base.js"
-import Scene from "../../../src/base/Scene.js"
 
 let Board = [
 
@@ -79,12 +78,31 @@ let Scenes = {
           def: "Camera, 0, 0, Camera",
         },
         {
-          def:"CashDisplayPlayer1, 0, 0, CashDisplay",
-          componentValues:["CashDisplayBehavior|player|1"]
+          def: "GameController"
         },
         {
-          def:"CashDisplayPlayer2, 0, 50, CashDisplay",
-          componentValues:["CashDisplayBehavior|player|2"]
+          def: "CashDisplayPlayer1, 0, -50, CashDisplay",
+          componentValues: ["CashDisplayBehavior|player|1"]
+        },
+        {
+          def: "CashDisplayPlayer2, 0, 0, CashDisplay",
+          componentValues: ["CashDisplayBehavior|player|2"]
+        },
+        {
+          def:"StatusText, 0, 50, .5, .5, Text",
+          components:["StatusTextBehavior"]
+        },
+        {
+          def:"RollButton, 0, 100, Button",
+          components:["RollButtonBehavior"]
+        },
+        {
+          def:"Dice, 0, 150, Text",
+          components:["DiceBehavior"],
+        },
+        {
+          def:"EndTurnButton, 0, 200, Button",
+          components:["EndTurnButtonBehavior"],
         },
         {
           def: "PropertyBuilderGameObject, EmptyGameObject",
@@ -137,6 +155,84 @@ function positionToY(position) {
 }
 
 let GameBehaviors = {
+  GameControllerBehavior: class GameControllerBehavior extends Base.Behavior {
+    start() {
+      this.numPlayers = 2;
+      this.currentPlayer = 1;
+      this.die1 = 0;
+      this.die2 = 0;
+      this.roll = 0;
+
+    }
+    update() {
+
+    }
+    rollDiceEvent(){
+      this.die1 = Math.ceil(Math.random() * 6);
+      this.die2 = Math.ceil(Math.random() * 6);
+      this.roll = this.die1 + this.die2;
+    }
+    endTurnEvent(){
+      
+    }
+
+  },
+  DiceBehavior: class DiceBehavior extends Base.Behavior{
+    start(){
+      this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
+    }
+    update(){
+      let die1 = this.gameController.die1;
+      let die2 = this.gameController.die2;
+      this.gameObject.getComponent("TextComponent").text = `${die1} ${die2}`;
+    }
+    
+  },
+  EndTurnButtonBehavior : class EndTurnButtonBehavior extends Base.Behavior{
+    start(){
+      this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
+      
+      this.textChild = this.gameObject.findByName("Text");
+      this.textComponent = this.textChild.getComponent("TextComponent");
+      this.textComponent.text = "End Turn";
+
+    }
+    onMouseDown(){
+      this.gameController.endTurnEvent();
+    }
+  },
+  RollButtonBehavior: class RollButtonBehavior extends Base.Behavior{
+    start(){
+      this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
+      
+      this.textChild = this.gameObject.findByName("Text");
+      this.textComponent = this.textChild.getComponent("TextComponent");
+      this.textComponent.text = "Roll";
+      
+    }
+    onMouseDown(){
+      this.gameController.rollDiceEvent();
+    }
+    update(){
+
+    }
+  },
+  StatusTextBehavior: class StatusTextBehavior extends Base.Behavior {
+    start() {
+      this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
+      this.textComponent = this.gameObject.getComponent("TextComponent");
+      this.players = {};
+      for(let i = 1; i <= this.gameController.numPlayers; i++){
+        this.players[i] = Base.SceneManager.currentScene.findByName("Player" + i).getComponent("PlayerBehavior");
+      }
+    }
+    update() {
+      let currentPlayer = this.gameController.currentPlayer;
+      this.textComponent.text = "Player " + currentPlayer + "'s Turn, " + this.players[currentPlayer].rolledTimes + " rolls";
+
+
+    }
+  },
   CashDisplayBehavior: class CashDisplayBehavior extends Base.Behavior {
     update() {
       let foundPlayer = Base.SceneManager.currentScene.findByName("Player" + this.player);
@@ -148,6 +244,8 @@ let GameBehaviors = {
     start() {
       this.position = 0;
       this.cash = 1500;
+      this.rolledTimes = 0;
+      this.turnsInJail = 0;
       this.gameObject.layer = "Foreground";
     }
     update() {
@@ -240,6 +338,22 @@ let CashDisplay = {
   components: ["TextComponent", "CashDisplayBehavior"]
 }
 
+let GameController = {
+  name: "GameController",
+  components: ["GameControllerBehavior"]
+}
 
-let Prefabs = { Player, CashDisplay };
+let Button = {
+  name:"Button",
+  components:["RectangleComponent|width|50|height|20", "AABBCollider|width|50|height|20"],
+  children:[
+    {
+      def:"Text, -25, 0, Text",
+      componentValues:["TextComponent|text|Button","TextComponent|font|10pt Times"]
+    }
+  ]
+}
+
+
+let Prefabs = { Player, CashDisplay, GameController, Button };
 Base.main(Prefabs, GameBehaviors, Scenes);
