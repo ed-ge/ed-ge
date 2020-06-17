@@ -4,9 +4,9 @@
     "type": "module",
     "description": "The EDucational Game Engine, built with babel.",
     "scripts": {
-        "test": "./node_modules/.bin/coverage --reporter=text-summary ./node_modules/.bin/mocha ./test/mocha/**/*.js",
+        "test": "./node_modules/.bin/coverage --reporter=text-summary -x ./lib mocha ./test/mocha/**/*.js",
         "testit": "./node_modules/.bin/mocha ./test/mocha/**/*.js",
-        "cover": "./node_modules/.bin/coverage ./node_modules/.bin/mocha ./test/mocha/**/*.js",
+        "cover": "./node_modules/.bin/coverage -x ./lib mocha ./test/mocha/**/*.js",
         "rollup": "./node_modules/rollup/dist/bin/rollup src/Base.js --file ./rollup/Base.js --format es --name 'Base'",
         "rollupWatch": "./node_modules/rollup/dist/bin/rollup src/Base.js --file ./rollup/Base.js --format es --name 'Base' -w",
         "free": "rollup src/Base.js --file ./free/Base.js --format iife --name 'Base'",

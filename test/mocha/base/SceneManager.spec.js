@@ -5,6 +5,7 @@ import Base from "../../../src/Base.js"
 import Scenes from "../../game/Scenes.js"
 import GameObjects from "../../game/GameObjects.js"
 import GameBehaviors from "../../game/GameBehaviors.js"
+import GameObject from "../../../src/base/GameObject.js";
 
 beforeEach(function () {
   Base.SceneManager.Base = Base;
@@ -84,6 +85,74 @@ describe("Base", function () {
         expect(afterLength).to.equal(0);
         expect(afterIndex).to.equal(-1);
         expect(()=>sceneManager.currentScene).to.throw();
+      })
+    })
+    describe("addScene function", function(){
+      it("Throws an error on mismatched arguments", function () {
+        expect(()=>sceneManager.addScene()).to.throw();
+        expect(()=>sceneManager.addScene(1)).to.throw();
+        expect(()=>sceneManager.addScene(1,2)).to.throw();
+      })
+      it("Does not add duplicate scenes", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let beforeLength = sceneManager.scenes.length;
+        sceneManager.addScene(sceneManager.scenes[0]);
+        let afterLength = sceneManager.scenes.length;
+        expect(beforeLength).to.equal(afterLength);
+      })
+      it("Adds a scene to the scenes", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let AScene = sceneManager.scenes[0];
+        sceneManager.clearScenes();
+        let beforeLength = sceneManager.scenes.length;
+        sceneManager.addScene(AScene);
+        let afterLength = sceneManager.scenes.length;
+        expect(beforeLength).to.equal(0);
+        expect(afterLength).to.equal(1);
+      })
+    })
+    describe("destroy function", function(){
+      it("Throws an error on mismatched arguments", function () {
+        expect(()=>sceneManager.destroy()).to.throw();
+        expect(()=>sceneManager.destroy(1)).to.throw();
+        expect(()=>sceneManager.destroy(1,2)).to.throw();
+      })
+      it("Destroys a game object", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let AScene = sceneManager.currentScene;
+        let beforeCountRootObjects = AScene.children.length;
+        expect(beforeCountRootObjects).to.equal(3);
+        let gameObject = AScene.children[0];
+        sceneManager.destroy(gameObject);
+        let afterCountRootObjects = AScene.children.length;
+        expect(afterCountRootObjects).to.equal(2);
+        gameObject = AScene.children[0];
+        sceneManager.destroy(gameObject);
+        afterCountRootObjects = AScene.children.length;
+        expect(afterCountRootObjects).to.equal(1);
+        gameObject = AScene.children[0];
+        sceneManager.destroy(gameObject);
+        afterCountRootObjects = AScene.children.length;
+        expect(afterCountRootObjects).to.equal(0);
+      })
+      it("Doesn't destroy a non-existant game object", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let AScene = sceneManager.currentScene;
+        let beforeCountRootObjects = AScene.children.length;
+        expect(beforeCountRootObjects).to.equal(3);
+        sceneManager.destroy(new GameObject());
+        let afterCountRootObjects = AScene.children.length;
+        expect(afterCountRootObjects).to.equal(3);
+        
+      })
+    })
+    describe("instantiate function", function(){
+      it("Throws an error on mismatched arguments", function () {
+        expect(()=>sceneManager.instantiate()).to.throw();
+        expect(()=>sceneManager.instantiate(1)).to.throw();
+        expect(()=>sceneManager.instantiate(1,2)).to.throw();
+        expect(()=>sceneManager.instantiate(1,2,3)).to.throw();
+        expect(()=>sceneManager.instantiate(1,2,3,4,5)).to.throw();
       })
     })
   })
