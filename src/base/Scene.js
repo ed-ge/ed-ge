@@ -20,13 +20,14 @@ class Scene extends NameableParent {
    * @param {String} name Name of this scene
    */
   constructor(definition, prefabs, behaviors, components) {
-    if( !arguments.length == 4||
+    if( !(arguments.length == 4)||
         !(typeof definition == 'object') ||
         !(typeof prefabs == 'object') ||
         !(typeof behaviors == 'object')||
         !(typeof components == 'object')
       ) 
-      console.error("Scene constructor expects exactly four argumens of type object")
+      throw new Error("Scene constructor expects 4 argumens.")
+      // console.error("Scene constructor expects exactly four argumens of type object")
     super(definition.name);
     this.children = [];
     this.objects = definition.objects;
