@@ -51,14 +51,14 @@ const SceneManager = {
   },
   instantiate(gameObjectType, location, scale, rotation) {
     if (arguments.length != 4 ||
-      !(typeof gameObjectType == "string") ||
+      !(typeof gameObjectType == "object") ||
       !(location instanceof Point) ||
       !(scale instanceof Point) ||
       !(typeof rotation == "number")
 
     ) throw new Error("SceneManager.instantiate expects four arguments of type string, Base.Point, Base.Point, and float")
 
-    return this.Base.Serializer.instantiate({name:gameObjectType}, location, scale, rotation, this.currentScene);
+    return this.Base.Serializer.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
     // return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
   }
 

@@ -176,7 +176,7 @@ class Scene extends NameableParent {
 
   draw(ctx, width, height) {
     if(arguments.length != 3 || 
-      !(typeof ctx != 'object') ||
+      !(typeof ctx == 'object') ||
       !(typeof width == 'number') ||
       !(typeof height == 'number')) throw new Error("draw expects exactly three arguments of type object, number, and number")
     
@@ -247,9 +247,9 @@ class Scene extends NameableParent {
   }
   update(ctx, collidableType, collisionHelper) {
     if(arguments.length != 3 || 
-      !(typeof ctx != 'object') ||
-      !(typeof width == 'object') ||
-      !(collisionHelper instanceof CollisionHelper)) throw new Error("update expects exactly three arguments of type object, object, and CollisionHelper")
+      !(typeof ctx == 'object') ||
+      !(typeof collidableType == 'function') ||
+      !(typeof collisionHelper == 'object')) throw new Error("update expects exactly three arguments of type object, object, and CollisionHelper")
     
     //Update all the objects
     this.children.filter(i => i.update).forEach(i => i.update());
@@ -441,9 +441,9 @@ class Scene extends NameableParent {
   }
   getCollidable(gameObject, collidableChildren, type) {
     if(arguments.length != 3 || 
-      !(ctx instanceof GameObject) ||
+      !(typeof gameObject == 'object') ||
       !(Array.isArray(collidableChildren)) ||
-      !(typeof type == 'object')) throw new Error("getCollidable expects exactly three arguments of type GameObject, array, and type")
+      !(typeof type == 'function')) throw new Error("getCollidable expects exactly three arguments of type GameObject, array, and type")
     
 
     if (gameObject.getComponent) {

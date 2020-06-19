@@ -63,7 +63,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
       draw(ctx);
   }
 
-  function update() {
+  function update(ctx) {
     that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
   }
 

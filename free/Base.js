@@ -2522,7 +2522,7 @@ var Base = (function () {
 
       draw(ctx, width, height) {
         if(arguments.length != 3 || 
-          !(typeof ctx != 'object') ||
+          !(typeof ctx == 'object') ||
           !(typeof width == 'number') ||
           !(typeof height == 'number')) throw new Error("draw expects exactly three arguments of type object, number, and number")
         
@@ -2590,9 +2590,9 @@ var Base = (function () {
       }
       update(ctx, collidableType, collisionHelper) {
         if(arguments.length != 3 || 
-          !(typeof ctx != 'object') ||
-          !(typeof width == 'object') ||
-          !(collisionHelper instanceof CollisionHelper)) throw new Error("update expects exactly three arguments of type object, object, and CollisionHelper")
+          !(typeof ctx == 'object') ||
+          !(typeof collidableType == 'function') ||
+          !(typeof collisionHelper == 'object')) throw new Error("update expects exactly three arguments of type object, object, and CollisionHelper")
         
         //Update all the objects
         this.children.filter(i => i.update).forEach(i => i.update());
@@ -2782,9 +2782,9 @@ var Base = (function () {
       }
       getCollidable(gameObject, collidableChildren, type) {
         if(arguments.length != 3 || 
-          !(ctx instanceof GameObject) ||
+          !(typeof gameObject == 'object') ||
           !(Array.isArray(collidableChildren)) ||
-          !(typeof type == 'object')) throw new Error("getCollidable expects exactly three arguments of type GameObject, array, and type")
+          !(typeof type == 'function')) throw new Error("getCollidable expects exactly three arguments of type GameObject, array, and type")
         
 
         if (gameObject.getComponent) {
@@ -2966,14 +2966,14 @@ var Base = (function () {
       },
       instantiate(gameObjectType, location, scale, rotation) {
         if (arguments.length != 4 ||
-          !(typeof gameObjectType == "string") ||
+          !(typeof gameObjectType == "object") ||
           !(location instanceof Point$1) ||
           !(scale instanceof Point$1) ||
           !(typeof rotation == "number")
 
         ) throw new Error("SceneManager.instantiate expects four arguments of type string, Base.Point, Base.Point, and float")
 
-        return this.Base.Serializer.instantiate({name:gameObjectType}, location, scale, rotation, this.currentScene);
+        return this.Base.Serializer.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
         // return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
       }
 
@@ -3555,12 +3555,12 @@ var Base = (function () {
 
         Input.swapUpDownArrays();
         if (shouldUpdate)
-          update();
+          update(ctx);
         if (shouldDraw)
           draw(ctx);
       }
 
-      function update() {
+      function update(ctx) {
         that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
       }
 
