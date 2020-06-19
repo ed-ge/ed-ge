@@ -2971,7 +2971,7 @@ var Base = (function () {
           !(scale instanceof Point$1) ||
           !(typeof rotation == "number")
 
-        ) throw new Error("SceneManager.instantiate expects four arguments of type string, Base.Point, Base.Point, and float")
+        ) throw new Error("SceneManager.instantiate expects four arguments of type object, Base.Point, Base.Point, and float")
 
         return this.Base.Serializer.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
         // return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);

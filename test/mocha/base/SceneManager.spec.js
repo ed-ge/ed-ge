@@ -159,7 +159,7 @@ describe("Base", function () {
         let AScene = sceneManager.currentScene;
         let beforeCountRootObjects = AScene.children.length;
         expect(beforeCountRootObjects).to.equal(3);
-        sceneManager.instantiate("EmptyGameObject", new Base.Point(0,0), new Base.Point(1,1), 0);
+        sceneManager.instantiate({name:"EmptyGameObject"}, new Base.Point(0,0), new Base.Point(1,1), 0);
         let afterCountRootObjects = AScene.children.length;
         expect(afterCountRootObjects).to.equal(4);
       })
