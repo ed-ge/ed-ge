@@ -1,72 +1,6 @@
 import Base from "../../../src/Base.js"
 
-let Board = [
-
-]
-
-function bootBoard() {
-  //Add Corners
-  Board.push({ x: 0, y: 0, name: "Go", type: "Corner" })
-  Board.push({ x: 10, y: 0, name: "Jail", type: "Corner" })
-  Board.push({ x: 10, y: 10, name: "Free Parking", type: "Corner" })
-  Board.push({ x: 0, y: 10, name: "Go to Jail", type: "Corner" })
-
-
-  //Draw Cards
-  Board.push({ x: 2, y: 0, name: "Community Chest", type: "DrawCard" })
-  Board.push({ x: 10, y: 7, name: "Community Chest", type: "DrawCard" })
-  Board.push({ x: 0, y: 7, name: "Community Chest", type: "DrawCard" })
-  Board.push({ x: 7, y: 0, name: "Chance", type: "DrawCard" })
-  Board.push({ x: 8, y: 10, name: "Chance", type: "DrawCard" })
-  Board.push({ x: 0, y: 4, name: "Chance", type: "DrawCard" })
-
-  //Taxes
-  Board.push({ x: 3, y: 0, name: "Income Tax", type: "Tax" })
-  Board.push({ x: 0, y: 2, name: "Luxury Tax", type: "Tax" })
-
-  //RailRoads
-  Board.push({ x: 5, y: 0, name: "Reading RailRoad", type: "property", class: "RailRoad" })
-  Board.push({ x: 10, y: 5, name: "Pennsylvania RailRoad", type: "property", class: "RailRoad" })
-  Board.push({ x: 5, y: 10, name: "B&O RailRoad", type: "property", class: "RailRoad" })
-  Board.push({ x: 0, y: 5, name: "Short Line", type: "property", class: "RailRoad" })
-
-  //Utilities
-  Board.push({ x: 10, y: 2, name: "Electric Company", type: "property", class: "Utility" })
-  Board.push({ x: 2, y: 10, name: "Water Works", type: "property", class: "Utility" })
-
-  //Normal Properties
-  Board.push({ x: 1, y: 0, name: "Medditeranian Avenue", type: "property", class: 0 });
-  Board.push({ x: 4, y: 0, name: "Baltic Avenue", type: "property", class: 0 });
-
-  Board.push({ x: 6, y: 0, name: "Oriental Avenue", type: "property", class: 1 });
-  Board.push({ x: 8, y: 0, name: "Vermont Avenue", type: "property", class: 1 });
-  Board.push({ x: 9, y: 0, name: "Connecticut Avenue", type: "property", class: 1 });
-
-  Board.push({ x: 10, y: 1, name: "St. Pail Avenue", type: "property", class: 2 });
-  Board.push({ x: 10, y: 3, name: "States Avenue", type: "property", class: 2 });
-  Board.push({ x: 10, y: 4, name: "Virginia Avenue", type: "property", class: 2 });
-
-  Board.push({ x: 10, y: 6, name: "St. James Place", type: "property", class: 3 });
-  Board.push({ x: 10, y: 8, name: "Tennessee Avenue", type: "property", class: 3 });
-  Board.push({ x: 10, y: 9, name: "New York Avenue", type: "property", class: 3 });
-
-  Board.push({ x: 9, y: 10, name: "Kentucky Avenue", type: "property", class: 4 })
-  Board.push({ x: 7, y: 10, name: "Indiana Avenue", type: "property", class: 4 })
-  Board.push({ x: 6, y: 10, name: "Illinois Avenue", type: "property", class: 4 })
-
-  Board.push({ x: 4, y: 10, name: "Atlantic Avenue", type: "property", class: 5 })
-  Board.push({ x: 3, y: 10, name: "Ventor Avenue", type: "property", class: 5 })
-  Board.push({ x: 1, y: 10, name: "Marvin Gardens", type: "property", class: 5 })
-
-  Board.push({ x: 0, y: 9, name: "Pacific Avenue", type: "property", class: 6 })
-  Board.push({ x: 0, y: 8, name: "North Carolina Avenue", type: "property", class: 6 })
-  Board.push({ x: 0, y: 6, name: "Pennsylvania Avenue", type: "property", class: 6 })
-
-  Board.push({ x: 0, y: 3, name: "Park Place", type: "property", class: 7 })
-  Board.push({ x: 0, y: 1, name: "Boardwalk", type: "property", class: 7 })
-}
-
-bootBoard();
+import Board from "./board.js"
 
 let Scenes = {
   startScene: "StartScene",
@@ -81,16 +15,15 @@ let Scenes = {
           new: "GameController"
         },
         {
-          new: "CashDisplayPlayer1, 0, -50, CashDisplay",
-          edit: ["CashDisplayBehavior|player|1"]
+          new: "CashDisplayPlayer1, -150, -150, CashDisplay",
+          edit: ["CashDisplayBehavior|player|1"],
         },
         {
-          new: "CashDisplayPlayer2, 0, 0, CashDisplay",
+          new: "CashDisplayPlayer2, 150, -150, CashDisplay",
           edit: ["CashDisplayBehavior|player|2"]
         },
         {
-          new:"StatusText, 0, 50, .5, .5, Text",
-          add:["StatusTextBehavior"]
+          new:"StatusText, -100, -100, 1, 1, StatusText"
         },
         {
           new:"RollButton, 0, 100, Button",
@@ -110,11 +43,11 @@ let Scenes = {
         },
         {
           new: "Player1, 100, 100, .1, .1, Player",
-          edit: ["PlayerBehavior|player|0", "CircleComponent|fill|blue"]
+          edit: ["PlayerBehavior|player|0", "CircleComponent|fill|\"blue\""]
         },
         {
           new: "Player2, 100, 100, .1, .1, Player",
-          edit: ["PlayerBehavior|player|1", "CircleComponent|fill|red"]
+          edit: ["PlayerBehavior|player|1", "CircleComponent|fill|\"red\""]
         },
 
 
@@ -162,17 +95,46 @@ let GameBehaviors = {
       this.die1 = 0;
       this.die2 = 0;
       this.roll = 0;
+      this.turnShouldEnd = false;
 
     }
     update() {
 
     }
     rollDiceEvent(){
+      if(this.turnShouldEnd) return;
+
       this.die1 = Math.ceil(Math.random() * 6);
       this.die2 = Math.ceil(Math.random() * 6);
       this.roll = this.die1 + this.die2;
+
+      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
+      let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
+      currentPlayerBehavior.position += this.roll;
+      currentPlayerBehavior.position %= 40;
+      currentPlayerBehavior.rolledTimes++;
+
+      //Calculate if turn should end
+      if(this.die1 != this.die2){
+        this.turnShouldEnd = true
+      }
+      if(currentPlayerBehavior.roledTimes == 3){
+        this.turnShouldEnd = true;
+      }
+
     }
     endTurnEvent(){
+      if(!this.turnShouldEnd) return;
+      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
+      let currentPlayerBehvaior = currentPlayer.getComponent("PlayerBehavior");
+      
+      this.currentPlayer += 1;
+      if(this.currentPlayer > this.numPlayers)
+        this.currentPlayer = 1;
+      
+
+      this.turnShouldEnd = false;
+      currentPlayerBehvaior.rolledTimes = 0;
 
     }
 
@@ -196,9 +158,22 @@ let GameBehaviors = {
       this.textComponent = this.textChild.getComponent("TextComponent");
       this.textComponent.text = "End Turn";
 
+      this.originalScaleX = this.scaleX;
+      this.originalScaleY = this.scaleY;
+
     }
     onMouseDown(){
       this.gameController.endTurnEvent();
+    }
+    update(){
+      if(!this.gameController.turnShouldEnd){
+        this.gameObject.scaleX = 0;
+        this.gameObject.scaleY = 0;
+      }
+      else{
+        this.gameObject.scaleX = this.originalScaleX;
+        this.gameObject.scaleY = this.originalScaleY;
+      }
     }
   },
   RollButtonBehavior: class RollButtonBehavior extends Base.Behavior{
@@ -208,19 +183,30 @@ let GameBehaviors = {
       this.textChild = this.gameObject.findByName("Text");
       this.textComponent = this.textChild.getComponent("TextComponent");
       this.textComponent.text = "Roll";
+
+      this.originalScaleX = this.scaleX;
+      this.originalScaleY = this.scaleY;
       
     }
     onMouseDown(){
       this.gameController.rollDiceEvent();
     }
     update(){
-
+      if(this.gameController.turnShouldEnd){
+        this.gameObject.scaleX = 0;
+        this.gameObject.scaleY = 0;
+      }
+      else{
+        this.gameObject.scaleX = this.originalScaleX;
+        this.gameObject.scaleY = this.originalScaleY;
+      }
     }
   },
   StatusTextBehavior: class StatusTextBehavior extends Base.Behavior {
     start() {
       this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
       this.textComponent = this.gameObject.getComponent("TextComponent");
+
       this.players = {};
       for(let i = 1; i <= this.gameController.numPlayers; i++){
         this.players[i] = Base.SceneManager.currentScene.findByName("Player" + i).getComponent("PlayerBehavior");
@@ -335,7 +321,14 @@ let Player = {
 
 let CashDisplay = {
   name: "CashDisplay",
-  components: ["TextComponent", "CashDisplayBehavior"]
+  components: ["TextComponent", "CashDisplayBehavior"],
+  componentValues:["TextComponent|font|\"20pt Times\""]
+}
+
+let StatusText = {
+  name:"StatusText",
+  components:["StatusTextBehavior", "TextComponent"],
+  componentValues:["TextComponent|font|\"20pt Times\""]
 }
 
 let GameController = {
@@ -349,11 +342,11 @@ let Button = {
   children:[
     {
       def:"Text, -25, 0, Text",
-      componentValues:["TextComponent|text|Button","TextComponent|font|10pt Times"]
+      componentValues:["TextComponent|text|\"Button\"","TextComponent|font|\"10pt Times\""]
     }
   ]
 }
 
 
-let Prefabs = { Player, CashDisplay, GameController, Button };
+let Prefabs = { Player, CashDisplay, GameController, Button, StatusText };
 Base.main(Prefabs, GameBehaviors, Scenes);

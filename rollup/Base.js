@@ -3056,6 +3056,14 @@ class Serializer {
       obj.children.forEach(i => this.deserializeGameObject(i, gameObject));
     }
 
+    if(obj.add) obj.components = obj.add; //let add be shorthand for components
+    if (obj.components) {
+      obj.components.forEach(i => {
+        let component =  this.deserializeComponent(i);
+        gameObject.addComponent(component);
+      });
+    }
+
     //Set the key-pair values on components already on prefabs
     if(obj.edit) obj.componentValues = obj.edit; //let edit be shorthand for componentValues
     if (obj.componentValues) {
@@ -3073,13 +3081,7 @@ class Serializer {
     }
 
     //Add new components
-    if(obj.add) obj.components = obj.add; //let add be shorthand for components
-    if (obj.components) {
-      obj.components.forEach(i => {
-        let component =  this.deserializeComponent(i);
-        gameObject.addComponent(component);
-      });
-    }
+    
   }
 
   /**
