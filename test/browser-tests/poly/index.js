@@ -23,19 +23,23 @@ let Scenes = {
           edit: ["CashDisplayBehavior|player|2"]
         },
         {
-          new:"StatusText, -100, -100, 1, 1, StatusText"
+          new: "StatusText, -100, -100, 1, 1, StatusText"
         },
         {
-          new:"RollButton, 0, 100, Button",
-          add:["RollButtonBehavior"]
+          new: "RollButton, 0, 100, Button",
+          add: ["RollButtonBehavior"]
         },
         {
-          new:"Dice, 0, 150, Text",
-          add:["DiceBehavior"],
+          new: "Dice, 0, 150, Text",
+          add: ["DiceBehavior"],
         },
         {
-          new:"EndTurnButton, 0, 200, Button",
-          add:["EndTurnButtonBehavior"],
+          new: "EndTurnButton, 0, 200, Button",
+          add: ["EndTurnButtonBehavior"],
+        },
+        {
+          new: "BuyPropertyButton, 0, 250, Button",
+          add: ["BuyPropertyButtonBehavior"],
         },
         {
           new: "PropertyBuilderGameObject, EmptyGameObject",
@@ -87,6 +91,15 @@ function positionToY(position) {
   }
 }
 
+function getProperty(position) {
+  let x = positionToX(position);
+  let y = positionToY(position);
+
+  let property = Board.find(d => d.x == x && d.y == y);
+  if (!property) throw new Error("Could not find property at " + position);
+  return position;
+}
+
 let GameBehaviors = {
   GameControllerBehavior: class GameControllerBehavior extends Base.Behavior {
     start() {
@@ -101,8 +114,8 @@ let GameBehaviors = {
     update() {
 
     }
-    rollDiceEvent(){
-      if(this.turnShouldEnd) return;
+    rollDiceEvent() {
+      if (this.turnShouldEnd) return;
 
       this.die1 = Math.ceil(Math.random() * 6);
       this.die2 = Math.ceil(Math.random() * 6);
@@ -115,23 +128,23 @@ let GameBehaviors = {
       currentPlayerBehavior.rolledTimes++;
 
       //Calculate if turn should end
-      if(this.die1 != this.die2){
+      if (this.die1 != this.die2) {
         this.turnShouldEnd = true
       }
-      if(currentPlayerBehavior.roledTimes == 3){
+      if (currentPlayerBehavior.roledTimes == 3) {
         this.turnShouldEnd = true;
       }
 
     }
-    endTurnEvent(){
-      if(!this.turnShouldEnd) return;
+    endTurnEvent() {
+      if (!this.turnShouldEnd) return;
       let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
       let currentPlayerBehvaior = currentPlayer.getComponent("PlayerBehavior");
-      
+
       this.currentPlayer += 1;
-      if(this.currentPlayer > this.numPlayers)
+      if (this.currentPlayer > this.numPlayers)
         this.currentPlayer = 1;
-      
+
 
       this.turnShouldEnd = false;
       currentPlayerBehvaior.rolledTimes = 0;
@@ -139,21 +152,55 @@ let GameBehaviors = {
     }
 
   },
-  DiceBehavior: class DiceBehavior extends Base.Behavior{
-    start(){
+  DiceBehavior: class DiceBehavior extends Base.Behavior {
+    start() {
       this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
     }
-    update(){
+    update() {
       let die1 = this.gameController.die1;
       let die2 = this.gameController.die2;
       this.gameObject.getComponent("TextComponent").text = `${die1} ${die2}`;
     }
-    
+
   },
-  EndTurnButtonBehavior : class EndTurnButtonBehavior extends Base.Behavior{
-    start(){
+  BuyPropertyButtonBehavior: class BuyPropertyButtonBehavior extends Base.Behavior {
+    start() {
       this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
-      
+
+      this.textChild = this.gameObject.findByName("Text");
+      this.textComponent = this.textChild.getComponent("TextComponent");
+      this.textComponent.text = "End Turn";
+
+      this.originalScaleX = this.scaleX;
+      this.originalScaleY = this.scaleY;
+    }
+    onMouseDown() {
+      this.gameController.buyPropertyEvent();
+    }
+    update() {
+      if (!this.gameController.rolledTimes == 0) {
+        this.gameObject.scaleX = 0;
+        this.gameObject.scaleY = 0;
+      }
+      else {
+        let currentPlayer = this.gameController.currentPlayer;
+
+        let property = getProperty(currentPlayer.x, currentPlayer.y);
+        if (property.isPurchased) {
+          this.gameObject.scaleX = 0;
+          this.gameObject.scaleY = 0;
+        }
+        else {
+          this.gameObject.scaleX = this.originalScaleX;
+          this.gameObject.scaleY = this.originalScaleY;
+        }
+      }
+    }
+  },
+  EndTurnButtonBehavior: class EndTurnButtonBehavior extends Base.Behavior {
+    start() {
+      this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
+
       this.textChild = this.gameObject.findByName("Text");
       this.textComponent = this.textChild.getComponent("TextComponent");
       this.textComponent.text = "End Turn";
@@ -162,41 +209,41 @@ let GameBehaviors = {
       this.originalScaleY = this.scaleY;
 
     }
-    onMouseDown(){
+    onMouseDown() {
       this.gameController.endTurnEvent();
     }
-    update(){
-      if(!this.gameController.turnShouldEnd){
+    update() {
+      if (!this.gameController.turnShouldEnd) {
         this.gameObject.scaleX = 0;
         this.gameObject.scaleY = 0;
       }
-      else{
+      else {
         this.gameObject.scaleX = this.originalScaleX;
         this.gameObject.scaleY = this.originalScaleY;
       }
     }
   },
-  RollButtonBehavior: class RollButtonBehavior extends Base.Behavior{
-    start(){
+  RollButtonBehavior: class RollButtonBehavior extends Base.Behavior {
+    start() {
       this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
-      
+
       this.textChild = this.gameObject.findByName("Text");
       this.textComponent = this.textChild.getComponent("TextComponent");
       this.textComponent.text = "Roll";
 
       this.originalScaleX = this.scaleX;
       this.originalScaleY = this.scaleY;
-      
+
     }
-    onMouseDown(){
+    onMouseDown() {
       this.gameController.rollDiceEvent();
     }
-    update(){
-      if(this.gameController.turnShouldEnd){
+    update() {
+      if (this.gameController.turnShouldEnd) {
         this.gameObject.scaleX = 0;
         this.gameObject.scaleY = 0;
       }
-      else{
+      else {
         this.gameObject.scaleX = this.originalScaleX;
         this.gameObject.scaleY = this.originalScaleY;
       }
@@ -208,7 +255,7 @@ let GameBehaviors = {
       this.textComponent = this.gameObject.getComponent("TextComponent");
 
       this.players = {};
-      for(let i = 1; i <= this.gameController.numPlayers; i++){
+      for (let i = 1; i <= this.gameController.numPlayers; i++) {
         this.players[i] = Base.SceneManager.currentScene.findByName("Player" + i).getComponent("PlayerBehavior");
       }
     }
@@ -322,13 +369,13 @@ let Player = {
 let CashDisplay = {
   name: "CashDisplay",
   components: ["TextComponent", "CashDisplayBehavior"],
-  componentValues:["TextComponent|font|\"20pt Times\""]
+  componentValues: ["TextComponent|font|\"20pt Times\""]
 }
 
 let StatusText = {
-  name:"StatusText",
-  components:["StatusTextBehavior", "TextComponent"],
-  componentValues:["TextComponent|font|\"20pt Times\""]
+  name: "StatusText",
+  components: ["StatusTextBehavior", "TextComponent"],
+  componentValues: ["TextComponent|font|\"20pt Times\""]
 }
 
 let GameController = {
@@ -337,12 +384,12 @@ let GameController = {
 }
 
 let Button = {
-  name:"Button",
-  components:["RectangleComponent|width|50|height|20", "AABBCollider|width|50|height|20"],
-  children:[
+  name: "Button",
+  components: ["RectangleComponent|width|50|height|20", "AABBCollider|width|50|height|20"],
+  children: [
     {
-      def:"Text, -25, 0, Text",
-      componentValues:["TextComponent|text|\"Button\"","TextComponent|font|\"10pt Times\""]
+      def: "Text, -25, 0, Text",
+      componentValues: ["TextComponent|text|\"Button\"", "TextComponent|font|\"10pt Times\""]
     }
   ]
 }
