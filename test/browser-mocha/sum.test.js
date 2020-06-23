@@ -38,7 +38,7 @@ describe('Base', function () {
 // describe('GameObject', function () {
 //   describe('serialize', function () {
 //     it('should return a string in the correct DSL', function () {
-//       let gameObject = new Base.Prefabs.EmptyGameObject();
+//       let gameObject = new Base.Prefabs.Empty();
 //       let string = gameObject.serialize();
 //       console.log(string);
 //       chai.expect(string).to.equal("");
@@ -65,7 +65,7 @@ let _scenes = {
 
       objects: [
         {
-          def: "room, 0, 0, EmptyGameObject",
+          def: "room, 0, 0, Empty",
           children: [
             {
               def: "Rectangle1, 100, 200, Rectangle",
@@ -84,7 +84,7 @@ let _scenes = {
           def: "dot, 200, 200, CollisionDot",
         },
         {
-          def: "Main Controller, 100, 100, EmptyGameObject",
+          def: "Main Controller, 100, 100, Empty",
           components: ["BackToStartSceneBehavior"]
         }
 
@@ -106,12 +106,12 @@ describe('GameObject', function () {
 
   describe('Prefab Name', function () {
     it('Should store the prefab used to create the game object', function () {
-      chai.expect(room.prefabName).to.equal("EmptyGameObject");
+      chai.expect(room.prefabName).to.equal("Empty");
       chai.expect(rectangle1.prefabName).to.equal("Rectangle");
       chai.expect(rectangle2.prefabName).to.equal("Rectangle");
       chai.expect(moon.prefabName).to.equal("Moon");
       chai.expect(dot.prefabName).to.equal("CollisionDot");
-      chai.expect(mainController.prefabName).to.equal("EmptyGameObject");
+      chai.expect(mainController.prefabName).to.equal("Empty");
     })
   });
 

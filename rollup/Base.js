@@ -568,7 +568,7 @@ class GameObject extends NameableParent {
    * parent. Scales to 1.
    * @param {Number} rotation The scale of the object relative to its parent.
    */
-  constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0, prefabName = "") {
+  constructor(x = 0, y = 0, scaleX = 1, scaleY = 1, rotation = 0, prefabName = "Empty") {
     super(prefabName);
     this.components = [];
     this.layer = null;
@@ -3002,7 +3002,7 @@ class Serializer {
   }
   serializeGameObject(gameObject) {
     let toReturn = {
-      def: `${gameObject.name},${gameObject.x},${gameObject.y},${gameObject.scaleX},${gameObject.scaleY},${gameObject.rotation},${gameObject.type}`,
+      def: `${gameObject.name},${gameObject.x},${gameObject.y},${gameObject.scaleX},${gameObject.scaleY},${gameObject.rotation},${gameObject.prefabName}`,
       components: [],
       componentValues: [],
       children: []
@@ -3125,7 +3125,8 @@ class Serializer {
     }
 
     let gameObjectType = this.prefabs["" + obj.type];
-    if (gameObjectType == null) throw "Could now find game object of type " + obj.type;
+    if (gameObjectType == null) 
+    throw "Could now find game object of type " + obj.type;
 
     obj.location = obj.location || { x: 0, y: 0 };
     obj.scale = obj.scale || { x: 1, y: 1 };
@@ -3378,8 +3379,8 @@ class RVOSimulator extends Component$1 {
 class RVOObstacle extends Component$1 {
 }
 
-var EmptyGameObject = {
-    name: "EmptyGameObject",
+var Empty = {
+    name: "Empty",
     components: []
 };
 
@@ -3669,7 +3670,7 @@ let Components = {
 };
 
 const Prefabs = {
-  EmptyGameObject,
+  Empty,
   Text,
   Camera,
   Canvas,

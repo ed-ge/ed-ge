@@ -19,7 +19,7 @@ export default {
         componentValues:["RectangleComponent|width|5","RectangleComponent|height|25","RectangleComponent|fill|blue","RectangleComponent|stroke|transparent","AABBCollider|width|5","AABBCollider|height|25"]
       },
       {
-        def:"MainController, EmptyGameObject",
+        def:"MainController, Empty",
         components: ['BackToStartSceneBehavior']
       },
       {
