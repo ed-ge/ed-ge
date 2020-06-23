@@ -38,7 +38,7 @@ let Scenes = {
           add: ["EndTurnButtonBehavior"],
         },
         {
-          new: "BuyPropertyButton, 0, 250, Button",
+          new: "BuyPropertyButton, 0, 225, Button",
           add: ["BuyPropertyButtonBehavior"],
         },
         {
@@ -97,7 +97,7 @@ function getProperty(position) {
 
   let property = Board.find(d => d.x == x && d.y == y);
   if (!property) throw new Error("Could not find property at " + position);
-  return position;
+  return property;
 }
 
 let GameBehaviors = {
@@ -111,8 +111,10 @@ let GameBehaviors = {
       this.turnShouldEnd = false;
 
     }
-    update() {
-
+    getCurrentPlayerBehavior() {
+      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
+      let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
+      return currentPlayerBehavior;
     }
     rollDiceEvent() {
       if (this.turnShouldEnd) return;
@@ -139,7 +141,7 @@ let GameBehaviors = {
     endTurnEvent() {
       if (!this.turnShouldEnd) return;
       let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
-      let currentPlayerBehvaior = currentPlayer.getComponent("PlayerBehavior");
+      let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
 
       this.currentPlayer += 1;
       if (this.currentPlayer > this.numPlayers)
@@ -147,8 +149,18 @@ let GameBehaviors = {
 
 
       this.turnShouldEnd = false;
-      currentPlayerBehvaior.rolledTimes = 0;
+      currentPlayerBehavior.rolledTimes = 0;
 
+    }
+    buyPropertyEvent() {
+      let currentPlayerBehavior = this.getCurrentPlayerBehavior();
+      let currentPlayerPosition = currentPlayerBehavior.position;
+      let currentPlayerX = positionToX(currentPlayerPosition);
+      let currentPlayerY = positionToY(currentPlayerPosition);
+
+
+      let property = getProperty(currentPlayerX, currentPlayerY);
+      property.isPurchased = this.currentPlayer;
     }
 
   },
@@ -169,7 +181,7 @@ let GameBehaviors = {
 
       this.textChild = this.gameObject.findByName("Text");
       this.textComponent = this.textChild.getComponent("TextComponent");
-      this.textComponent.text = "End Turn";
+      this.textComponent.text = "Buy";
 
       this.originalScaleX = this.scaleX;
       this.originalScaleY = this.scaleY;
@@ -178,14 +190,19 @@ let GameBehaviors = {
       this.gameController.buyPropertyEvent();
     }
     update() {
-      if (!this.gameController.rolledTimes == 0) {
+
+      if (this.gameController.getCurrentPlayerBehavior().rolledTimes == 0) {
         this.gameObject.scaleX = 0;
         this.gameObject.scaleY = 0;
       }
       else {
-        let currentPlayer = this.gameController.currentPlayer;
+        let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
+        let currentPlayerPosition = currentPlayerBehavior.position;
+        let currentPlayerX = positionToX(currentPlayerPosition);
+        let currentPlayerY = positionToY(currentPlayerPosition);
 
-        let property = getProperty(currentPlayer.x, currentPlayer.y);
+
+        let property = getProperty(currentPlayerX, currentPlayerY);
         if (property.isPurchased) {
           this.gameObject.scaleX = 0;
           this.gameObject.scaleY = 0;
