@@ -23,14 +23,14 @@ function bootBoard() {
   Board.push({ x: 0, y: 2, name: "Luxury Tax", type: "Tax" })
 
   //RailRoads
-  Board.push({ x: 5, y: 0, name: "Reading RailRoad", type: "property", class: "RailRoad" })
-  Board.push({ x: 10, y: 5, name: "Pennsylvania RailRoad", type: "property", class: "RailRoad" })
-  Board.push({ x: 5, y: 10, name: "B&O RailRoad", type: "property", class: "RailRoad" })
-  Board.push({ x: 0, y: 5, name: "Short Line", type: "property", class: "RailRoad" })
+  Board.push({ x: 5, y: 0, name: "Reading RailRoad", type: "property", class: "RailRoad", cost: 200 })
+  Board.push({ x: 10, y: 5, name: "Pennsylvania RailRoad", type: "property", class: "RailRoad", cost: 200 })
+  Board.push({ x: 5, y: 10, name: "B&O RailRoad", type: "property", class: "RailRoad", cost: 200 })
+  Board.push({ x: 0, y: 5, name: "Short Line", type: "property", class: "RailRoad", cost: 200 })
 
   //Utilities
-  Board.push({ x: 10, y: 2, name: "Electric Company", type: "property", class: "Utility" })
-  Board.push({ x: 2, y: 10, name: "Water Works", type: "property", class: "Utility" })
+  Board.push({ x: 10, y: 2, name: "Electric Company", type: "property", class: "Utility", cost:150 })
+  Board.push({ x: 2, y: 10, name: "Water Works", type: "property", class: "Utility", cost:150 })
 
   //Normal Properties
   Board.push({ x: 1, y: 0, name: "Medditeranian Avenue", type: "property", class: 0, cost:60, rent: [2] });
