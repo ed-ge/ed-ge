@@ -159,7 +159,7 @@ describe("Base", function () {
         let AScene = sceneManager.currentScene;
         let beforeCountRootObjects = AScene.children.length;
         expect(beforeCountRootObjects).to.equal(3);
-        sceneManager.instantiate({name:"EmptyGameObject"}, new Base.Point(0,0), new Base.Point(1,1), 0);
+        sceneManager.instantiate({name:"Empty"}, new Base.Point(0,0), new Base.Point(1,1), 0);
         let afterCountRootObjects = AScene.children.length;
         expect(afterCountRootObjects).to.equal(4);
       })
@@ -168,7 +168,7 @@ describe("Base", function () {
         let AScene = sceneManager.currentScene;
         let beforeCountRootObjects = AScene.children.length;
         expect(beforeCountRootObjects).to.equal(3);
-        sceneManager.instantiate({name:"EmptyGameObject"}, new Base.Point(1,2), new Base.Point(3,4), 5);
+        sceneManager.instantiate({name:"Empty"}, new Base.Point(1,2), new Base.Point(3,4), 5);
         let afterCountRootObjects = AScene.children.length;
         expect(afterCountRootObjects).to.equal(4);
         let gameObject = AScene.children[3];
@@ -177,7 +177,7 @@ describe("Base", function () {
         expect(gameObject.scaleX).to.equal(3);
         expect(gameObject.scaleY).to.equal(4);
         expect(gameObject.rotation).to.equal(5);
-        expect(gameObject.prefabName).to.equal("EmptyGameObject");
+        expect(gameObject.prefabName).to.equal("Empty");
 
       })
     })

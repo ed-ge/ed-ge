@@ -81,7 +81,7 @@ describe("Base", function () {
         expect(gameObject.scaleX).to.equal(1);
         expect(gameObject.scaleY).to.equal(1);
         expect(gameObject.rotation).to.equal(0);
-        expect(gameObject.prefabName).to.equal("");
+        expect(gameObject.prefabName).to.equal("Empty");
         expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there is one arguments", function () {
@@ -91,7 +91,7 @@ describe("Base", function () {
         expect(gameObject.scaleX).to.equal(1);
         expect(gameObject.scaleY).to.equal(1);
         expect(gameObject.rotation).to.equal(0);
-        expect(gameObject.prefabName).to.equal("");
+        expect(gameObject.prefabName).to.equal("Empty");
         expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there are two arguments", function () {
@@ -101,7 +101,7 @@ describe("Base", function () {
         expect(gameObject.scaleX).to.equal(1);
         expect(gameObject.scaleY).to.equal(1);
         expect(gameObject.rotation).to.equal(0);
-        expect(gameObject.prefabName).to.equal("");
+        expect(gameObject.prefabName).to.equal("Empty");
         expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there are three arguments", function () {
@@ -111,7 +111,7 @@ describe("Base", function () {
         expect(gameObject.scaleX).to.equal(2);
         expect(gameObject.scaleY).to.equal(1);
         expect(gameObject.rotation).to.equal(0);
-        expect(gameObject.prefabName).to.equal("");
+        expect(gameObject.prefabName).to.equal("Empty");
         expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there are four arguments", function () {
@@ -121,7 +121,7 @@ describe("Base", function () {
         expect(gameObject.scaleX).to.equal(4);
         expect(gameObject.scaleY).to.equal(6);
         expect(gameObject.rotation).to.equal(0);
-        expect(gameObject.prefabName).to.equal("");
+        expect(gameObject.prefabName).to.equal("Empty");
         expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Has defaults if there are five arguments", function () {
@@ -131,7 +131,7 @@ describe("Base", function () {
         expect(gameObject.scaleX).to.equal(4);
         expect(gameObject.scaleY).to.equal(6);
         expect(gameObject.rotation).to.equal(1);
-        expect(gameObject.prefabName).to.equal("");
+        expect(gameObject.prefabName).to.equal("Empty");
         expect(gameObject.components).to.be.an('array').that.is.empty;
       })
       it("Correctly handles six arguments", function () {

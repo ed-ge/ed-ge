@@ -7,7 +7,7 @@ import GameObjects from "../../game/GameObjects.js"
 import GameBehaviors from "../../game/GameBehaviors.js"
 
 describe("Base", function () {
-  describe("EmptyGameObject.js", function () {
+  describe("Empty.js", function () {
 
   });
 });

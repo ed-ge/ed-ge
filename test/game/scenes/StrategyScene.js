@@ -6,7 +6,7 @@ export default {
       
     },
     {
-      def:"Main Controller, EmptyGameObject",
+      def:"Main Controller, Empty",
       components:['BackToStartSceneBehavior']
     }
   ]

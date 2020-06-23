@@ -64,15 +64,15 @@ export default {
       ]
     },
     {
-      def:"Triangle, 300, 300, EmptyGameObject",
+      def:"Triangle, 300, 300, Empty",
       components: ["ScaleBehavior","TriangleComponent|fill|white|stroke|red|pointAX|0|pointAY|0|pointBX|100|pointBY|100|pointCX|200|pointCY|0 "]
     },
     {
-      def:"Main Controller, 100, 100, EmptyGameObject",
+      def:"Main Controller, 100, 100, Empty",
       components: ['BackToStartSceneBehavior']
     },
     {
-      def:"Empty, 100, 100, EmptyGameObject",
+      def:"Empty, 100, 100, Empty",
       components: ["RectangleComponent|fill|gray|width|10|height|10"]
 
     },

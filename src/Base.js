@@ -31,7 +31,7 @@ import _RVOSimulator from "./components/RVOSimulator.js"
 import _ROVObstacle from "./components/RVOObstacle.js"
 
 /** Prefabs */
-import EmptyGameObject from "./prefabs/EmptyGameObject.js"
+import Empty from "./prefabs/Empty.js"
 import Text from "./prefabs/Text.js"
 import Camera from "./prefabs/Camera.js"
 import Canvas from "./prefabs/Canvas.js"
@@ -70,7 +70,7 @@ let Components = {
 };
 
 const Prefabs = {
-  EmptyGameObject,
+  Empty,
   Text,
   Camera,
   Canvas,

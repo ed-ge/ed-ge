@@ -12,7 +12,7 @@ export default {
       componentValues: ['CountDownTimer|toSceneText|SceneTwoB']
     },
     {
-      def:"Main Controller, 100, 100, EmptyGameObject",
+      def:"Main Controller, 100, 100, Empty",
       components: ['BackToStartSceneBehavior']
     }
   ]

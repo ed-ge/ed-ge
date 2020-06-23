@@ -26,7 +26,7 @@ class Serializer {
   }
   serializeGameObject(gameObject) {
     let toReturn = {
-      def: `${gameObject.name},${gameObject.x},${gameObject.y},${gameObject.scaleX},${gameObject.scaleY},${gameObject.rotation},${gameObject.type}`,
+      def: `${gameObject.name},${gameObject.x},${gameObject.y},${gameObject.scaleX},${gameObject.scaleY},${gameObject.rotation},${gameObject.prefabName}`,
       components: [],
       componentValues: [],
       children: []
@@ -149,7 +149,8 @@ class Serializer {
     }
 
     let gameObjectType = this.prefabs["" + obj.type]
-    if (gameObjectType == null) throw "Could now find game object of type " + obj.type;
+    if (gameObjectType == null) 
+    throw "Could now find game object of type " + obj.type;
 
     obj.location = obj.location || { x: 0, y: 0 }
     obj.scale = obj.scale || { x: 1, y: 1 }

@@ -42,7 +42,7 @@ let Scenes = {
           add: ["BuyPropertyButtonBehavior"],
         },
         {
-          new: "PropertyBuilderGameObject, EmptyGameObject",
+          new: "PropertyBuilderGameObject, Empty",
           add: ["PropertyBuilder"]
         },
         {

@@ -4,7 +4,7 @@ export default {
 
   objects: [
     {
-      def: "room, 0, 0, EmptyGameObject",
+      def: "room, 0, 0, Empty",
       children: [
         {
           def: "Rectangle1, 100, 200, Rectangle",
@@ -23,7 +23,7 @@ export default {
       def: "dot, 200, 200, CollisionDot",
     },
     {
-      def: "Main Controller, 100, 100, EmptyGameObject",
+      def: "Main Controller, 100, 100, Empty",
       components: ["BackToStartSceneBehavior"]
     }
 

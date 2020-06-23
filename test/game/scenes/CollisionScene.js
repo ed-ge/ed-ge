@@ -22,7 +22,7 @@ export default {
       def:"Triangle, 300, 300, Triangle"
     },
     {
-      def:"Main Controller, 100, 100, EmptyGameObject",
+      def:"Main Controller, 100, 100, Empty",
       components: ["BackToStartSceneBehavior"]
     }
 
