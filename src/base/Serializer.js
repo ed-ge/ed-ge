@@ -68,7 +68,7 @@ class Serializer {
         parent.newChildEvent(gameObject);
       }
     }
-
+    gameObject.recursiveCall("start");
     
     return gameObject;
 

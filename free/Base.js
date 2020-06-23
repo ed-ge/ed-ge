@@ -3047,7 +3047,7 @@ var Base = (function () {
             parent.newChildEvent(gameObject);
           }
         }
-
+        gameObject.recursiveCall("start");
         
         return gameObject;
 

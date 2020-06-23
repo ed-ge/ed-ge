@@ -159,10 +159,21 @@ let GameBehaviors = {
       let currentPlayerY = positionToY(currentPlayerPosition);
 
 
-      let property = getProperty(currentPlayerX, currentPlayerY);
+      let property = getProperty(currentPlayerPosition);
       property.isPurchased = this.currentPlayer;
+
+      Base.SceneManager.currentScene.findByName(property.name).getComponent("PropoertyStatusTextBehavior").getComponent("TextComponent").text = "Purchased";
     }
 
+  },
+  PropertyStatusTextBehavior: class PropertyStatusTextBehavior extends Base.Behavior {
+    start() {
+
+      this.textComponent = this.gameObject.getComponent("TextComponent")
+    }
+    update() {
+      this.textComponent.text = this.property.name;
+    }
   },
   DiceBehavior: class DiceBehavior extends Base.Behavior {
     start() {
@@ -175,6 +186,7 @@ let GameBehaviors = {
     }
 
   },
+
   BuyPropertyButtonBehavior: class BuyPropertyButtonBehavior extends Base.Behavior {
     start() {
       this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
@@ -202,8 +214,8 @@ let GameBehaviors = {
         let currentPlayerY = positionToY(currentPlayerPosition);
 
 
-        let property = getProperty(currentPlayerX, currentPlayerY);
-        if (property.isPurchased) {
+        let property = getProperty(currentPlayerPosition);
+        if (property.isPurchased || !property.cost) {
           this.gameObject.scaleX = 0;
           this.gameObject.scaleY = 0;
         }
@@ -271,14 +283,14 @@ let GameBehaviors = {
       this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
       this.textComponent = this.gameObject.getComponent("TextComponent");
 
-      this.players = {};
-      for (let i = 1; i <= this.gameController.numPlayers; i++) {
-        this.players[i] = Base.SceneManager.currentScene.findByName("Player" + i).getComponent("PlayerBehavior");
-      }
+      // this.players = {};
+      // for (let i = 1; i <= this.gameController.numPlayers; i++) {
+      //   this.players[i] = Base.SceneManager.currentScene.findByName("Player" + i).getComponent("PlayerBehavior");
+      // }
     }
     update() {
       let currentPlayer = this.gameController.currentPlayer;
-      this.textComponent.text = "Player " + currentPlayer + "'s Turn, " + this.players[currentPlayer].rolledTimes + " rolls";
+      this.textComponent.text = "Player " + currentPlayer + "'s Turn, " + this.gameController.getCurrentPlayerBehavior().rolledTimes + " rolls";
 
 
     }
@@ -372,6 +384,22 @@ let GameBehaviors = {
             titleObject.getComponent("TextComponent").fill = "white";
           }
         }
+        if (property.cost) {
+          let position = new Base.Point(0, 0);
+          position.x = -size + 5;
+          position.y = -size / 2 + 25;
+          if (property.y == 0)
+            position.y -= 65;
+          if (property.y == 10)
+            position.y += 65;
+          if (property.x == 0)
+            position.x -= 60;
+          if (property.x == 10)
+            position.x += 120;
+          let propertyStatusGameObject = Base.Serializer.instantiate(Base.Prefabs.PropertyStatusText, position, new Base.Point(1, 1), 0, propertyGameObject);
+          propertyStatusGameObject.name = property.name;
+          propertyStatusGameObject.getComponent("PropertyStatusTextBehavior").property = property;
+        }
       }
     }
 
@@ -387,6 +415,12 @@ let CashDisplay = {
   name: "CashDisplay",
   components: ["TextComponent", "CashDisplayBehavior"],
   componentValues: ["TextComponent|font|\"20pt Times\""]
+}
+
+let PropertyStatusText = {
+  name: "PropertyStatusText",
+  components: ["TextComponent", "PropertyStatusTextBehavior"],
+  componentValues: ["TextComponent|font|10pt Times"]
 }
 
 let StatusText = {
@@ -412,5 +446,5 @@ let Button = {
 }
 
 
-let Prefabs = { Player, CashDisplay, GameController, Button, StatusText };
+let Prefabs = { Player, CashDisplay, GameController, Button, StatusText, PropertyStatusText };
 Base.main(Prefabs, GameBehaviors, Scenes);
