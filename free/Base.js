@@ -2427,65 +2427,6 @@ var Base = (function () {
         }
       }
 
-
-
-
-
-
-      // buildIt(obj, gameObject) {
-      //   //Recursively build children
-      //   if (obj.children) {
-      //     obj.children.forEach(i => this.buildChild(i, gameObject))
-      //   }
-
-      //   //Set the key-pair values on components already on prefabs
-      //   if (obj.componentValues) {
-      //     obj.componentValues.forEach(j => {
-      //       let split = j.split("|").map(i => i.trim());
-      //       let component = gameObject.getComponent(split[0])
-      //       let value = split[2];
-      //       try {
-      //         value = JSON.parse(split[2])
-      //       } catch (e) {
-      //         //Looks like it wasn't JSON after all..
-      //       }
-      //       component[split[1]] = value;
-      //     })
-      //   }
-
-      //   //Add new components
-      //   if (obj.components) {
-      //     obj.components.forEach(i => {
-      //       if (!i.split) {
-      //         console.log("error");
-      //       }
-      //       let split = i.split("|").map(i => i.trim());
-      //       let type = split.shift();
-      //       //See if we have a component or behavior with that name
-      //       let componentType = this.components[type] || this.behaviors[type];
-      //       if (componentType == null) throw "Could not find component " + i.type;
-
-      //       let component = new componentType();
-      //       gameObject.addComponent(component);
-
-      //       while (split.length >= 2) {
-      //         let key = split.shift();
-      //         let value = split.shift();
-      //         component[key] = value;
-      //       }
-
-      //       // if (i.values) {
-      //       //   //Now set the key-value pairs on the new component we just made
-      //       //   i.values.forEach(v => {
-      //       //     component[v.key] = v.value;
-      //       //   })
-      //       // }
-      //       if (component.start)
-      //         component.start();
-      //     });
-      //   }
-      // }
-
       newChildEvent(gameObject) {
         if(arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("newChildEvent expects exactly one argument of type GameObject")
         if (gameObject.anyComponent("RVOAgent")) {
@@ -2665,10 +2606,6 @@ var Base = (function () {
 
           point.x = x;
           point.y = y;
-
-
-
-
         }
 
         let colliderObject = {};
@@ -2833,60 +2770,7 @@ var Base = (function () {
 
 
 
-      // instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
-      //   let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
-      //   parent.children.push(gameObject);
-      //   if (parent instanceof GameObject)
-      //     gameObject.parent = parent; //Only set the parent if it's not a scene.
-      //   let prefab = this.prefabs[gameObjectType.name];
-      //   this.buildIt(prefab, gameObject)
-      //   if (obj)
-      //     gameObject.name = obj.name;
-      //   else
-      //     gameObject.name = prefab.name;
-      //   gameObject.prefabName = gameObjectType.name;
-      //   if (obj) {
-      //     this.buildIt(obj, gameObject)
-      //   }
-      //   gameObject.recursiveCall("start");
-
-      //   /**
-      //    * See if the game object needs to be added to any of our simulators
-      //    */
-
-      //   if (gameObject.anyComponent("RVOAgent")) {
-      //     this.simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
-      //     let RVOAgent = gameObject.getComponent("RVOAgent");
-      //     let destination = RVOAgent.destination;
-      //     let goal = new Vector2(destination.x, destination.y)
-      //     this.simulator.addGoal(goal)
-      //     let i = this.simulator.getNumAgents() - 1
-      //     RVOAgent._id = i;
-      //     this.updateRVOAgent(gameObject);
-
-      //   }
-      //   if (gameObject.anyComponent("RVOObstacle")) {
-      //     let rectangleComponent = gameObject.getComponent("RectangleComponent");
-      //     let width = +(rectangleComponent.width * gameObject.scaleX);
-      //     let height = +(rectangleComponent.height * gameObject.scaleY);
-      //     let rx = gameObject.x - width / 2;
-      //     let ry = gameObject.y - height / 2;
-
-      //     let a = new Vector2(rx, ry);
-      //     let b = new Vector2(rx, ry + height);
-      //     let c = new Vector2(rx + width, ry + height)
-      //     let d = new Vector2(rx + width, ry);
-
-      //     this.simulator.addObstacle([a, b]);
-      //     this.simulator.addObstacle([b, c]);
-      //     this.simulator.addObstacle([c, d]);
-      //     this.simulator.addObstacle([d, a]);
-
-      //     this.simulator.processObstacles();
-      //   }
-      //   return gameObject;
-
-      // }
+      
       updateRVOAgent(gameObject) {
         if(arguments.length != 1 || !(gameObject instanceof GameObject) ) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
         
