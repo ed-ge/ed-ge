@@ -19,7 +19,7 @@ const CollisionHelper = {
             /** Flip */
             return this.inCollision(two, one);
         } else if (one.collider instanceof CircleCollider && two.collider instanceof CircleCollider) {
-            return this.inCollisionCirclePoint(one, two);
+            return this.inCollisionCircleCircle(one, two);
         } else if (one.collider instanceof AABBCollider && two.collider instanceof CircleCollider) {
             return this.inCollisionAABBCircle(one, two);
         }
