@@ -50,13 +50,16 @@ const SceneManager = {
     this.currentScene.destroy(gameObject);
   },
   instantiate(gameObjectType, location, scale, rotation) {
-    if (arguments.length != 4 ||
+    if(!scale) scale = new Point(1,1);
+    if(!rotation) rotation = 0;
+    if (arguments.length < 2 ||
+      arguments.length > 4 ||
       !(typeof gameObjectType == "object") ||
       !(location instanceof Point) ||
       !(scale instanceof Point) ||
       !(typeof rotation == "number")
 
-    ) throw new Error("SceneManager.instantiate expects four arguments of type object, Base.Point, Base.Point, and float")
+    ) throw new Error("SceneManager.instantiate expects two, three, or four arguments of type object, Base.Point, Base.Point, and float")
 
     return this.Base.Serializer.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
     // return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);

@@ -14,14 +14,14 @@ export default class SpawnBehavior extends Base.Behavior {
         if (Math.random() < .01) {
             let y = this.gameObject.y + (Math.random() - .5) * 1
             let x = this.gameObject.x;
-            let collider = new Base.Colliders.CircleCollider();
+            let collider = new Base.Components.CircleCollider();
             collider.radius = 5;
             if (Base.SceneManager.currentScene.canEnterSafely(new Base.Point(x, y), collider, "RVOAgent")) {
-                let agent = SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(x, y));
+                let agent = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(x, y));
                 let rvo = agent.getComponent("RVOAgent");
                 rvo.color = this.color;
-                rvo.destination = new Point(+this.goalX, y);
-                SceneManager.currentScene.updateRVOAgent(agent)
+                rvo.destination = new Base.Point(+this.goalX, y);
+                Base.SceneManager.currentScene.updateRVOAgent(agent)
                 let circle = agent.getComponent("CircleComponent");
                 circle.fill = this.color;
                 circle.stroke = "black";

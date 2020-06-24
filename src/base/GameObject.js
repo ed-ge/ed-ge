@@ -3,6 +3,7 @@ import Point from "./Point.js";
 import RectTransform from "../components/RectTransform.js";
 import Matrix3 from "./Matrix3.js";
 import Component from "./Component.js"
+import Base from "../Base.js";
 
 /**
  * A game object represents a "thing" in a game.
@@ -65,7 +66,7 @@ class GameObject extends NameableParent {
   }
 
   get worldTransform() {
-    if (!this.parent)
+    if (!this.parent || this.parent instanceof Base.Scene)
       return this.localTransform;
     let parentTransform = this.parent.worldTransform;
     let toReturn = parentTransform.mult(this.localTransform);

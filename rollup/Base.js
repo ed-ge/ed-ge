@@ -25,7 +25,7 @@
  */
 
 
-class Component$1 {
+class Component {
 
     /**
      * Reference to the parent game object.
@@ -59,7 +59,7 @@ class Component$1 {
 /**
  * Behaviors are game-specific class that add logic to game objects
  */
-class Behavior extends Component$1 {
+class Behavior extends Component {
 
     /**
      * Called when the parent game object is instatiated,
@@ -209,7 +209,7 @@ class NameableParent {
  * 2D Point class
  */
 
-class Point$1 {
+class Point {
     /**
      * 
      * @param {Number} x The x location of the point
@@ -225,7 +225,7 @@ class Point$1 {
      * 
      * @param {Point} otherPoint The point to which we are calculating a distance
      */
-    distance(otherPoint = new Point$1(0, 0)) {
+    distance(otherPoint = new Point(0, 0)) {
 
         return Math.sqrt(this.distanceSquared(otherPoint));
     }
@@ -238,7 +238,7 @@ class Point$1 {
      * @param {Point} otherPoint The point to which we are calculating the
      * squared distance
      */
-    distanceSquared(otherPoint = new Point$1(0, 0)) {
+    distanceSquared(otherPoint = new Point(0, 0)) {
         let xDiff = (this.x - otherPoint.x);
         let yDiff = (this.y - otherPoint.y);
         return xDiff * xDiff + yDiff * yDiff;
@@ -251,26 +251,26 @@ class Point$1 {
      * difference. 
      */
     diff(otherPoint) {
-        return new Point$1(this.x - otherPoint.x, this.y - otherPoint.y);
+        return new Point(this.x - otherPoint.x, this.y - otherPoint.y);
     }
 
     /** Duplicate the point */
     clone(){
-      return new Point$1(this.x, this.y);
+      return new Point(this.x, this.y);
     }
     /**
      * Returns a new point with normalized values
      */
     toNormalized(){
         let length = this.distance();
-        return new Point$1(this.x/length, this.y/length);
+        return new Point(this.x/length, this.y/length);
     }
 }
 
 /**
  * Determines the anchoring of an object in screen space
  */
-class RectTransform extends Component$1 {
+class RectTransform extends Component {
 
    
 
@@ -303,10 +303,10 @@ class Matrix3 {
     get m33() { return this.m[2][2] };
 
     get translation(){
-        return new Point$1(this.at(2,0), this.at(2,1));
+        return new Point(this.at(2,0), this.at(2,1));
     }
     set translation(point){
-        if(!(point instanceof Point$1)) throw new Error("You must set translation to be of type Point");
+        if(!(point instanceof Point)) throw new Error("You must set translation to be of type Point");
         this.set(2,0,point.x);
         this.set(2,1,point.y);
 
@@ -319,11 +319,11 @@ class Matrix3 {
         let scaleX = Math.sqrt(a*a+d*d);
         let scaleY = Math.sqrt(b*b+e*e);
 
-        return new Point$1(scaleX, scaleY);
+        return new Point(scaleX, scaleY);
 
     }
     set scale(point){
-        if(!(point instanceof Point$1)) throw new Error("You must set scale to be of type Point");
+        if(!(point instanceof Point)) throw new Error("You must set scale to be of type Point");
         //We first have to get the scale we currently have and reinsert the new one
         let t = this.translation;
         let r = this.rotation;
@@ -394,7 +394,7 @@ class Matrix3 {
 
     }
     mult(value) {
-        if (value instanceof Point$1 && arguments.length == 1) {
+        if (value instanceof Point && arguments.length == 1) {
             return this.multPoint(value);
         }
         else if (value instanceof Matrix3 && arguments.length == 1) {
@@ -403,7 +403,7 @@ class Matrix3 {
         throw new Error("mult requires 1 argument that is either a Point or a Matrix3.")
     }
     multPoint(point) {
-        if (!(point instanceof Point$1) || arguments.length != 1) {
+        if (!(point instanceof Point) || arguments.length != 1) {
             throw new Error("multPoint takes exactly one argument of type Point.")
         }
 
@@ -425,7 +425,7 @@ class Matrix3 {
         done[0]/=done[2];
         done[1]/=done[2];
 
-        let toReturn = new Point$1(done[0], done[1]);
+        let toReturn = new Point(done[0], done[1]);
         return toReturn;
 
     }
@@ -512,11 +512,11 @@ class GameObject extends NameableParent {
    * 
    */
   get location() {
-    return new Point$1(this.x, this.y);
+    return new Point(this.x, this.y);
   }
 
   get scale() {
-    return new Point$1(this.scaleX, this.scaleY);
+    return new Point(this.scaleX, this.scaleY);
   }
 
   get localTransform() {
@@ -527,7 +527,7 @@ class GameObject extends NameableParent {
   }
 
   get worldTransform() {
-    if (!this.parent)
+    if (!this.parent || this.parent instanceof Base.Scene)
       return this.localTransform;
     let parentTransform = this.parent.worldTransform;
     let toReturn = parentTransform.mult(this.localTransform);
@@ -585,7 +585,7 @@ class GameObject extends NameableParent {
    */
   addComponent(component) {
     if(arguments.length != 1) throw new Error("addComponent takes exactly one argument.")
-    if(!(component instanceof Component$1)) throw new Error("addComponent takes exactly one argument of type Component.")
+    if(!(component instanceof Component)) throw new Error("addComponent takes exactly one argument of type Component.")
     this.components.push(component);
     component.gameObject = this;
   }
@@ -759,9 +759,9 @@ const Input = {
   frameMouseButtonsUp: [],
 
   //The location of the mouse in screen coordinates
-  mousePosition: new Point$1(),
-  frameMousePosition: new Point$1(),
-  lastFrameMousePosition: new Point$1(),
+  mousePosition: new Point(),
+  frameMousePosition: new Point(),
+  lastFrameMousePosition: new Point(),
 
   //Handle the wheel state
   mouseScrollDelta: 0,
@@ -879,7 +879,7 @@ const Input = {
   },
   getMousePositionDelta() {
     if(arguments.length != 0) throw new Error("Function does not accept arguments.")
-    return new Point$1(this.frameMousePosition.x - this.lastFrameMousePosition.x, this.frameMousePosition.y - this.lastFrameMousePosition.y);
+    return new Point(this.frameMousePosition.x - this.lastFrameMousePosition.x, this.frameMousePosition.y - this.lastFrameMousePosition.y);
   },
 
   //Touch API----------------------------------
@@ -924,7 +924,7 @@ const Input = {
     for(let i=0; i < Math.min(frames.length, currents.length); i++){
       let frame = frames[i];
       let current = currents[i];
-      toReturn.push(new Point$1(frame.x - current.x, frame.y - current.y));
+      toReturn.push(new Point(frame.x - current.x, frame.y - current.y));
     }
     return toReturn;
   }
@@ -950,7 +950,7 @@ class Line {
         this.a = two.y - one.y;
         this.b = one.x - two.x;
         //Now normalize the values
-        let tempPoint = new Point$1(this.a,this.b);
+        let tempPoint = new Point(this.a,this.b);
         tempPoint = tempPoint.toNormalized();
         this.a = tempPoint.x;
         this.b = tempPoint.y;
@@ -973,7 +973,7 @@ class Line {
     }
 }
 
-class Collider extends Component$1 {
+class Collider extends Component {
     constructor() {
         super();
     }
@@ -2330,9 +2330,9 @@ const CollisionHelper = {
         return false;
     },
     inCollisionTrianglePoint(triangle, point) {
-        let pointA = new Point$1(+triangle.collider.pointAX + triangle.gameObject.x, +triangle.collider.pointAY + triangle.gameObject.y);
-        let pointB = new Point$1(+triangle.collider.pointBX + triangle.gameObject.x, +triangle.collider.pointBY + triangle.gameObject.y);
-        let pointC = new Point$1(+triangle.collider.pointCX + triangle.gameObject.x, +triangle.collider.pointCY + triangle.gameObject.y);
+        let pointA = new Point(+triangle.collider.pointAX + triangle.gameObject.x, +triangle.collider.pointAY + triangle.gameObject.y);
+        let pointB = new Point(+triangle.collider.pointBX + triangle.gameObject.x, +triangle.collider.pointBY + triangle.gameObject.y);
+        let pointC = new Point(+triangle.collider.pointCX + triangle.gameObject.x, +triangle.collider.pointCY + triangle.gameObject.y);
 
         let lineOne = new Line(pointA, pointB);
         let lineTwo = new Line(pointB, pointC);
@@ -2526,6 +2526,13 @@ class Scene extends NameableParent {
 
 
   }
+
+  /**
+   * Update the scene
+   * @param {*} ctx 
+   * @param {*} collidableType 
+   * @param {*} collisionHelper 
+   */
   update(ctx, collidableType, collisionHelper) {
     if(arguments.length != 3 || 
       !(typeof ctx == 'object') ||
@@ -2678,7 +2685,7 @@ class Scene extends NameableParent {
           //Now loop over all the behaviors too see if any are listening for collision events
           for (let i = 0; i < gameObjectOne.components.length; i++) {
             let component = gameObjectOne.components[i];
-            if (component.onMouseOver)
+            if (component.onTouchOver)
               component.onTouchOver();
             if (component.onTouchStart) {
               if (Input.getTouchesStart() && Input.getTouchesStart().length > 0)
@@ -2714,6 +2721,13 @@ class Scene extends NameableParent {
       }
     }
   }
+
+  /**
+   * Get a flat list of all the collidable components in the scene
+   * @param {*} gameObject The root game object in the tree we are searching
+   * @param {*} collidableChildren The list we are modifying
+   * @param {*} type The type a game object needs in order to be considered collidable
+   */
   getCollidable(gameObject, collidableChildren, type) {
     if(arguments.length != 3 || 
       !(typeof gameObject == 'object') ||
@@ -2743,12 +2757,13 @@ class Scene extends NameableParent {
    * 
    * @param {*} location Proposed entry point for the game object
    * @param {*} collider Collider for the proposed game object
+   * @param {*} component The component the game object needs to be included in the search. Usually "RVOAgent"
    */
   canEnterSafely(location, collider, component) {
     if(arguments.length != 3 || 
-      !(location instanceof Point) ||
-      !(typeof width == 'object') ||
-      !(component instanceof Component)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and Component")
+      !(location instanceof Base.Point) ||
+      !(typeof collider == 'object') ||
+      !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
     
     let collidableChildren = [];
     this.getCollidable(this, collidableChildren, this.components.Collider);
@@ -2846,13 +2861,16 @@ const SceneManager = {
     this.currentScene.destroy(gameObject);
   },
   instantiate(gameObjectType, location, scale, rotation) {
-    if (arguments.length != 4 ||
+    if(!scale) scale = new Point(1,1);
+    if(!rotation) rotation = 0;
+    if (arguments.length < 2 ||
+      arguments.length > 4 ||
       !(typeof gameObjectType == "object") ||
-      !(location instanceof Point$1) ||
-      !(scale instanceof Point$1) ||
+      !(location instanceof Point) ||
+      !(scale instanceof Point) ||
       !(typeof rotation == "number")
 
-    ) throw new Error("SceneManager.instantiate expects four arguments of type object, Base.Point, Base.Point, and float")
+    ) throw new Error("SceneManager.instantiate expects two, three, or four arguments of type object, Base.Point, Base.Point, and float")
 
     return this.Base.Serializer.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
     // return this.currentScene.instantiate(gameObjectType, location, scale, rotation, this.currentScene);
@@ -2907,7 +2925,7 @@ class Serializer {
   }
   
 
-  instantiate(gameObjectType, location, scale = new Point$1(1, 1), rotation = 0, parent = this, obj = null) {
+  instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
     let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
     
 
@@ -3022,7 +3040,7 @@ class Serializer {
     obj.scale.y = +obj.scale.y;
     obj.rotation = +obj.rotation;
 
-    return this.instantiate(gameObjectType, new Point$1(obj.location.x, obj.location.y), new Point$1(obj.scale.x, obj.scale.y), obj.rotation, parent, obj);
+    return this.instantiate(gameObjectType, new Point(obj.location.x, obj.location.y), new Point(obj.scale.x, obj.scale.y), obj.rotation, parent, obj);
 
     //gameObject.name = obj.name;
     //this.buildIt(obj, gameObject);
@@ -3040,7 +3058,7 @@ class Time {
     }
 }
 
-class CircleComponent extends Component$1 {
+class CircleComponent extends Component {
     
     constructor() {
         super();
@@ -3064,7 +3082,7 @@ class CircleComponent extends Component$1 {
     }
 }
 
-class RectangleComponent extends Component$1 {
+class RectangleComponent extends Component {
     constructor() {
         super();
         this.width = 100;
@@ -3086,7 +3104,7 @@ class RectangleComponent extends Component$1 {
     }
 }
 
-class TextComponent extends Component$1 {
+class TextComponent extends Component {
     constructor() {
         super();
         this.text = "[Blank]";
@@ -3116,7 +3134,7 @@ class ConvexCollider extends Collider {
 
 }
 
-class TriangleComponent extends Component$1 {
+class TriangleComponent extends Component {
    
     constructor() {
         super();
@@ -3147,7 +3165,7 @@ class TriangleComponent extends Component$1 {
     }
     update() {
         if(this.points.length == 0){
-            this.points = [new Point$1(this.pointAX, this.pointAY), new Point$1(this.pointBX, this.pointBY), new Point$1(this.pointCX, this.pointCY)];
+            this.points = [new Point(this.pointAX, this.pointAY), new Point(this.pointBX, this.pointBY), new Point(this.pointCX, this.pointCY)];
         }
 
     }
@@ -3158,7 +3176,7 @@ class TriangleComponent extends Component$1 {
  * Currently, this game object needs to be in the root of the scene graph and there
  * should only be one.
  */
-class CameraComponent extends Component$1 {
+class CameraComponent extends Component {
     constructor() {
         super();
         this.backgroundColor="white";
@@ -3175,7 +3193,7 @@ class CameraComponent extends Component$1 {
  * Currently, there should be no more than one game object with a canvas component 
  * in the root of the scene graph.
  */
-class CanvasComponent extends Component$1 {
+class CanvasComponent extends Component {
 
     constructor() {
         super();
@@ -3187,11 +3205,11 @@ class CanvasComponent extends Component$1 {
     }
 }
 
-class RVOAgent extends Component$1 {
+class RVOAgent extends Component {
 
     constructor() {
         super();
-        this.destination = new Point$1(0,0);
+        this.destination = new Point(0,0);
         this._id;
 
     }
@@ -3202,7 +3220,7 @@ class RVOAgent extends Component$1 {
     
 }
 
-class RVOSimulator extends Component$1 {
+class RVOSimulator extends Component {
 
     constructor() {
         super();
@@ -3260,7 +3278,7 @@ class RVOSimulator extends Component$1 {
     }
 }
 
-class RVOObstacle extends Component$1 {
+class RVOObstacle extends Component {
 }
 
 var Empty = {
@@ -3570,7 +3588,7 @@ const Prefabs = {
 const Base = {
   Behavior,
   Behaviors: {},
-  Component: Component$1,
+  Component,
   Components,
   GameObject,
   Input,
@@ -3578,7 +3596,7 @@ const Base = {
   main,
   Matrix3,
   NameableParent,
-  Point: Point$1,
+  Point,
   Prefabs,
   Scene,
   SceneManager,

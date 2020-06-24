@@ -9,6 +9,7 @@ import CircleCollisionScene from "./scenes/CircleCollisionScene.js"
 import MouseScene from "./scenes/MouseScene.js"
 import RVOScene from "./scenes/RVOScene.js"
 import TouchScene from "./scenes/TouchScene.js"
+import EmptyScene from "./scenes/EmptyScene.js"
 
 export default {
   startScene: "StartScene",
@@ -24,5 +25,6 @@ export default {
     MouseScene,
     RVOScene,
     TouchScene,
+    EmptyScene,
   ]
 }
