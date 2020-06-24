@@ -186,6 +186,13 @@ class Scene extends NameableParent {
 
 
   }
+
+  /**
+   * Update the scene
+   * @param {*} ctx 
+   * @param {*} collidableType 
+   * @param {*} collisionHelper 
+   */
   update(ctx, collidableType, collisionHelper) {
     if(arguments.length != 3 || 
       !(typeof ctx == 'object') ||
@@ -340,7 +347,7 @@ class Scene extends NameableParent {
           //Now loop over all the behaviors too see if any are listening for collision events
           for (let i = 0; i < gameObjectOne.components.length; i++) {
             let component = gameObjectOne.components[i];
-            if (component.onMouseOver)
+            if (component.onTouchOver)
               component.onTouchOver();
             if (component.onTouchStart) {
               if (Input.getTouchesStart() && Input.getTouchesStart().length > 0)
@@ -376,6 +383,13 @@ class Scene extends NameableParent {
       }
     }
   }
+
+  /**
+   * Get a flat list of all the collidable components in the scene
+   * @param {*} gameObject The root game object in the tree we are searching
+   * @param {*} collidableChildren The list we are modifying
+   * @param {*} type The type a game object needs in order to be considered collidable
+   */
   getCollidable(gameObject, collidableChildren, type) {
     if(arguments.length != 3 || 
       !(typeof gameObject == 'object') ||
@@ -405,12 +419,13 @@ class Scene extends NameableParent {
    * 
    * @param {*} location Proposed entry point for the game object
    * @param {*} collider Collider for the proposed game object
+   * @param {*} component The component the game object needs to be included in the search. Usually "RVOAgent"
    */
   canEnterSafely(location, collider, component) {
     if(arguments.length != 3 || 
-      !(location instanceof Point) ||
-      !(typeof width == 'object') ||
-      !(component instanceof Component)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and Component")
+      !(location instanceof Base.Point) ||
+      !(typeof collider == 'object') ||
+      !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
     
     let collidableChildren = [];
     this.getCollidable(this, collidableChildren, this.components.Collider);
