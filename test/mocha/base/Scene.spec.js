@@ -9,6 +9,14 @@ import GameBehaviors from "../../game/GameBehaviors.js"
 import Scene from "../../../src/base/Scene.js";
 import GameObject from "../../../src/base/GameObject.js";
 
+
+
+beforeEach(function () {
+  Base.SceneManager.Base = Base;
+  Base.SceneManager.scenes = [];
+  Base.SceneManager._currentSceneIndex = -1;
+})
+
 describe("Base", function () {
   describe("Scene.js", function () {
     describe("constructor", function(){
@@ -51,6 +59,29 @@ describe("Base", function () {
     })
     describe("newChildEvent function", function(){
       it("Throws an error on mismatched arguments", function () {
+        expect(()=>new Base.Scene().newChildEvent).to.throw();
+      })
+      it("Updates the crowd simulator in the presence of an RVOAgent", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let scene = Base.SceneManager.currentScene;
+        //scene.boot();
+        let def = {new:"RVOAgent"};
+        let go = Base.Serializer.deserializeGameObject(def);
+        expect(scene.simulator.agents).to.be.an('array').that.is.empty
+        scene.newChildEvent(go);
+        expect(scene.simulator.agents).to.be.an('array').of.length(1)
+
+      })
+      it("Updates the crowd simulator in the presence of an RVOObstacle", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let scene = Base.SceneManager.currentScene;
+        //scene.boot();
+        let def = {new:"RVOObstacle"};
+        let go = Base.Serializer.deserializeGameObject(def);
+        expect(scene.simulator.obstacles).to.be.an('array').that.is.empty
+        scene.newChildEvent(go);
+        expect(scene.simulator.obstacles).to.be.an('array').of.length(8)
+
       })
     })
     describe("draw function", function(){
