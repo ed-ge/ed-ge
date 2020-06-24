@@ -8,6 +8,7 @@ import GameObjects from "../../game/GameObjects.js"
 import GameBehaviors from "../../game/GameBehaviors.js"
 import Scene from "../../../src/base/Scene.js";
 import GameObject from "../../../src/base/GameObject.js";
+import Point from "../../../src/base/Point.js";
 
 
 
@@ -102,10 +103,63 @@ describe("Base", function () {
     })
     describe("updateRVOAgent function", function(){
       it("Throws an error on mismatched arguments", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let scene = Base.SceneManager.currentScene;
+        let agent = Base.Serializer.deserializeGameObject(
+          {
+            new:"RVOAgent"
+          }
+        )
+        let go = new GameObject();
+        expect(()=>scene.updateRVOAgent()).to.throw();
+        expect(()=>scene.updateRVOAgent(go)).to.throw();
+        expect(()=>scene.updateRVOAgent(agent, 1)).to.throw();
+      })
+      it("Updates an RVOAgent", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let scene = Base.SceneManager.currentScene;
+        let agent0 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(0,0), new Base.Point(1,1), 0);
+        let agent1 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(0,0), new Base.Point(1,1), 0);
+        let agent0Component = agent0.getComponent("RVOAgent");
+        let agent1Component = agent1.getComponent("RVOAgent");
+        expect(scene.simulator.getNumAgents()).to.equal(2);
+        expect(agent0Component._id).to.equal(0);
+        expect(agent1Component._id).to.equal(1);        
+        
+
+        expect(scene.simulator.getGoal(0).x).to.equal(0);
+        agent0Component.destination = new Point(3,4);
+        scene.updateRVOAgent(agent0);
+        expect(scene.simulator.getGoal(0).x).to.equal(3);
       })
     })
     describe("removeRVOAgent function", function(){
       it("Throws an error on mismatched arguments", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let scene = Base.SceneManager.currentScene;
+        let agent = Base.Serializer.deserializeGameObject(
+          {
+            new:"RVOAgent"
+          }
+        )
+        let go = new GameObject();
+        expect(()=>scene.removeRVOAgent()).to.throw();
+        expect(()=>scene.removeRVOAgent(go)).to.throw();
+        expect(()=>scene.removeRVOAgent(agent, 1)).to.throw();
+      })
+      it("Removes an agent from the simulation", function(){
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
+        let scene = Base.SceneManager.currentScene;
+        let agent0 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(0,0), new Base.Point(1,1), 0);
+        let agent1 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(0,0), new Base.Point(1,1), 0);
+        let agent0Component = agent0.getComponent("RVOAgent");
+        let agent1Component = agent1.getComponent("RVOAgent");
+        expect(scene.simulator.getNumAgents()).to.equal(2);
+        expect(agent0Component._id).to.equal(0);
+        expect(agent1Component._id).to.equal(1);        
+        scene.removeRVOAgent(agent0);
+        expect(scene.simulator.getNumAgents()).to.equal(1);
+        expect(agent1Component._id).to.equal(0);        
       })
     })
   });
