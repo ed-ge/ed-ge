@@ -75,6 +75,16 @@ class NameableParent {
         child.parent = this;
     }
 
+    isADescendant(descendant){
+        if(arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isADescendant expects exactly one argument of type NameableParent")
+        if(this == descendant) return true;
+        for(let child of this.children){
+            let result = child.isADescendant(descendant);
+            if(result) return true;
+        }
+        return false;
+    }
+
     findByName(name){
         if(arguments.length != 1 || !(typeof name == 'string' || name instanceof String)) throw new Error("findByName expects exactly one string argument.")
         if(this.name == name)
