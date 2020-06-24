@@ -117,6 +117,33 @@ describe("Base", function () {
         expect(go.children).to.be.of.length(1).and.include(go2);
       })
     })
+    describe("isADescendant function", function(){
+      it("Throws an error on mismatched arguments", function(){
+        let np = new NameableParent();
+        expect(()=>np.isADescendant()).to.throw();
+        expect(()=>np.isADescendant(np,1)).to.throw();
+      })
+      it("Returns true for descendants", function(){
+        let np = new NameableParent();
+        let child = new NameableParent();
+        let grandchild = new NameableParent();
+        np.addChild(child);
+        child.addChild(grandchild);
+        expect(np.isADescendant(child)).to.be.true;
+        expect(np.isADescendant(grandchild)).to.be.true;
+        expect(child.isADescendant(grandchild)).to.be.true;
+      })
+      it("Returns false for non-descendants", function(){
+        let np = new NameableParent();
+        let child = new NameableParent();
+        let grandchild = new NameableParent();
+        np.addChild(child);
+        child.addChild(grandchild);
+        expect(grandchild.isADescendant(child)).to.be.false;
+        expect(grandchild.isADescendant(np)).to.be.false;
+        expect(child.isADescendant(np)).to.be.false;
+      })
+    })
     describe("findByName method", function(){
       it("Throws an error on mismatched arguments", function () {
         let np = new NameableParent();

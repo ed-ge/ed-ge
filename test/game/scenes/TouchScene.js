@@ -15,8 +15,13 @@ export default {
           def: "Text, 150, 150, Text",
           components: ["TouchText"]
         },
+        {
+          new:"Text, 0, 0, ScreenText",
+          edit:["RectTransform|anchorHorizontal|center", "RectTransform|anchorVertical|middle"]
+        }
       ]
     },
+    
     {
       def:"Rectangle, 300, 300, Rectangle",
       components: ["TouchDelta"]

@@ -164,6 +164,16 @@ class NameableParent {
         child.parent = this;
     }
 
+    isADescendant(descendant){
+        if(arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isADescendant expects exactly one argument of type NameableParent")
+        if(this == descendant) return true;
+        for(let child of this.children){
+            let result = child.isADescendant(descendant);
+            if(result) return true;
+        }
+        return false;
+    }
+
     findByName(name){
         if(arguments.length != 1 || !(typeof name == 'string' || name instanceof String)) throw new Error("findByName expects exactly one string argument.")
         if(this.name == name)
@@ -2527,6 +2537,19 @@ class Scene extends NameableParent {
 
   }
 
+  isInScreenSpace(gameObject){
+    if(arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
+
+    let canvases = this.children.filter(i=>i.anyComponent("CanvasComponent"));
+    if(canvases.length == 0) return false; // We don't have screen space
+    for(let canvas of canvases){
+      if(canvas.isADescendant(gameObject)){
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * Update the scene
    * @param {*} ctx 
@@ -2556,9 +2579,12 @@ class Scene extends NameableParent {
 
     for (let i = 0; i < collidableChildren.length; i++) {
       for (let j = i + 1; j < collidableChildren.length; j++) {
+        let gameObjectOne = collidableChildren[i].gameObject;
+        let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
         if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
-          let gameObjectOne = collidableChildren[i].gameObject;
           let gameObjectTwo = collidableChildren[j].gameObject;
+          let isInScreenSpaceTwo = this.isInScreenSpace(gameObjectTwo);
+          if(isInScreenSpaceOne != isInScreenSpaceTwo) break;
 
           //Now loop over all the behaviors too see if any are listening for collision events
           for (let i = 0; i < gameObjectOne.components.length; i++) {
@@ -2584,6 +2610,7 @@ class Scene extends NameableParent {
     let point = { x: 0, y: 0 };
     point.x = parseInt(Input.mousePosition.x);
     point.y = parseInt(Input.mousePosition.y);
+    let screenPoint = {x:point.x, y:point.y};
     if (cameras.length == 0) ;
     else {
       /* point = Input.mousePosition;*/
@@ -2612,15 +2639,30 @@ class Scene extends NameableParent {
       point.y = y;
     }
 
-    let colliderObject = {};
-    colliderObject.gameObject = new GameObject();
-    colliderObject.gameObject.x = point.x;
-    colliderObject.gameObject.y = point.y;
-    colliderObject.collider = new PointCollider();
+    //Put the mouse in world space
+    let colliderObjectWorld = {};
+    colliderObjectWorld.gameObject = new GameObject();
+    colliderObjectWorld.gameObject.x = point.x;
+    colliderObjectWorld.gameObject.y = point.y;
+    colliderObjectWorld.collider = new PointCollider();
+
+    let colliderObjectScreen = {};
+    colliderObjectScreen.gameObject = new GameObject();
+    colliderObjectScreen.gameObject.x = screenPoint.x;
+    colliderObjectScreen.gameObject.y = screenPoint.y;
+    colliderObjectScreen.collider = new PointCollider();
+
+    let colliderObject;
 
     for (let i = 0; i < collidableChildren.length; i++) {
-      if (collisionHelper.inCollision(collidableChildren[i], colliderObject)) {
-        let gameObjectOne = collidableChildren[i].gameObject;
+      let collidableChild = collidableChildren[i];
+      if(!this.isInScreenSpace(collidableChild.gameObject))
+        colliderObject = colliderObjectWorld;
+      else
+        colliderObject = colliderObjectScreen;
+
+      if (collisionHelper.inCollision(collidableChild, colliderObject)) {
+        let gameObjectOne = collidableChild.gameObject;
 
         //Now loop over all the behaviors too see if any are listening for collision events
         for (let i = 0; i < gameObjectOne.components.length; i++) {
@@ -2645,6 +2687,7 @@ class Scene extends NameableParent {
       let point = { x: 0, y: 0 };
       point.x = parseInt(touches[0].x);
       point.y = parseInt(touches[0].y);
+      let screenPoint = {x:point.x, y:point.y};
       if (cameras.length == 0) ;
       else {
         /* point = Input.mousePosition;*/
@@ -2672,15 +2715,28 @@ class Scene extends NameableParent {
         point.y = y;
       }
 
-      let colliderObject = {};
-      colliderObject.gameObject = new GameObject();
-      colliderObject.gameObject.x = point.x;
-      colliderObject.gameObject.y = point.y;
-      colliderObject.collider = new PointCollider();
-
+      let colliderObjectWorld = {};
+      colliderObjectWorld.gameObject = new GameObject();
+      colliderObjectWorld.gameObject.x = point.x;
+      colliderObjectWorld.gameObject.y = point.y;
+      colliderObjectWorld.collider = new PointCollider();
+  
+      let colliderObjectScreen = {};
+      colliderObjectScreen.gameObject = new GameObject();
+      colliderObjectScreen.gameObject.x = screenPoint.x;
+      colliderObjectScreen.gameObject.y = screenPoint.y;
+      colliderObjectScreen.collider = new PointCollider();
+  
+      let colliderObject;
       for (let i = 0; i < collidableChildren.length; i++) {
-        if (collisionHelper.inCollision(collidableChildren[i], colliderObject)) {
-          let gameObjectOne = collidableChildren[i].gameObject;
+        let collidableChild = collidableChildren[i];
+        if(!this.isInScreenSpace(collidableChild.gameObject))
+          colliderObject = colliderObjectWorld;
+        else
+          colliderObject = colliderObjectScreen;
+
+        if (collisionHelper.inCollision(collidableChild, colliderObject)) {
+          let gameObjectOne = collidableChild.gameObject;
 
           //Now loop over all the behaviors too see if any are listening for collision events
           for (let i = 0; i < gameObjectOne.components.length; i++) {

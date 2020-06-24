@@ -104,6 +104,8 @@ describe("Base", function () {
       let go;
       let go2;
       let go3;
+      let screen;
+      let canvas;
 
       beforeEach(function(){
         go = Base.Serializer.deserializeGameObject(
@@ -138,6 +140,19 @@ describe("Base", function () {
         go3.getComponent("CircleCollider").onTouchOver = new Sinon.fake();
         go3.getComponent("CircleCollider").onTouchStart = new Sinon.fake();
         go3.getComponent("CircleCollider").onTouchEnd = new Sinon.fake();
+
+        canvas = Base.Serializer.deserializeGameObject({
+          new:"Canvas",
+          children:[
+            {
+              new:"Rectangle",
+              components:["RectTransform"]
+            }
+          ]
+        })
+        screen = Base.Serializer.deserializeGameObject({
+          new:"Text, 0, 0, ScreenText"
+        })
 
         Base.Input.frameMouseButtonsDown[0] = true;
         Base.Input.frameTouchesStart = [{x:0,y:0}]

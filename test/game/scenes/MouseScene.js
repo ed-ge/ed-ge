@@ -15,6 +15,10 @@ export default {
           def: "Text, 150, 150, Text",
           components: ["MouseText"]
         },
+        {
+          new:"Rectangle, 0, 0, Rectangle",
+          add: ["ClickBehavior"]
+        },
       ]
     },
     {
