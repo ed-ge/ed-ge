@@ -13,6 +13,7 @@ import Scene from "../../../src/base/Scene.js";
 import GameObject from "../../../src/base/GameObject.js";
 import Point from "../../../src/base/Point.js";
 import Sinon from "sinon";
+import Input from "../../../src/base/Input.js";
 
 
 
@@ -104,8 +105,11 @@ describe("Base", function () {
       let go;
       let go2;
       let go3;
-      let screen;
+      let screen1;
+      let screen2;
+      let screen3;
       let canvas;
+      let camera;
 
       beforeEach(function(){
         go = Base.Serializer.deserializeGameObject(
@@ -141,6 +145,39 @@ describe("Base", function () {
         go3.getComponent("CircleCollider").onTouchStart = new Sinon.fake();
         go3.getComponent("CircleCollider").onTouchEnd = new Sinon.fake();
 
+        screen1 = Base.Serializer.deserializeGameObject(
+          {
+            new:"Circle"
+          }
+        )
+        
+        screen1.update = new Sinon.fake();
+        screen1.getComponent("CircleCollider").onCollisionStay = new Sinon.fake();
+        screen1.getComponent("CircleCollider").onMouseOver = new Sinon.fake();
+        screen1.getComponent("CircleCollider").onMouseDown = new Sinon.fake();
+        screen1.getComponent("CircleCollider").onTouchOver = new Sinon.fake();
+        screen1.getComponent("CircleCollider").onTouchStart = new Sinon.fake();
+        screen1.getComponent("CircleCollider").onTouchEnd = new Sinon.fake();
+
+        screen2 = Base.Serializer.deserializeGameObject(
+          {
+            new:"Circle"
+          }
+        )
+        screen2.getComponent("CircleCollider").onCollisionStay = new Sinon.fake();
+
+        screen3 = Base.Serializer.deserializeGameObject(
+          {
+            new:"Circle, 100, 100, Circle"
+          }
+        )
+        screen3.getComponent("CircleCollider").onCollisionStay = new Sinon.fake();
+        screen3.getComponent("CircleCollider").onMouseOver = new Sinon.fake();
+        screen3.getComponent("CircleCollider").onMouseDown = new Sinon.fake();
+        screen3.getComponent("CircleCollider").onTouchOver = new Sinon.fake();
+        screen3.getComponent("CircleCollider").onTouchStart = new Sinon.fake();
+        screen3.getComponent("CircleCollider").onTouchEnd = new Sinon.fake();
+
         canvas = Base.Serializer.deserializeGameObject({
           new:"Canvas",
           children:[
@@ -150,9 +187,14 @@ describe("Base", function () {
             }
           ]
         })
-        screen = Base.Serializer.deserializeGameObject({
-          new:"Text, 0, 0, ScreenText"
+        canvas.addChild(screen1);
+        canvas.addChild(screen2);
+        canvas.addChild(screen3);
+
+        camera = Base.Serializer.deserializeGameObject({
+          new:"Camera"
         })
+        
 
         Base.Input.frameMouseButtonsDown[0] = true;
         Base.Input.frameTouchesStart = [{x:0,y:0}]
@@ -181,7 +223,7 @@ describe("Base", function () {
         scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
         expect(go.update).to.have.been.calledOnce;
       })
-      it("Handles collisions", function () {
+      it("Handles collisions without a camera", function () {
         Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
         let scene = Base.SceneManager.currentScene;
         scene.addChild(go);
@@ -191,7 +233,7 @@ describe("Base", function () {
         expect(go2.getComponent("CircleCollider").onCollisionStay).to.have.been.calledOnce;
         
       })
-      it("Misses missing collisions", function () {
+      it("Misses missing collisions without a camera", function () {
         Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
         let scene = Base.SceneManager.currentScene;
         scene.addChild(go);
@@ -201,7 +243,7 @@ describe("Base", function () {
         expect(go3.getComponent("CircleCollider").onCollisionStay).to.not.have.been.calledOnce;
         
       })
-      it("Handles mouse collisions", function () {
+      it("Handles mouse collisions without a camera", function () {
         Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
         let scene = Base.SceneManager.currentScene;
         scene.addChild(go);
@@ -211,7 +253,7 @@ describe("Base", function () {
         expect(go.getComponent("CircleCollider").onMouseDown).to.have.been.calledOnce;
         
       })
-      it("Misses missing mouse collisions", function () {
+      it("Misses missing mouse collisions without a camera", function () {
         Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
         let scene = Base.SceneManager.currentScene;
         scene.addChild(go3);
@@ -220,7 +262,7 @@ describe("Base", function () {
         expect(go.getComponent("CircleCollider").onMouseDown).to.not.have.been.calledOnce;
         
       })
-      it("Handles touch collisions", function () {
+      it("Handles touch collisions without a camera", function () {
         Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
         let scene = Base.SceneManager.currentScene;
         scene.addChild(go);
@@ -230,10 +272,82 @@ describe("Base", function () {
         expect(go.getComponent("CircleCollider").onTouchEnd).to.have.been.calledOnce;
         
       })
-      it("Misses missing touch collisions", function () {
+      it("Misses missing touch collisions without a camera", function () {
         Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
         let scene = Base.SceneManager.currentScene;
         scene.addChild(go3);
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go3.getComponent("CircleCollider").onTouchOver).to.not.have.been.calledOnce;
+        expect(go3.getComponent("CircleCollider").onTouchStart).to.not.have.been.calledOnce;
+        expect(go3.getComponent("CircleCollider").onTouchEnd).to.not.have.been.calledOnce;
+        
+      })
+      it("Handles collisions with a camera", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go);
+        scene.addChild(go2)
+        scene.addChild(camera);
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go.getComponent("CircleCollider").onCollisionStay).to.have.been.calledOnce;
+        expect(go2.getComponent("CircleCollider").onCollisionStay).to.have.been.calledOnce;
+        
+      })
+      it("Misses missing collisions with a camera", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go);
+        scene.addChild(go3)
+        scene.addChild(camera);
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go.getComponent("CircleCollider").onCollisionStay).to.not.have.been.calledOnce;
+        expect(go3.getComponent("CircleCollider").onCollisionStay).to.not.have.been.calledOnce;
+        
+      })
+      it("Handles mouse collisions with a camera", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go);
+        scene.addChild(camera);
+        Input.mousePosition.x = ctx.canvas.width/2;
+        Input.mousePosition.y = ctx.canvas.height/2;
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go.getComponent("CircleCollider").onMouseOver).to.have.been.calledOnce;
+        expect(go.getComponent("CircleCollider").onMouseDown).to.have.been.calledOnce;
+        
+      })
+      it("Misses missing mouse collisions with a camera", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go3);
+        scene.addChild(camera);
+        Input.mousePosition.x = ctx.canvas.width/2;
+        Input.mousePosition.y = ctx.canvas.height/2;
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go3.getComponent("CircleCollider").onMouseOver).to.not.have.been.calledOnce;
+        expect(go.getComponent("CircleCollider").onMouseDown).to.not.have.been.calledOnce;
+        
+      })
+      it("Handles touch collisions with a camera", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go);
+        scene.addChild(camera);
+        Input.touches[0].clientX = ctx.canvas.width/2;
+        Input.touches[0].clientY = ctx.canvas.height/2;
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go.getComponent("CircleCollider").onTouchOver).to.have.been.calledOnce;
+        expect(go.getComponent("CircleCollider").onTouchStart).to.have.been.calledOnce;
+        expect(go.getComponent("CircleCollider").onTouchEnd).to.have.been.calledOnce;
+        
+      })
+      it("Misses missing touch collisions with a camera", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go3);
+        scene.addChild(camera);
+        Input.touches[0].clientX = ctx.canvas.width/2;
+        Input.touches[0].clientY = ctx.canvas.height/2;
         scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
         expect(go3.getComponent("CircleCollider").onTouchOver).to.not.have.been.calledOnce;
         expect(go3.getComponent("CircleCollider").onTouchStart).to.not.have.been.calledOnce;
