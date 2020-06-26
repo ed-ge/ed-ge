@@ -354,6 +354,87 @@ describe("Base", function () {
         expect(go3.getComponent("CircleCollider").onTouchEnd).to.not.have.been.calledOnce;
         
       })
+      it("Handles collisions in screen space with a camera", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(canvas);
+        scene.addChild(camera);
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(screen1.getComponent("CircleCollider").onCollisionStay).to.have.been.calledOnce;
+        expect(screen2.getComponent("CircleCollider").onCollisionStay).to.have.been.calledOnce;
+        
+      })
+      it("Handles collisions in screen space without a camera", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(screen1);
+        scene.addChild(screen2)
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(screen1.getComponent("CircleCollider").onCollisionStay).to.have.been.calledOnce;
+        expect(screen2.getComponent("CircleCollider").onCollisionStay).to.have.been.calledOnce;
+        
+      })
+      it("Misses missing collisions  in screen space", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go);
+        scene.addChild(go3)
+        scene.addChild(camera);
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go.getComponent("CircleCollider").onCollisionStay).to.not.have.been.calledOnce;
+        expect(go3.getComponent("CircleCollider").onCollisionStay).to.not.have.been.calledOnce;
+        
+      })
+      it("Handles mouse collisions in screen space", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go);
+        scene.addChild(camera);
+        Input.mousePosition.x = ctx.canvas.width/2;
+        Input.mousePosition.y = ctx.canvas.height/2;
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go.getComponent("CircleCollider").onMouseOver).to.have.been.calledOnce;
+        expect(go.getComponent("CircleCollider").onMouseDown).to.have.been.calledOnce;
+        
+      })
+      it("Misses missing mouse collisions in screen space", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go3);
+        scene.addChild(camera);
+        Input.mousePosition.x = ctx.canvas.width/2;
+        Input.mousePosition.y = ctx.canvas.height/2;
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go3.getComponent("CircleCollider").onMouseOver).to.not.have.been.calledOnce;
+        expect(go.getComponent("CircleCollider").onMouseDown).to.not.have.been.calledOnce;
+        
+      })
+      it("Handles touch collisions in screen space", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go);
+        scene.addChild(camera);
+        Input.touches[0].clientX = ctx.canvas.width/2;
+        Input.touches[0].clientY = ctx.canvas.height/2;
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go.getComponent("CircleCollider").onTouchOver).to.have.been.calledOnce;
+        expect(go.getComponent("CircleCollider").onTouchStart).to.have.been.calledOnce;
+        expect(go.getComponent("CircleCollider").onTouchEnd).to.have.been.calledOnce;
+        
+      })
+      it("Misses missing touch collisions in screen space", function () {
+        Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
+        let scene = Base.SceneManager.currentScene;
+        scene.addChild(go3);
+        scene.addChild(camera);
+        Input.touches[0].clientX = ctx.canvas.width/2;
+        Input.touches[0].clientY = ctx.canvas.height/2;
+        scene.update(ctx, Base.Components.Collider, Base.Components.CollisionHelper);
+        expect(go3.getComponent("CircleCollider").onTouchOver).to.not.have.been.calledOnce;
+        expect(go3.getComponent("CircleCollider").onTouchStart).to.not.have.been.calledOnce;
+        expect(go3.getComponent("CircleCollider").onTouchEnd).to.not.have.been.calledOnce;
+        
+      })
       it("Handles crowd simulation", function () {
         Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'EmptyScene' });
         let scene = Base.SceneManager.currentScene;
