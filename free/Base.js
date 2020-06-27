@@ -2376,14 +2376,14 @@ var Base = (function () {
        * @param {String} name Name of this scene
        */
       constructor(definition, prefabs, behaviors, components) {
-        if( !(arguments.length == 4)||
-            !(typeof definition == 'object') ||
-            !(typeof prefabs == 'object') ||
-            !(typeof behaviors == 'object')||
-            !(typeof components == 'object')
-          ) 
+        if (!(arguments.length == 4) ||
+          !(typeof definition == 'object') ||
+          !(typeof prefabs == 'object') ||
+          !(typeof behaviors == 'object') ||
+          !(typeof components == 'object')
+        )
           throw new Error("Scene constructor expects 4 argumens.")
-          // console.error("Scene constructor expects exactly four argumens of type object")
+        // console.error("Scene constructor expects exactly four argumens of type object")
         super(definition.name);
         this.children = [];
         this.objects = definition.objects;
@@ -2401,7 +2401,7 @@ var Base = (function () {
        * 
        */
       boot() {
-        if(arguments.length != 0) throw new Error("boot expects no arguments");
+        if (arguments.length != 0) throw new Error("boot expects no arguments");
         // Setup up the simulations within the scene
         this.simulator = new Simulator();
 
@@ -2438,7 +2438,7 @@ var Base = (function () {
       }
 
       newChildEvent(gameObject) {
-        if(arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("newChildEvent expects exactly one argument of type GameObject")
+        if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("newChildEvent expects exactly one argument of type GameObject")
         if (gameObject.anyComponent("RVOAgent")) {
           this.simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
           let RVOAgent = gameObject.getComponent("RVOAgent");
@@ -2472,11 +2472,11 @@ var Base = (function () {
       }
 
       draw(ctx, width, height) {
-        if(arguments.length != 3 || 
+        if (arguments.length != 3 ||
           !(typeof ctx == 'object') ||
           !(typeof width == 'number') ||
           !(typeof height == 'number')) throw new Error("draw expects exactly three arguments of type object, number, and number")
-        
+
         //Before we draw, see if we have a camera game object and use that
         ctx.save();
         let tx, ty, sx, sy, r, hx, hy;
@@ -2540,13 +2540,13 @@ var Base = (function () {
 
       }
 
-      isInScreenSpace(gameObject){
-        if(arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
+      isInScreenSpace(gameObject) {
+        if (arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
 
-        let canvases = this.children.filter(i=>i.anyComponent("CanvasComponent"));
-        if(canvases.length == 0) return false; // We don't have screen space
-        for(let canvas of canvases){
-          if(canvas.isADescendant(gameObject)){
+        let canvases = this.children.filter(i => i.anyComponent("CanvasComponent"));
+        if (canvases.length == 0) return false; // We don't have screen space
+        for (let canvas of canvases) {
+          if (canvas.isADescendant(gameObject)) {
             return true;
           }
         }
@@ -2560,11 +2560,11 @@ var Base = (function () {
        * @param {*} collisionHelper 
        */
       update(ctx, collidableType, collisionHelper) {
-        if(arguments.length != 3 || 
+        if (arguments.length != 3 ||
           !(typeof ctx == 'object') ||
           !(typeof collidableType == 'function') ||
           !(typeof collisionHelper == 'object')) throw new Error("update expects exactly three arguments of type object, object, and CollisionHelper")
-        
+
         //Update all the objects
         this.children.filter(i => i.update).forEach(i => i.update());
 
@@ -2581,13 +2581,13 @@ var Base = (function () {
         this.getCollidable(this, collidableChildren, collidableType);
 
         for (let i = 0; i < collidableChildren.length; i++) {
+          let gameObjectOne = collidableChildren[i].gameObject;
+          let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
           for (let j = i + 1; j < collidableChildren.length; j++) {
-            let gameObjectOne = collidableChildren[i].gameObject;
-            let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
+            let gameObjectTwo = collidableChildren[j].gameObject;
+            let isInScreenSpaceTwo = this.isInScreenSpace(gameObjectTwo);
+            if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
             if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
-              let gameObjectTwo = collidableChildren[j].gameObject;
-              let isInScreenSpaceTwo = this.isInScreenSpace(gameObjectTwo);
-              if(isInScreenSpaceOne != isInScreenSpaceTwo) break;
 
               //Now loop over all the behaviors too see if any are listening for collision events
               for (let i = 0; i < gameObjectOne.components.length; i++) {
@@ -2613,7 +2613,7 @@ var Base = (function () {
         let point = { x: 0, y: 0 };
         point.x = parseInt(Input.mousePosition.x);
         point.y = parseInt(Input.mousePosition.y);
-        let screenPoint = {x:point.x, y:point.y};
+        let screenPoint = { x: point.x, y: point.y };
         if (cameras.length == 0) ;
         else {
           /* point = Input.mousePosition;*/
@@ -2659,7 +2659,7 @@ var Base = (function () {
 
         for (let i = 0; i < collidableChildren.length; i++) {
           let collidableChild = collidableChildren[i];
-          if(!this.isInScreenSpace(collidableChild.gameObject))
+          if (!this.isInScreenSpace(collidableChild.gameObject))
             colliderObject = colliderObjectWorld;
           else
             colliderObject = colliderObjectScreen;
@@ -2690,7 +2690,7 @@ var Base = (function () {
           let point = { x: 0, y: 0 };
           point.x = parseInt(touches[0].x);
           point.y = parseInt(touches[0].y);
-          let screenPoint = {x:point.x, y:point.y};
+          let screenPoint = { x: point.x, y: point.y };
           if (cameras.length == 0) ;
           else {
             /* point = Input.mousePosition;*/
@@ -2723,17 +2723,17 @@ var Base = (function () {
           colliderObjectWorld.gameObject.x = point.x;
           colliderObjectWorld.gameObject.y = point.y;
           colliderObjectWorld.collider = new PointCollider();
-      
+
           let colliderObjectScreen = {};
           colliderObjectScreen.gameObject = new GameObject();
           colliderObjectScreen.gameObject.x = screenPoint.x;
           colliderObjectScreen.gameObject.y = screenPoint.y;
           colliderObjectScreen.collider = new PointCollider();
-      
+
           let colliderObject;
           for (let i = 0; i < collidableChildren.length; i++) {
             let collidableChild = collidableChildren[i];
-            if(!this.isInScreenSpace(collidableChild.gameObject))
+            if (!this.isInScreenSpace(collidableChild.gameObject))
               colliderObject = colliderObjectWorld;
             else
               colliderObject = colliderObjectScreen;
@@ -2788,11 +2788,11 @@ var Base = (function () {
        * @param {*} type The type a game object needs in order to be considered collidable
        */
       getCollidable(gameObject, collidableChildren, type) {
-        if(arguments.length != 3 || 
+        if (arguments.length != 3 ||
           !(typeof gameObject == 'object') ||
           !(Array.isArray(collidableChildren)) ||
           !(typeof type == 'function')) throw new Error("getCollidable expects exactly three arguments of type GameObject, array, and type")
-        
+
 
         if (gameObject.getComponent) {
           try {
@@ -2819,11 +2819,11 @@ var Base = (function () {
        * @param {*} component The component the game object needs to be included in the search. Usually "RVOAgent"
        */
       canEnterSafely(location, collider, component) {
-        if(arguments.length != 3 || 
+        if (arguments.length != 3 ||
           !(location instanceof Base.Point) ||
           !(typeof collider == 'object') ||
           !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
-        
+
         let collidableChildren = [];
         this.getCollidable(this, collidableChildren, this.components.Collider);
         let proposed = new GameObject();
@@ -2841,10 +2841,10 @@ var Base = (function () {
 
 
 
-      
+
       updateRVOAgent(gameObject) {
-        if(arguments.length != 1 || !(gameObject instanceof GameObject) ) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
-        
+        if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
+
         let RVOAgent = gameObject.getComponent("RVOAgent");
         let i = RVOAgent._id;
         let destination = RVOAgent.destination;
@@ -2853,8 +2853,8 @@ var Base = (function () {
         this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(this.simulator.getAgentPosition(i))));
       }
       removeRVOAgent(gameObject) {
-        if(arguments.length != 1 || !(gameObject instanceof GameObject) ) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
-        
+        if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
+
         let RVOAgent = gameObject.getComponent("RVOAgent");
         let i = RVOAgent._id;
         this.simulator.removeRVOAgent(i);
