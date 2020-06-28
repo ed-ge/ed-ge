@@ -26,7 +26,7 @@ let Scenes = {
           new: "StatusText, -100, -100, 1, 1, StatusText"
         },
         {
-          new: "RollButton, 0, 100, Button",
+          new: "RollButton, -100, 100, 0, Button",
           add: ["RollButtonBehavior"]
         },
         {
@@ -34,12 +34,16 @@ let Scenes = {
           add: ["DiceBehavior"],
         },
         {
-          new: "EndTurnButton, 0, 200, Button",
+          new: "EndTurnButton, 0, 100, Button",
           add: ["EndTurnButtonBehavior"],
         },
         {
-          new: "BuyPropertyButton, 0, 225, Button",
+          new: "BuyPropertyButton, 125, 100, Button",
           add: ["BuyPropertyButtonBehavior"],
+        },
+        {
+          new: "PayRentButton, 100, 225, Button",
+          add: ["PayRentButtonBehavior"],
         },
         {
           new: "PropertyBuilderGameObject, Empty",
@@ -112,7 +116,10 @@ let GameBehaviors = {
 
     }
     getCurrentPlayerBehavior() {
-      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
+      return this.getAPlayerBehavior(this.currentPlayer);
+    }
+    getAPlayerBehavior(player){
+      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + player);
       let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
       return currentPlayerBehavior;
     }
@@ -126,7 +133,11 @@ let GameBehaviors = {
       let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
       let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
       currentPlayerBehavior.position += this.roll;
+      let oldPosition = currentPlayerBehavior.position;
       currentPlayerBehavior.position %= 40;
+      let newPosition = currentPlayerBehavior.position;
+      if (oldPosition > newPosition) //Player Passed Go
+        currentPlayerBehavior.cash += 200;
       currentPlayerBehavior.rolledTimes++;
 
       //Calculate if turn should end
@@ -162,7 +173,19 @@ let GameBehaviors = {
       let property = getProperty(currentPlayerPosition);
       property.isPurchased = this.currentPlayer;
 
-      Base.SceneManager.currentScene.findByName(property.name).getComponent("PropoertyStatusTextBehavior").getComponent("TextComponent").text = "Purchased";
+      currentPlayerBehavior.cash -= property.cost;
+
+      //Base.SceneManager.currentScene.findByName(property.name).getComponent("PropertyStatusTextBehavior").gameObject.getComponent("TextComponent").text = "Purchased";
+    }
+    payRentEvent(){
+      let currentPlayerBehavior = this.getCurrentPlayerBehavior();
+      let currentPlayerPosition = currentPlayerBehavior.position;
+      
+      let property = getProperty(currentPlayerPosition);
+      let rentAmount = property.rent ? property.rent[0] : 0;
+      currentPlayerBehavior.cash -= rentAmount;
+      let ownerPlayerBehavior = this.getAPlayerBehavior(property.isPurchased);
+      ownerPlayerBehavior.cash += rentAmount;
     }
 
   },
@@ -170,9 +193,16 @@ let GameBehaviors = {
     start() {
 
       this.textComponent = this.gameObject.getComponent("TextComponent")
+      this.textComponent.font="25pt Times";
     }
     update() {
-      this.textComponent.text = this.property.name;
+      if (!this.property) return;
+      if (!this.property.isPurchased)
+        this.textComponent.text = "?";
+      else {
+        this.textComponent.text = "P " + this.property.isPurchased;
+        this.textComponent.fill = this.property.isPurchased == 1 ? "blue" : "red";
+      }
     }
   },
   DiceBehavior: class DiceBehavior extends Base.Behavior {
@@ -186,7 +216,39 @@ let GameBehaviors = {
     }
 
   },
+  PayRentButtonBehavior: class PayRentButtonBehavior extends Base.Behavior {
+    start() {
+      this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
 
+      this.textChild = this.gameObject.findByName("Text");
+      this.textComponent = this.textChild.getComponent("TextComponent");
+      this.textComponent.text = "Pay Rent";
+      this.textComponent.font = "25pt Times";
+      this.gameObject.getComponent("RectangleComponent").fill = "red";
+
+      this.originalScaleX = this.scaleX;
+      this.originalScaleY = this.scaleY;
+    }
+    onMouseDown() {
+      this.gameController.payRentEvent();
+    }
+    update() {
+      let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
+      let currentPlayerPosition = currentPlayerBehavior.position;
+
+
+
+      let property = getProperty(currentPlayerPosition);
+      if (property.isPurchased && property.isPurchased != this.gameController.currentPlayer) {
+        this.gameObject.scaleX = this.originalScaleX;
+        this.gameObject.scaleY = this.originalScaleY;
+      }
+      else{
+        this.gameObject.scaleX = 0;
+          this.gameObject.scaleY = 0;
+      }
+    }
+  },
   BuyPropertyButtonBehavior: class BuyPropertyButtonBehavior extends Base.Behavior {
     start() {
       this.gameController = Base.SceneManager.currentScene.findByName("GameController").getComponent("GameControllerBehavior");
@@ -194,6 +256,9 @@ let GameBehaviors = {
       this.textChild = this.gameObject.findByName("Text");
       this.textComponent = this.textChild.getComponent("TextComponent");
       this.textComponent.text = "Buy";
+      this.textComponent.font = "25pt Times";
+      this.gameObject.getComponent("RectangleComponent").fill = "blue";
+
 
       this.originalScaleX = this.scaleX;
       this.originalScaleY = this.scaleY;
@@ -232,7 +297,10 @@ let GameBehaviors = {
 
       this.textChild = this.gameObject.findByName("Text");
       this.textComponent = this.textChild.getComponent("TextComponent");
-      this.textComponent.text = "End Turn";
+      this.textComponent.text = "End";
+      this.textComponent.font = "25pt Times";
+      this.gameObject.getComponent("RectangleComponent").fill = "yellow";
+
 
       this.originalScaleX = this.scaleX;
       this.originalScaleY = this.scaleY;
@@ -259,6 +327,9 @@ let GameBehaviors = {
       this.textChild = this.gameObject.findByName("Text");
       this.textComponent = this.textChild.getComponent("TextComponent");
       this.textComponent.text = "Roll";
+      this.textComponent.font = "25pt Times";
+      this.gameObject.getComponent("RectangleComponent").fill = "green";
+
 
       this.originalScaleX = this.scaleX;
       this.originalScaleY = this.scaleY;
@@ -436,10 +507,10 @@ let GameController = {
 
 let Button = {
   name: "Button",
-  components: ["RectangleComponent|width|50|height|20", "AABBCollider|width|50|height|20"],
+  components: ["RectangleComponent|width|100|height|40", "AABBCollider|width|100|height|40"],
   children: [
     {
-      def: "Text, -25, 0, Text",
+      def: "Text, -25, 10, Text",
       componentValues: ["TextComponent|text|\"Button\"", "TextComponent|font|\"10pt Times\""]
     }
   ]
