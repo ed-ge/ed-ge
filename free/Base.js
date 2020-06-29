@@ -3107,6 +3107,42 @@ var Base = (function () {
 
     }
 
+    class State{
+      constructor(name){
+        this.name = name;
+        this.parent = null;
+      }
+      handleEvent(event){
+        throw new Error("Handle event needs to be override in each State subclass.");
+      }
+    }
+
+    class StateMachine extends State {
+      constructor(name){
+        super(name);
+        this.states = [];
+        this._currentState = null;
+      }
+      get currentState(){
+        return this._currentState;
+      }
+      set currentState(value){
+        this._currentState = value;
+        if(!this.states.includes(value))
+          this.states.push(value);
+      }
+      handleEvent(event){
+        this.currentState.handleEvent(event);
+      }
+      addState(state){
+        this.states.push(state);
+        state.parent = this;
+      }
+      do(lambda){
+        lambda();
+      }
+    }
+
     /**
      * Static class that holds all the time variables related to the game.
      */
@@ -3660,6 +3696,8 @@ var Base = (function () {
       Scene,
       SceneManager,
       Serializer: new Serializer(Components, Prefabs),
+      State,
+      StateMachine,
       Time,
 
     };
