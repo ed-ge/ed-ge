@@ -1,6 +1,8 @@
 import Base from "../../../src/Base.js"
 
 import Board from "./board.js"
+import GameControllerBehavior from "./GameControllerBehavior.js"
+import {getProperty, positionToX, positionToY} from "./helper.js"
 
 let Scenes = {
   startScene: "StartScene",
@@ -57,52 +59,12 @@ let Scenes = {
           new: "Player2, 100, 100, .1, .1, Player",
           edit: ["PlayerBehavior|player|1", "CircleComponent|fill|\"red\""]
         },
-
-
       ]
     }
   ]
 }
 
-function positionToX(position) {
-  if (position <= 10) {
-    return position;
-  }
-  else if (position <= 20) {
-    return 10;
-  }
-  else if (position <= 30) {
-    return 10 - (position - 20);
-  }
-  else {
-    return 0;
-  }
 
-}
-
-function positionToY(position) {
-  if (position <= 10) {
-    return 0;
-  }
-  else if (position <= 20) {
-    return position - 10;
-  }
-  else if (position <= 30) {
-    return 10;
-  }
-  else {
-    return 10 - (position - 30);
-  }
-}
-
-function getProperty(position) {
-  let x = positionToX(position);
-  let y = positionToY(position);
-
-  let property = Board.find(d => d.x == x && d.y == y);
-  if (!property) throw new Error("Could not find property at " + position);
-  return property;
-}
 
 var END_TURN_EVENT = "endTurnEvent";
 var TICK = "tick";
@@ -111,177 +73,10 @@ var TICK = "tick";
 
 
 let GameBehaviors = {
-  GameControllerBehavior: class GameControllerBehavior extends Base.Behavior {
-    start() {
-      this.numPlayers = 2;
-      this.currentPlayer = 1;
-      this.die1 = 0;
-      this.die2 = 0;
-      this.roll = 0;
-      //this.turnShouldEnd = false;
-
-      //this.turnStateMachine = new Base.StateMachine("Turn State Machine");
-      this.roll1State = new Base.State("Roll1");
-      this.roll1State.handleEvent = (event) => {
-        if (event.text != "roll") return;
-        this.playerStateMachine.pop();
-        if (event.roll[0] != event.roll[1]) {
-          this.playerStateMachine.pop();
-          this.playerStateMachine.pop();
-        }
-      }
-      this.roll2State = new Base.State("Roll2");
-      this.roll2State.handleEvent = event => {
-        if (event.text != "roll") return;
-        this.playerStateMachine.pop();
-        if (event.roll[0] != event.roll[1]) {
-          this.playerStateMachine.pop();
-        }
-      }
-      this.roll3State = new Base.State("Roll3");
-      this.roll3State.handleEvent = event => {
-        if (event.text != "roll") return;
-        this.playerStateMachine.pop();
-
-      }
-      this.goToJailOnRolls = new Base.State("GoToJailOnRolls");
-      this.buyProperty = new Base.State("BuyProperty");
-      this.buyProperty.handleEvent = event => {
-        if (event.text != "buy") return;
-        this.playerStateMachine.pop();
-
-      }
-      this.payRent = new Base.State("PayRent");
-      this.payRent.handleEvent = event => {
-        if (event.text != "rent") return;
-        this.playerStateMachine.pop();
-
-      }
-      this.payTax = new Base.State("PayTax");
-      this.pullCard = new Base.State("PullCard");
-      this.trade = new Base.State("Trade");
-      this.endTurn = new Base.State("EndTurn");
-      this.endTurn.handleEvent = event => {
-        if (event.text != "end") return;
-        this.playerStateMachine.pop();
-        this.playerStateMachine.player++;
-        if (this.playerStateMachine.player > this.numPlayers)
-          this.playerStateMachine.player = 1;
-        this.playerStateMachine.push(this.endTurn);
-        this.playerStateMachine.push(this.payRent);
-        this.playerStateMachine.push(this.buyProperty);
-        this.playerStateMachine.push(this.roll3State);
-        this.playerStateMachine.push(this.roll2State);
-        this.playerStateMachine.push(this.roll1State);
-
-
-      }
-
-      this.playerStateMachine =  new Base.StateMachine("Player State Machine");
-      this.playerStateMachine.player = 1;
-      this.playerStateMachine.push(this.endTurn);
-      this.playerStateMachine.push(this.payRent);
-      this.playerStateMachine.push(this.buyProperty);
-      this.playerStateMachine.push(this.roll3State);
-      this.playerStateMachine.push(this.roll2State);
-      this.playerStateMachine.push(this.roll1State);
-
-
-
-
-
-    }
-    update() {
-      this.playerStateMachine.handleEvent(TICK);
-      console.log(this.playerStateMachine.currentState())
-    }
-    getCurrentPlayerBehavior() {
-      return this.getAPlayerBehavior(this.currentPlayer);
-    }
-    getAPlayerBehavior(player) {
-      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + player);
-      let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
-      return currentPlayerBehavior;
-    }
-    rollDiceEvent() {
-      if (this.turnShouldEnd) return;
-
-      this.die1 = Math.ceil(Math.random() * 6);
-      this.die2 = Math.ceil(Math.random() * 6);
-      this.roll = this.die1 + this.die2;
-
-      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
-      let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
-      currentPlayerBehavior.position += this.roll;
-      let oldPosition = currentPlayerBehavior.position;
-      currentPlayerBehavior.position %= 40;
-      let newPosition = currentPlayerBehavior.position;
-      if (oldPosition > newPosition) //Player Passed Go
-        currentPlayerBehavior.cash += 200;
-
-      this.playerStateMachine.handleEvent({ text: "roll", roll: [this.die1, this.die2] })
-      // currentPlayerBehavior.rolledTimes++;
-
-      // //Calculate if turn should end
-      // if (this.die1 != this.die2) {
-      //   this.turnShouldEnd = true
-      // }
-      // if (currentPlayerBehavior.roledTimes == 3) {
-      //   this.turnShouldEnd = true;
-      // }
-
-    }
-    endTurnEvent() {
-
-
-
-      //if (!this.turnShouldEnd) return;
-
-      //this.turnStateMachine.handleEvent(END_TURN_EVENT);
-      //let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
-      //let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
-
-      /*this.currentPlayer += 1;
-      if (this.currentPlayer > this.numPlayers)
-        this.currentPlayer = 1;
-
-
-      this.turnShouldEnd = false;
-      currentPlayerBehavior.rolledTimes = 0;*/
-      this.playerStateMachine.handleEvent({ text: "end" })
-
-    }
-    buyPropertyEvent() {
-      let currentPlayerBehavior = this.getCurrentPlayerBehavior();
-      let currentPlayerPosition = currentPlayerBehavior.position;
-      let currentPlayerX = positionToX(currentPlayerPosition);
-      let currentPlayerY = positionToY(currentPlayerPosition);
-
-
-      let property = getProperty(currentPlayerPosition);
-      property.isPurchased = this.currentPlayer;
-
-      currentPlayerBehavior.cash -= property.cost;
-      this.playerStateMachine.handleEvent({ text: "buy" })
-
-      //Base.SceneManager.currentScene.findByName(property.name).getComponent("PropertyStatusTextBehavior").gameObject.getComponent("TextComponent").text = "Purchased";
-    }
-    payRentEvent() {
-      let currentPlayerBehavior = this.getCurrentPlayerBehavior();
-      let currentPlayerPosition = currentPlayerBehavior.position;
-
-      let property = getProperty(currentPlayerPosition);
-      let rentAmount = property.rent ? property.rent[0] : 0;
-      currentPlayerBehavior.cash -= rentAmount;
-      let ownerPlayerBehavior = this.getAPlayerBehavior(property.isPurchased);
-      ownerPlayerBehavior.cash += rentAmount;
-      this.playerStateMachine.handleEvent({ text: "rent" })
-    }
-
-  },
+  GameControllerBehavior: GameControllerBehavior,
   PropertyStatusTextBehavior: class PropertyStatusTextBehavior extends Base.Behavior {
     start() {
-
+  
       this.textComponent = this.gameObject.getComponent("TextComponent")
       this.textComponent.font = "25pt Times";
     }
