@@ -4,23 +4,24 @@ class StateMachine extends State {
   constructor(name){
     super(name);
     this.states = [];
+    this.stack = [];
     this._currentState = null;
   }
-  get currentState(){
-    return this._currentState;
+  currentState(){
+    return this.stack[this.stack.length-1];
   }
-  set currentState(value){
-    this._currentState = value;
-    if(!this.states.includes(value))
-      this.states.push(value);
+  push(value){
+    this.stack.push(value);
+  }
+  pop(){
+    return this.stack.pop();
   }
   handleEvent(event){
-    this.currentState.handleEvent(event);
+    let cs = this.currentState();
+    if(!cs) return;
+    cs.handleEvent(event);
   }
-  addState(state){
-    this.states.push(state);
-    state.parent = this;
-  }
+  
   do(lambda){
     lambda();
   }

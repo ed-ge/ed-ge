@@ -105,6 +105,10 @@ function getProperty(position) {
 }
 
 var END_TURN_EVENT = "endTurnEvent";
+var TICK = "tick";
+
+
+
 
 let GameBehaviors = {
   GameControllerBehavior: class GameControllerBehavior extends Base.Behavior {
@@ -114,44 +118,87 @@ let GameBehaviors = {
       this.die1 = 0;
       this.die2 = 0;
       this.roll = 0;
-      this.turnShouldEnd = false;
+      //this.turnShouldEnd = false;
 
-      this.turnStateMachine = new Base.StateMachine("Turn State Machine");
+      //this.turnStateMachine = new Base.StateMachine("Turn State Machine");
       this.roll1State = new Base.State("Roll1");
+      this.roll1State.handleEvent = (event) => {
+        if (event.text != "roll") return;
+        this.playerStateMachine.pop();
+        if (event.roll[0] != event.roll[1]) {
+          this.playerStateMachine.pop();
+          this.playerStateMachine.pop();
+        }
+      }
       this.roll2State = new Base.State("Roll2");
+      this.roll2State.handleEvent = event => {
+        if (event.text != "roll") return;
+        this.playerStateMachine.pop();
+        if (event.roll[0] != event.roll[1]) {
+          this.playerStateMachine.pop();
+        }
+      }
       this.roll3State = new Base.State("Roll3");
+      this.roll3State.handleEvent = event => {
+        if (event.text != "roll") return;
+        this.playerStateMachine.pop();
+
+      }
       this.goToJailOnRolls = new Base.State("GoToJailOnRolls");
-      this.buyProperty = new Base.State("BuyProerty");
-      this.payRent = new Base.State("PayrRent");
+      this.buyProperty = new Base.State("BuyProperty");
+      this.buyProperty.handleEvent = event => {
+        if (event.text != "buy") return;
+        this.playerStateMachine.pop();
+
+      }
+      this.payRent = new Base.State("PayRent");
+      this.payRent.handleEvent = event => {
+        if (event.text != "rent") return;
+        this.playerStateMachine.pop();
+
+      }
       this.payTax = new Base.State("PayTax");
       this.pullCard = new Base.State("PullCard");
       this.trade = new Base.State("Trade");
       this.endTurn = new Base.State("EndTurn");
+      this.endTurn.handleEvent = event => {
+        if (event.text != "end") return;
+        this.playerStateMachine.pop();
+        this.playerStateMachine.player++;
+        if (this.playerStateMachine.player > this.numPlayers)
+          this.playerStateMachine.player = 1;
+        this.playerStateMachine.push(this.endTurn);
+        this.playerStateMachine.push(this.payRent);
+        this.playerStateMachine.push(this.buyProperty);
+        this.playerStateMachine.push(this.roll3State);
+        this.playerStateMachine.push(this.roll2State);
+        this.playerStateMachine.push(this.roll1State);
+
+
+      }
 
       this.playerStateMachine = new Base.StateMachine("Player State Machine");
-      this.player1State = new Base.State("Player 1 State")
-      this.player1State.player = 1;
-      this.player1State.handleEvent = event=>{
-        if(event == END_TURN_EVENT)
-          this.playerStateMachine.do(()=>this.playerStateMachine.currentState = this.player2State);
-      }
-      this.player2State = new Base.State("Player 2 State")
-      this.player2State.player = 2;
-      this.player2State.handleEvent = event=>{
-        if(event == END_TURN_EVENT)
-          this.playerStateMachine.do(()=>this.playerStateMachine.currentState = this.player1State);
-      }
-      this.playerStateMachine.addState(this.player1State);
-      this.playerStateMachine.addState(this.player2State);
-      this.playerStateMachine.currentState = this.player1State;
+      this.playerStateMachine.player = 1;
+      this.playerStateMachine.push(this.endTurn);
+      this.playerStateMachine.push(this.payRent);
+      this.playerStateMachine.push(this.buyProperty);
+      this.playerStateMachine.push(this.roll3State);
+      this.playerStateMachine.push(this.roll2State);
+      this.playerStateMachine.push(this.roll1State);
 
 
 
+
+
+    }
+    update() {
+      this.playerStateMachine.handleEvent(TICK);
+      console.log(this.playerStateMachine.currentState())
     }
     getCurrentPlayerBehavior() {
       return this.getAPlayerBehavior(this.currentPlayer);
     }
-    getAPlayerBehavior(player){
+    getAPlayerBehavior(player) {
       let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + player);
       let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
       return currentPlayerBehavior;
@@ -171,34 +218,37 @@ let GameBehaviors = {
       let newPosition = currentPlayerBehavior.position;
       if (oldPosition > newPosition) //Player Passed Go
         currentPlayerBehavior.cash += 200;
-      currentPlayerBehavior.rolledTimes++;
 
-      //Calculate if turn should end
-      if (this.die1 != this.die2) {
-        this.turnShouldEnd = true
-      }
-      if (currentPlayerBehavior.roledTimes == 3) {
-        this.turnShouldEnd = true;
-      }
+      this.playerStateMachine.handleEvent({ text: "roll", roll: [this.die1, this.die2] })
+      // currentPlayerBehavior.rolledTimes++;
+
+      // //Calculate if turn should end
+      // if (this.die1 != this.die2) {
+      //   this.turnShouldEnd = true
+      // }
+      // if (currentPlayerBehavior.roledTimes == 3) {
+      //   this.turnShouldEnd = true;
+      // }
 
     }
     endTurnEvent() {
 
-      
 
-      if (!this.turnShouldEnd) return;
 
-      this.turnStateMachine.handleEvent(END_TURN_EVENT);
-      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
-      let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
+      //if (!this.turnShouldEnd) return;
 
-      this.currentPlayer += 1;
+      //this.turnStateMachine.handleEvent(END_TURN_EVENT);
+      //let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
+      //let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
+
+      /*this.currentPlayer += 1;
       if (this.currentPlayer > this.numPlayers)
         this.currentPlayer = 1;
 
 
       this.turnShouldEnd = false;
-      currentPlayerBehavior.rolledTimes = 0;
+      currentPlayerBehavior.rolledTimes = 0;*/
+      this.playerStateMachine.handleEvent({ text: "end" })
 
     }
     buyPropertyEvent() {
@@ -212,18 +262,20 @@ let GameBehaviors = {
       property.isPurchased = this.currentPlayer;
 
       currentPlayerBehavior.cash -= property.cost;
+      this.playerStateMachine.handleEvent({ text: "buy" })
 
       //Base.SceneManager.currentScene.findByName(property.name).getComponent("PropertyStatusTextBehavior").gameObject.getComponent("TextComponent").text = "Purchased";
     }
-    payRentEvent(){
+    payRentEvent() {
       let currentPlayerBehavior = this.getCurrentPlayerBehavior();
       let currentPlayerPosition = currentPlayerBehavior.position;
-      
+
       let property = getProperty(currentPlayerPosition);
       let rentAmount = property.rent ? property.rent[0] : 0;
       currentPlayerBehavior.cash -= rentAmount;
       let ownerPlayerBehavior = this.getAPlayerBehavior(property.isPurchased);
       ownerPlayerBehavior.cash += rentAmount;
+      this.playerStateMachine.handleEvent({ text: "rent" })
     }
 
   },
@@ -231,7 +283,7 @@ let GameBehaviors = {
     start() {
 
       this.textComponent = this.gameObject.getComponent("TextComponent")
-      this.textComponent.font="25pt Times";
+      this.textComponent.font = "25pt Times";
     }
     update() {
       if (!this.property) return;
@@ -271,20 +323,28 @@ let GameBehaviors = {
       this.gameController.payRentEvent();
     }
     update() {
-      let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
-      let currentPlayerPosition = currentPlayerBehavior.position;
-
-
-
-      let property = getProperty(currentPlayerPosition);
-      if (property.isPurchased && property.isPurchased != this.gameController.currentPlayer) {
+      if (this.gameController.playerStateMachine.currentState() == this.gameController.payRent) {
         this.gameObject.scaleX = this.originalScaleX;
         this.gameObject.scaleY = this.originalScaleY;
       }
-      else{
+      else {
         this.gameObject.scaleX = 0;
-          this.gameObject.scaleY = 0;
+        this.gameObject.scaleY = 0;
       }
+      // let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
+      // let currentPlayerPosition = currentPlayerBehavior.position;
+
+
+
+      // let property = getProperty(currentPlayerPosition);
+      // if (property.isPurchased && property.isPurchased != this.gameController.currentPlayer) {
+      //   this.gameObject.scaleX = this.originalScaleX;
+      //   this.gameObject.scaleY = this.originalScaleY;
+      // }
+      // else{
+      //   this.gameObject.scaleX = 0;
+      //     this.gameObject.scaleY = 0;
+      // }
     }
   },
   BuyPropertyButtonBehavior: class BuyPropertyButtonBehavior extends Base.Behavior {
@@ -306,27 +366,36 @@ let GameBehaviors = {
     }
     update() {
 
-      if (this.gameController.getCurrentPlayerBehavior().rolledTimes == 0) {
+      if (this.gameController.playerStateMachine.currentState() == this.gameController.buyProperty) {
+        this.gameObject.scaleX = this.originalScaleX;
+        this.gameObject.scaleY = this.originalScaleY;
+      }
+      else {
         this.gameObject.scaleX = 0;
         this.gameObject.scaleY = 0;
       }
-      else {
-        let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
-        let currentPlayerPosition = currentPlayerBehavior.position;
-        let currentPlayerX = positionToX(currentPlayerPosition);
-        let currentPlayerY = positionToY(currentPlayerPosition);
+
+      // if (this.gameController.getCurrentPlayerBehavior().rolledTimes == 0) {
+      //   this.gameObject.scaleX = 0;
+      //   this.gameObject.scaleY = 0;
+      // }
+      // else {
+      //   let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
+      //   let currentPlayerPosition = currentPlayerBehavior.position;
+      //   let currentPlayerX = positionToX(currentPlayerPosition);
+      //   let currentPlayerY = positionToY(currentPlayerPosition);
 
 
-        let property = getProperty(currentPlayerPosition);
-        if (property.isPurchased || !property.cost) {
-          this.gameObject.scaleX = 0;
-          this.gameObject.scaleY = 0;
-        }
-        else {
-          this.gameObject.scaleX = this.originalScaleX;
-          this.gameObject.scaleY = this.originalScaleY;
-        }
-      }
+      //   let property = getProperty(currentPlayerPosition);
+      //   if (property.isPurchased || !property.cost) {
+      //     this.gameObject.scaleX = 0;
+      //     this.gameObject.scaleY = 0;
+      //   }
+      //   else {
+      //     this.gameObject.scaleX = this.originalScaleX;
+      //     this.gameObject.scaleY = this.originalScaleY;
+      //   }
+      // }
     }
   },
   EndTurnButtonBehavior: class EndTurnButtonBehavior extends Base.Behavior {
@@ -348,14 +417,22 @@ let GameBehaviors = {
       this.gameController.endTurnEvent();
     }
     update() {
-      if (!this.gameController.turnShouldEnd) {
-        this.gameObject.scaleX = 0;
-        this.gameObject.scaleY = 0;
-      }
-      else {
+      if (this.gameController.playerStateMachine.currentState() == this.gameController.endTurn) {
         this.gameObject.scaleX = this.originalScaleX;
         this.gameObject.scaleY = this.originalScaleY;
       }
+      else {
+        this.gameObject.scaleX = 0;
+        this.gameObject.scaleY = 0;
+      }
+      // if (!this.gameController.turnShouldEnd) {
+      //   this.gameObject.scaleX = 0;
+      //   this.gameObject.scaleY = 0;
+      // }
+      // else {
+      //   this.gameObject.scaleX = this.originalScaleX;
+      //   this.gameObject.scaleY = this.originalScaleY;
+      // }
     }
   },
   RollButtonBehavior: class RollButtonBehavior extends Base.Behavior {
@@ -377,14 +454,25 @@ let GameBehaviors = {
       this.gameController.rollDiceEvent();
     }
     update() {
-      if (this.gameController.turnShouldEnd) {
-        this.gameObject.scaleX = 0;
-        this.gameObject.scaleY = 0;
-      }
-      else {
+      let cs = this.gameController.playerStateMachine.currentState()
+      if (cs == this.gameController.roll1State ||
+        cs == this.gameController.roll2State ||
+        cs == this.gameController.roll3State) {
         this.gameObject.scaleX = this.originalScaleX;
         this.gameObject.scaleY = this.originalScaleY;
       }
+      else {
+        this.gameObject.scaleX = 0;
+        this.gameObject.scaleY = 0;
+      }
+      // if (this.gameController.turnShouldEnd) {
+      //   this.gameObject.scaleX = 0;
+      //   this.gameObject.scaleY = 0;
+      // }
+      // else {
+      //   this.gameObject.scaleX = this.originalScaleX;
+      //   this.gameObject.scaleY = this.originalScaleY;
+      // }
     }
   },
   StatusTextBehavior: class StatusTextBehavior extends Base.Behavior {
@@ -398,7 +486,7 @@ let GameBehaviors = {
       // }
     }
     update() {
-      let currentPlayer = this.gameController.turnStateMachine.currentState.player;
+      let currentPlayer = this.gameController.playerStateMachine.player;
       this.textComponent.text = "Player " + currentPlayer + "'s Turn, " + this.gameController.getCurrentPlayerBehavior().rolledTimes + " rolls";
 
 
