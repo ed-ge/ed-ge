@@ -3403,25 +3403,34 @@ var Base = (function () {
         components: ["CameraComponent|backgroundColor|white"]
     };
 
-    var Canvas = {
-        name: "Canvas",
-        components: [ "CanvasComponent"]
-    };
+    var Canvas = `
+Canvas
+CanvasComponent
+`;
 
-    var CanvasText = {
-        name: "CanvasText",
-        components: ["RectTransform","TextComponent|text|10|font|20pt Times|fill|black"]
-    };
+    var CanvasText = `
+CanvasText
+RectTransform
+TextComponent
+ text=10
+ font=20pt Times
+ fill=black
+`;
 
     var Rectangle = {
         name: "Rectangle",
         components: ["RectangleComponent|width|100|height|100|fill|red|stroke|blue","AABBCollider|width|100|height|100"]
       };
 
-    var Circle = {
-        name: "Circle",
-        components:["CircleComponent|radius|50|fill|rgba(255,255,0,.5)|stroke|black","CircleCollider|radius|50"]
-      };
+    var Circle = `
+Circle
+CircleComponent
+ radius=50
+ fill=rgba(255,255,0,.5)
+ stroke=black
+CircleCollider
+ radius=0
+`;
 
     var ScreenText = {
       name: "ScreenText",
