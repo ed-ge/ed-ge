@@ -3105,37 +3105,46 @@ class Serializer {
 }
 
 class State{
-  constructor(name){
+  constructor(name, type=null){
     this.name = name;
     this.parent = null;
+    this.type = type;
   }
   handleEvent(event){
-    throw new Error("Handle event needs to be override in each State subclass.");
+    //throw new Error("Handle event needs to be n in each State subclass.");
+  }
+  boot(){
+    //throw new Error("Boot needs to be overridden in each State subclass")
   }
 }
 
 class StateMachine extends State {
-  constructor(name){
+  constructor(name) {
     super(name);
     this.states = [];
+    this.stack = [];
     this._currentState = null;
   }
-  get currentState(){
-    return this._currentState;
+  currentState() {
+    return this.stack[this.stack.length - 1];
   }
-  set currentState(value){
-    this._currentState = value;
-    if(!this.states.includes(value))
-      this.states.push(value);
+  push(value) {
+    this.stack.push(value);
   }
-  handleEvent(event){
-    this.currentState.handleEvent(event);
+  pop() {
+    let toReturn = this.stack.pop();
+    let cs = this.currentState();
+    if (cs)
+      cs.boot();
+    return toReturn;
   }
-  addState(state){
-    this.states.push(state);
-    state.parent = this;
+  handleEvent(event) {
+    let cs = this.currentState();
+    if (!cs) return;
+    cs.handleEvent(event);
   }
-  do(lambda){
+
+  do(lambda) {
     lambda();
   }
 }
@@ -3157,12 +3166,14 @@ class CircleComponent extends Component {
         this.radius=50;
         this.fill="gray";
         this.stroke="black";
+        this.lineWidth = 1;
 
     }
     draw(ctx) {
         ctx.save();
         ctx.fillStyle = this.fill;
         ctx.strokeStyle = this.stroke;
+        ctx.lineWidth = this.lineWidth;
         ctx.beginPath();
         ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
         ctx.fill();

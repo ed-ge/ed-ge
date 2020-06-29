@@ -1,4 +1,6 @@
-export default {
-    name: "Camera",
-    components: ["CameraComponent|backgroundColor|white"]
-}
+export default
+`
+Camera
+CameraComponent
+ backgroundColor=white
+`

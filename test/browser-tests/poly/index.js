@@ -1,6 +1,8 @@
 import Base from "../../../src/Base.js"
 
 import Board from "./board.js"
+import GameControllerBehavior from "./GameControllerBehavior.js"
+import {getProperty, positionToX, positionToY} from "./helper.js"
 
 let Scenes = {
   startScene: "StartScene",
@@ -51,187 +53,32 @@ let Scenes = {
         },
         {
           new: "Player1, 100, 100, .1, .1, Player",
-          edit: ["PlayerBehavior|player|0", "CircleComponent|fill|\"blue\""]
+          edit: ["PlayerBehavior|player|0", "CircleComponent|fill|\"blue\"", "CircleComponent|lineWidth|5"]
         },
         {
           new: "Player2, 100, 100, .1, .1, Player",
-          edit: ["PlayerBehavior|player|1", "CircleComponent|fill|\"red\""]
+          edit: ["PlayerBehavior|player|1", "CircleComponent|fill|\"red\"", "CircleComponent|lineWidth|5"]
         },
-
-
       ]
     }
   ]
 }
 
-function positionToX(position) {
-  if (position <= 10) {
-    return position;
-  }
-  else if (position <= 20) {
-    return 10;
-  }
-  else if (position <= 30) {
-    return 10 - (position - 20);
-  }
-  else {
-    return 0;
-  }
 
-}
-
-function positionToY(position) {
-  if (position <= 10) {
-    return 0;
-  }
-  else if (position <= 20) {
-    return position - 10;
-  }
-  else if (position <= 30) {
-    return 10;
-  }
-  else {
-    return 10 - (position - 30);
-  }
-}
-
-function getProperty(position) {
-  let x = positionToX(position);
-  let y = positionToY(position);
-
-  let property = Board.find(d => d.x == x && d.y == y);
-  if (!property) throw new Error("Could not find property at " + position);
-  return property;
-}
 
 var END_TURN_EVENT = "endTurnEvent";
+var TICK = "tick";
 
-let GameBehaviors = {
-  GameControllerBehavior: class GameControllerBehavior extends Base.Behavior {
-    start() {
-      this.numPlayers = 2;
-      this.currentPlayer = 1;
-      this.die1 = 0;
-      this.die2 = 0;
-      this.roll = 0;
-      this.turnShouldEnd = false;
-
-      this.turnStateMachine = new Base.StateMachine("Turn State Machine");
-      this.roll1State = new Base.State("Roll1");
-      this.roll2State = new Base.State("Roll2");
-      this.roll3State = new Base.State("Roll3");
-      this.goToJailOnRolls = new Base.State("GoToJailOnRolls");
-      this.buyProperty = new Base.State("BuyProerty");
-      this.payRent = new Base.State("PayrRent");
-      this.payTax = new Base.State("PayTax");
-      this.pullCard = new Base.State("PullCard");
-      this.trade = new Base.State("Trade");
-      this.endTurn = new Base.State("EndTurn");
-
-      this.playerStateMachine = new Base.StateMachine("Player State Machine");
-      this.player1State = new Base.State("Player 1 State")
-      this.player1State.player = 1;
-      this.player1State.handleEvent = event=>{
-        if(event == END_TURN_EVENT)
-          this.playerStateMachine.do(()=>this.playerStateMachine.currentState = this.player2State);
-      }
-      this.player2State = new Base.State("Player 2 State")
-      this.player2State.player = 2;
-      this.player2State.handleEvent = event=>{
-        if(event == END_TURN_EVENT)
-          this.playerStateMachine.do(()=>this.playerStateMachine.currentState = this.player1State);
-      }
-      this.playerStateMachine.addState(this.player1State);
-      this.playerStateMachine.addState(this.player2State);
-      this.playerStateMachine.currentState = this.player1State;
 
 
 
-    }
-    getCurrentPlayerBehavior() {
-      return this.getAPlayerBehavior(this.currentPlayer);
-    }
-    getAPlayerBehavior(player){
-      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + player);
-      let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
-      return currentPlayerBehavior;
-    }
-    rollDiceEvent() {
-      if (this.turnShouldEnd) return;
-
-      this.die1 = Math.ceil(Math.random() * 6);
-      this.die2 = Math.ceil(Math.random() * 6);
-      this.roll = this.die1 + this.die2;
-
-      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
-      let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
-      currentPlayerBehavior.position += this.roll;
-      let oldPosition = currentPlayerBehavior.position;
-      currentPlayerBehavior.position %= 40;
-      let newPosition = currentPlayerBehavior.position;
-      if (oldPosition > newPosition) //Player Passed Go
-        currentPlayerBehavior.cash += 200;
-      currentPlayerBehavior.rolledTimes++;
-
-      //Calculate if turn should end
-      if (this.die1 != this.die2) {
-        this.turnShouldEnd = true
-      }
-      if (currentPlayerBehavior.roledTimes == 3) {
-        this.turnShouldEnd = true;
-      }
-
-    }
-    endTurnEvent() {
-
-      
-
-      if (!this.turnShouldEnd) return;
-
-      this.turnStateMachine.handleEvent(END_TURN_EVENT);
-      let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
-      let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
-
-      this.currentPlayer += 1;
-      if (this.currentPlayer > this.numPlayers)
-        this.currentPlayer = 1;
-
-
-      this.turnShouldEnd = false;
-      currentPlayerBehavior.rolledTimes = 0;
-
-    }
-    buyPropertyEvent() {
-      let currentPlayerBehavior = this.getCurrentPlayerBehavior();
-      let currentPlayerPosition = currentPlayerBehavior.position;
-      let currentPlayerX = positionToX(currentPlayerPosition);
-      let currentPlayerY = positionToY(currentPlayerPosition);
-
-
-      let property = getProperty(currentPlayerPosition);
-      property.isPurchased = this.currentPlayer;
-
-      currentPlayerBehavior.cash -= property.cost;
-
-      //Base.SceneManager.currentScene.findByName(property.name).getComponent("PropertyStatusTextBehavior").gameObject.getComponent("TextComponent").text = "Purchased";
-    }
-    payRentEvent(){
-      let currentPlayerBehavior = this.getCurrentPlayerBehavior();
-      let currentPlayerPosition = currentPlayerBehavior.position;
-      
-      let property = getProperty(currentPlayerPosition);
-      let rentAmount = property.rent ? property.rent[0] : 0;
-      currentPlayerBehavior.cash -= rentAmount;
-      let ownerPlayerBehavior = this.getAPlayerBehavior(property.isPurchased);
-      ownerPlayerBehavior.cash += rentAmount;
-    }
-
-  },
+let GameBehaviors = {
+  GameControllerBehavior: GameControllerBehavior,
   PropertyStatusTextBehavior: class PropertyStatusTextBehavior extends Base.Behavior {
     start() {
-
+  
       this.textComponent = this.gameObject.getComponent("TextComponent")
-      this.textComponent.font="25pt Times";
+      this.textComponent.font = "25pt Times";
     }
     update() {
       if (!this.property) return;
@@ -271,20 +118,28 @@ let GameBehaviors = {
       this.gameController.payRentEvent();
     }
     update() {
-      let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
-      let currentPlayerPosition = currentPlayerBehavior.position;
-
-
-
-      let property = getProperty(currentPlayerPosition);
-      if (property.isPurchased && property.isPurchased != this.gameController.currentPlayer) {
+      if (this.gameController.playerStateMachine.currentState() == this.gameController.payRent) {
         this.gameObject.scaleX = this.originalScaleX;
         this.gameObject.scaleY = this.originalScaleY;
       }
-      else{
+      else {
         this.gameObject.scaleX = 0;
-          this.gameObject.scaleY = 0;
+        this.gameObject.scaleY = 0;
       }
+      // let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
+      // let currentPlayerPosition = currentPlayerBehavior.position;
+
+
+
+      // let property = getProperty(currentPlayerPosition);
+      // if (property.isPurchased && property.isPurchased != this.gameController.currentPlayer) {
+      //   this.gameObject.scaleX = this.originalScaleX;
+      //   this.gameObject.scaleY = this.originalScaleY;
+      // }
+      // else{
+      //   this.gameObject.scaleX = 0;
+      //     this.gameObject.scaleY = 0;
+      // }
     }
   },
   BuyPropertyButtonBehavior: class BuyPropertyButtonBehavior extends Base.Behavior {
@@ -306,27 +161,36 @@ let GameBehaviors = {
     }
     update() {
 
-      if (this.gameController.getCurrentPlayerBehavior().rolledTimes == 0) {
+      if (this.gameController.playerStateMachine.currentState() == this.gameController.buyProperty) {
+        this.gameObject.scaleX = this.originalScaleX;
+        this.gameObject.scaleY = this.originalScaleY;
+      }
+      else {
         this.gameObject.scaleX = 0;
         this.gameObject.scaleY = 0;
       }
-      else {
-        let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
-        let currentPlayerPosition = currentPlayerBehavior.position;
-        let currentPlayerX = positionToX(currentPlayerPosition);
-        let currentPlayerY = positionToY(currentPlayerPosition);
+
+      // if (this.gameController.getCurrentPlayerBehavior().rolledTimes == 0) {
+      //   this.gameObject.scaleX = 0;
+      //   this.gameObject.scaleY = 0;
+      // }
+      // else {
+      //   let currentPlayerBehavior = this.gameController.getCurrentPlayerBehavior();
+      //   let currentPlayerPosition = currentPlayerBehavior.position;
+      //   let currentPlayerX = positionToX(currentPlayerPosition);
+      //   let currentPlayerY = positionToY(currentPlayerPosition);
 
 
-        let property = getProperty(currentPlayerPosition);
-        if (property.isPurchased || !property.cost) {
-          this.gameObject.scaleX = 0;
-          this.gameObject.scaleY = 0;
-        }
-        else {
-          this.gameObject.scaleX = this.originalScaleX;
-          this.gameObject.scaleY = this.originalScaleY;
-        }
-      }
+      //   let property = getProperty(currentPlayerPosition);
+      //   if (property.isPurchased || !property.cost) {
+      //     this.gameObject.scaleX = 0;
+      //     this.gameObject.scaleY = 0;
+      //   }
+      //   else {
+      //     this.gameObject.scaleX = this.originalScaleX;
+      //     this.gameObject.scaleY = this.originalScaleY;
+      //   }
+      // }
     }
   },
   EndTurnButtonBehavior: class EndTurnButtonBehavior extends Base.Behavior {
@@ -348,14 +212,22 @@ let GameBehaviors = {
       this.gameController.endTurnEvent();
     }
     update() {
-      if (!this.gameController.turnShouldEnd) {
-        this.gameObject.scaleX = 0;
-        this.gameObject.scaleY = 0;
-      }
-      else {
+      if (this.gameController.playerStateMachine.currentState() == this.gameController.endTurn) {
         this.gameObject.scaleX = this.originalScaleX;
         this.gameObject.scaleY = this.originalScaleY;
       }
+      else {
+        this.gameObject.scaleX = 0;
+        this.gameObject.scaleY = 0;
+      }
+      // if (!this.gameController.turnShouldEnd) {
+      //   this.gameObject.scaleX = 0;
+      //   this.gameObject.scaleY = 0;
+      // }
+      // else {
+      //   this.gameObject.scaleX = this.originalScaleX;
+      //   this.gameObject.scaleY = this.originalScaleY;
+      // }
     }
   },
   RollButtonBehavior: class RollButtonBehavior extends Base.Behavior {
@@ -377,14 +249,25 @@ let GameBehaviors = {
       this.gameController.rollDiceEvent();
     }
     update() {
-      if (this.gameController.turnShouldEnd) {
-        this.gameObject.scaleX = 0;
-        this.gameObject.scaleY = 0;
-      }
-      else {
+      let cs = this.gameController.playerStateMachine.currentState()
+      if (cs == this.gameController.roll1State ||
+        cs == this.gameController.roll2State ||
+        cs == this.gameController.roll3State) {
         this.gameObject.scaleX = this.originalScaleX;
         this.gameObject.scaleY = this.originalScaleY;
       }
+      else {
+        this.gameObject.scaleX = 0;
+        this.gameObject.scaleY = 0;
+      }
+      // if (this.gameController.turnShouldEnd) {
+      //   this.gameObject.scaleX = 0;
+      //   this.gameObject.scaleY = 0;
+      // }
+      // else {
+      //   this.gameObject.scaleX = this.originalScaleX;
+      //   this.gameObject.scaleY = this.originalScaleY;
+      // }
     }
   },
   StatusTextBehavior: class StatusTextBehavior extends Base.Behavior {
@@ -398,7 +281,7 @@ let GameBehaviors = {
       // }
     }
     update() {
-      let currentPlayer = this.gameController.turnStateMachine.currentState.player;
+      let currentPlayer = this.gameController.playerStateMachine.player;
       this.textComponent.text = "Player " + currentPlayer + "'s Turn, " + this.gameController.getCurrentPlayerBehavior().rolledTimes + " rolls";
 
 

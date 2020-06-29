@@ -1,27 +1,32 @@
 import State from "./State.js"
 
 class StateMachine extends State {
-  constructor(name){
+  constructor(name) {
     super(name);
     this.states = [];
+    this.stack = [];
     this._currentState = null;
   }
-  get currentState(){
-    return this._currentState;
+  currentState() {
+    return this.stack[this.stack.length - 1];
   }
-  set currentState(value){
-    this._currentState = value;
-    if(!this.states.includes(value))
-      this.states.push(value);
+  push(value) {
+    this.stack.push(value);
   }
-  handleEvent(event){
-    this.currentState.handleEvent(event);
+  pop() {
+    let toReturn = this.stack.pop();
+    let cs = this.currentState();
+    if (cs)
+      cs.boot();
+    return toReturn;
   }
-  addState(state){
-    this.states.push(state);
-    state.parent = this;
+  handleEvent(event) {
+    let cs = this.currentState();
+    if (!cs) return;
+    cs.handleEvent(event);
   }
-  do(lambda){
+
+  do(lambda) {
     lambda();
   }
 }
