@@ -53,11 +53,11 @@ let Scenes = {
         },
         {
           new: "Player1, 100, 100, .1, .1, Player",
-          edit: ["PlayerBehavior|player|0", "CircleComponent|fill|\"blue\""]
+          edit: ["PlayerBehavior|player|0", "CircleComponent|fill|\"blue\"", "CircleComponent|lineWidth|5"]
         },
         {
           new: "Player2, 100, 100, .1, .1, Player",
-          edit: ["PlayerBehavior|player|1", "CircleComponent|fill|\"red\""]
+          edit: ["PlayerBehavior|player|1", "CircleComponent|fill|\"red\"", "CircleComponent|lineWidth|5"]
         },
       ]
     }
