@@ -177,7 +177,7 @@ let GameBehaviors = {
 
       }
 
-      this.playerStateMachine = new Base.StateMachine("Player State Machine");
+      this.playerStateMachine =  new Base.StateMachine("Player State Machine");
       this.playerStateMachine.player = 1;
       this.playerStateMachine.push(this.endTurn);
       this.playerStateMachine.push(this.payRent);
