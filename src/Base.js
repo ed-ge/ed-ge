@@ -9,6 +9,8 @@ import Point from "./base/Point.js"
 import Scene from "./base/Scene.js"
 import SceneManager from "./base/SceneManager.js"
 import Serializer from "./base/Serializer.js"
+import State from "./base/State.js"
+import StateMachine from "./base/StateMachine.js"
 import Time from "./base/Time.js"
 
 /** Components */
@@ -99,6 +101,8 @@ const Base = {
   Scene,
   SceneManager,
   Serializer: new Serializer(Components, Prefabs),
+  State,
+  StateMachine,
   Time,
 
 }

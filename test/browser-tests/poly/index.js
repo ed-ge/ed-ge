@@ -104,6 +104,8 @@ function getProperty(position) {
   return property;
 }
 
+var END_TURN_EVENT = "endTurnEvent";
+
 let GameBehaviors = {
   GameControllerBehavior: class GameControllerBehavior extends Base.Behavior {
     start() {
@@ -113,6 +115,37 @@ let GameBehaviors = {
       this.die2 = 0;
       this.roll = 0;
       this.turnShouldEnd = false;
+
+      this.turnStateMachine = new Base.StateMachine("Turn State Machine");
+      this.roll1State = new Base.State("Roll1");
+      this.roll2State = new Base.State("Roll2");
+      this.roll3State = new Base.State("Roll3");
+      this.goToJailOnRolls = new Base.State("GoToJailOnRolls");
+      this.buyProperty = new Base.State("BuyProerty");
+      this.payRent = new Base.State("PayrRent");
+      this.payTax = new Base.State("PayTax");
+      this.pullCard = new Base.State("PullCard");
+      this.trade = new Base.State("Trade");
+      this.endTurn = new Base.State("EndTurn");
+
+      this.playerStateMachine = new Base.StateMachine("Player State Machine");
+      this.player1State = new Base.State("Player 1 State")
+      this.player1State.player = 1;
+      this.player1State.handleEvent = event=>{
+        if(event == END_TURN_EVENT)
+          this.playerStateMachine.do(()=>this.playerStateMachine.currentState = this.player2State);
+      }
+      this.player2State = new Base.State("Player 2 State")
+      this.player2State.player = 2;
+      this.player2State.handleEvent = event=>{
+        if(event == END_TURN_EVENT)
+          this.playerStateMachine.do(()=>this.playerStateMachine.currentState = this.player1State);
+      }
+      this.playerStateMachine.addState(this.player1State);
+      this.playerStateMachine.addState(this.player2State);
+      this.playerStateMachine.currentState = this.player1State;
+
+
 
     }
     getCurrentPlayerBehavior() {
@@ -150,7 +183,12 @@ let GameBehaviors = {
 
     }
     endTurnEvent() {
+
+      
+
       if (!this.turnShouldEnd) return;
+
+      this.turnStateMachine.handleEvent(END_TURN_EVENT);
       let currentPlayer = Base.SceneManager.currentScene.findByName("Player" + this.currentPlayer);
       let currentPlayerBehavior = currentPlayer.getComponent("PlayerBehavior");
 
@@ -360,7 +398,7 @@ let GameBehaviors = {
       // }
     }
     update() {
-      let currentPlayer = this.gameController.currentPlayer;
+      let currentPlayer = this.gameController.turnStateMachine.currentState.player;
       this.textComponent.text = "Player " + currentPlayer + "'s Turn, " + this.gameController.getCurrentPlayerBehavior().rolledTimes + " rolls";
 
 
