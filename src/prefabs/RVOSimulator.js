@@ -1,4 +1,5 @@
-export default {
-    name: "RVOSimulator",
-    components: ["RVOSimulator"]
-  }
+export default 
+`
+RVOSimulator Empty
+RVOSimulator
+`

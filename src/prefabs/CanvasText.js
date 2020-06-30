@@ -1,6 +1,6 @@
 export default 
 `
-CanvasText
+CanvasText Empty
 RectTransform
 TextComponent
  text=10

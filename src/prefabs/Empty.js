@@ -1,4 +1,4 @@
-export default {
-    name: "Empty",
-    components: []
-}
+export default 
+`
+Empty Empty
+`

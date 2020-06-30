@@ -1,5 +1,5 @@
 export default 
 `
-Canvas
+Canvas Empty
 CanvasComponent
 `

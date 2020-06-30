@@ -1,6 +1,6 @@
 export default
 `
-Camera
+Camera Empty
 CameraComponent
  backgroundColor=white
 `
