@@ -22,11 +22,14 @@ import Base from "./Base.js"
 function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
   this.deserializedPrefabs = []
-  for(let prefab in this.Prefabs){
-    this.deserializedPrefabs.push(Base.Serializer.deserializePrefab(prefab))
+  for(let key in this.Prefabs){
+    Base.Serializer.deserializePrefab(this.Prefabs[key], true);
   }
-  this.Prefabs = { ...gameObjects, ...this.Prefabs };
-  Base.Serializer.prefabs = this.Prefabs;
+  for(let key in  gameObjects){
+    Base.Serializer.deserializePrefab(gameObjects[key], true);
+  }
+  //this.Prefabs = { ...gameObjects, ...this.Prefabs };
+  //Base.Serializer.prefabs = this.Prefabs;
   Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
   this.Behaviors = gameBehaviors;
   let canv, ctx;

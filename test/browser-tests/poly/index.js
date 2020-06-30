@@ -398,44 +398,54 @@ let GameBehaviors = {
   }
 }
 
-let Player = {
-  name: "Player",
-  components: ["CircleComponent|fill|black", "PlayerBehavior"]
-}
+let Player = `
+Player Empty
+CircleComponent
+ fill=black
+PlayerBehavior
+`
 
-let CashDisplay = {
-  name: "CashDisplay",
-  components: ["TextComponent", "CashDisplayBehavior"],
-  componentValues: ["TextComponent|font|\"20pt Times\""]
-}
+let CashDisplay = `
+CashDisplay Empty
+TextComponent
+CashDisplayBehavior
+TextComponent
+ font-20pt Times
+`
 
-let PropertyStatusText = {
-  name: "PropertyStatusText",
-  components: ["TextComponent", "PropertyStatusTextBehavior"],
-  componentValues: ["TextComponent|font|10pt Times"]
-}
+let PropertyStatusText = `
+PropertyStatusText Empty 
+PropertyStatusTextBehavior
+TextComponent
+ font=10pt Times
+`
 
-let StatusText = {
-  name: "StatusText",
-  components: ["StatusTextBehavior", "TextComponent"],
-  componentValues: ["TextComponent|font|\"20pt Times\""]
-}
+let StatusText = `
+StatusText Empty
+StatusTextBehavior
+TextComponent
+ font=20pt Times
+`
 
-let GameController = {
-  name: "GameController",
-  components: ["GameControllerBehavior"]
-}
+let GameController = `
+GameController Empty
+GameControllerBehavior
+`
 
-let Button = {
-  name: "Button",
-  components: ["RectangleComponent|width|100|height|40", "AABBCollider|width|100|height|40"],
-  children: [
-    {
-      def: "Text, -25, 10, Text",
-      componentValues: ["TextComponent|text|\"Button\"", "TextComponent|font|\"10pt Times\""]
-    }
-  ]
-}
+let Button = `
+Button
+RectangleComponent
+ width=100
+ height=40
+AABBCollider
+ width=100
+ height=40
++Text Text
+-25, 10
+TextComponent
+ text=Button
+ font=10pt Times
+`
 
 
 let Prefabs = { Player, CashDisplay, GameController, Button, StatusText, PropertyStatusText };
