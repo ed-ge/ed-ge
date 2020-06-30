@@ -45,8 +45,25 @@ class Serializer {
     }
     return toReturn;
   }
-  
+  deserializePrefab(string){
+    let toReturn = new GameObject();
+    let lines = string.split(/\r?\n/);
 
+    let lineIndex = 0;
+    //Read name and prefab line
+    let nameLine = lines[lineIndex]
+    let nameLineSplit = nameLine.split(/\s/);
+    let name = nameLineSplit[0];
+    let prefabName = nameLineSplit[1];
+    toReturn.name = name;
+    toReturn.prefabName = prefabName;
+
+    
+
+
+    return toReturn;
+    
+  }
   instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
     let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
     

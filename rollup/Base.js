@@ -2979,8 +2979,25 @@ class Serializer {
     }
     return toReturn;
   }
-  
+  deserializePrefab(string){
+    let toReturn = new GameObject();
+    let lines = string.split(/\r?\n/);
 
+    let lineIndex = 0;
+    //Read name and prefab line
+    let nameLine = lines[lineIndex];
+    let nameLineSplit = nameLine.split(/\s/);
+    let name = nameLineSplit[0];
+    let prefabName = nameLineSplit[1];
+    toReturn.name = name;
+    toReturn.prefabName = prefabName;
+
+    
+
+
+    return toReturn;
+    
+  }
   instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
     let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
     
@@ -3384,16 +3401,17 @@ class RVOSimulator extends Component {
 class RVOObstacle extends Component {
 }
 
-var Empty = {
-    name: "Empty",
-    components: []
-};
+var Empty = `
+Empty Empty
+`;
 
-var Text = {
-    name: "Text",
-    components:["TextComponent|text|10|font|20pt Times|fill|black"]
-  
-  };
+var Text = `
+Text Empty
+TextComponent
+ text=10
+ font=20pt Times
+ fill=black  
+`;
 
 var Camera = {
     name: "Camera",
@@ -3401,12 +3419,12 @@ var Camera = {
 };
 
 var Canvas = `
-Canvas
+Canvas Empty
 CanvasComponent
 `;
 
 var CanvasText = `
-CanvasText
+CanvasText Empty
 RectTransform
 TextComponent
  text=10
@@ -3414,13 +3432,20 @@ TextComponent
  fill=black
 `;
 
-var Rectangle = {
-    name: "Rectangle",
-    components: ["RectangleComponent|width|100|height|100|fill|red|stroke|blue","AABBCollider|width|100|height|100"]
-  };
+var Rectangle = `
+Rectangle Empty
+RectangleComponent
+ width=100
+ height=100
+ fill=red
+ stroke=blue
+AABBCollider
+ width=100
+ height=100
+`;
 
 var Circle = `
-Circle
+Circle Empty
 CircleComponent
  radius=50
  fill=rgba(255,255,0,.5)
@@ -3429,26 +3454,38 @@ CircleCollider
  radius=0
 `;
 
-var ScreenText = {
-  name: "ScreenText",
-  components:["RectTransform","TextComponent|text|10|font|20pt Times|fill|black"]
+var ScreenText = `
+ScreenText Empty
+RectTransform
+TextComponent
+ text=10
+ font=20pt Times
+ fill=black
+`;
 
-};
+var RVOAgent$1 = `
+RVOAgent Empty
+RVOAgent
+CircleComponent
+ radius=1
+ fill=black
+CircleCollider
+ radius=1
+`;
 
-var RVOAgent$1 = {
-    name: "RVOAgent",
-    components: ["RVOAgent","CircleComponent|radius|1|fill|black","CircleCollider|radius|1"]
-  };
+var RVOSimulator$1 = `
+RVOSimulator Empty
+RVOSimulator
+`;
 
-var RVOSimulator$1 = {
-    name: "RVOSimulator",
-    components: ["RVOSimulator"]
-  };
-
-var RVOObstacle$1 = {
-    name: "RVOObstacle",
-    components: ["RVOObstacle","RectangleComponent|width|5|height|5|fill|black"]
-  };
+var RVOObstacle$1 = `
+RVOObstacle Empty
+RVOObstacle
+RectangleComponent
+ width=5
+ height=5
+ fill=black
+`;
 
 /**
  * Main function for the game.
@@ -3468,6 +3505,10 @@ var RVOObstacle$1 = {
  */
 function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
+  this.deserializedPrefabs = [];
+  for(let prefab in this.Prefabs){
+    this.deserializedPrefabs.push(Base.Serializer.deserializePrefab(prefab));
+  }
   this.Prefabs = { ...gameObjects, ...this.Prefabs };
   Base.Serializer.prefabs = this.Prefabs;
   Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
