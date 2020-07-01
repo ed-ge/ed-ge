@@ -27,10 +27,26 @@ class Scene extends NameableParent {
       !(typeof components == 'object')
     )
       throw new Error("Scene constructor expects 4 argumens.")
+
+
+    let chunks = definition.split(/(\r?\n){2,}/);
+    chunks = chunks.filter(c=>c.trim().length > 0);
+    if(chunks.length == 0)
+      throw new Error("Scene definition was empty.")
+    let nameString = chunks.shift();
+
+
+
     // console.error("Scene constructor expects exactly four argumens of type object")
-    super(definition.name);
+    super(nameString);
+    
     this.children = [];
-    this.objects = definition.objects;
+    for(let i = 0; i < chunks.length; i++){
+      let child = Base.Serializer.deserializePrefab(chunks[i], false);
+      this.children.push(child);
+    }
+
+    //this.objects = definition.objects;
 
     this.prefabs = prefabs;
     this.behaviors = behaviors;

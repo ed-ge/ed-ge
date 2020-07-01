@@ -1,14 +1,14 @@
 export default `
 SceneOne 
 
-Main Camera Camera
+MainCamera Camera
 100, 100
 2,2
 CameraComponent
  backgroundColor=white
 CameraMover
 
-Canvas
+Canvas Canvas
 +ScreenText ScreenText
 50, 50
 RectTransform
@@ -79,14 +79,12 @@ RectTransform
     anchorVertical=bottom
 TextComponent
     text=right bottom
-    
 
 RotatingSquare RotatingSquare
 200, 200
 
 TextTimer Text
 200, 200
-
 
 OscillatingCircle OscillatingCircle
 100, 100
