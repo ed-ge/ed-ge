@@ -2383,10 +2383,26 @@ var Base = (function () {
           !(typeof components == 'object')
         )
           throw new Error("Scene constructor expects 4 argumens.")
+
+
+        let chunks = definition.split(/(\r?\n){2,}/);
+        chunks = chunks.filter(c=>c.trim().length > 0);
+        if(chunks.length == 0)
+          throw new Error("Scene definition was empty.")
+        let nameString = chunks.shift();
+
+
+
         // console.error("Scene constructor expects exactly four argumens of type object")
-        super(definition.name);
+        super(nameString);
+        
         this.children = [];
-        this.objects = definition.objects;
+        for(let i = 0; i < chunks.length; i++){
+          let child = Base.Serializer.deserializePrefab(chunks[i], false);
+          this.children.push(child);
+        }
+
+        //this.objects = definition.objects;
 
         this.prefabs = prefabs;
         this.behaviors = behaviors;
@@ -2983,7 +2999,7 @@ var Base = (function () {
         }
         return toReturn;
       }
-      deserializePrefab(string, store = false) {
+      deserializePrefab(string, store = false, depth = 0) {
 
         let lines = string.split(/\r?\n/);
         lines = lines.filter(l => l.trim().length > 0);
@@ -2997,8 +3013,8 @@ var Base = (function () {
 
         let toReturn = new GameObject();
         if (prefabName != "Empty") {
-          toClone = this.prefabs[prefabName];
-          toReturn = JSON.parse(JSON.stringify(toClone));
+          let toClone = this.prefabs[prefabName];
+          toReturn = _.cloneDeep(toClone);//JSON.parse(JSON.stringify(toClone));
         }
 
         toReturn.name = name;
@@ -3027,10 +3043,26 @@ var Base = (function () {
             }
           }
         }
-
-        let currentComponent = null;
+        let currentComponent;
         while (++lineIndex < lines.length) {
           let currentLine = lines[lineIndex].trimEnd();
+          if (currentLine.trim()[0] == '+') {
+
+            //Determine if this is a sibling or a child
+            let countPlus = 0;
+            while (currentLine.trim()[countPlus++] == '+') { }        countPlus--; //We increment an extra time by definition
+            if (countPlus == depth) {
+              let toParse = lines.slice(lineIndex).join('\n').substr(1);
+              let child = this.deserializePrefab(toParse, false, depth + 1);
+            }
+            else {
+              //It's a sibling
+              break;
+            }
+
+
+          }
+
           if (currentLine.length == 0) continue;
           if (currentLine.match(/^\s/)) {
             //It's a component value

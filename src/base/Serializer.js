@@ -1,6 +1,7 @@
 import GameObject from "./GameObject.js"
 import Point from "./Point.js"
 
+
 class Serializer {
   constructor(components, prefabs) {
     this.components = components;
@@ -46,7 +47,7 @@ class Serializer {
     }
     return toReturn;
   }
-  deserializePrefab(string, store = false) {
+  deserializePrefab(string, store = false, depth = 0) {
 
     let lines = string.split(/\r?\n/);
     lines = lines.filter(l => l.trim().length > 0);
@@ -60,8 +61,8 @@ class Serializer {
 
     let toReturn = new GameObject();
     if (prefabName != "Empty") {
-      toClone = this.prefabs[prefabName];
-      toReturn = JSON.parse(JSON.stringify(toClone));
+      let toClone = this.prefabs[prefabName];
+      toReturn = _.cloneDeep(toClone);//JSON.parse(JSON.stringify(toClone));
     }
 
     toReturn.name = name;
@@ -91,9 +92,28 @@ class Serializer {
       }
     }
 
-    let currentComponent = null;
+    let stop = false;
+    let currentComponent;
     while (++lineIndex < lines.length) {
       let currentLine = lines[lineIndex].trimEnd();
+      if (currentLine.trim()[0] == '+') {
+
+        //Determine if this is a sibling or a child
+        let countPlus = 0;
+        while (currentLine.trim()[countPlus++] == '+') { };
+        countPlus--; //We increment an extra time by definition
+        if (countPlus == depth) {
+          let toParse = lines.slice(lineIndex).join('\n').substr(1);
+          let child = this.deserializePrefab(toParse, false, depth + 1);
+        }
+        else{
+          //It's a sibling
+          break;
+        }
+
+
+      }
+
       if (currentLine.length == 0) continue;
       if (currentLine.match(/^\s/)) {
         //It's a component value
