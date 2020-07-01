@@ -1,31 +1,20 @@
 
-export default {
-  name: "RoomScene",
+export default`
+RoomScene
 
-  objects: [
-    {
-      def: "room, 0, 0, Empty",
-      children: [
-        {
-          def: "Rectangle1, 100, 200, Rectangle",
-        },
-        {
-          def: "Rectangle2, 300, 100, Rectangle",
-          children: [
-            {
-              def: "moon, 0, 0, Moon"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      def: "dot, 200, 200, CollisionDot",
-    },
-    {
-      def: "Main Controller, 100, 100, Empty",
-      components: ["BackToStartSceneBehavior"]
-    }
+ room Empty
+ 0, 0
+ +Rectangle1 Rectangle
+ 100, 200
+ +Rectangle2 Rectangle
+ 300, 100
+ ++moon Moon
+ 0, 0
 
-  ]
-}
+dot CollisionDot
+200, 200
+
+Main Controller Empty
+100, 100
+BackToStartSceneBehavior
+`

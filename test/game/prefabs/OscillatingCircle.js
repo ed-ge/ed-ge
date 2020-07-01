@@ -1,4 +1,8 @@
-export default {
-  name: "OscillatingCircle",
-  components:["CircleComponent|radius|50|fill|green|stroke|blue","CircleBehavior"]
-}
+export default `
+OscillatingCircle Empty
+CircleComponent
+ radius=50
+ fill=green
+ stroke=blue
+CircleBehavior
+`

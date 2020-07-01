@@ -35,7 +35,7 @@ import _ROVObstacle from "./components/RVOObstacle.js"
 /** Prefabs */
 import Empty from "./prefabs/Empty.js"
 import Text from "./prefabs/Text.js"
-import Camera from "./prefabs/Camera.old.js"
+import Camera from "./prefabs/Camera.js"
 import Canvas from "./prefabs/Canvas.js"
 import CanvasText from "./prefabs/CanvasText.js"
 import Rectangle from "./prefabs/Rectangle.js"

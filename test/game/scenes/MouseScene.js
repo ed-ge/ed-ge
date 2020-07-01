@@ -1,46 +1,37 @@
+export default `
+MouseScene
 
-export default {
-  name: "MouseScene",
+MainCamera Camera
+300, 300
+CameraComponent
+ backgroundColor|white
+CameraMover
 
-  objects: [
-    {
-      def: "Main Camera, 300, 300, Camera",
-      componentValues: ["CameraComponent|backgroundColor|white"],
-      components: ["CameraMover"]
-    },
-    {
-      def: "Canvas",
-      children: [
-        {
-          def: "Text, 150, 150, Text",
-          components: ["MouseText"]
-        },
-        {
-          new:"Rectangle, 0, 0, Rectangle",
-          add: ["ClickBehavior"]
-        },
-      ]
-    },
-    {
-      def:"Rectangle, 300, 300, Rectangle",
-      components: ["ClickBehavior"]
-    },
-    {
-      def:"Rectangle, 200, 200, Rectangle",
-      components: ["ClickBehavior"]
-    },
-    {
-      def:"Rectangle, 200, 300, Rectangle",
-      components: ["ClickBehavior"]
-    },
-    {
-      def:"Rectangle, 300, 200, Rectangle",
-      components: ["ClickBehavior"]
-    },
-    {
-      def:"Main Controller, 100, 100, Empty",
-      components: ["BackToStartSceneBehavior"]
-    }
+Canvas Canvas
++Text Text
+150, 150
+MouseText
++Rectangle Rectangle
+0, 0
+ClickBehavior
 
-  ]
-}
+Rectangle Rectangle
+300, 300
+ClickBehavior
+
+Rectangle Rectangle
+200, 200
+ClickBehavior
+
+Rectangle Rectangle
+200, 300
+ClickBehavior
+
+Rectangle Rectangle
+300, 200
+ClickBehavior
+
+MainController Empty
+100, 100
+BackToStartSceneBehavior
+`

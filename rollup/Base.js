@@ -2374,7 +2374,7 @@ class Scene extends NameableParent {
    */
   constructor(definition, prefabs, behaviors, components) {
     if (!(arguments.length == 4) ||
-      !(typeof definition == 'object') ||
+      !(typeof (definition) === 'string' || definition instanceof String) ||
       !(typeof prefabs == 'object') ||
       !(typeof behaviors == 'object') ||
       !(typeof components == 'object')
@@ -2938,7 +2938,8 @@ const SceneManager = {
 class Serializer {
   constructor(components, prefabs) {
     this.components = components;
-    this.prefabs = prefabs;
+    this.prefabs = {};
+    //this.prefabs = prefabs;
   }
   serializeComponent(component) {
     let toReturn = component.constructor.name;
@@ -2979,9 +2980,10 @@ class Serializer {
     }
     return toReturn;
   }
-  deserializePrefab(string){
-    let toReturn = new GameObject();
+  deserializePrefab(string, store = false) {
+
     let lines = string.split(/\r?\n/);
+    lines = lines.filter(l => l.trim().length > 0);
 
     let lineIndex = 0;
     //Read name and prefab line
@@ -2989,18 +2991,76 @@ class Serializer {
     let nameLineSplit = nameLine.split(/\s/);
     let name = nameLineSplit[0];
     let prefabName = nameLineSplit[1];
+
+    let toReturn = new GameObject();
+    if (prefabName != "Empty") {
+      toClone = this.prefabs[prefabName];
+      toReturn = JSON.parse(JSON.stringify(toClone));
+    }
+
     toReturn.name = name;
     toReturn.prefabName = prefabName;
 
-    
+    //Check to see if we have any tranformation information
+    let possibleTranslateLine = lines[lineIndex + 1];
+    if (possibleTranslateLine && possibleTranslateLine.match(/^\s*\d+,\s*\d+\s*$/)) {
+      console.log("Found transform " + possibleTranslateLine);
+      let split = lines[++lineIndex].trim().split(",");
+      toReturn.x = split[0].trim();
+      toReturn.y = split[1].trim();
+
+      let possibleScaleLine = lines[lineIndex + 1];
+      if (possibleScaleLine && possibleScaleLine.match(/^\s*\d+,\s*\d+\s*$/)) {
+        console.log("Found scale " + possibleScaleLine);
+        let split = lines[++lineIndex].trim().split(",");
+        toReturn.scaleX = split[0].trim();
+        toReturn.scaleY = split[1].trim();
+
+        let possibleRotateLine = lines[lineIndex + 1];
+        if (possibleRotateLine && possibleRotateLine.match(/^\s*\d+\s*$/)) {
+          console.log("Found rotate " + possibleRotateLine);
+          lineIndex++;
+          toReturn.scaleY = possibleRotateLine.trim();
+        }
+      }
+    }
+
+    let currentComponent = null;
+    while (++lineIndex < lines.length) {
+      let currentLine = lines[lineIndex].trimEnd();
+      if (currentLine.length == 0) continue;
+      if (currentLine.match(/^\s/)) {
+        //It's a component value
+        let componentValueSplit = currentLine.trim().split("=");
+        let key = componentValueSplit[0];
+        let value = componentValueSplit[1];
+        currentComponent[key] = value;
+      }
+      else {
+        //It's a new component
+        let componentName = currentLine.trim();
+        if (toReturn.anyComponent(componentName)) {
+          //Edit the existing componentent
+          currentComponent = toReturn.getComponent(componentName);
+        }
+        else {
+          //Add a new component
+          currentComponent = new this.components[componentName]();
+          toReturn.addComponent(currentComponent);
+        }
+      }
+    }
 
 
+
+    if (store)
+      this.prefabs[name] = toReturn;
     return toReturn;
-    
+
   }
   instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
     let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
-    
+
 
     let prefab = this.prefabs[gameObjectType.name];
     this.buildIt(prefab, gameObject);
@@ -3013,14 +3073,14 @@ class Serializer {
       this.buildIt(obj, gameObject);
     }
 
-    if (parent){
+    if (parent) {
       parent.children.push(gameObject);
-      if(parent.newChildEvent){
+      if (parent.newChildEvent) {
         parent.newChildEvent(gameObject);
       }
     }
     gameObject.recursiveCall("start");
-    
+
     return gameObject;
 
   }
@@ -3031,16 +3091,16 @@ class Serializer {
       obj.children.forEach(i => this.deserializeGameObject(i, gameObject));
     }
 
-    if(obj.add) obj.components = obj.add; //let add be shorthand for components
+    if (obj.add) obj.components = obj.add; //let add be shorthand for components
     if (obj.components) {
       obj.components.forEach(i => {
-        let component =  this.deserializeComponent(i);
+        let component = this.deserializeComponent(i);
         gameObject.addComponent(component);
       });
     }
 
     //Set the key-pair values on components already on prefabs
-    if(obj.edit) obj.componentValues = obj.edit; //let edit be shorthand for componentValues
+    if (obj.edit) obj.componentValues = obj.edit; //let edit be shorthand for componentValues
     if (obj.componentValues) {
       obj.componentValues.forEach(j => {
         let split = j.split("|").map(i => i.trim());
@@ -3056,7 +3116,7 @@ class Serializer {
     }
 
     //Add new components
-    
+
   }
 
   /**
@@ -3066,7 +3126,7 @@ class Serializer {
    */
   deserializeGameObject(obj, parent = null) {
 
-    if(obj.new) obj.def = obj.new; //Add new as a shorthand for def
+    if (obj.new) obj.def = obj.new; //Add new as a shorthand for def
     if (obj.def) {
       obj.location = { x: 0, y: 0 };
       obj.scale = { x: 1, y: 1 };
@@ -3100,8 +3160,8 @@ class Serializer {
     }
 
     let gameObjectType = this.prefabs["" + obj.type];
-    if (gameObjectType == null) 
-    throw "Could now find game object of type " + obj.type;
+    if (gameObjectType == null)
+      throw "Could now find game object of type " + obj.type;
 
     obj.location = obj.location || { x: 0, y: 0 };
     obj.scale = obj.scale || { x: 1, y: 1 };
@@ -3413,10 +3473,11 @@ TextComponent
  fill=black  
 `;
 
-var Camera = {
-    name: "Camera",
-    components: ["CameraComponent|backgroundColor|white"]
-};
+var Camera = `
+Camera Empty
+CameraComponent
+ backgroundColor=white
+`;
 
 var Canvas = `
 Canvas Empty
@@ -3505,13 +3566,16 @@ RectangleComponent
  */
 function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
-  this.deserializedPrefabs = [];
-  for(let prefab in this.Prefabs){
-    this.deserializedPrefabs.push(Base.Serializer.deserializePrefab(prefab));
-  }
-  this.Prefabs = { ...gameObjects, ...this.Prefabs };
-  Base.Serializer.prefabs = this.Prefabs;
   Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
+  this.deserializedPrefabs = [];
+  for(let key in this.Prefabs){
+    Base.Serializer.deserializePrefab(this.Prefabs[key], true);
+  }
+  for(let key in  gameObjects){
+    Base.Serializer.deserializePrefab(gameObjects[key], true);
+  }
+  //this.Prefabs = { ...gameObjects, ...this.Prefabs };
+  //Base.Serializer.prefabs = this.Prefabs;
   this.Behaviors = gameBehaviors;
   let canv, ctx;
 

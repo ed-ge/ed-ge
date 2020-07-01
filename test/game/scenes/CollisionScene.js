@@ -1,30 +1,27 @@
 
-export default {
-  name: "CollisionScene",
+export default `
+CollisionScene
 
-  objects: [
-    {
-      def:"Collision Circle, 50, 50, CollisionCircle"
-    },
-    {
-      def:"Rectangle, 150, 50, Rectangle"
-    },
-    {
-      def:"dot, 200, 200, CollisionDot"
-    },
-    {
-      def:"CollisionCircle, 250, 50, CollisionCircle",
-    },
-    {
-      def:"Rectangle, 350, 50, Rectangle"
-    },
-    {
-      def:"Triangle, 300, 300, Triangle"
-    },
-    {
-      def:"Main Controller, 100, 100, Empty",
-      components: ["BackToStartSceneBehavior"]
-    }
+Collision Circle CollisionCircle
+50, 50
 
-  ]
-}
+Rectangle Rectangle
+150, 50
+
+dot CollisionDot
+200, 200
+
+CollisionCircle CollisionCircle
+250, 50
+
+Rectangle Rectangle
+350, 50
+
+Triangle Triangle
+300, 300
+
+
+Main Controller Empty
+100, 100
+BackToStartSceneBehavior
+`

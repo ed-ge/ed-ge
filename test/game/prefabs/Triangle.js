@@ -1,6 +1,20 @@
-export default {
-    name: "Triangle",
-    location: { x: 300, y: 300 },
-    type: "Empty",
-    components: ["TriangleComponent|fill|white|stroke|red|pointAX|0|pointAY|0|pointBX|100|pointBY|100|pointCX|200|pointCY|0","TriangleCollider|pointAX|0|pointAY|0|pointBX|100|pointBY|100|pointCX|200|pointCY|0 "]
-}
+export default `
+Triangle Empty
+300, 300
+TriangleComponent
+ fill=white
+ stroke=red
+ pointAX=0
+ pointAY=0
+ pointBX=100
+ pointBY=100
+ pointCX=200
+ pointCY=0
+TriangleCollider
+ pointAX=0
+ pointAY=0
+ pointBX=100
+ pointBY=100
+ pointCX=200
+ pointCY=0
+`

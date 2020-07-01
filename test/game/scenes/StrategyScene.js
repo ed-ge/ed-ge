@@ -1,13 +1,8 @@
-export default {
-  name:"StrategyScene",
-  objects: [
-    {
-      def:"Napster"
-      
-    },
-    {
-      def:"Main Controller, Empty",
-      components:['BackToStartSceneBehavior']
-    }
-  ]
-}
+export default`
+StrategyScene
+
+Napster Napster     
+
+Main Controller Empty
+BackToStartSceneBehavior
+`

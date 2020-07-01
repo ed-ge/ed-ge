@@ -1,19 +1,20 @@
 
-export default {
-  name: "SceneTwo",
+export default `
+SceneTwo
 
-  objects: [
-    {
-      def:"conter, 10, 80, Text",
-      componentValues: ['TextComponent|text|A']
-    },
-    {
-      def:"timer, 10, 40, Timer",
-      componentValues: ['CountDownTimer|toSceneText|SceneTwoB']
-    },
-    {
-      def:"Main Controller, 100, 100, Empty",
-      components: ['BackToStartSceneBehavior']
-    }
-  ]
-}
+counter Text
+10, 80
+TextComponent
+ text=A
+
+
+timer Timer
+10, 40
+CountDownTimer
+ toSceneText=SceneTwoB
+
+
+MainController Empty
+100, 100
+BackToStartSceneBehavior
+`

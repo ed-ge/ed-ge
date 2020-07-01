@@ -1,48 +1,59 @@
-export default {
-  name: "StartScene",
-  objects: [
-    {
-      def: "StartSceneListener",
-    },
-    {
-      def: "Circle",
-      componentValues: ["CircleComponent|radius| 1"]
-    },
-    {
-      def: "Click, 10, 40, Text",
-      componentValues: ["TextComponent|text|Push 'z' to start the collision scene."]
-    },
-    {
-      def: "Enter, 10, 80, 1, Text",
-      componentValues: ["TextComponent|text|Push 'enter' ('return' on Mac) to start the strategy game."]
-    },
-    {
-      def: "Space, 10, 120, Text",
-      componentValues: ["TextComponent|text|Push space to start the drawing test game."]
-    },
-    {
-      def: "a, 10, 160, Text",
-      componentValues: ["TextComponent|text|Push 'a' to start the scene test game."]
-    },
-    {
-      def: "r, 10, 200, Text",
-      componentValues: ["TextComponent|text|Push 'r' to start the room test game."]
-    },
-    {
-      def: "c, 10, 240, Text",
-      componentValues: ["TextComponent|text|Push 'c' to start the circle collision test game."]
-    },
-    {
-      def: "m, 10, 280, Text",
-      componentValues: ["TextComponent|text|Push 'm' to start the mouse test game."]
-    },
-    {
-      def:"s, 10, 320, Text",
-      componentValues:["TextComponent| text| Push 's' to start the crowd simulation."]
-    },
-    {
-      def:"t, 10, 360, Text",
-      componentValues:["TextComponent| text| Push 't' to start the touch test game."]
-    }
-  ]
-}
+export default `
+StartScene
+
+Circle Circle
+0,0
+1,1
+0
+CircleComponent
+ radius=1
+
+Click Text
+10,40
+1,1
+0
+TextComponent
+ text=Push 'z' to start the collision scene.
+
+Enter Text
+10,80
+TextComponent
+ text=Push 'enter' ('return' on Mac) to start the strategy Game
+
+Space Text
+10, 120
+TextComponent
+ text=Push space to start the drawing test game.
+
+a Text
+10, 160
+TextComponent
+ text=Push 'a' to start the scene text game.
+
+r Text
+10, 200
+TextComponent
+ text=Push 'r' to start the room test game.
+
+c Text
+10, 240
+TextComponent
+ text=Push '' to start the circle collision test game.
+
+m Text
+10, 280
+TextComponent
+ text=Push 'm' to start the mouse test game.
+
+s Text
+10, 320
+TextComponent
+ text=Push 's' to start the crowd simulation test game.
+
+t Text
+10, 360
+TextComponent
+ text=Push 't' to start the circle touch test game.
+
+
+`
