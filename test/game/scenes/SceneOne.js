@@ -1,83 +1,118 @@
-export default {
-  name: "SceneOne",
+export default `
+SceneOne 
 
-  objects: [
-    {
-      def:"Main Camera, 100, 100, 2,2, Camera",
-      componentValues: ["CameraComponent|backgroundColor|white"],
-      components: ["CameraMover"]
-    },
-    {
-      def:"Canvas",
-      children: [
-        {
-          def:"ScreenText, 50, 50, ScreenText",
-          componentValues: ["RectTransform|anchorHorizontal| left", "RectTransform|anchorVertical|top", "TextComponent|text| left top"]
-        },
-        {
-          def:"ScreenText, 0, 50, ScreenText",
-          componentValues: ["RectTransform|anchorHorizontal|center", "RectTransform|anchorVertical|top", "TextComponent|text|center top"]
-        },
-        {
-          def:"ScreenText, -150, 50, ScreenText",
-          componentValues: ["RectTransform|anchorHorizontal| right", "RectTransform|anchorVertical|top", "TextComponent|text|right top"]
-        },
-        {
-          def:"ScreenText, 50, 0, ScreenText",
-          componentValues: ["RectTransform|anchorHorizontal|left", "RectTransform|anchorVertical|middle", "TextComponent|text| left middle"]
-        },
-        {
-          def:"ScreenText, 0, 0, ScreenText",
-          componentValues: ["RectTransform|anchorHorizontal|center", "RectTransform|anchorVertical|middle", "TextComponent|text|center middle"]
-        },
-        {
-          def:"ScreenText, -150, 0, ScreenText",
-          componentValues: ["RectTransform|anchorHorizontal|right", "RectTransform|anchorVertical|middle", "TextComponent|text|right middle"]
-        },
-        {
-          def:"ScreenText, 50, -50, ScreenText",
-          componentValues: ["RectTransform|anchorHorizontal|left", "RectTransform|anchorVertical|bottom", "TextComponent|text|left bottom"]
-        },
-        {
-          def:"ScreenText, 0, -50, ScreenText",
-         componentValues: ["RectTransform|anchorHorizontal|center", "RectTransform|anchorVertical|bottom", "TextComponent|text|center bottom"]
-        },
-        {
-          def:"ScreenText, -150, -50, ScreenText",
-          componentValues: ["RectTransform|anchorHorizontal|right", "RectTransform|anchorVertical|bottom", "TextComponent|text|right bottom"]
-        },
+Main Camera Camera
+100, 100
+2,2
+CameraComponent
+ backgroundColor=white
+CameraMover
 
-      ]
-    },
-    {
-      def:"Rotating Square, 200, 200, RotatingSquare"
-    },
-    {
-      def: "Text Timer, 200, 200, Text",
-    },
-    {
-      def:"Oscillating Circle, 100, 100, OscillatingCircle",
-      children: [
-        {
-          def:"Moon"
-        },
-      ]
-    },
-    {
-      def:"Triangle, 300, 300, Empty",
-      components: ["ScaleBehavior","TriangleComponent|fill|white|stroke|red|pointAX|0|pointAY|0|pointBX|100|pointBY|100|pointCX|200|pointCY|0 "]
-    },
-    {
-      def:"Main Controller, 100, 100, Empty",
-      components: ['BackToStartSceneBehavior']
-    },
-    {
-      def:"Empty, 100, 100, Empty",
-      components: ["RectangleComponent|fill|gray|width|10|height|10"]
+Canvas
++ScreenText ScreenText
+50, 50
+RectTransform
+ anchorHorizontal=left
+ anchorVertical=top
+TextComponent
+ text=left top
++ScreenText ScreenText
+0, 50
+ RectTransform
+  anchorHorizontal=center
+  anchorVertical=top
+ TextComponent
+  text=center top
++ScreenText ScreenText
+ -150, 50
+ RectTransform
+  anchorHorizontal=right
+  anchorVertical=top
+ TextComponent
+  text=right top
++ScreenText ScreenText
+  50, 0
+RectTransform
+   anchorHorizontal=left
+   anchorVertical=middle
+TextComponent
+   text=left middle
++ScreenText ScreenText
+   0, 0
+RectTransform
+    anchorHorizontal=center
+    anchorVertical=middle
+TextComponent
+    text=center middle
++ScreenText ScreenText
+   0, 0
+RectTransform
+    anchorHorizontal=center
+    anchorVertical=middle
+TextComponent
+    text=center middle
++ScreenText ScreenText
+   -150, 0
+RectTransform
+    anchorHorizontal=right
+    anchorVertical=middle
+TextComponent
+    text=right middle
++ScreenText ScreenText
+   50, -50
+RectTransform
+    anchorHorizontal=left
+    anchorVertical=bottom
+TextComponent
+    text=left bottom
++ScreenText ScreenText
+   0, -50
+RectTransform
+    anchorHorizontal=center
+    anchorVertical=bottom
+TextComponent
+    text=center bottom
++ScreenText ScreenText
+   -150, -50
+RectTransform
+    anchorHorizontal=right
+    anchorVertical=bottom
+TextComponent
+    text=right bottom
+    
 
-    },
+RotatingSquare RotatingSquare
+200, 200
 
-  ]
+TextTimer Text
+200, 200
 
 
-}
+OscillatingCircle OscillatingCircle
+100, 100
++Moon
+
+Triangle Empty
+300, 300
+ScaleBehavior
+TriangleComponent
+ fill=white
+ stroke=red
+ pointAX=0
+ pointAY=0
+ pointBX=100
+ pointBY=100
+ pointCX=200
+ pointCY=0
+
+Main Controller Empty
+100, 100
+BackToStartSceneBehavior
+
+Empty Empty
+100, 100
+RectangleComponent
+ fill=gray
+ width=10
+ height=10
+`

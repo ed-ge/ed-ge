@@ -21,7 +21,7 @@ class Scene extends NameableParent {
    */
   constructor(definition, prefabs, behaviors, components) {
     if (!(arguments.length == 4) ||
-      !(typeof definition == 'object') ||
+      !(typeof (definition) === 'string' || definition instanceof String) ||
       !(typeof prefabs == 'object') ||
       !(typeof behaviors == 'object') ||
       !(typeof components == 'object')

@@ -1,5 +1,5 @@
-export default {
-  name: "Napster",
-  components:["NapsterBehavior"]
-}
+export default `
+Napster Empty
+NapsterBehavior
+`
 

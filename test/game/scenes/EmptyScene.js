@@ -1,8 +1,4 @@
 
-export default {
-    name: "EmptyScene",
-  
-    objects: [
-      
-    ]
-  }
+export default `
+EmptyScene
+`

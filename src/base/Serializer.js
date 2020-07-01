@@ -49,7 +49,7 @@ class Serializer {
   deserializePrefab(string, store = false) {
 
     let lines = string.split(/\r?\n/);
-    lines = lines.filter(l=>l.trim().length > 0);
+    lines = lines.filter(l => l.trim().length > 0);
 
     let lineIndex = 0;
     //Read name and prefab line
@@ -67,29 +67,59 @@ class Serializer {
     toReturn.name = name;
     toReturn.prefabName = prefabName;
 
+    //Check to see if we have any tranformation information
+    let possibleTranslateLine = lines[lineIndex + 1];
+    if (possibleTranslateLine && possibleTranslateLine.match(/^\s*\d+,\s*\d+\s*$/)) {
+      console.log("Found transform " + possibleTranslateLine)
+      let split = lines[++lineIndex].trim().split(",");
+      toReturn.x = split[0].trim();
+      toReturn.y = split[1].trim();
+
+      let possibleScaleLine = lines[lineIndex + 1];
+      if (possibleScaleLine && possibleScaleLine.match(/^\s*\d+,\s*\d+\s*$/)) {
+        console.log("Found scale " + possibleScaleLine)
+        let split = lines[++lineIndex].trim().split(",");
+        toReturn.scaleX = split[0].trim();
+        toReturn.scaleY = split[1].trim();
+
+        let possibleRotateLine = lines[lineIndex + 1];
+        if (possibleRotateLine && possibleRotateLine.match(/^\s*\d+\s*$/)) {
+          console.log("Found rotate " + possibleRotateLine)
+          lineIndex++;
+          toReturn.scaleY = possibleRotateLine.trim();
+        }
+      }
+    }
+
     let currentComponent = null;
-    while(++lineIndex < lines.length){
+    while (++lineIndex < lines.length) {
       let currentLine = lines[lineIndex].trimEnd();
-      if(currentLine.length == 0) continue;
-      if(currentLine.match(/^\s/))
-      {
+      if (currentLine.length == 0) continue;
+      if (currentLine.match(/^\s/)) {
         //It's a component value
         let componentValueSplit = currentLine.trim().split("=");
         let key = componentValueSplit[0]
         let value = componentValueSplit[1];
         currentComponent[key] = value;
       }
-      else{
+      else {
         //It's a new component
-        if(gameObject.)
-        currentComponent = new this.components[currentLine.trim()]();
-        toReturn.addComponent(currentComponent);       
+        let componentName = currentLine.trim();
+        if (toReturn.anyComponent(componentName)) {
+          //Edit the existing componentent
+          currentComponent = toReturn.getComponent(componentName);
+        }
+        else {
+          //Add a new component
+          currentComponent = new this.components[componentName]();
+          toReturn.addComponent(currentComponent);
+        }
       }
     }
 
-    
 
-    if(store)
+
+    if (store)
       this.prefabs[name] = toReturn;
     return toReturn;
 
