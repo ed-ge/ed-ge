@@ -20,18 +20,18 @@ TextComponent
 
 ScreenText ScreenText
 0, 50
- RectTransform
+RectTransform
   anchorHorizontal=center
   anchorVertical=top
- TextComponent
+TextComponent
   text=center top
 
 ScreenText ScreenText
  -150, 50
- RectTransform
+RectTransform
   anchorHorizontal=right
   anchorVertical=top
- TextComponent
+TextComponent
   text=right top
 
 ScreenText ScreenText
@@ -75,7 +75,7 @@ TextComponent
     text=left bottom
 
 ScreenText ScreenText
-   0, -50
+0, -50
 RectTransform
     anchorHorizontal=center
     anchorVertical=bottom
@@ -83,7 +83,7 @@ TextComponent
     text=center bottom
 
 ScreenText ScreenText
-   -150, -50
+-150, -50
 RectTransform
     anchorHorizontal=right
     anchorVertical=bottom
@@ -100,7 +100,7 @@ TextTimer Text
 OscillatingCircle OscillatingCircle
 100, 100
 <
-Moon
+Moon Moon
 >
 
 Triangle Empty
@@ -116,7 +116,7 @@ TriangleComponent
  pointCX=200
  pointCY=0
 
-Main Controller Empty
+MainController Empty
 100, 100
 BackToStartSceneBehavior
 

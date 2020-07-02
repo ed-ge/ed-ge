@@ -11,7 +11,7 @@ Canvas Canvas
 <
 Text Text
 150, 150
- TouchText
+TouchText
 
 Text ScreenText
 0, 0

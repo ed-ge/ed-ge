@@ -2391,7 +2391,7 @@ var Base = (function () {
         //   throw new Error("Scene definition was empty.")
         // let nameString = chunks.shift();
         let splits = definition.trim().split(/\r?\n/);
-        if(splits.length == 0)
+        if (splits.length == 0)
           throw new Error("Scene definition was empty");
         let firstLine = splits[0].trim();
 
@@ -2402,12 +2402,48 @@ var Base = (function () {
         super(firstLine);
 
         let remainder = splits.slice(1).join("\n").trim();
-        
+
         this.children = [];
-        for(let i = 0; i < chunks.length; i++){
-          let child = Base.Serializer.deserializePrefab(chunks[i], false);
-          this.children.push(child);
+
+
+        let lines = remainder.split("\n");
+        let parentStack = [];
+        parentStack.push(this);
+        let next = [];
+        for (var i = 0; i < lines.length; i++) {
+          let parse = false;
+          let line = lines[i];
+          if (line.trim() == '<') {
+            parse = true;
+          }
+          else if (line.trim() == '>') {
+            parentStack.pop();
+            if (parentStack.length <= 0)
+              throw new Error("Unbalanced <>'s");
+            parse = true;
+          }
+          else if (line.trim() == '') {
+            parse = true;
+          }
+          if (parse) {
+            if (next.join("\n").trim().length != 0)
+              Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
+            if (line.trim() == '<')
+              parentStack.push(_.last(_.last(parentStack).children));
+            next = [];
+          }
+          else
+            next.push(line);
         }
+        if (next.join("\n").trim().length != 0)
+          Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
+
+
+
+
+        // for (let i = 0; i < chunks.length; i++) {
+
+        // }
 
         //this.objects = definition.objects;
 
@@ -3006,7 +3042,7 @@ var Base = (function () {
         }
         return toReturn;
       }
-      deserializePrefab(string, store = false, depth = 0) {
+      deserializePrefab(string, store = false, parent = null) {
 
         let lines = string.split(/\r?\n/);
         lines = lines.filter(l => l.trim().length > 0);
@@ -3029,47 +3065,32 @@ var Base = (function () {
 
         //Check to see if we have any tranformation information
         let possibleTranslateLine = lines[lineIndex + 1];
-        if (possibleTranslateLine && possibleTranslateLine.match(/^\s*\d+,\s*\d+\s*$/)) {
+        if (possibleTranslateLine && possibleTranslateLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
           console.log("Found transform " + possibleTranslateLine);
           let split = lines[++lineIndex].trim().split(",");
           toReturn.x = split[0].trim();
           toReturn.y = split[1].trim();
 
           let possibleScaleLine = lines[lineIndex + 1];
-          if (possibleScaleLine && possibleScaleLine.match(/^\s*\d+,\s*\d+\s*$/)) {
+          if (possibleScaleLine && possibleScaleLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
             console.log("Found scale " + possibleScaleLine);
             let split = lines[++lineIndex].trim().split(",");
             toReturn.scaleX = split[0].trim();
             toReturn.scaleY = split[1].trim();
 
             let possibleRotateLine = lines[lineIndex + 1];
-            if (possibleRotateLine && possibleRotateLine.match(/^\s*\d+\s*$/)) {
+            if (possibleRotateLine && possibleRotateLine.match(/^\s*-?\d+\s*$/)) {
               console.log("Found rotate " + possibleRotateLine);
               lineIndex++;
               toReturn.scaleY = possibleRotateLine.trim();
             }
           }
         }
+
         let currentComponent;
         while (++lineIndex < lines.length) {
           let currentLine = lines[lineIndex].trimEnd();
-          if (currentLine.trim()[0] == '+') {
-
-            //Determine if this is a sibling or a child
-            let countPlus = 0;
-            while (currentLine.trim()[countPlus++] == '+') { }        countPlus--; //We increment an extra time by definition
-            if (countPlus == depth) {
-              let toParse = lines.slice(lineIndex).join('\n').substr(1);
-              let child = this.deserializePrefab(toParse, false, depth + 1);
-            }
-            else {
-              //It's a sibling
-              break;
-            }
-
-
-          }
-
+          
           if (currentLine.length == 0) continue;
           if (currentLine.match(/^\s/)) {
             //It's a component value
@@ -3097,6 +3118,8 @@ var Base = (function () {
 
         if (store)
           this.prefabs[name] = toReturn;
+        if(parent != null)
+          parent.children.push(toReturn);
         return toReturn;
 
       }

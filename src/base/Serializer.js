@@ -47,7 +47,7 @@ class Serializer {
     }
     return toReturn;
   }
-  deserializePrefab(string, store = false, depth = 0) {
+  deserializePrefab(string, store = false, parent = null) {
 
     let lines = string.split(/\r?\n/);
     lines = lines.filter(l => l.trim().length > 0);
@@ -70,21 +70,21 @@ class Serializer {
 
     //Check to see if we have any tranformation information
     let possibleTranslateLine = lines[lineIndex + 1];
-    if (possibleTranslateLine && possibleTranslateLine.match(/^\s*\d+,\s*\d+\s*$/)) {
+    if (possibleTranslateLine && possibleTranslateLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
       console.log("Found transform " + possibleTranslateLine)
       let split = lines[++lineIndex].trim().split(",");
       toReturn.x = split[0].trim();
       toReturn.y = split[1].trim();
 
       let possibleScaleLine = lines[lineIndex + 1];
-      if (possibleScaleLine && possibleScaleLine.match(/^\s*\d+,\s*\d+\s*$/)) {
+      if (possibleScaleLine && possibleScaleLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
         console.log("Found scale " + possibleScaleLine)
         let split = lines[++lineIndex].trim().split(",");
         toReturn.scaleX = split[0].trim();
         toReturn.scaleY = split[1].trim();
 
         let possibleRotateLine = lines[lineIndex + 1];
-        if (possibleRotateLine && possibleRotateLine.match(/^\s*\d+\s*$/)) {
+        if (possibleRotateLine && possibleRotateLine.match(/^\s*-?\d+\s*$/)) {
           console.log("Found rotate " + possibleRotateLine)
           lineIndex++;
           toReturn.scaleY = possibleRotateLine.trim();
@@ -92,28 +92,10 @@ class Serializer {
       }
     }
 
-    let stop = false;
     let currentComponent;
     while (++lineIndex < lines.length) {
       let currentLine = lines[lineIndex].trimEnd();
-      if (currentLine.trim()[0] == '+') {
-
-        //Determine if this is a sibling or a child
-        let countPlus = 0;
-        while (currentLine.trim()[countPlus++] == '+') { };
-        countPlus--; //We increment an extra time by definition
-        if (countPlus == depth) {
-          let toParse = lines.slice(lineIndex).join('\n').substr(1);
-          let child = this.deserializePrefab(toParse, false, depth + 1);
-        }
-        else{
-          //It's a sibling
-          break;
-        }
-
-
-      }
-
+      
       if (currentLine.length == 0) continue;
       if (currentLine.match(/^\s/)) {
         //It's a component value
@@ -141,6 +123,8 @@ class Serializer {
 
     if (store)
       this.prefabs[name] = toReturn;
+    if(parent != null)
+      parent.children.push(toReturn);
     return toReturn;
 
   }

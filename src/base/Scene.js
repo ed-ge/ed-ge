@@ -35,7 +35,7 @@ class Scene extends NameableParent {
     //   throw new Error("Scene definition was empty.")
     // let nameString = chunks.shift();
     let splits = definition.trim().split(/\r?\n/);
-    if(splits.length == 0)
+    if (splits.length == 0)
       throw new Error("Scene definition was empty");
     let firstLine = splits[0].trim();
 
@@ -46,12 +46,48 @@ class Scene extends NameableParent {
     super(firstLine);
 
     let remainder = splits.slice(1).join("\n").trim();
-    
+
     this.children = [];
-    for(let i = 0; i < chunks.length; i++){
-      let child = Base.Serializer.deserializePrefab(chunks[i], false);
-      this.children.push(child);
+
+
+    let lines = remainder.split("\n");
+    let parentStack = [];
+    parentStack.push(this);
+    let next = [];
+    for (var i = 0; i < lines.length; i++) {
+      let parse = false;
+      let line = lines[i];
+      if (line.trim() == '<') {
+        parse = true;
+      }
+      else if (line.trim() == '>') {
+        parentStack.pop();
+        if (parentStack.length <= 0)
+          throw new Error("Unbalanced <>'s");
+        parse = true;
+      }
+      else if (line.trim() == '') {
+        parse = true;
+      }
+      if (parse) {
+        if (next.join("\n").trim().length != 0)
+          Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
+        if (line.trim() == '<')
+          parentStack.push(_.last(_.last(parentStack).children));
+        next = [];
+      }
+      else
+        next.push(line)
     }
+    if (next.join("\n").trim().length != 0)
+      Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
+
+
+
+
+    // for (let i = 0; i < chunks.length; i++) {
+
+    // }
 
     //this.objects = definition.objects;
 
