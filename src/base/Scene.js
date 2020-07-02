@@ -121,18 +121,18 @@ class Scene extends NameableParent {
     this.simulator.setTimeStep(.25);
     this.simulator.addObstacle([]);
     this.simulator.processObstacles();
-    this.children = [];//Clear the children in case the scene has been built before
+    // this.children = [];//Clear the children in case the scene has been built before
 
-    // if (this.objects)
+    // // if (this.objects)
+    // //   this.objects.forEach(obj => {
+    // //     this.buildChild(obj, this)
+    // //   })
+    // let that = this;
+    // if (this.objects) {
     //   this.objects.forEach(obj => {
-    //     this.buildChild(obj, this)
+    //     Base.Serializer.deserializeGameObject(obj, that);
     //   })
-    let that = this;
-    if (this.objects) {
-      this.objects.forEach(obj => {
-        Base.Serializer.deserializeGameObject(obj, that);
-      })
-    }
+    // }
     if (this.children) {
       this.children.forEach(child => {
         child.recursiveCall("start");

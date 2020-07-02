@@ -3,6 +3,6 @@ StrategyScene
 
 Napster Napster     
 
-Main Controller Empty
+MainController Empty
 BackToStartSceneBehavior
 `
