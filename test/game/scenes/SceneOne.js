@@ -9,76 +9,87 @@ CameraComponent
 CameraMover
 
 Canvas Canvas
-+ScreenText ScreenText
+<
+ScreenText ScreenText
 50, 50
 RectTransform
  anchorHorizontal=left
  anchorVertical=top
 TextComponent
  text=left top
-+ScreenText ScreenText
+
+ScreenText ScreenText
 0, 50
  RectTransform
   anchorHorizontal=center
   anchorVertical=top
  TextComponent
   text=center top
-+ScreenText ScreenText
+
+ScreenText ScreenText
  -150, 50
  RectTransform
   anchorHorizontal=right
   anchorVertical=top
  TextComponent
   text=right top
-+ScreenText ScreenText
+
+ScreenText ScreenText
   50, 0
 RectTransform
    anchorHorizontal=left
    anchorVertical=middle
 TextComponent
    text=left middle
-+ScreenText ScreenText
+
+ScreenText ScreenText
    0, 0
 RectTransform
     anchorHorizontal=center
     anchorVertical=middle
 TextComponent
     text=center middle
-+ScreenText ScreenText
-   0, 0
+
+ScreenText ScreenText
+0, 0
 RectTransform
     anchorHorizontal=center
     anchorVertical=middle
 TextComponent
     text=center middle
-+ScreenText ScreenText
+
+ScreenText ScreenText
    -150, 0
 RectTransform
     anchorHorizontal=right
     anchorVertical=middle
 TextComponent
     text=right middle
-+ScreenText ScreenText
+
+ScreenText ScreenText
    50, -50
 RectTransform
     anchorHorizontal=left
     anchorVertical=bottom
 TextComponent
     text=left bottom
-+ScreenText ScreenText
+
+ScreenText ScreenText
    0, -50
 RectTransform
     anchorHorizontal=center
     anchorVertical=bottom
 TextComponent
     text=center bottom
-+ScreenText ScreenText
+
+ScreenText ScreenText
    -150, -50
 RectTransform
     anchorHorizontal=right
     anchorVertical=bottom
 TextComponent
     text=right bottom
+>
 
 RotatingSquare RotatingSquare
 200, 200
@@ -88,7 +99,9 @@ TextTimer Text
 
 OscillatingCircle OscillatingCircle
 100, 100
-+Moon
+<
+Moon
+>
 
 Triangle Empty
 300, 300

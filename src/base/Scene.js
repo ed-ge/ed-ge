@@ -29,16 +29,23 @@ class Scene extends NameableParent {
       throw new Error("Scene constructor expects 4 argumens.")
 
 
-    let chunks = definition.split(/(\r?\n){2,}/);
-    chunks = chunks.filter(c=>c.trim().length > 0);
-    if(chunks.length == 0)
-      throw new Error("Scene definition was empty.")
-    let nameString = chunks.shift();
+    // let chunks = definition.split(/(\r?\n){2,}/);
+    // chunks = chunks.filter(c=>c.trim().length > 0);
+    // if(chunks.length == 0)
+    //   throw new Error("Scene definition was empty.")
+    // let nameString = chunks.shift();
+    let splits = definition.trim().split(/\r?\n/);
+    if(splits.length == 0)
+      throw new Error("Scene definition was empty");
+    let firstLine = splits[0].trim();
+
 
 
 
     // console.error("Scene constructor expects exactly four argumens of type object")
-    super(nameString);
+    super(firstLine);
+
+    let remainder = splits.slice(1).join("\n").trim();
     
     this.children = [];
     for(let i = 0; i < chunks.length; i++){

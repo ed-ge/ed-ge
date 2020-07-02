@@ -8,14 +8,17 @@ CameraComponent
  backgroundColor=lightgray
 
 Canvas Canvas
-+Text Text
+<
+Text Text
 150, 150
  TouchText
-+Text ScreenText
+
+Text ScreenText
 0, 0
 RectTransform
  anchorHorizontal=center 
  anchorVertical=middle
+>
 
 Rectangle Rectangle
 300, 300
