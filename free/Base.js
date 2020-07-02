@@ -2477,18 +2477,18 @@ var Base = (function () {
         this.simulator.setTimeStep(.25);
         this.simulator.addObstacle([]);
         this.simulator.processObstacles();
-        this.children = [];//Clear the children in case the scene has been built before
+        // this.children = [];//Clear the children in case the scene has been built before
 
-        // if (this.objects)
+        // // if (this.objects)
+        // //   this.objects.forEach(obj => {
+        // //     this.buildChild(obj, this)
+        // //   })
+        // let that = this;
+        // if (this.objects) {
         //   this.objects.forEach(obj => {
-        //     this.buildChild(obj, this)
+        //     Base.Serializer.deserializeGameObject(obj, that);
         //   })
-        let that = this;
-        if (this.objects) {
-          this.objects.forEach(obj => {
-            Base.Serializer.deserializeGameObject(obj, that);
-          });
-        }
+        // }
         if (this.children) {
           this.children.forEach(child => {
             child.recursiveCall("start");
@@ -3066,21 +3066,21 @@ var Base = (function () {
         //Check to see if we have any tranformation information
         let possibleTranslateLine = lines[lineIndex + 1];
         if (possibleTranslateLine && possibleTranslateLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
-          console.log("Found transform " + possibleTranslateLine);
+          // console.log("Found transform " + possibleTranslateLine)
           let split = lines[++lineIndex].trim().split(",");
           toReturn.x = split[0].trim();
           toReturn.y = split[1].trim();
 
           let possibleScaleLine = lines[lineIndex + 1];
           if (possibleScaleLine && possibleScaleLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
-            console.log("Found scale " + possibleScaleLine);
+            // console.log("Found scale " + possibleScaleLine)
             let split = lines[++lineIndex].trim().split(",");
             toReturn.scaleX = split[0].trim();
             toReturn.scaleY = split[1].trim();
 
             let possibleRotateLine = lines[lineIndex + 1];
             if (possibleRotateLine && possibleRotateLine.match(/^\s*-?\d+\s*$/)) {
-              console.log("Found rotate " + possibleRotateLine);
+              // console.log("Found rotate " + possibleRotateLine)
               lineIndex++;
               toReturn.scaleY = possibleRotateLine.trim();
             }

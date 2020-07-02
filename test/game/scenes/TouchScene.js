@@ -32,6 +32,6 @@ Rectangle Rectangle
 500, 500
 TouchEnd
 
-Main Controller Empty
+MainController Empty
 BackToStartSceneBehavior
 `

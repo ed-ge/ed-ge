@@ -20,7 +20,7 @@ CollisionCircle CollisionCircle
 Rectangle Rectangle
 350, 50 
 
-Main Controller Empty
+MainController Empty
 100, 100
 BackToStartSceneBehavior
 `

@@ -54,4 +54,6 @@ t Text
 10, 360
 TextComponent
  text=Push 't' to start the circle touch test game.
+
+StartSceneListener StartSceneListener
 `

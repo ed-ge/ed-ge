@@ -19,7 +19,7 @@ moon Moon
 dot CollisionDot
 200, 200
 
-Main Controller Empty
+MainController Empty
 100, 100
 BackToStartSceneBehavior
 `

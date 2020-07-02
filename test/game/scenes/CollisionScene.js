@@ -21,7 +21,7 @@ Triangle Triangle
 300, 300
 
 
-Main Controller Empty
+MainController Empty
 100, 100
 BackToStartSceneBehavior
 `
