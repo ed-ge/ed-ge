@@ -8,13 +8,15 @@ CameraComponent
 CameraMover
 
 Canvas Canvas
-+Text Text
+{
+Text Text
 150, 150
 MouseText
-+Rectangle Rectangle
+
+Rectangle Rectangle
 0, 0
 ClickBehavior
-
+}
 Rectangle Rectangle
 300, 300
 ClickBehavior

@@ -6,12 +6,10 @@ counter Text
 TextComponent
  text=B
 
-
 timer Timer
 10, 40
 CountDownTimer
  toSceneText=SceneTwo
-
 
 MainController Empty
 100, 100
