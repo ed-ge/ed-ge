@@ -124,7 +124,8 @@ class Serializer {
     if (store)
       this.prefabs[name] = toReturn;
     if(parent != null)
-      parent.children.push(toReturn);
+      // parent.children.push(toReturn);
+      parent.addChild(toReturn);
     return toReturn;
 
   }
