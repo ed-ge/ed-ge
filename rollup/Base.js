@@ -2414,19 +2414,23 @@ class Scene extends NameableParent {
         parse = true;
       }
       else if (line.trim() == '>') {
-        parentStack.pop();
-        if (parentStack.length <= 0)
-          throw new Error("Unbalanced <>'s");
+
         parse = true;
       }
       else if (line.trim() == '') {
         parse = true;
       }
       if (parse) {
-        if (next.join("\n").trim().length != 0)
-          Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
+        let potentialJoin = next.join("\n");
+        if (potentialJoin.trim().length != 0)
+          Base.Serializer.deserializePrefab(potentialJoin, false, _.last(parentStack));
         if (line.trim() == '<')
           parentStack.push(_.last(_.last(parentStack).children));
+        if (line.trim() == '>') {
+          parentStack.pop();
+          if (parentStack.length <= 0)
+            throw new Error("Unbalanced <>'s");
+        }
         next = [];
       }
       else
@@ -3116,7 +3120,8 @@ class Serializer {
     if (store)
       this.prefabs[name] = toReturn;
     if(parent != null)
-      parent.children.push(toReturn);
+      // parent.children.push(toReturn);
+      parent.addChild(toReturn);
     return toReturn;
 
   }
