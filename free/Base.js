@@ -2987,7 +2987,7 @@ var Base = (function () {
         if(!rotation) rotation = 0;
         if (arguments.length < 2 ||
           arguments.length > 4 ||
-          !(typeof gameObjectType == "object") ||
+          // !(typeof gameObjectType == "object") ||
           !(location instanceof Point) ||
           !(scale instanceof Point) ||
           !(typeof rotation == "number")
@@ -3072,21 +3072,21 @@ var Base = (function () {
         if (possibleTranslateLine && possibleTranslateLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
           // console.log("Found transform " + possibleTranslateLine)
           let split = lines[++lineIndex].trim().split(",");
-          toReturn.x = split[0].trim();
-          toReturn.y = split[1].trim();
+          toReturn.x = +split[0].trim();
+          toReturn.y = +split[1].trim();
 
           let possibleScaleLine = lines[lineIndex + 1];
           if (possibleScaleLine && possibleScaleLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
             // console.log("Found scale " + possibleScaleLine)
             let split = lines[++lineIndex].trim().split(",");
-            toReturn.scaleX = split[0].trim();
-            toReturn.scaleY = split[1].trim();
+            toReturn.scaleX = +split[0].trim();
+            toReturn.scaleY = +split[1].trim();
 
             let possibleRotateLine = lines[lineIndex + 1];
             if (possibleRotateLine && possibleRotateLine.match(/^\s*-?\d+\s*$/)) {
               // console.log("Found rotate " + possibleRotateLine)
               lineIndex++;
-              toReturn.scaleY = possibleRotateLine.trim();
+              toReturn.scaleY = +possibleRotateLine.trim();
             }
           }
         }
@@ -3129,29 +3129,36 @@ var Base = (function () {
 
       }
       instantiate(gameObjectType, location, scale = new Point(1, 1), rotation = 0, parent = this, obj = null) {
-        let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
-
-
-        let prefab = this.prefabs[gameObjectType.name];
-        this.buildIt(prefab, gameObject);
-        if (obj)
-          gameObject.name = obj.name;
-        else
-          gameObject.name = prefab.name;
-        gameObject.prefabName = gameObjectType.name;
-        if (obj) {
-          this.buildIt(obj, gameObject);
-        }
-
-        if (parent) {
-          parent.children.push(gameObject);
-          if (parent.newChildEvent) {
-            parent.newChildEvent(gameObject);
-          }
-        }
-        gameObject.recursiveCall("start");
-
+        let gameObject = this.deserializePrefab(gameObjectType, false, parent);
+        gameObject.x = location.x;
+        gameObject.y = location.y;
+        gameObject.scaleX = scale.x;
+        gameObject.scaleY = scale.y;
+        gameObject.rotation = rotation;
         return gameObject;
+        // let gameObject = new GameObject(location.x, location.y, scale.x, scale.y, rotation, gameObjectType.name);
+
+
+        // let prefab = this.prefabs[gameObjectType.name];
+        // this.buildIt(prefab, gameObject)
+        // if (obj)
+        //   gameObject.name = obj.name;
+        // else
+        //   gameObject.name = prefab.name;
+        // gameObject.prefabName = gameObjectType.name;
+        // if (obj) {
+        //   this.buildIt(obj, gameObject)
+        // }
+
+        // if (parent) {
+        //   parent.children.push(gameObject);
+        //   if (parent.newChildEvent) {
+        //     parent.newChildEvent(gameObject);
+        //   }
+        // }
+        // gameObject.recursiveCall("start");
+
+        // return gameObject;
 
       }
 

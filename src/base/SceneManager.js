@@ -54,7 +54,7 @@ const SceneManager = {
     if(!rotation) rotation = 0;
     if (arguments.length < 2 ||
       arguments.length > 4 ||
-      !(typeof gameObjectType == "object") ||
+      // !(typeof gameObjectType == "object") ||
       !(location instanceof Point) ||
       !(scale instanceof Point) ||
       !(typeof rotation == "number")
