@@ -6,7 +6,7 @@ Main Camera Camera
 15, 0
 8,8
 CameraComponent
- backgroundColor=white"
+ backgroundColor=white
   
 Spawner1 Rectangle
 -40, 10
