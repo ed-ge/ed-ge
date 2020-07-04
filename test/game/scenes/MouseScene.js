@@ -4,7 +4,7 @@ MouseScene
 MainCamera Camera
 300, 300
 CameraComponent
- backgroundColor|white
+ backgroundColor=white
 CameraMover
 
 Canvas Canvas

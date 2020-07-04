@@ -28,6 +28,7 @@ class Scene extends NameableParent {
     )
       throw new Error("Scene constructor expects 4 argumens.")
 
+    
 
     // let chunks = definition.split(/(\r?\n){2,}/);
     // chunks = chunks.filter(c=>c.trim().length > 0);
@@ -44,6 +45,9 @@ class Scene extends NameableParent {
 
     // console.error("Scene constructor expects exactly four argumens of type object")
     super(firstLine);
+
+    this.bootSimulator();
+
 
     let remainder = splits.slice(1).join("\n").trim();
 
@@ -102,14 +106,7 @@ class Scene extends NameableParent {
     this.layers = ["background", null, "foreground"];
   }
 
-
-  /**
-   * Load the scene from its declarative syntax
-   * 
-   */
-  boot() {
-    if (arguments.length != 0) throw new Error("boot expects no arguments");
-    // Setup up the simulations within the scene
+  bootSimulator(){
     this.simulator = new Simulator();
 
     this.simulator.setAgentDefaults(
@@ -125,6 +122,17 @@ class Scene extends NameableParent {
     this.simulator.setTimeStep(.25);
     this.simulator.addObstacle([]);
     this.simulator.processObstacles();
+  }
+
+
+  /**
+   * Load the scene from its declarative syntax
+   * 
+   */
+  boot() {
+    if (arguments.length != 0) throw new Error("boot expects no arguments");
+    // Setup up the simulations within the scene
+    
     // this.children = [];//Clear the children in case the scene has been built before
 
     // // if (this.objects)
@@ -148,6 +156,7 @@ class Scene extends NameableParent {
     if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("newChildEvent expects exactly one argument of type GameObject")
     if (gameObject.anyComponent("RVOAgent")) {
       this.simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
+      
       let RVOAgent = gameObject.getComponent("RVOAgent");
       let destination = RVOAgent.destination;
       let goal = new Vector2(destination.x, destination.y)

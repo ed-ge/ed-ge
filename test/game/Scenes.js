@@ -12,7 +12,7 @@ import TouchScene from "./scenes/TouchScene.js"
 import EmptyScene from "./scenes/EmptyScene.js"
 
 export default {
-  startScene: "StartScene",
+  startScene: "RVOScene",
   allScenes: [
     SceneOne,
     SceneTwo,

@@ -95,13 +95,16 @@ class Serializer {
     let currentComponent;
     while (++lineIndex < lines.length) {
       let currentLine = lines[lineIndex].trimEnd();
-      
+
       if (currentLine.length == 0) continue;
       if (currentLine.match(/^\s/)) {
         //It's a component value
         let componentValueSplit = currentLine.trim().split("=");
         let key = componentValueSplit[0]
         let value = componentValueSplit[1];
+        //Look for JSON-like values
+        if(value.startsWith("{") || value.startsWith("["))
+          value = JSON.parse(componentValueSplit[1]);
         currentComponent[key] = value;
       }
       else {
@@ -123,9 +126,12 @@ class Serializer {
 
     if (store)
       this.prefabs[name] = toReturn;
-    if(parent != null)
+    if (parent != null) {
       // parent.children.push(toReturn);
       parent.addChild(toReturn);
+      if (parent.newChildEvent)
+        parent.newChildEvent(toReturn);
+    }
     return toReturn;
 
   }
