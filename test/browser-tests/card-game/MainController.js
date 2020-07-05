@@ -11,7 +11,7 @@ export default class MainController extends Base.Behavior{
 
     let P1Cards = [];
     let P2Cards = [];
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < 60; i++){
       let P1Card = {value:{}};
       let P2Card = {value:{}};
       P1Card.value.name = i;
