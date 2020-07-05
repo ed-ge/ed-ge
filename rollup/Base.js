@@ -3075,21 +3075,22 @@ class Serializer {
 
     //Check to see if we have any tranformation information
     let possibleTranslateLine = lines[lineIndex + 1];
-    if (possibleTranslateLine && possibleTranslateLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
+    //For floating point regex, see https://www.regular-expressions.info/floatingpoint.html
+    if (possibleTranslateLine && possibleTranslateLine.match(/^\s*[-+]?[0-9]*\.?[0-9]+,\s*[-+]?[0-9]*\.?[0-9]+\s*$/)) {
       // console.log("Found transform " + possibleTranslateLine)
       let split = lines[++lineIndex].trim().split(",");
       toReturn.x = +split[0].trim();
       toReturn.y = +split[1].trim();
 
       let possibleScaleLine = lines[lineIndex + 1];
-      if (possibleScaleLine && possibleScaleLine.match(/^\s*-?\d+,\s*-?\d+\s*$/)) {
+      if (possibleScaleLine && possibleScaleLine.match(/^\s*[-+]?[0-9]*\.?[0-9]+,\s*[-+]?[0-9]*\.?[0-9]+\s*$/)) {
         // console.log("Found scale " + possibleScaleLine)
         let split = lines[++lineIndex].trim().split(",");
         toReturn.scaleX = +split[0].trim();
         toReturn.scaleY = +split[1].trim();
 
         let possibleRotateLine = lines[lineIndex + 1];
-        if (possibleRotateLine && possibleRotateLine.match(/^\s*-?\d+\s*$/)) {
+        if (possibleRotateLine && possibleRotateLine.match(/^\s*[-+]?[0-9]*\.?[0-9]+\s*$/)) {
           // console.log("Found rotate " + possibleRotateLine)
           lineIndex++;
           toReturn.scaleY = +possibleRotateLine.trim();
