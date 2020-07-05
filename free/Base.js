@@ -664,6 +664,9 @@ var Base = (function () {
         //Now update all the children
         this.children.forEach(i => i.update());
       }
+      $(type){
+        return this.getComponent(type);
+      }
       getComponent(type) {
         if(arguments.length != 1) throw new Error("getComponent function expects exactly one argument that is a string or a type.")
         
@@ -2749,6 +2752,10 @@ var Base = (function () {
                 if (Input.getMouseButtonDown(0))
                   component.onMouseDown();
               }
+              if (component.onMouseUp) {
+                if (Input.getMouseButtonUp(0))
+                  component.onMouseUp();
+              }
             }
           }
         }
@@ -3164,7 +3171,7 @@ var Base = (function () {
         //If they are either add them or override them
 
         let gameObject = this.deserializePrefab(gameObjectType, false, parent, location, scale, rotation);
-
+        gameObject.recursiveCall("start");
         return gameObject;
       }
 
@@ -3352,12 +3359,15 @@ var Base = (function () {
             this.height = 100;
             this.fill = "gray";
             this.stroke = "black";
+            this.lineWidth = 1;
+
         }
         draw(ctx) {
             ctx.save();
             ctx.translate(-this.width / 2, -this.height / 2);
             ctx.fillStyle = this.fill;
             ctx.strokeStyle = this.stroke;
+            ctx.lineWidth = this.lineWidth;
             ctx.fillRect(0, 0, this.width, this.height);
             ctx.strokeRect(0, 0, this.width, this.height);
             ctx.restore();
@@ -3906,6 +3916,9 @@ RectangleComponent
       Time,
       get _cs(){
         return this.SceneManager.currentScene;
+      },
+      $ : function(string){
+        return this.SceneManager.currentScene.findByName(string);
       }
 
     };

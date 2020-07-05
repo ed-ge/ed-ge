@@ -155,7 +155,7 @@ class Serializer {
     //If they are either add them or override them
 
     let gameObject = this.deserializePrefab(gameObjectType, false, parent, location, scale, rotation);
-
+    gameObject.recursiveCall("start")
     return gameObject;
   }
 

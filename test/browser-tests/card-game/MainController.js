@@ -35,10 +35,15 @@ export default class MainController extends Base.Behavior{
       this.P2Life.cards.push(this.P2Draw.cards.shift());
     }
 
+    this.selectedCard = null;
+
 
   }
   update(){
    
+  }
+  cardClickEvent(card){
+    this.selectedCard = card;
   }
   deckClick(deck){
     let cardValue = deck.cards.pop();

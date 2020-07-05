@@ -190,6 +190,9 @@ class GameObject extends NameableParent {
     //Now update all the children
     this.children.forEach(i => i.update());
   }
+  $(type){
+    return this.getComponent(type);
+  }
   getComponent(type) {
     if(arguments.length != 1) throw new Error("getComponent function expects exactly one argument that is a string or a type.")
     
