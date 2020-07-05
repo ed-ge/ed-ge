@@ -146,7 +146,9 @@ CardLike Rectangle
 
 let Card = `
 Card CardLike
+CardComponent
 TouchDelta
+TextComponent
 `
 let Deck =
 `
@@ -168,4 +170,4 @@ RectangleComponent
 `
 
 let Prefabs = { CardLike,Card,Deck,DeckDown,DeckUp };
-Base.main(Prefabs, GameBehaviors, Scenes);
+Base.Main = Base.main(Prefabs, GameBehaviors, Scenes);

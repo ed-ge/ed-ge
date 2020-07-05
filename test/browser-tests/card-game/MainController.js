@@ -49,7 +49,9 @@ export default class MainController extends Base.Behavior{
     if(deck == this.P2Discard || deck == this.P2Draw || deck == this.P2Life){
       hand = this.P2Hand
     }
-    Base.SceneManager.instantiate(Base.SceneManager.Prefabs);
+    let x = hand.children.length * 75;
+    let card = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Card, hand, new Base.Point(x,75));
+    card.getComponent("CardComponent").value = cardValue.value;
   }
 
 }

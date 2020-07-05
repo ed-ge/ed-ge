@@ -29,7 +29,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   for(let key in  gameObjects){
     Base.Serializer.deserializePrefab(gameObjects[key], true);
   }
-  //this.Prefabs = { ...gameObjects, ...this.Prefabs };
+  this.SceneManager.Prefabs = { ...gameObjects, ...this.Prefabs };
   //Base.Serializer.prefabs = this.Prefabs;
   this.Behaviors = gameBehaviors;
   let canv, ctx;
