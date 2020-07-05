@@ -19,13 +19,13 @@ export default class DotBehavior extends Base.Behavior {
         if (collisionObject.gameObject.name == "CollisionCircle") {
 
             Base.SceneManager.destroy(collisionObject.gameObject);
-            Base.SceneManager.instantiate(CollisionCircle, new Base.Point(Math.random() * 400, Math.random() * 400), new Base.Point(1,1),0);
+            Base.Serializer.instantiate(CollisionCircle,  Base._cs, new Base.Point(Math.random() * 400, Math.random() * 400), new Base.Point(1,1),0);
             
         }
         else if (collisionObject.gameObject.name == "Rectangle") {
 
             Base.SceneManager.destroy(collisionObject.gameObject);
-            let circle = Base.SceneManager.instantiate(Base.Prefabs.Rectangle, new Base.Point(Math.random() * 400, Math.random() * 400), new Base.Point(1,1), 0);
+            let circle = Base.Serializer.instantiate(Base.Prefabs.Rectangle, Base._cs, new Base.Point(Math.random() * 400, Math.random() * 400), new Base.Point(1,1), 0);
             circle.scaleX = Math.random() + 1;
             circle.scaleY = Math.random() + 1;
             
@@ -33,7 +33,7 @@ export default class DotBehavior extends Base.Behavior {
         else if (collisionObject.gameObject.name == "Triangle") {
 
             Base.SceneManager.destroy(collisionObject.gameObject);
-            Base.SceneManager.instantiate(Base.SceneManager.currentScene.prefabs.Triangle, new Base.Point(Math.random() * 400, Math.random() * 400), 0);
+            Base.Serializer.instantiate(Base.SceneManager.currentScene.prefabs.Triangle, Base._cs, new Base.Point(Math.random() * 400, Math.random() * 400), 0);
             
         }
         

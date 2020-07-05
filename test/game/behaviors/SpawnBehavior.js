@@ -21,7 +21,7 @@ export default class SpawnBehavior extends Base.Behavior {
                 let splits = RVOCopy.split(/\r?\n/);
                 splits.splice(1,0,"" + x+"," +y);
                 RVOCopy = splits.join("\n");
-                let agent = Base.SceneManager.instantiate(RVOCopy, new Base.Point(x, y));
+                let agent = Base.Serializer.instantiate(RVOCopy, Base._cs, new Base.Point(x, y));
                 let rvo = agent.getComponent("RVOAgent");
                 rvo.color = this.color;
                 rvo.destination = new Base.Point(+this.goalX, y);

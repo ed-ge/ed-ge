@@ -313,11 +313,12 @@ let GameBehaviors = {
   PropertyBuilder: class PropertyBuilder extends Base.Behavior {
     start() {
       let size = 50;
+      
       for (let i = 0; i < Board.length; i++) {
         let property = Board[i];
         let x = (5 - property.x) * size;
         let y = (5 - property.y) * size;
-        let propertyGameObject = Base.SceneManager.instantiate(Base.Prefabs.Rectangle, new Base.Point(x + 25, y + 25), new Base.Point(.5, .5), 0);
+        let propertyGameObject = Base.Serializer.instantiate(Base.Prefabs.Rectangle, Base._cs, new Base.Point(x + 25, y + 25), new Base.Point(.5, .5), 0);
         let fill = "magenta";
         switch (property.type) {
           case "Corner":
@@ -369,7 +370,7 @@ let GameBehaviors = {
         propertyGameObject.getComponent("RectangleComponent").fill = fill;
         let titles = property.name.split(" ");
         for (let j = 0; j < titles.length; j++) {
-          let titleObject = Base.Serializer.instantiate(Base.Prefabs.Text, new Base.Point(-size + 5, -size / 2 + j * 25), new Base.Point(1, 1), 0, propertyGameObject)
+          let titleObject = Base.Serializer.instantiate(Base.Prefabs.Text, Base._cs, new Base.Point(-size + 5, -size / 2 + j * 25), new Base.Point(1, 1), 0, propertyGameObject)
           //propertyGameObject.addChild(titleObject);
           titleObject.getComponent("TextComponent").text = titles[j].substr(0, 6);
           if (property.class == "RailRoad") {
@@ -388,7 +389,7 @@ let GameBehaviors = {
             position.x -= 60;
           if (property.x == 10)
             position.x += 120;
-          let propertyStatusGameObject = Base.Serializer.instantiate(Base.Prefabs.PropertyStatusText, position, new Base.Point(1, 1), 0, propertyGameObject);
+          let propertyStatusGameObject = Base.Serializer.instantiate(Base.Prefabs.PropertyStatusText, propertyGameObject, position, new Base.Point(1, 1), 0);
           propertyStatusGameObject.name = property.name;
           propertyStatusGameObject.getComponent("PropertyStatusTextBehavior").property = property;
         }
