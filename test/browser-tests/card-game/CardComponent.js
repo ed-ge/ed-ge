@@ -5,7 +5,7 @@ export default class CardComponent extends Base.Behavior{
 
   }
   update(){
-   
+   this.gameObject.getComponent("TextComponent").text = JSON.stringify(this.value.name);
   }
 
 }
