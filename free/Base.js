@@ -3904,6 +3904,9 @@ RectangleComponent
       State,
       StateMachine,
       Time,
+      get _cs(){
+        return this.SceneManager.currentScene;
+      }
 
     };
 

@@ -490,7 +490,7 @@ describe("Base", function () {
         let scene = Base.SceneManager.currentScene;
         let collider = new Base.Components.CircleCollider();
         collider.radius = 5;
-        let agent0 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(10, 10));
+        let agent0 = Base.Serializer.instantiate(Base.Prefabs.RVOAgent, Base.cs, new Base.Point(10, 10));
 
         expect(scene.canEnterSafely(new Point(0, 0), collider, "RVOAgent")).to.be.true;
       })
@@ -499,7 +499,7 @@ describe("Base", function () {
         let scene = Base.SceneManager.currentScene;
         let collider = new Base.Components.CircleCollider();
         collider.radius = 5;
-        let agent0 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(0, 0));
+        let agent0 = Base.Serializer.instantiate(Base.Prefabs.RVOAgent,  Base.cs,new Base.Point(0, 0));
 
         expect(scene.canEnterSafely(new Point(0, 0), collider, "RVOAgent")).to.be.false;
 
@@ -522,8 +522,8 @@ describe("Base", function () {
       it("Updates an RVOAgent", function () {
         Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
         let scene = Base.SceneManager.currentScene;
-        let agent0 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(0, 0), new Base.Point(1, 1), 0);
-        let agent1 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(0, 0), new Base.Point(1, 1), 0);
+        let agent0 = Base.Serializer.instantiate(Base.Prefabs.RVOAgent, Base.cs, new Base.Point(0, 0), new Base.Point(1, 1), 0);
+        let agent1 = Base.Serializer.instantiate(Base.Prefabs.RVOAgent, Base.cs, new Base.Point(0, 0), new Base.Point(1, 1), 0);
         let agent0Component = agent0.getComponent("RVOAgent");
         let agent1Component = agent1.getComponent("RVOAgent");
         expect(scene.simulator.getNumAgents()).to.equal(2);
@@ -554,8 +554,8 @@ describe("Base", function () {
       it("Removes an agent from the simulation", function () {
         Base.main(GameObjects, GameBehaviors, Scenes, { runUpdate: false, runDraw: false, startScene: 'RoomScene' });
         let scene = Base.SceneManager.currentScene;
-        let agent0 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(0, 0), new Base.Point(1, 1), 0);
-        let agent1 = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(0, 0), new Base.Point(1, 1), 0);
+        let agent0 = Base.Serializer.instantiate(Base.Prefabs.RVOAgent, Base.cs, new Base.Point(0, 0), new Base.Point(1, 1), 0);
+        let agent1 = Base.Serializer.instantiate(Base.Prefabs.RVOAgent, Base.cs, new Base.Point(0, 0), new Base.Point(1, 1), 0);
         let agent0Component = agent0.getComponent("RVOAgent");
         let agent1Component = agent1.getComponent("RVOAgent");
         expect(scene.simulator.getNumAgents()).to.equal(2);
