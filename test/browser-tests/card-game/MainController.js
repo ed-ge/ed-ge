@@ -37,5 +37,8 @@ export default class MainController extends Base.Behavior{
   update(){
    
   }
+  deckClick(deck){
+    console.log("Deck Click " + deck.gameObject.name);
+  }
 
 }
