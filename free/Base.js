@@ -2308,7 +2308,7 @@ var Base = (function () {
             return false;
         },
         inCollisionAABBPoint(AABB, point) {
-            let diff = AABB.gameObject.location.diff(point.gameObject.location);
+            let diff = AABB.gameObject.worldLocation.diff(point.gameObject.worldLocation);
             return Math.abs(diff.x) < AABB.collider.width / 2 && Math.abs(diff.y) < AABB.collider.height / 2;
 
         },
