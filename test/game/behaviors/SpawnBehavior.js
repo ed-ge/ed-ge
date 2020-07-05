@@ -17,7 +17,11 @@ export default class SpawnBehavior extends Base.Behavior {
             let collider = new Base.Components.CircleCollider();
             collider.radius = 5;
             if (Base.SceneManager.currentScene.canEnterSafely(new Base.Point(x, y), collider, "RVOAgent")) {
-                let agent = Base.SceneManager.instantiate(Base.Prefabs.RVOAgent, new Base.Point(x, y));
+                let RVOCopy = _.cloneDeep(Base.Prefabs.RVOAgent).trim();
+                let splits = RVOCopy.split(/\r?\n/);
+                splits.splice(1,0,"" + x+"," +y);
+                RVOCopy = splits.join("\n");
+                let agent = Base.SceneManager.instantiate(RVOCopy, new Base.Point(x, y));
                 let rvo = agent.getComponent("RVOAgent");
                 rvo.color = this.color;
                 rvo.destination = new Base.Point(+this.goalX, y);
