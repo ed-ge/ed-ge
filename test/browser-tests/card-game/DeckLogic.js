@@ -7,5 +7,8 @@ export default class DeckLogic extends Base.Behavior{
   update(){
    
   }
+  onMouseDown(){
+    console.log("Click")
+  }
 
 }
