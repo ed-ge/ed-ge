@@ -9,6 +9,9 @@ export default class MainController extends Base.Behavior{
     this.P2Draw = Base.SceneManager.currentScene.findByName("P2Draw").getComponent("DeckLogic");
     this.P2Discard = Base.SceneManager.currentScene.findByName("P2Discard").getComponent("DeckLogic");
 
+    this.P1Hand = Base.SceneManager.currentScene.findByName("P1Hand");
+    this.P2Hand = Base.SceneManager.currentScene.findByName("P2Hand");
+
     let P1Cards = [];
     let P2Cards = [];
     for(let i = 0; i < 60; i++){
@@ -38,7 +41,15 @@ export default class MainController extends Base.Behavior{
    
   }
   deckClick(deck){
-    console.log("Deck Click " + deck.gameObject.name);
+    let cardValue = deck.cards.pop();
+    let hand;
+    if(deck == this.P1Discard || deck == this.P1Draw || deck == this.P1Life){
+      hand = this.P1Hand;
+    }
+    if(deck == this.P2Discard || deck == this.P2Draw || deck == this.P2Life){
+      hand = this.P2Hand
+    }
+    Base.SceneManager.instantiate(Base.SceneManager.Prefabs);
   }
 
 }
