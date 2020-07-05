@@ -4,6 +4,7 @@ import MainController from "./MainController.js"
 import DeckLogic from "./DeckLogic.js"
 import CardComponent from "./CardComponent.js"
 import DeckSizeText from "./DeckSizeText.js"
+import SelectableCard from "./SelectableCard.js"
 
 let Scenes = {
   startScene: "StartScene",
@@ -135,7 +136,7 @@ MainController
   ]
 }
 
-let GameBehaviors = {TouchDelta, MainController, DeckLogic, CardComponent, DeckSizeText}
+let GameBehaviors = {TouchDelta, MainController, DeckLogic, CardComponent, DeckSizeText, SelectableCard}
 
 let CardLike = 
 `
@@ -147,8 +148,10 @@ CardLike Rectangle
 let Card = `
 Card CardLike
 CardComponent
+SelectableCard
 TouchDelta
 TextComponent
+  font=20pt Times
 `
 let Deck =
 `

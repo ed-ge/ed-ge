@@ -397,6 +397,10 @@ class Scene extends NameableParent {
             if (Input.getMouseButtonDown(0))
               component.onMouseDown()
           }
+          if (component.onMouseUp) {
+            if (Input.getMouseButtonUp(0))
+              component.onMouseUp()
+          }
         }
       }
     }

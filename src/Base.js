@@ -106,6 +106,9 @@ const Base = {
   Time,
   get _cs(){
     return this.SceneManager.currentScene;
+  },
+  $ : function(string){
+    return this.SceneManager.currentScene.findByName(string);
   }
 
 }
