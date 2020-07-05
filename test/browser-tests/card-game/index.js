@@ -58,6 +58,13 @@ TextComponent
  text=Discard
 DeckSizeText
 >
+P1Hand Empty
+250,-75
+<
+P1HandText Text
+TextComponent
+ text=P1 Hand
+>
 >
 
 P2Decks Empty
@@ -107,7 +114,18 @@ TextComponent
  text=Discard
 DeckSizeText
 >
+P2Hand Empty
+250,-50
+<
+P2HandText Text
+TextComponent
+ text=P2 Hand
 >
+>
+
+
+
+
 
 MainCamera Camera
 
