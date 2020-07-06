@@ -103,6 +103,7 @@ DeckSizeText
 
 P2Discard DeckUp
 100,0
+DeckLogic
 <
 P2Life Text
 0,-20

@@ -9,9 +9,17 @@ export default class SelectableCard extends Base.Behavior{
   update(){
     if(this.MainController.selectedCard == this){
       this.gameObject.$("RectangleComponent").stroke = "green"
+      this.gameObject.$("RectangleComponent").fill = "rgba(255,0,0,.5)"
     }
     else{
       this.gameObject.$("RectangleComponent").stroke = "black"
+      this.gameObject.$("RectangleComponent").fill = "pink"
+    }
+
+    if(this.MainController.selectedCard == this){
+      let mouseDelta = Base.Input.lastFrameMousePosition.diff(Base.Input.frameMousePosition);
+      this.gameObject.x -= mouseDelta.x;
+      this.gameObject.y -= mouseDelta.y;
     }
    
   }
@@ -21,7 +29,6 @@ export default class SelectableCard extends Base.Behavior{
   onMouseUp(){
     this.mouseDown = false;
     this.MainController.cardClickEvent(this);
-
   }
 
 }

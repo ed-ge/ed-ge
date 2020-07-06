@@ -9,6 +9,8 @@ export default class DeckSizeText extends Base.Behavior{
   update(){
     this.TextComponent.text = this.originalText + " " + this.DeckLogic.cards.length;
    
+
   }
+  
 
 }
