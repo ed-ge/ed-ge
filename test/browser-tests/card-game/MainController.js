@@ -53,6 +53,13 @@ export default class MainController extends Base.Behavior {
     else
       this.selectedCard = card;
   }
+  addCardEvent(deck){
+    if(this.selectedCard == null)
+      throw new Error("There has to be a selected card in order to add it to a deck")
+    deck.cards.push({value:this.selectedCard.gameObject.$("CardComponent").value});
+    Base.SceneManager.currentScene.destroy(this.selectedCard.gameObject);
+    this.selectedCard = null;
+  }
   deckClick(deck) {
     let cardValue = deck.cards.pop();
     let hand;
