@@ -1,26 +1,37 @@
 import Base from "../../../src/Base.js"
-export default class DeckLogic extends Base.Behavior{
-  start(){
+export default class DeckLogic extends Base.Behavior {
+  start() {
     this.cards = [];
     this.mainController = Base.SceneManager.currentScene.findByName("MainController").getComponent("MainController");
+    this.hover = false;
+  }
+  update() {
+    if (this.hover)
+      this.gameObject.$("RectangleComponent").fill = "black";
+    else
+      this.gameObject.$("RectangleComponent").fill = "white";
 
   }
-  update(){
-   
-  }
-  onMouseDown(){
-    if(this.cards.length > 0){
-      this.mainController.deckClick(this);
+  onMouseDown() {
+    if (!this.hover) {
+      if (this.cards.length > 0) {
+        this.mainController.deckClick(this);
+      }
+    }
+    else{
+      this.mainController.addCardEvent(this);
     }
   }
-  onMouseOver(){
-    console.log("Mouse Over")
+  onMouseOver() {
+    if (this.mainController.selectedCard != null)
+      this.hover = true;
   }
-  onMouseEnter(){
+  onMouseEnter() {
     console.log("Mouse Enter")
   }
-  onMouseExit(){
+  onMouseExit() {
     console.log("Mouse Exit")
+    this.hover = false;
   }
 
 }
