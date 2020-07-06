@@ -13,5 +13,14 @@ export default class DeckLogic extends Base.Behavior{
       this.mainController.deckClick(this);
     }
   }
+  onMouseOver(){
+    console.log("Mouse Over")
+  }
+  onMouseEnter(){
+    console.log("Mouse Enter")
+  }
+  onMouseExit(){
+    console.log("Mouse Exit")
+  }
 
 }

@@ -104,6 +104,8 @@ class Scene extends NameableParent {
     this.components = components;
 
     this.layers = ["background", null, "foreground"];
+
+    this.frameMouseOver = [];
   }
 
   bootSimulator() {
@@ -368,7 +370,7 @@ class Scene extends NameableParent {
     colliderObjectWorld.gameObject.x = point.x;
     colliderObjectWorld.gameObject.y = point.y;
     colliderObjectWorld.collider = new PointCollider();
-    
+
     let colliderObjectScreen = {};
     colliderObjectScreen.gameObject = new GameObject();
     colliderObjectScreen.gameObject.x = screenPoint.x;
@@ -384,15 +386,22 @@ class Scene extends NameableParent {
         colliderObject = colliderObjectWorld;
       else
         colliderObject = colliderObjectScreen;
-      
+
       if (collisionHelper.inCollision(collidableChild, colliderObject)) {
         let gameObjectOne = collidableChild.gameObject;
 
         //Now loop over all the behaviors too see if any are listening for collision events
         for (let i = 0; i < gameObjectOne.components.length; i++) {
           let component = gameObjectOne.components[i];
-          if (component.onMouseOver)
+          if (component.onMouseOver) {
             component.onMouseOver();
+            if (!this.frameMouseOver.includes(component)) {
+              if (component.onMouseEnter) {
+                component.onMouseEnter()
+              }
+              this.frameMouseOver.push(component);
+            } 
+          }
           if (component.onMouseDown) {
             if (Input.getMouseButtonDown(0))
               component.onMouseDown()
@@ -402,8 +411,21 @@ class Scene extends NameableParent {
               component.onMouseUp()
           }
         }
+      } else {
+        let gameObjectOne = collidableChild.gameObject;
+        for (let i = 0; i < gameObjectOne.components.length; i++) {
+          let component = gameObjectOne.components[i];
+
+          if (this.frameMouseOver.includes(component)) {
+            _.pull(this.frameMouseOver, component);
+            if (component.onMouseExit) {
+              component.onMouseExit();
+            }
+          }
+        }
       }
     }
+
 
     //
     //Now go through and see if the point represented by the touch point collides with any of the colliders
