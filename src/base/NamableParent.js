@@ -73,6 +73,8 @@ class NameableParent {
         if(this.children.includes(child)) return console.log("Warning: This parent already has that child. Child not added");
         this.children.push(child);
         child.parent = this;
+        if(this.newChildEvent)
+            this.newChildEvent(child);
     }
 
     isADescendant(descendant){
