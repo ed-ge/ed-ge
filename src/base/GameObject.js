@@ -93,9 +93,6 @@ class GameObject extends NameableParent {
     return world.rotation;
   }
 
-
-
-
   /**
    * 
    * @param {Number} x The x position of the game object relative to its parent. Defaults to 0
@@ -163,17 +160,13 @@ class GameObject extends NameableParent {
       else if (rectTransform.anchorVertical.trim().toLowerCase() == "bottom")
         ty = height;
 
-        
-
       ctx.translate(tx, ty);
-
     }
 
     //Otherwise we are in world space
     ctx.translate(this.x, this.y);
     ctx.scale(this.scaleX, this.scaleY);
     ctx.rotate(this.rotation);
-
 
     this.components.filter(i => i.draw).forEach(i => i.draw(ctx));
 
@@ -190,6 +183,10 @@ class GameObject extends NameableParent {
     //Now update all the children
     this.children.forEach(i => i.update());
   }
+  /**
+   * Shorthand for getComponent(type)
+   * @param {*} type 
+   */
   $(type){
     return this.getComponent(type);
   }
@@ -252,10 +249,10 @@ class GameObject extends NameableParent {
     }
   }
 
-  serialize() {
-    if(arguments.length != 0) throw new Error("seralize expects no arguments")
+  // serialize() {
+  //   if(arguments.length != 0) throw new Error("seralize expects no arguments")
     
-  }
+  // }
 
   onDestroy(){
     if(arguments.length != 0) throw new Error("onDestroy expects no arguments");
@@ -263,6 +260,8 @@ class GameObject extends NameableParent {
       if(component.onDestroy)
         component.onDestroy();
     }
+    //We don't have to call onDestroy on the children because the caller 
+    //does that already. 
 
   }
 }
