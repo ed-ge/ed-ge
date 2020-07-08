@@ -2381,7 +2381,7 @@ class Scene extends NameableParent {
       !(typeof behaviors == 'object') ||
       !(typeof components == 'object')
     )
-      throw new Error("Scene constructor expects 4 argumens.")
+      console.error("Scene constructor expects 4 argumens.");
 
 
 
@@ -2445,17 +2445,6 @@ class Scene extends NameableParent {
     if (next.join("\n").trim().length != 0)
       Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
 
-
-
-
-    // for (let i = 0; i < chunks.length; i++) {
-
-    // }
-
-    //this.objects = definition.objects;
-
-    this.prefabs = prefabs;
-    this.behaviors = behaviors;
     this.components = components;
 
     this.layers = ["background", null, "foreground"];
@@ -2552,20 +2541,13 @@ class Scene extends NameableParent {
 
     //Before we draw, see if we have a camera game object and use that
     ctx.save();
-    let tx, ty, sx, sy, r, hx, hy;
+    let tx = 0, ty = 0, sx = 1, sy = 1, r = 0, hx = 0, hy = 0;
     let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
     if (cameras.length == 0) {
       //You really should add a camera
       //console.log("You should add a camera to the scene. C'mon.")
       ctx.fillStyle = "cyan";
       ctx.fillRect(0, 0, width, height);
-      tx = 0;
-      ty = 0;
-      sx = 1;
-      sy = 1;
-      r = 0;
-      hx = 0;
-      hy = 0;
     }
     else {
       if (cameras.length > 1)
@@ -2574,13 +2556,8 @@ class Scene extends NameableParent {
       let cameraComponent = camera.getComponent("CameraComponent");
       ctx.fillStyle = cameraComponent.backgroundColor;
       ctx.fillRect(0, 0, width, height);
-      tx = camera.x;
-      ty = camera.y;
-      sx = camera.scaleX;
-      sy = camera.scaleY;
-      r = camera.rotation;
-      hx = width / 2;
-      hy = height / 2;
+      [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, width / 2, height / 2];
+
     }
 
     ctx.translate(hx, hy);
@@ -2661,19 +2638,8 @@ class Scene extends NameableParent {
         let isInScreenSpaceTwo = this.isInScreenSpace(gameObjectTwo);
         if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
         if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
-
-          //Now loop over all the behaviors too see if any are listening for collision events
-          for (let i = 0; i < gameObjectOne.components.length; i++) {
-            let component = gameObjectOne.components[i];
-            if (component.onCollisionStay)
-              component.onCollisionStay(collidableChildren[j]);
-          }
-          for (let j = 0; j < gameObjectTwo.components.length; j++) {
-            let component = gameObjectTwo.components[j];
-            if (component.onCollisionStay)
-              component.onCollisionStay(collidableChildren[i]);
-          }
-
+          gameObjectOne.components.filter(x => x.onCollisionStay).forEach(x => x.onCollisionStay(collidableChildren[j]));
+          gameObjectTwo.components.filter(x => x.onCollisionStay).forEach(x => x.onCollisionStay(collidableChildren[i]));
         }
       }
     }
@@ -2692,15 +2658,8 @@ class Scene extends NameableParent {
       /* point = Input.mousePosition;*/
       //Put in transform code here
       let camera = cameras[0];
-      let cameraComponent = camera.getComponent("CameraComponent");
-
-      let tx = camera.x;
-      let ty = camera.y;
-      let sx = camera.scaleX;
-      let sy = camera.scaleY;
-      let r = camera.rotation;
-      let hx = ctx.canvas.width / 2;
-      let hy = ctx.canvas.height / 2;
+      //let cameraComponent = camera.getComponent("CameraComponent")
+      let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, ctx.canvas.width / 2, ctx.canvas.height / 2];
 
       let x = point.x;
       let y = point.y;
@@ -2751,7 +2710,7 @@ class Scene extends NameableParent {
                 component.onMouseEnter();
               }
               this.frameMouseOver.push(component);
-            } 
+            }
           }
           if (component.onMouseDown) {
             if (Input.getMouseButtonDown(0))
@@ -2784,24 +2743,18 @@ class Scene extends NameableParent {
     //First get the world space position of the touch
     let touches = Input.getTouches();
     if (touches && touches.length > 0) {
-      let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
+      //let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
       let point = { x: 0, y: 0 };
       point.x = parseInt(touches[0].x);
       point.y = parseInt(touches[0].y);
-      let screenPoint = { x: point.x, y: point.y };
       if (cameras.length == 0) ;
       else {
         /* point = Input.mousePosition;*/
         //Put in transform code here
         let camera = cameras[0];
 
-        let tx = camera.x;
-        let ty = camera.y;
-        let sx = camera.scaleX;
-        let sy = camera.scaleY;
-        let r = camera.rotation;
-        let hx = ctx.canvas.width / 2;
-        let hy = ctx.canvas.height / 2;
+        let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, ctx.canvas.width / 2, ctx.canvas.height / 2];
+
 
         let x = point.x;
         let y = point.y;
@@ -2816,18 +2769,6 @@ class Scene extends NameableParent {
         point.y = y;
       }
 
-      let colliderObjectWorld = {};
-      colliderObjectWorld.gameObject = new GameObject();
-      colliderObjectWorld.gameObject.x = point.x;
-      colliderObjectWorld.gameObject.y = point.y;
-      colliderObjectWorld.collider = new PointCollider();
-
-      let colliderObjectScreen = {};
-      colliderObjectScreen.gameObject = new GameObject();
-      colliderObjectScreen.gameObject.x = screenPoint.x;
-      colliderObjectScreen.gameObject.y = screenPoint.y;
-      colliderObjectScreen.collider = new PointCollider();
-
       let colliderObject;
       for (let i = 0; i < collidableChildren.length; i++) {
         let collidableChild = collidableChildren[i];
@@ -2840,19 +2781,11 @@ class Scene extends NameableParent {
           let gameObjectOne = collidableChild.gameObject;
 
           //Now loop over all the behaviors too see if any are listening for collision events
-          for (let i = 0; i < gameObjectOne.components.length; i++) {
-            let component = gameObjectOne.components[i];
-            if (component.onTouchOver)
-              component.onTouchOver();
-            if (component.onTouchStart) {
-              if (Input.getTouchesStart() && Input.getTouchesStart().length > 0)
-                component.onTouchStart();
-            }
-            if (component.onTouchEnd) {
-              if (Input.getTouchesEnd() && Input.getTouchesEnd().length > 0)
-                component.onTouchEnd();
-            }
-          }
+          gameObjectOne.components.filter(x => x.onTouchOver).forEach(x => x.onTouchOver());
+          if (Input.getTouchesStart() && Input.getTouchesStart().length > 0)
+            gameObjectOne.components.filter(x => x.onTouchStart).forEach(x => x.onTouchStart());
+          if (Input.getTouchesEnd() && Input.getTouchesEnd().length > 0)
+            gameObjectOne.components.filter(x => x.onTouchEnd).forEach(x => x.onTouchEnd());
         }
       }
     }
