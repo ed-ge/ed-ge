@@ -2656,25 +2656,16 @@ var Base = (function () {
         point.x = parseInt(Input.mousePosition.x);
         point.y = parseInt(Input.mousePosition.y);
         let screenPoint = { x: point.x, y: point.y };
-        if (cameras.length == 0) ;
-        else {
-          /* point = Input.mousePosition;*/
-          //Put in transform code here
+        if (cameras.length > 0) {
+
           let camera = cameras[0];
           //let cameraComponent = camera.getComponent("CameraComponent")
           let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, ctx.canvas.width / 2, ctx.canvas.height / 2];
 
-          let x = point.x;
-          let y = point.y;
-          x -= hx;
-          y -= hy;
-          x /= sx;
-          y /= sy;
-          x += tx;
-          y += ty;
 
-          point.x = x;
-          point.y = y;
+
+          point.x = (point.x - hx) / sx + tx;
+          point.y = (point.y - hy) / sy + ty;
         }
 
         //Put the mouse in world space
@@ -2703,7 +2694,11 @@ var Base = (function () {
           if (collisionHelper.inCollision(collidableChild, colliderObject)) {
             let gameObjectOne = collidableChild.gameObject;
 
-            //Now loop over all the behaviors too see if any are listening for collision events
+            //Now loop over all the behaviors too see if any are listening for collision events\
+            if (Input.getMouseButtonDown(0))
+              gameObjectOne.components.filter(x => x.onMouseDown).forEach(x => x.onMouseDown());
+            if (Input.getMouseButtonUp(0))
+              gameObjectOne.components.filter(x => x.onMouseUp).forEach(x => x.onMouseUp());
             for (let i = 0; i < gameObjectOne.components.length; i++) {
               let component = gameObjectOne.components[i];
               if (component.onMouseOver) {
@@ -2715,14 +2710,8 @@ var Base = (function () {
                   this.frameMouseOver.push(component);
                 }
               }
-              if (component.onMouseDown) {
-                if (Input.getMouseButtonDown(0))
-                  component.onMouseDown();
-              }
-              if (component.onMouseUp) {
-                if (Input.getMouseButtonUp(0))
-                  component.onMouseUp();
-              }
+
+
             }
           } else {
             let gameObjectOne = collidableChild.gameObject;
@@ -2750,26 +2739,16 @@ var Base = (function () {
           let point = { x: 0, y: 0 };
           point.x = parseInt(touches[0].x);
           point.y = parseInt(touches[0].y);
-          if (cameras.length == 0) ;
-          else {
-            /* point = Input.mousePosition;*/
-            //Put in transform code here
+          // let screenPoint = { x: point.x, y: point.y };
+          if (cameras.length > 0) {
+
             let camera = cameras[0];
 
             let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, ctx.canvas.width / 2, ctx.canvas.height / 2];
 
+            point.x = (point.x - hx) / sx + tx;
+            point.y = (point.y - hy) / sy + ty;
 
-            let x = point.x;
-            let y = point.y;
-            x -= hx;
-            y -= hy;
-            x /= sx;
-            y /= sy;
-            x += tx;
-            y += ty;
-
-            point.x = x;
-            point.y = y;
           }
 
           let colliderObject;
