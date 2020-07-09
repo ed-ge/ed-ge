@@ -61,13 +61,14 @@ export default class MainController extends Base.Behavior {
     this.selectedCard = null;
   }
   deckClick(deck, position) {
+    let worldSpacePosition = Base._cs.toWorldSpace(position);
     let cardValue = deck.cards.pop();
     
-    let card = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Card, Base.SceneManager.currentScene, position);
+    let card = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Card, Base.SceneManager.currentScene, worldSpacePosition);
 
     card.getComponent("CardComponent").value = cardValue.value;
-    //this.cardClickEvent(card);
-    this.selectedCard = card.getComponent("SelectableCard");
+    this.cardClickEvent(card);
+    //this.selectedCard = card.getComponent("SelectableCard");
   }
 
 }

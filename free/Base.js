@@ -2455,6 +2455,8 @@ var Base = (function () {
         this.layers = ["background", null, "foreground"];
 
         this.frameMouseOver = [];
+
+        this.lastCtx = null;
       }
 
       bootSimulator() {
@@ -2592,7 +2594,7 @@ var Base = (function () {
         }
         ctx.restore();
 
-
+        this.lastCtx = ctx;
       }
 
       isInScreenSpace(gameObject) {
@@ -2825,6 +2827,25 @@ var Base = (function () {
 
           this.getCollidable(child, collidableChildren, type);
         }
+      }
+
+      /**
+       * Convert the point in screen space to world space
+       * @param {Base.Point} position 
+       */
+      toWorldSpace(position){
+        let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
+        let point = position.clone();
+        
+        if (cameras.length > 0 && this.lastCtx) {
+
+          let camera = cameras[0];
+          let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, this.lastCtx.canvas.width / 2, this.lastCtx.canvas.height / 2];
+
+          point.x = (point.x - hx) / sx + tx;
+          point.y = (point.y - hy) / sy + ty;
+        }
+        return point
       }
 
       /**
