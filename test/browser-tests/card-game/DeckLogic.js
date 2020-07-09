@@ -15,7 +15,7 @@ export default class DeckLogic extends Base.Behavior {
   onMouseDown() {
     if (!this.hover) {
       if (this.cards.length > 0) {
-        this.mainController.deckClick(this);
+        this.mainController.deckClick(this, Base.Input.frameMousePosition);
       }
     }
     else{
