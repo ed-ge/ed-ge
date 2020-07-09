@@ -60,18 +60,14 @@ export default class MainController extends Base.Behavior {
     Base.SceneManager.currentScene.destroy(this.selectedCard.gameObject);
     this.selectedCard = null;
   }
-  deckClick(deck) {
+  deckClick(deck, position) {
     let cardValue = deck.cards.pop();
-    let hand;
-    if (deck == this.P1Discard || deck == this.P1Draw || deck == this.P1Life) {
-      hand = this.P1Hand;
-    }
-    if (deck == this.P2Discard || deck == this.P2Draw || deck == this.P2Life) {
-      hand = this.P2Hand
-    }
-    let x = hand.children.length * 75;
-    let card = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Card, hand, new Base.Point(x, 75));
+    
+    let card = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Card, Base.SceneManager.currentScene, position);
+
     card.getComponent("CardComponent").value = cardValue.value;
+    //this.cardClickEvent(card);
+    this.selectedCard = card.getComponent("SelectableCard");
   }
 
 }
