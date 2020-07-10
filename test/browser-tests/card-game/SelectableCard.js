@@ -6,6 +6,7 @@ export default class SelectableCard extends Base.Behavior {
     this.gameObject.$("RectangleComponent").lineWidth = 5;
     this.mouseDown = false;
     this.hover = false;
+    this.directChild = null;
   }
   update() {
     if (this.MainController.selectedCard == this) {
@@ -13,7 +14,10 @@ export default class SelectableCard extends Base.Behavior {
       this.gameObject.$("RectangleComponent").fill = "rgba(255,0,0,.5)"
     }
     else {
-      this.gameObject.$("RectangleComponent").stroke = "black"
+      if (this.directChild == null)
+        this.gameObject.$("RectangleComponent").stroke = "black"
+      else
+        this.gameObject.$("RectangleComponent").stroke = "red"
       if (this.hover)
         this.gameObject.$("RectangleComponent").fill = "black"
       else
@@ -28,25 +32,42 @@ export default class SelectableCard extends Base.Behavior {
 
   }
   onMouseDown() {
-    if(!this.hover)
-    this.mouseDown = true;
-    else{
+    if (!this.hover)
+      this.mouseDown = true;
+    else {
       //let hoveringCard = this.MainController.selectedCard.gameObject;
       //this.gameObject.addChild(hoveringCard);
     }
     this.MainController.cardClickEvent(this);
   }
   onMouseUp() {
-    this.mouseDown = false;
-    this.MainController.cardClickEvent(null);
+    if (this.hover) {
+      if (this.MainController.selectedCard != this.gameObject.$("SelectableCard")) {
+        if (this.MainController.selectedCard != null) {
+          this.directChild = this.MainController.selectedCard;
+          this.hover = false;
+        }
+      }
+
+    }
+    else {
+      this.mouseDown = false;
+      this.MainController.cardClickEvent(null);
+    }
   }
-  onMouseOver() {
+  onMouseEnter() {
+    console.log("Mouse entering");
     if (this.MainController.selectedCard != this.gameObject.$("SelectableCard")) {
       if (this.MainController.selectedCard != null)
         this.hover = true;
     }
+    else{
+      this.hover = false;
+    }
   }
+  
   onMouseExit() {
+    console.log("Mouse leaving");
     this.hover = false;
   }
 

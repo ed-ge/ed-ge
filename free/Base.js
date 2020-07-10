@@ -2707,13 +2707,14 @@ var Base = (function () {
               let component = gameObjectOne.components[i];
               if (component.onMouseOver) {
                 component.onMouseOver();
-                if (!this.frameMouseOver.includes(component)) {
-                  if (component.onMouseEnter) {
-                    component.onMouseEnter();
-                  }
-                  this.frameMouseOver.push(component);
-                }
               }
+              if (!this.frameMouseOver.includes(component)) {
+                if (component.onMouseEnter) {
+                  component.onMouseEnter();
+                }
+                this.frameMouseOver.push(component);
+              }
+
 
 
             }
@@ -2833,10 +2834,10 @@ var Base = (function () {
        * Convert the point in screen space to world space
        * @param {Base.Point} position 
        */
-      toWorldSpace(position){
+      toWorldSpace(position) {
         let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
         let point = position.clone();
-        
+
         if (cameras.length > 0 && this.lastCtx) {
 
           let camera = cameras[0];
