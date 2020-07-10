@@ -47,10 +47,7 @@ export default class MainController extends Base.Behavior {
     }
 
   }
-  cardClickEvent(card) {
-    if (this.selectedCard == card)
-      this.selectedCard = null;
-    else
+  cardClickEvent(card) {    
       this.selectedCard = card;
   }
   addCardEvent(deck){
@@ -65,9 +62,11 @@ export default class MainController extends Base.Behavior {
     let cardValue = deck.cards.pop();
     
     let card = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Card, Base.SceneManager.currentScene, worldSpacePosition);
+    this.cardClickEvent(card.getComponent("SelectableCard"));
 
     card.getComponent("CardComponent").value = cardValue.value;
-    this.cardClickEvent(card);
+    card.getComponent("SelectableCard").mouseDown = true;
+
     //this.selectedCard = card.getComponent("SelectableCard");
   }
 

@@ -12,21 +12,25 @@ export default class DeckLogic extends Base.Behavior {
       this.gameObject.$("RectangleComponent").fill = "white";
 
   }
+  onMouseUp(){
+    if(this.hover){
+      this.mainController.addCardEvent(this);
+      this.hover = false;
+    }
+  }
   onMouseDown() {
     if (!this.hover) {
       if (this.cards.length > 0) {
         this.mainController.deckClick(this, Base.Input.frameMousePosition);
       }
     }
-    else{
-      this.mainController.addCardEvent(this);
-    }
+    
   }
   onMouseOver() {
-    if (this.mainController.selectedCard != null)
-      this.hover = true;
   }
   onMouseEnter() {
+    if (this.mainController.selectedCard != null)
+      this.hover = true;
     console.log("Mouse Enter")
   }
   onMouseExit() {
