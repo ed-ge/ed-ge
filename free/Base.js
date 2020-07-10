@@ -2286,6 +2286,8 @@ var Base = (function () {
             } else if (one.collider instanceof PointCollider && two.collider instanceof AABBCollider) {
                 /** Flip */
                 return this.inCollision(two, one);
+            } else if(one.collider instanceof AABBCollider && two.collider instanceof AABBCollider){
+                return this.inCollisionAABBAABB(one, two);
             } else if (one.collider instanceof CircleCollider && two.collider instanceof CircleCollider) {
                 return this.inCollisionCircleCircle(one, two);
             } else if (one.collider instanceof AABBCollider && two.collider instanceof CircleCollider) {
@@ -2303,6 +2305,15 @@ var Base = (function () {
                 return this.inCollision(two, one);
             }
 
+        },
+        inCollisionAABBAABB(one, two){
+            //From https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+            if(one.gameObject.worldLocation.x < two.gameObject.worldLocation.x + +two.collider.width &&
+                one.gameObject.worldLocation.x + +one.collider.width > two.gameObject.worldLocation.x &&
+                one.gameObject.worldLocation.y < two.gameObject.worldLocation.y + +two.collider.height &&
+                one.gameObject.worldLocation.y + +one.collider.height > two.gameObject.worldLocation.y)
+                return true;
+            return false;
         },
         inCollisionCirclePoint(circle, point) {
             let distance = circle.gameObject.worldLocation.distance(point.gameObject.location);
