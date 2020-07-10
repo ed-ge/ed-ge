@@ -1,5 +1,5 @@
 import Base from "../../../src/Base.js"
-import MainController from "./MainController.js";
+
 export default class SelectableCard extends Base.Behavior {
   start() {
     this.MainController = Base.$("MainController").$("MainController");
@@ -34,10 +34,11 @@ export default class SelectableCard extends Base.Behavior {
       //let hoveringCard = this.MainController.selectedCard.gameObject;
       //this.gameObject.addChild(hoveringCard);
     }
+    this.MainController.cardClickEvent(this);
   }
   onMouseUp() {
     this.mouseDown = false;
-    this.MainController.cardClickEvent(this);
+    this.MainController.cardClickEvent(null);
   }
   onMouseOver() {
     if (this.MainController.selectedCard != this.gameObject.$("SelectableCard")) {
