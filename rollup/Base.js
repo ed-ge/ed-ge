@@ -2283,7 +2283,7 @@ const CollisionHelper = {
         } else if (one.collider instanceof PointCollider && two.collider instanceof AABBCollider) {
             /** Flip */
             return this.inCollision(two, one);
-        } else if(one.collider instanceof AABBCollider && two.collider instanceof AABBCollider){
+        } else if (one.collider instanceof AABBCollider && two.collider instanceof AABBCollider) {
             return this.inCollisionAABBAABB(one, two);
         } else if (one.collider instanceof CircleCollider && two.collider instanceof CircleCollider) {
             return this.inCollisionCircleCircle(one, two);
@@ -2303,12 +2303,14 @@ const CollisionHelper = {
         }
 
     },
-    inCollisionAABBAABB(one, two){
+    inCollisionAABBAABB(one, two) {
         //From https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
-        if(one.gameObject.worldLocation.x < two.gameObject.worldLocation.x + +two.collider.width &&
-            one.gameObject.worldLocation.x + +one.collider.width > two.gameObject.worldLocation.x &&
-            one.gameObject.worldLocation.y < two.gameObject.worldLocation.y + +two.collider.height &&
-            one.gameObject.worldLocation.y + +one.collider.height > two.gameObject.worldLocation.y)
+        let ws1 = one.gameObject.worldScale;
+        let ws2 = two.gameObject.worldScale;
+        if (one.gameObject.worldLocation.x < two.gameObject.worldLocation.x + (+two.collider.width)*ws2.x &&
+            one.gameObject.worldLocation.x + (+one.collider.width)*ws1.x > two.gameObject.worldLocation.x &&
+            one.gameObject.worldLocation.y < two.gameObject.worldLocation.y + (+two.collider.height)*ws2.y &&
+            one.gameObject.worldLocation.y + (+one.collider.height)*ws1.y > two.gameObject.worldLocation.y)
             return true;
         return false;
     },

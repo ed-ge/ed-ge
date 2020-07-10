@@ -4,9 +4,10 @@ export default class DeckLogic extends Base.Behavior {
     this.cards = [];
     this.mainController = Base.SceneManager.currentScene.findByName("MainController").getComponent("MainController");
     this.hover = false;
+    this.inCollision = false;
   }
   update() {
-    if (this.hover)
+    if (this.hover || this.inCollision)
       this.gameObject.$("RectangleComponent").fill = "black";
     else
       this.gameObject.$("RectangleComponent").fill = "white";
@@ -26,8 +27,7 @@ export default class DeckLogic extends Base.Behavior {
     }
     
   }
-  onMouseOver() {
-  }
+  
   onMouseEnter() {
     if (this.mainController.selectedCard != null)
       this.hover = true;
@@ -36,6 +36,10 @@ export default class DeckLogic extends Base.Behavior {
   onMouseExit() {
     console.log("Mouse Exit")
     this.hover = false;
+  }
+  onCollisionStay(collider){
+    console.log("Collision Stay " + collider)
+    this.inCollision = true;
   }
 
 }
