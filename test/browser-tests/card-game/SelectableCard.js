@@ -7,6 +7,7 @@ export default class SelectableCard extends Base.Behavior {
     this.mouseDown = false;
     this.hover = false;
     this.directChild = null;
+    this.directParent = null;
   }
   update() {
     if (this.MainController.selectedCard == this) {
@@ -26,8 +27,16 @@ export default class SelectableCard extends Base.Behavior {
 
     if (this.MainController.selectedCard == this) {
       let mouseDelta = Base.Input.lastFrameMousePosition.diff(Base.Input.frameMousePosition);
-      this.gameObject.x -= mouseDelta.x;
-      this.gameObject.y -= mouseDelta.y;
+      this.parentMove(mouseDelta);
+
+    }
+
+  }
+  parentMove(point) {
+    this.gameObject.x -= point.x;
+    this.gameObject.y -= point.y;
+    if (this.directChild != null) {
+      this.directChild.parentMove(point);
     }
 
   }
@@ -45,10 +54,10 @@ export default class SelectableCard extends Base.Behavior {
       if (this.MainController.selectedCard != this.gameObject.$("SelectableCard")) {
         if (this.MainController.selectedCard != null) {
           this.directChild = this.MainController.selectedCard;
+          this.directChild.directParent = this;
           this.hover = false;
         }
       }
-
     }
     else {
       this.mouseDown = false;
@@ -59,13 +68,14 @@ export default class SelectableCard extends Base.Behavior {
     console.log("Mouse entering");
     if (this.MainController.selectedCard != this.gameObject.$("SelectableCard")) {
       if (this.MainController.selectedCard != null)
-        this.hover = true;
+        if (this.directChild == null)
+          this.hover = true;
     }
-    else{
+    else {
       this.hover = false;
     }
   }
-  
+
   onMouseExit() {
     console.log("Mouse leaving");
     this.hover = false;

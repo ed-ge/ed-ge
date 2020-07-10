@@ -54,6 +54,13 @@ export default class MainController extends Base.Behavior {
     if(this.selectedCard == null)
       throw new Error("There has to be a selected card in order to add it to a deck")
     deck.cards.push({value:this.selectedCard.gameObject.$("CardComponent").value});
+    let sc = this.selectedCard;
+    //Break any parent/child connections
+    if(sc.directChild != null)
+      sc.directChild.directParent = null;
+    if(sc.directParent != null)
+      sc.directParent.directChild = null;
+
     Base.SceneManager.currentScene.destroy(this.selectedCard.gameObject);
     this.selectedCard = null;
   }
