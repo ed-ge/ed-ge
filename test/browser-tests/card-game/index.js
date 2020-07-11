@@ -17,7 +17,7 @@ P1Decks Empty
 -100,200
 <
 P1Life DeckDown
--150,0
+-220,0
 <
 P1Life Text
 0,-20
@@ -73,7 +73,7 @@ P2Decks Empty
 -100,-200
 <
 P2Life DeckDown
--150,0
+-220,0
 <
 P2Life Text
 0,-20
