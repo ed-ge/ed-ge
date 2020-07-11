@@ -30,7 +30,7 @@ export default class MainController extends Base.Behavior {
       this.P2Draw.cards.push(P2Cards.shift());
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 6; i++) {
       this.P1Life.cards.push(this.P1Draw.cards.shift());
       this.P2Life.cards.push(this.P2Draw.cards.shift());
     }

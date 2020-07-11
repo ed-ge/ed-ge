@@ -15,34 +15,33 @@ export default class DeckLogic extends Base.Behavior {
 
   }
   onMouseUp(){
-    if(this.hover){
-      this.mainController.addCardEvent(this);
-      this.hover = false;
-    }
+    // if(this.inCollision){
+    //   this.mainController.addCardEvent(this);
+    //   this.inCollision = false;
+    // }
   }
   onMouseDown() {
-    if (!this.hover) {
+    if (!this.inCollision) {
       if (this.cards.length > 0) {
         this.mainController.deckClick(this, Base.Input.frameMousePosition);
       }
-    }
-    
+    }    
   }
   
-  onMouseEnter() {
-    if (this.mainController.selectedCard != null)
-      this.hover = true;
-    console.log("Mouse Enter")
-  }
-  onMouseExit() {
-    console.log("Mouse Exit")
-    this.hover = false;
-  }
-  onCollisionStay(collider){
-    //console.log("Collision Stay " + collider)
-    //this.inCollision = true;
-    //this.inCollision = true;
-  }
+  // onMouseEnter() {
+  //   if (this.mainController.selectedCard != null)
+  //     this.hover = true;
+  //   console.log("Mouse Enter")
+  // }
+  // onMouseExit() {
+  //   console.log("Mouse Exit")
+  //   this.hover = false;
+  // }
+  // onCollisionStay(collider){
+  //   //console.log("Collision Stay " + collider)
+  //   //this.inCollision = true;
+  //   //this.inCollision = true;
+  // }
   onCollisionEnter(collider){
     console.log("Collision Enter");
     this.inCollision = true;
