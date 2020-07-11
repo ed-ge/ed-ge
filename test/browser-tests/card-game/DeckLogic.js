@@ -7,10 +7,11 @@ export default class DeckLogic extends Base.Behavior {
     this.inCollision = false;
   }
   update() {
-    if (this.hover || this.inCollision)
+    if ( this.inCollision)
       this.gameObject.$("RectangleComponent").fill = "black";
     else
       this.gameObject.$("RectangleComponent").fill = "white";
+    //this.inCollision = false;
 
   }
   onMouseUp(){
@@ -38,8 +39,17 @@ export default class DeckLogic extends Base.Behavior {
     this.hover = false;
   }
   onCollisionStay(collider){
-    console.log("Collision Stay " + collider)
+    //console.log("Collision Stay " + collider)
+    //this.inCollision = true;
+    //this.inCollision = true;
+  }
+  onCollisionEnter(collider){
+    console.log("Collision Enter");
     this.inCollision = true;
+  }
+  onCollisionExit(collider){
+    console.log("Collision Exit");
+    this.inCollision = false;
   }
 
 }

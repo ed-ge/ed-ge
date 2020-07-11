@@ -2468,6 +2468,7 @@ var Base = (function () {
         this.layers = ["background", null, "foreground"];
 
         this.frameMouseOver = [];
+        this.frameCollisionOver = [];
 
         this.lastCtx = null;
       }
@@ -2657,9 +2658,38 @@ var Base = (function () {
             let gameObjectTwo = collidableChildren[j].gameObject;
             let isInScreenSpaceTwo = this.isInScreenSpace(gameObjectTwo);
             if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
+            let collisionPair = { one: collidableChildren[i], two: collidableChildren[j] };
             if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
-              gameObjectOne.components.filter(x => x.onCollisionStay).forEach(x => x.onCollisionStay(collidableChildren[j]));
-              gameObjectTwo.components.filter(x => x.onCollisionStay).forEach(x => x.onCollisionStay(collidableChildren[i]));
+              gameObjectOne.components.forEach(x => {
+                if (x.onCollisionStay)
+                  x.onCollisionStay(collidableChildren[j]);
+              });
+              gameObjectTwo.components.forEach(x => {
+                if (x.onCollisionStay)
+                  x.onCollisionStay(collidableChildren[i]);
+
+              });
+              if (this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))==-1) {
+                this.frameCollisionOver.push(collisionPair);
+                gameObjectOne.components.filter(x=>x.onCollisionEnter).forEach(x => {
+                  x.onCollisionEnter(collidableChildren[j]);
+                });
+                gameObjectTwo.components.filter(x=>x.onCollisionEnter).forEach(x => {
+                  x.onCollisionEnter(collidableChildren[i]);
+                });
+              }
+            }
+            else {
+              if(this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))!=-1)
+              {
+                this.frameCollisionOver = this.frameCollisionOver.filter(x=>!this.collisionPairMatch(x, collisionPair));
+                gameObjectOne.components.filter(x=>x.onCollisionExit).forEach(x => {
+                  x.onCollisionExit(collidableChildren[j]);
+                });
+                gameObjectTwo.components.filter(x=>x.onCollisionExit).forEach(x => {
+                  x.onCollisionExit(collidableChildren[i]);
+                });
+              }
             }
           }
         }
@@ -2810,6 +2840,12 @@ var Base = (function () {
             this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))));
           }
         }
+      }
+      collisionPairMatch(one, two){
+        return one.one.gameObject == two.one.gameObject &&
+          one.two.gameObject == two.two.gameObject &&
+          one.one.collider == two.one.collider &&
+          one.two.collider == two.two.collider;
       }
 
       /**
