@@ -14,7 +14,7 @@ let Scenes = {
 StartScene
 
 P1Decks Empty
--400,200
+-100,200
 <
 P1Life DeckDown
 -150,0
@@ -70,7 +70,7 @@ TextComponent
 >
 
 P2Decks Empty
--400,-200
+-100,-200
 <
 P2Life DeckDown
 -150,0
@@ -126,12 +126,6 @@ TextComponent
 >
 >
 
-GhostCard CardLike
-GhostCard
-RectangleComponent
- fill=transparent
- stroke=green
- lineWidth=10
 
 
 
