@@ -41,6 +41,10 @@ class Component {
         this.gameObject = null;
     }
 
+    get $go(){
+      return this.gameObject;
+    }
+
     
 
     /**Generate a uuid
@@ -662,6 +666,9 @@ class GameObject extends NameableParent {
    */
   $(type){
     return this.getComponent(type);
+  }
+  $any(type){
+    return this.anyComponent(type);
   }
   getComponent(type) {
     if(arguments.length != 1) throw new Error("getComponent function expects exactly one argument that is a string or a type.")

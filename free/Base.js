@@ -44,6 +44,10 @@ var Base = (function () {
             this.gameObject = null;
         }
 
+        get $go(){
+          return this.gameObject;
+        }
+
         
 
         /**Generate a uuid
@@ -665,6 +669,9 @@ var Base = (function () {
        */
       $(type){
         return this.getComponent(type);
+      }
+      $any(type){
+        return this.anyComponent(type);
       }
       getComponent(type) {
         if(arguments.length != 1) throw new Error("getComponent function expects exactly one argument that is a string or a type.")
