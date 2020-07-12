@@ -40,25 +40,24 @@ export default class MainController extends Base.Behavior {
 
   }
   update() {
-    if(Base.Input.getKeyUp('Escape'))
-    {
+    if (Base.Input.getKeyUp('Escape')) {
       this.selectedCard = null;
 
     }
 
   }
-  cardClickEvent(card) {    
-      this.selectedCard = card;
+  cardClickEvent(card) {
+    this.selectedCard = card;
   }
-  addCardEvent(deck){
-    if(this.selectedCard == null)
+  addCardEvent(deck) {
+    if (this.selectedCard == null)
       throw new Error("There has to be a selected card in order to add it to a deck")
-    deck.cards.push({value:this.selectedCard.gameObject.$("CardComponent").value});
+    deck.cards.push({ value: this.selectedCard.gameObject.$("CardComponent").value });
     let sc = this.selectedCard;
     //Break any parent/child connections
-    if(sc.directChild != null)
+    if (sc.directChild != null)
       sc.directChild.directParent = null;
-    if(sc.directParent != null)
+    if (sc.directParent != null)
       sc.directParent.directChild = null;
 
     Base.SceneManager.currentScene.destroy(this.selectedCard.gameObject);
@@ -67,7 +66,7 @@ export default class MainController extends Base.Behavior {
   deckClick(deck, position) {
     let worldSpacePosition = Base._cs.toWorldSpace(position);
     let cardValue = deck.cards.pop();
-    
+
     let card = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Card, Base.SceneManager.currentScene, worldSpacePosition);
     this.cardClickEvent(card.getComponent("SelectableCard"));
 
@@ -75,6 +74,22 @@ export default class MainController extends Base.Behavior {
     card.getComponent("SelectableCard").mouseDown = true;
 
     //this.selectedCard = card.getComponent("SelectableCard");
+  }
+  cardCollision(card, collision) {
+    let sc1 = card;
+    let sc2 = collision.gameObject.$("SelectableCard");
+    if (!sc1.collisionCards.includes(sc2))
+      sc1.collisionCards.push(sc2);
+    if (!sc2.collisionCards.includes(sc1))
+      sc2.collisionCards.push(sc1);
+
+  }
+  cardCollisionExit(card, collision) {
+    let sc1 = card;
+    let sc2 = collision.gameObject.$("SelectableCard");
+    _.pull(sc1.collisionCards, sc2)
+    _.pull(sc2.collisionCards, sc1);
+
   }
 
 }

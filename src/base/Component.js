@@ -41,6 +41,10 @@ class Component {
         this.gameObject = null;
     }
 
+    get $go(){
+      return this.gameObject;
+    }
+
     
 
     /**Generate a uuid
