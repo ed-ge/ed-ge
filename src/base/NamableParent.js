@@ -86,6 +86,9 @@ class NameableParent {
         }
         return false;
     }
+    $(name){
+        return this.findByName(name);
+    }
 
     findByName(name){
         if(arguments.length != 1 || !(typeof name == 'string' || name instanceof String)) throw new Error("findByName expects exactly one string argument.")

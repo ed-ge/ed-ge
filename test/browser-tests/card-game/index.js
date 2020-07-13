@@ -6,6 +6,8 @@ import CardComponent from "./CardComponent.js"
 import DeckSizeText from "./DeckSizeText.js"
 import SelectableCard from "./SelectableCard.js"
 import GhostCard from "./GhostCard.js"
+import DeckDownComponent from "./DeckDown.js"
+import DeckUpComponent from "./DeckUp.js"
 
 let Scenes = {
   startScene: "StartScene",
@@ -20,12 +22,12 @@ P1Life DeckDown
 -220,0
 <
 P1Life Text
-0,-20
+-40,-55
 TextComponent
  text=P1
 
 P1Life2 Text
-0,20
+-10,-55
 TextComponent
  text=Life
 DeckSizeText
@@ -35,12 +37,12 @@ P1Draw DeckDown
 -60,0
 <
 P1Life Text
-0,-20
+-40,-55
 TextComponent
  text=P1
 
 P1Life2 Text
-0,20
+-10,-55
 TextComponent
  text=Draw
 DeckSizeText
@@ -50,12 +52,12 @@ P1Discard DeckUp
 100,0
 <
 P1Life Text
-0,-20
+-40,-55
 TextComponent
  text=P1
 
 P1Life2 Text
-0,20
+-10,-55
 TextComponent
  text=Discard
 DeckSizeText
@@ -76,12 +78,12 @@ P2Life DeckDown
 -220,0
 <
 P2Life Text
-0,-20
+-40,-55
 TextComponent
  text=P2
 
 P2Life2 Text
-0,20
+-10,-55
 TextComponent
  text=Life
 DeckSizeText
@@ -91,12 +93,12 @@ P2Draw DeckDown
 -60,0
 <
 P2Life Text
-0,-20
+-40,-55
 TextComponent
  text=P2
 
 P2Life2 Text
-0,20
+-10,-55
 TextComponent
  text=Draw
 DeckSizeText
@@ -107,12 +109,12 @@ P2Discard DeckUp
 DeckLogic
 <
 P2Life Text
-0,-20
+-40,-55
 TextComponent
  text=P2
 
 P2Life2 Text
-0,20
+-10,-55
 TextComponent
  text=Discard
 DeckSizeText
@@ -139,7 +141,16 @@ MainController
   ]
 }
 
-let GameBehaviors = {TouchDelta, MainController, DeckLogic, CardComponent, DeckSizeText, SelectableCard, GhostCard}
+let GameBehaviors = {
+  TouchDelta, 
+  MainController, 
+  DeckLogic, 
+  DeckDownComponent,
+  DeckUpComponent,
+  CardComponent,
+  DeckSizeText, 
+  SelectableCard, 
+  GhostCard}
 
 let CardLike = 
 `
@@ -159,10 +170,11 @@ TextComponent
 let Deck =
 `
 Deck CardLike
-DeckLogic
 `
 let DeckDown = `
 DeckDown Deck
+DeckDownComponent
+DeckLogic
 RectangleComponent
  fill=azure
  stroke=red
@@ -170,6 +182,8 @@ RectangleComponent
 
 let DeckUp = `
 DeckUp Deck
+DeckUpComponent
+DeckLogic
 RectangleComponent
  fill=pink
  stroke=blue
