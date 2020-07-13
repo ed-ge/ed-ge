@@ -82,7 +82,7 @@ export default class SelectableCard extends Base.Behavior {
       //let hoveringCard = this.MainController.selectedCard.gameObject;
       //this.gameObject.addChild(hoveringCard);
     }
-    this.MainController.cardClickEvent(this);
+    this.MainController.setSelectedCard(this);
   }
   
   onMouseUp() {
@@ -128,7 +128,7 @@ export default class SelectableCard extends Base.Behavior {
     // }
 
     this.mouseDown = false;
-    this.MainController.cardClickEvent(null);
+    this.MainController.setSelectedCard(null);
 
   }
   onMouseEnter() {

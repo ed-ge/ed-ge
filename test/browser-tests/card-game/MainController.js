@@ -2,15 +2,15 @@ import Base from "../../../src/Base.js"
 import CardComponent from "./CardComponent.js";
 export default class MainController extends Base.Behavior {
   start() {
-    this.P1Life = Base.SceneManager.currentScene.findByName("P1Life").getComponent("DeckLogic");
-    this.P1Draw = Base.SceneManager.currentScene.findByName("P1Draw").getComponent("DeckLogic");
-    this.P1Discard = Base.SceneManager.currentScene.findByName("P1Discard").getComponent("DeckLogic");
-    this.P2Life = Base.SceneManager.currentScene.findByName("P2Life").getComponent("DeckLogic");
-    this.P2Draw = Base.SceneManager.currentScene.findByName("P2Draw").getComponent("DeckLogic");
-    this.P2Discard = Base.SceneManager.currentScene.findByName("P2Discard").getComponent("DeckLogic");
+    this.P1Life = Base._cs.$("P1Life").$("DeckLogic");
+    this.P1Draw = Base._cs.$("P1Draw").$("DeckLogic");
+    this.P1Discard = Base._cs.$("P1Discard").$("DeckLogic");
+    this.P2Life = Base._cs.$("P2Life").$("DeckLogic");
+    this.P2Draw = Base._cs.$("P2Draw").$("DeckLogic");
+    this.P2Discard = Base._cs.$("P2Discard").$("DeckLogic");
 
-    this.P1Hand = Base.SceneManager.currentScene.findByName("P1Hand");
-    this.P2Hand = Base.SceneManager.currentScene.findByName("P2Hand");
+    this.P1Hand = Base._cs.$("P1Hand");
+    this.P2Hand = Base._cs.$("P2Hand");
 
     let P1Cards = [];
     let P2Cards = [];
@@ -46,13 +46,13 @@ export default class MainController extends Base.Behavior {
     }
 
   }
-  cardClickEvent(card) {
+  setSelectedCard(card) {
     this.selectedCard = card;
   }
   addCardEvent(deck) {
     if (this.selectedCard == null)
       throw new Error("There has to be a selected card in order to add it to a deck")
-    deck.cards.push({ value: this.selectedCard.gameObject.$("CardComponent").value });
+    deck.cards.push({ value: this.selectedCard.$go.$("CardComponent").value });
     let sc = this.selectedCard;
     //Break any parent/child connections
     if (sc.directChild != null)
@@ -60,18 +60,18 @@ export default class MainController extends Base.Behavior {
     if (sc.directParent != null)
       sc.directParent.directChild = null;
 
-    Base.SceneManager.currentScene.destroy(this.selectedCard.gameObject);
+    Base._cs.destroy(this.selectedCard.$go);
     this.selectedCard = null;
   }
   deckClick(deck, position) {
     let worldSpacePosition = Base._cs.toWorldSpace(position);
     let cardValue = deck.cards.pop();
 
-    let card = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Card, Base.SceneManager.currentScene, worldSpacePosition);
-    this.cardClickEvent(card.getComponent("SelectableCard"));
+    let card = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Card, Base._cs, worldSpacePosition);
+    this.setSelectedCard(card.$("SelectableCard"));
 
-    card.getComponent("CardComponent").value = cardValue.value;
-    card.getComponent("SelectableCard").mouseDown = true;
+    card.$("CardComponent").value = cardValue.value;
+    card.$("SelectableCard").mouseDown = true;
 
     //this.selectedCard = card.getComponent("SelectableCard");
   }

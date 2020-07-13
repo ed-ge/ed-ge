@@ -2,24 +2,16 @@ import Base from "../../../src/Base.js"
 export default class DeckLogic extends Base.Behavior {
   start() {
     this.cards = [];
-    this.mainController = Base.SceneManager.currentScene.findByName("MainController").getComponent("MainController");
+    this.mainController = Base._cs.findByName("MainController").$("MainController");
     this.hover = false;
-    this.inCollision = false;
   }
   update() {
     if ( this.inCollision)
-      this.gameObject.$("RectangleComponent").fill = "black";
-    else
-      this.gameObject.$("RectangleComponent").fill = "white";
-    //this.inCollision = false;
-
+      this.gameObject.$("RectangleComponent").fill = "gray";
+    // else
+    //   this.gameObject.$("RectangleComponent").fill = "white";
   }
-  onMouseUp(){
-    // if(this.inCollision){
-    //   this.mainController.addCardEvent(this);
-    //   this.inCollision = false;
-    // }
-  }
+  
   onMouseDown() {
     if (!this.inCollision) {
       if (this.cards.length > 0) {
@@ -28,20 +20,7 @@ export default class DeckLogic extends Base.Behavior {
     }    
   }
   
-  // onMouseEnter() {
-  //   if (this.mainController.selectedCard != null)
-  //     this.hover = true;
-  //   console.log("Mouse Enter")
-  // }
-  // onMouseExit() {
-  //   console.log("Mouse Exit")
-  //   this.hover = false;
-  // }
-  // onCollisionStay(collider){
-  //   //console.log("Collision Stay " + collider)
-  //   //this.inCollision = true;
-  //   //this.inCollision = true;
-  // }
+  
   onCollisionEnter(collider){
     console.log("Collision Enter");
     this.inCollision = true;
