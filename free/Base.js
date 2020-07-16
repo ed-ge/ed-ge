@@ -3277,6 +3277,27 @@ var Base = (function () {
         }
     }
 
+    class Draggable extends Behavior {
+      start() {
+        this.mouseDown = false;
+      }
+
+      update() {
+        if (this.mouseDown) {
+          let point = Input.lastFrameMousePosition.diff(Input.frameMousePosition);
+          
+          this.gameObject.x -= point.x;
+          this.gameObject.y -= point.y;
+        }
+      }
+      onMouseDown() {
+        this.mouseDown = true;
+      }
+      onMouseUp() {
+        this.mouseDown = false;
+      }
+    }
+
     /**
     Axis - Aligned Bounding Box 
     */
@@ -3477,6 +3498,15 @@ RectangleComponent
 AABBCollider
  width=100
  height=100
+`;
+
+    var RectangleNoCollider = `
+Rectangle Empty
+RectangleComponent
+ width=100
+ height=100
+ fill=red
+ stroke=blue
 `;
 
     var Circle = `
@@ -3744,6 +3774,7 @@ RectangleComponent
 
     let Components = {
       CircleComponent,
+      Draggable,
       RectangleComponent,
       TextComponent,
       CircleCollider,
@@ -3769,6 +3800,7 @@ RectangleComponent
       Canvas,
       CanvasText,
       Rectangle,
+      RectangleNoCollider,
       Circle,
       ScreenText,
       RVOSimulator: RVOSimulator$1,

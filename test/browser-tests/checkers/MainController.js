@@ -11,19 +11,15 @@ export default class MainController extends Base.Behavior {
   buildBoard() {
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
-        let rectangle = Base.Serializer.instantiate(Base.Prefabs.Rectangle, this.BoardBase, new Base.Point(x * 50, y * 50));
+        let rectangle = Base.Serializer.instantiate(Base.Prefabs.RectangleNoCollider, this.BoardBase, new Base.Point(x * 50, y * 50));
         let color = "red";
         if ((y + x) % 2) {
           color = "black"
         }
-
         rectangle.$("RectangleComponent").fill = color
         rectangle.$("RectangleComponent").stroke = color
         rectangle.$("RectangleComponent").width = 50
         rectangle.$("RectangleComponent").height = 50
-        rectangle.$("AABBCollider").width = 50
-        rectangle.$("AABBCollider").height = 50
-
       }
     }
   }

@@ -1,6 +1,5 @@
 import Base from "../../../src/Base.js"
 import MainController from "./MainController.js"
-import Draggable from "./Draggable.js"
 
 let Scenes = {
   startScene: "StartScene",
@@ -27,7 +26,6 @@ MainController
 
 let GameBehaviors = {
   MainController,
-  Draggable
 }
 
 let Piece =
