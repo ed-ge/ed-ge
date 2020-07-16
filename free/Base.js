@@ -3486,7 +3486,7 @@ CircleComponent
  fill=rgba(255,255,0,.5)
  stroke=black
 CircleCollider
- radius=0
+ radius=50
 `;
 
     var ScreenText = `
