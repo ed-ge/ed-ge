@@ -21,6 +21,7 @@ import CircleCollider from "./components/CircleCollider.js"
 import Collider from "./components/Collider.js"
 import PointCollider from "./components/PointCollider.js"
 import CollisionHelper from "./components/CollisionHelper.js"
+import Draggable from "./components/Draggable.js"
 import AABBCollider from "./components/AABBCollider.js"
 import TriangleCollider from "./components/TriangleCollider.js"
 import ConvexCollider from "./components/ConvexCollider.js"
@@ -39,6 +40,7 @@ import Camera from "./prefabs/Camera.js"
 import Canvas from "./prefabs/Canvas.js"
 import CanvasText from "./prefabs/CanvasText.js"
 import Rectangle from "./prefabs/Rectangle.js"
+import RectangleNoCollider from "./prefabs/RectangleNoCollider.js"
 import Circle from "./prefabs/Circle.js"
 import ScreenText from "./prefabs/ScreenText.js"
 import RVOAgent from "./prefabs/RVOAgent.js"
@@ -53,6 +55,7 @@ import main from "./Main.js"
 
 let Components = {
   CircleComponent,
+  Draggable,
   RectangleComponent,
   TextComponent,
   CircleCollider,
@@ -78,6 +81,7 @@ const Prefabs = {
   Canvas,
   CanvasText,
   Rectangle,
+  RectangleNoCollider,
   Circle,
   ScreenText,
   RVOSimulator,

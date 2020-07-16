@@ -1,15 +1,16 @@
-import Base from "../../../src/Base.js"
+import Behavior from "../base/Behavior.js"
+import Input from "../base/Input.js"
 
 
 
-export default class Draggable extends Base.Behavior {
+export default class Draggable extends Behavior {
   start() {
     this.mouseDown = false;
   }
 
   update() {
     if (this.mouseDown) {
-      let point = Base.Input.lastFrameMousePosition.diff(Base.Input.frameMousePosition);
+      let point = Input.lastFrameMousePosition.diff(Input.frameMousePosition);
       
       this.gameObject.x -= point.x;
       this.gameObject.y -= point.y;
