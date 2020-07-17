@@ -2797,7 +2797,7 @@ var Base = (function () {
           let point = { x: 0, y: 0 };
           point.x = parseInt(touches[0].x);
           point.y = parseInt(touches[0].y);
-          // let screenPoint = { x: point.x, y: point.y };
+          let screenPoint = { x: point.x, y: point.y };
           if (cameras.length > 0) {
 
             let camera = cameras[0];
@@ -2810,6 +2810,8 @@ var Base = (function () {
           }
 
           let colliderObject;
+          colliderObjectWorld.point = point;
+          colliderObjectScreen = screenPoint;
           for (let i = 0; i < collidableChildren.length; i++) {
             let collidableChild = collidableChildren[i];
             if (!this.isInScreenSpace(collidableChild.gameObject))
@@ -3280,14 +3282,19 @@ var Base = (function () {
     class Draggable extends Behavior {
       start() {
         this.mouseDown = false;
+        this.touchDown = false;
       }
 
       update() {
         if (this.mouseDown) {
-          let point = Input.lastFrameMousePosition.diff(Input.frameMousePosition);
-          
-          this.gameObject.x -= point.x;
-          this.gameObject.y -= point.y;
+          let point = Input.getMousePositionDelta();
+          this.gameObject.x += point.x;
+          this.gameObject.y += point.y;
+        }
+        if (this.touchDown) {
+          let point = Input.getTouchMove()[0];
+          this.gameObject.x += point.x;
+          this.gameObject.y += point.y;
         }
       }
       onMouseDown() {
@@ -3295,6 +3302,13 @@ var Base = (function () {
       }
       onMouseUp() {
         this.mouseDown = false;
+      }
+      onTouchStart(){
+        console.log("Touch start");
+        this.touchDown = true;
+      }
+      onTouchEnd(){
+        this.touchDown = false;
       }
     }
 

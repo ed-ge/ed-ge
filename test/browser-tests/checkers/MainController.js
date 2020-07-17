@@ -1,6 +1,4 @@
 import Base from "../../../src/Base.js"
-import Point from "../../../src/base/Point.js";
-
 export default class MainController extends Base.Behavior {
   start() {
     this.BoardBase = Base._cs.$("BoardBase");
@@ -24,8 +22,8 @@ export default class MainController extends Base.Behavior {
     }
   }
   addPieces() {
-    for (let y = 0; y < 8; y++) {
-      for (let x = 0; x < 8; x++) {
+    for (let y = 0; y < 1; y++) {
+      for (let x = 0; x < 1; x++) {
 
         if ((y + x) % 2 || y == 3 || y == 4) {
           continue;
@@ -44,6 +42,7 @@ export default class MainController extends Base.Behavior {
     }
   }
   addKings() {
+    return
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 2; x++) {
 
