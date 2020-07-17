@@ -417,7 +417,7 @@ class Scene extends NameableParent {
       let point = { x: 0, y: 0 };
       point.x = parseInt(touches[0].x);
       point.y = parseInt(touches[0].y);
-      // let screenPoint = { x: point.x, y: point.y };
+      let screenPoint = { x: point.x, y: point.y };
       if (cameras.length > 0) {
 
         let camera = cameras[0];
@@ -430,6 +430,8 @@ class Scene extends NameableParent {
       }
 
       let colliderObject;
+      colliderObjectWorld.point = point;
+      colliderObjectScreen = screenPoint;
       for (let i = 0; i < collidableChildren.length; i++) {
         let collidableChild = collidableChildren[i];
         if (!this.isInScreenSpace(collidableChild.gameObject))
