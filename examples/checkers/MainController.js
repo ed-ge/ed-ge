@@ -1,5 +1,3 @@
-import Base from "../../../src/Base.js"
-import Point from "../../../src/base/Point.js";
 
 export default class MainController extends Base.Behavior {
   start() {

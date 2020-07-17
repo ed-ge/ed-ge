@@ -1,6 +1,12 @@
-import Base from "../../../src/Base.js"
+//Import any custom behaviors
 import MainController from "./MainController.js"
 
+//Add custom behaviors to an object we pass to Main
+let GameBehaviors = {
+  MainController,
+}
+
+//Add objects to our scene that we pass to main
 let Scenes = {
   startScene: "StartScene",
   allScenes: [
@@ -24,10 +30,8 @@ MainController
   ]
 }
 
-let GameBehaviors = {
-  MainController,
-}
 
+//Declare the prefabs we will pass to Main
 let Piece =
 `
 Piece Circle
@@ -42,8 +46,7 @@ TextComponent
  fill=white
 `
 
-
-
-
+//Place the prefabs in an object we will pass to Main
 let Prefabs = { Piece, King  };
+
 Base.Main = Base.main(Prefabs, GameBehaviors, Scenes);
