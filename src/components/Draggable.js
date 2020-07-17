@@ -20,6 +20,10 @@ export default class Draggable extends Behavior {
       this.gameObject.x += point.x;
       this.gameObject.y += point.y;
     }
+    
+    // if(Input.anyTouchesEnd()){
+    //   this.touchDown = false;
+    // }
   }
   onMouseDown() {
     this.mouseDown = true;
@@ -28,7 +32,6 @@ export default class Draggable extends Behavior {
     this.mouseDown = false;
   }
   onTouchStart(){
-    console.log("Touch start");
     this.touchDown = true;
   }
   onTouchEnd(){

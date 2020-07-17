@@ -430,8 +430,8 @@ class Scene extends NameableParent {
       }
 
       let colliderObject;
-      colliderObjectWorld.point = point;
-      colliderObjectScreen = screenPoint;
+      [colliderObjectWorld.gameObject.x, colliderObjectWorld.gameObject.y] = [point.x, point.y];
+      [colliderObjectScreen.gameObject.x, colliderObjectScreen.gameObject.y] = [screenPoint.x, screenPoint.y];
       for (let i = 0; i < collidableChildren.length; i++) {
         let collidableChild = collidableChildren[i];
         if (!this.isInScreenSpace(collidableChild.gameObject))

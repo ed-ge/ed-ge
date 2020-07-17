@@ -22,8 +22,8 @@ export default class MainController extends Base.Behavior {
     }
   }
   addPieces() {
-    for (let y = 0; y < 1; y++) {
-      for (let x = 0; x < 1; x++) {
+    for (let y = 0; y < 8; y++) {
+      for (let x = 0; x < 8; x++) {
 
         if ((y + x) % 2 || y == 3 || y == 4) {
           continue;
@@ -38,11 +38,11 @@ export default class MainController extends Base.Behavior {
         piece.$("CircleCollider").radius = 20;
         piece.$("CircleComponent").fill = color;
         piece.$("CircleComponent").stroke = "black";
+        
       }
     }
   }
   addKings() {
-    return
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 2; x++) {
 

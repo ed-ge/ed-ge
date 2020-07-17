@@ -176,6 +176,9 @@ const Input = {
     if(this.frameTouchesEnd.length == 0) return [];
     return this.frameTouchesEnd.map(i => { return { x: i.clientX, y: i.clientY } });
   },
+  anyTouchesEnd(){
+    return this.getTouchesEnd().length > 0;
+  },
   getTouchesFull() {
     if(arguments.length != 0) throw new Error("Function does not accept arguments.")
     return this.touches;
