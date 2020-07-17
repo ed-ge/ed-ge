@@ -928,6 +928,9 @@ var Base = (function () {
         if(this.frameTouchesEnd.length == 0) return [];
         return this.frameTouchesEnd.map(i => { return { x: i.clientX, y: i.clientY } });
       },
+      anyTouchesEnd(){
+        return this.getTouchesEnd().length > 0;
+      },
       getTouchesFull() {
         if(arguments.length != 0) throw new Error("Function does not accept arguments.")
         return this.touches;
@@ -2810,8 +2813,8 @@ var Base = (function () {
           }
 
           let colliderObject;
-          colliderObjectWorld.point = point;
-          colliderObjectScreen = screenPoint;
+          [colliderObjectWorld.gameObject.x, colliderObjectWorld.gameObject.y] = [point.x, point.y];
+          [colliderObjectScreen.gameObject.x, colliderObjectScreen.gameObject.y] = [screenPoint.x, screenPoint.y];
           for (let i = 0; i < collidableChildren.length; i++) {
             let collidableChild = collidableChildren[i];
             if (!this.isInScreenSpace(collidableChild.gameObject))
@@ -3296,6 +3299,10 @@ var Base = (function () {
           this.gameObject.x += point.x;
           this.gameObject.y += point.y;
         }
+        
+        // if(Input.anyTouchesEnd()){
+        //   this.touchDown = false;
+        // }
       }
       onMouseDown() {
         this.mouseDown = true;
@@ -3304,7 +3311,6 @@ var Base = (function () {
         this.mouseDown = false;
       }
       onTouchStart(){
-        console.log("Touch start");
         this.touchDown = true;
       }
       onTouchEnd(){
