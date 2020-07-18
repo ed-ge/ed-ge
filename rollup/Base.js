@@ -3651,10 +3651,10 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     document.body.addEventListener('mousemove', mousemove);
     document.body.addEventListener('wheel', wheelevent);
     document.body.addEventListener('contextmenu', contextmenu);
-    document.body.addEventListener("touchstart", touchstart, false);
-    document.body.addEventListener("touchend", touchend, false);
-    document.body.addEventListener("touchcancel", touchcancel, false);
-    document.body.addEventListener("touchmove", touchmove, false);
+    document.body.addEventListener("touchstart", touchstart, {passive:false});
+    document.body.addEventListener("touchend", touchend, {passive:false});
+    document.body.addEventListener("touchcancel", touchcancel, {passive:false});
+    document.body.addEventListener("touchmove", touchmove, {passive:false});
 
 
 
@@ -3697,24 +3697,36 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     }
 
     function touchstart(event) {
+      event.preventDefault();
       //event.preventDefault();//Don't treat this as a mouse event
       Input.touches = copyTouches(event.changedTouches);
       Input.touchesStart = copyTouches(event.changedTouches); //Simple deep copy
+      event.stopPropagation();
+      return false;
     }
 
     function touchend(event) {
+      event.preventDefault();
       //event.preventDefault();//Don't treat this as a mouse event
       Input.touches = [];//copyTouches(event.changedTouches);
       Input.touchesEnd = copyTouches(event.changedTouches); //Simple deep copy
+      event.stopPropagation();
+      return false;
     }
 
     function touchcancel(event) {
+      event.preventDefault();
       //event.preventDefault();//Don't treat this as a mouse event
       console.log("Touch Cancel");
+      event.stopPropagation();
+      return false;
     }
 
     function touchmove(event) {
+      event.preventDefault();
       Input.touches = copyTouches(event.changedTouches);
+      event.stopPropagation();
+      return false;
 
     }
   }
