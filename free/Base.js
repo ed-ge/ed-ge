@@ -3300,9 +3300,9 @@ var Base = (function () {
           this.gameObject.y += point.y;
         }
         
-        // if(Input.anyTouchesEnd()){
-        //   this.touchDown = false;
-        // }
+        if(Input.anyTouchesEnd()){
+          this.touchDown = false;
+        }
       }
       onMouseDown() {
         this.mouseDown = true;
