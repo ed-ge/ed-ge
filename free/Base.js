@@ -3303,6 +3303,9 @@ var Base = (function () {
         if(Input.anyTouchesEnd()){
           this.touchDown = false;
         }
+        if(Input.getMouseButtonDown(0)){
+          this.mouseDown  = false;
+        }
       }
       onMouseDown() {
         this.mouseDown = true;
@@ -3474,6 +3477,47 @@ var Base = (function () {
     }
 
     class RVOObstacle extends Component {
+    }
+
+    class Stack extends Behavior {
+      start() {
+        // this.mouseDown = false;
+        // this.touchDown = false;
+        this.spawn;
+      }
+
+      update() {
+        // if (this.mouseDown) {
+        //   let point = Input.getMousePositionDelta();
+        //   this.gameObject.x += point.x;
+        //   this.gameObject.y += point.y;
+        // }
+        // if (this.touchDown) {
+        //   let point = Input.getTouchMove()[0]
+        //   this.gameObject.x += point.x;
+        //   this.gameObject.y += point.y;
+        // }
+        
+        // if(Input.anyTouchesEnd()){
+        //   this.touchDown = false;
+        // }
+      }
+      onMouseDown() {
+        this.mouseDown = true;
+        let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
+        spawned.$("Draggable").mouseDown = true;
+      }
+      // onMouseUp() {
+      //   this.mouseDown = false;
+      // }
+      onTouchStart(){
+        let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
+        spawned.$("Draggable").touchDown = true;
+      }
+      
+      // onTouchEnd(){
+      //   this.touchDown = false;
+      // }
     }
 
     var Empty = `
@@ -3805,24 +3849,25 @@ RectangleComponent
     }
 
     let Components = {
-      CircleComponent,
-      Draggable,
-      RectangleComponent,
-      TextComponent,
-      CircleCollider,
-      PointCollider,
-      Collider,
-      CollisionHelper,
       AABBCollider,
-      TriangleCollider,
-      ConvexCollider,
-      TriangleComponent,
       CameraComponent,
       CanvasComponent,
+      CircleComponent,
+      CircleCollider,
+      Collider,
+      CollisionHelper,
+      ConvexCollider,
+      Draggable,
+      PointCollider,
+      RectangleComponent,
       RectTransform,
-      RVOSimulator: RVOSimulator,
       RVOAgent: RVOAgent,
       RVOObstacle: RVOObstacle,
+      RVOSimulator: RVOSimulator,
+      Stack,
+      TextComponent,
+      TriangleCollider,
+      TriangleComponent,
     };
 
     const Prefabs = {

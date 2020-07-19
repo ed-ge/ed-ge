@@ -32,6 +32,7 @@ import RectTransform from "./components/RectTransform.js"
 import _RVOAgent from "./components/RVOAgent.js"
 import _RVOSimulator from "./components/RVOSimulator.js"
 import _ROVObstacle from "./components/RVOObstacle.js"
+import Stack from "./components/Stack.js"
 
 /** Prefabs */
 import Empty from "./prefabs/Empty.js"
@@ -54,24 +55,25 @@ import main from "./Main.js"
 
 
 let Components = {
-  CircleComponent,
-  Draggable,
-  RectangleComponent,
-  TextComponent,
-  CircleCollider,
-  PointCollider,
-  Collider,
-  CollisionHelper,
   AABBCollider,
-  TriangleCollider,
-  ConvexCollider,
-  TriangleComponent,
   CameraComponent,
   CanvasComponent,
+  CircleComponent,
+  CircleCollider,
+  Collider,
+  CollisionHelper,
+  ConvexCollider,
+  Draggable,
+  PointCollider,
+  RectangleComponent,
   RectTransform,
-  RVOSimulator: _RVOSimulator,
   RVOAgent: _RVOAgent,
   RVOObstacle: _ROVObstacle,
+  RVOSimulator: _RVOSimulator,
+  Stack,
+  TextComponent,
+  TriangleCollider,
+  TriangleComponent,
 };
 
 const Prefabs = {

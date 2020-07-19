@@ -4,7 +4,7 @@ export default class MainController extends Base.Behavior {
     this.BoardBase = Base._cs.$("BoardBase");
     this.buildBoard();
     this.addPieces();
-    this.addKings();
+    
   }
   buildBoard() {
     for (let y = 0; y < 8; y++) {
@@ -42,25 +42,6 @@ export default class MainController extends Base.Behavior {
       }
     }
   }
-  addKings() {
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 2; x++) {
-
-
-        let piece = Base.Serializer.instantiate(Base.SceneManager.Prefabs.King, Base._cs, new Base.Point(-100 - x*50, y * 50))
-        piece.$("CircleComponent").radius = 20;
-        piece.$("CircleCollider").radius = 20;
-        piece.$("CircleComponent").fill = "black";
-        piece.$("CircleComponent").stroke = "black";
-
-        piece = Base.Serializer.instantiate(Base.SceneManager.Prefabs.King, Base._cs, new Base.Point(450 + x*50, y * 50 + 200))
-        piece.$("CircleComponent").radius = 20;
-        piece.$("CircleCollider").radius = 20;
-        piece.$("CircleComponent").fill = "red";
-        piece.$("CircleComponent").stroke = "black";
-      }
-
-    }
-  }
+  
 }
 
