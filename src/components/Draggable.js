@@ -24,6 +24,9 @@ export default class Draggable extends Behavior {
     if(Input.anyTouchesEnd()){
       this.touchDown = false;
     }
+    if(Input.getMouseButtonDown(0)){
+      this.mouseDown  = false;
+    }
   }
   onMouseDown() {
     this.mouseDown = true;
