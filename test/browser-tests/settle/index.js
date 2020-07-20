@@ -33,13 +33,21 @@ StoneStack StoneStack
 0,200 
 
 Trash Circle
-0, 250
+0, 275
 Trash
 CircleComponent
  fill=black
  radius=20
 CircleCollider
  radius=20
+<
+TrashIcon Text
+-12, 10
+TextComponent
+ font=30px FontAwesome
+ text=\uF1F8
+ fill=white
+>
 
 
 MainCamera Camera
