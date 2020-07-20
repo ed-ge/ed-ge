@@ -32,6 +32,15 @@ WoddStack WoodStack
 StoneStack StoneStack
 0,200 
 
+Trash Circle
+0, 250
+Trash
+CircleComponent
+ fill=black
+ radius=20
+CircleCollider
+ radius=20
+
 
 MainCamera Camera
 200,200
@@ -50,6 +59,7 @@ let Wheat =
 `
 Wheat Circle
 Draggable
+Trashable
 CircleComponent
  fill=yellow
  radius=20
@@ -60,6 +70,7 @@ let Sheep =
 `
 Sheep Circle
 Draggable
+Trashable
 CircleComponent
  fill=green
  radius=20
@@ -70,6 +81,7 @@ let Brick =
 `
 Brick Circle
 Draggable
+Trashable
 CircleComponent
  fill=red
  radius=20
@@ -80,6 +92,7 @@ let Wood =
 `
 Wood Circle
 Draggable
+Trashable
 CircleComponent
  fill=chocolate
  radius=20
@@ -90,6 +103,7 @@ let Stone =
 `
 Stone Circle
 Draggable
+Trashable
 CircleComponent
  fill=gray
  radius=20

@@ -14,25 +14,27 @@ import StateMachine from "./base/StateMachine.js"
 import Time from "./base/Time.js"
 
 /** Components */
-import CircleComponent from "./components/CircleComponent.js"
-import RectangleComponent from "./components/RectangleComponent.js"
-import TextComponent from "./components/TextComponent.js"
-import CircleCollider from "./components/CircleCollider.js"
-import Collider from "./components/Collider.js"
-import PointCollider from "./components/PointCollider.js"
-import CollisionHelper from "./components/CollisionHelper.js"
-import Draggable from "./components/Draggable.js"
 import AABBCollider from "./components/AABBCollider.js"
-import TriangleCollider from "./components/TriangleCollider.js"
-import ConvexCollider from "./components/ConvexCollider.js"
-import TriangleComponent from "./components/TriangleComponent.js"
 import CameraComponent from "./components/CameraComponent.js"
 import CanvasComponent from "./components/CanvasComponent.js"
+import Collider from "./components/Collider.js"
+import CircleComponent from "./components/CircleComponent.js"
+import CircleCollider from "./components/CircleCollider.js"
+import CollisionHelper from "./components/CollisionHelper.js"
+import ConvexCollider from "./components/ConvexCollider.js"
+import Draggable from "./components/Draggable.js"
+import PointCollider from "./components/PointCollider.js"
+import RectangleComponent from "./components/RectangleComponent.js"
+import Stack from "./components/Stack.js"
+import TextComponent from "./components/TextComponent.js"
+import Trash from "./components/Trash.js"
+import Trashable from "./components/Trashable.js"
+import TriangleCollider from "./components/TriangleCollider.js"
+import TriangleComponent from "./components/TriangleComponent.js"
 import RectTransform from "./components/RectTransform.js"
 import _RVOAgent from "./components/RVOAgent.js"
 import _RVOSimulator from "./components/RVOSimulator.js"
 import _ROVObstacle from "./components/RVOObstacle.js"
-import Stack from "./components/Stack.js"
 
 /** Prefabs */
 import Empty from "./prefabs/Empty.js"
@@ -72,6 +74,8 @@ let Components = {
   RVOSimulator: _RVOSimulator,
   Stack,
   TextComponent,
+  Trash,
+  Trashable,
   TriangleCollider,
   TriangleComponent,
 };
