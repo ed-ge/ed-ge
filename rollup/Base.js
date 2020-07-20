@@ -3209,6 +3209,40 @@ class Time {
     }
 }
 
+/**
+ * A game object with a camera component will be treated as the camera in the scene.
+ * Currently, this game object needs to be in the root of the scene graph and there
+ * should only be one.
+ */
+class CameraComponent extends Component {
+    constructor() {
+        super();
+        this.backgroundColor="white";
+
+    }
+    
+    update() {
+
+    }
+}
+
+/**
+ * A gameObject with a CanvasComponent represents screen space.
+ * Currently, there should be no more than one game object with a canvas component 
+ * in the root of the scene graph.
+ */
+class CanvasComponent extends Component {
+
+    constructor() {
+        super();
+
+    }
+    
+    update() {
+
+    }
+}
+
 class CircleComponent extends Component {
     
     constructor() {
@@ -3235,48 +3269,15 @@ class CircleComponent extends Component {
     }
 }
 
-class RectangleComponent extends Component {
+/**
+Axis - Aligned Bounding Box 
+*/
+
+class ConvexCollider extends Collider {
     constructor() {
         super();
-        this.width = 100;
-        this.height = 100;
-        this.fill = "gray";
-        this.stroke = "black";
-        this.lineWidth = 1;
+    }
 
-    }
-    draw(ctx) {
-        ctx.save();
-        ctx.translate(-this.width / 2, -this.height / 2);
-        ctx.fillStyle = this.fill;
-        ctx.strokeStyle = this.stroke;
-        ctx.lineWidth = this.lineWidth;
-        ctx.fillRect(0, 0, this.width, this.height);
-        ctx.strokeRect(0, 0, this.width, this.height);
-        ctx.restore();
-    }
-    update() {
-
-    }
-}
-
-class TextComponent extends Component {
-    constructor() {
-        super();
-        this.text = "[Blank]";
-        this.font = "10pt Sans";
-        this.fill = "black";
-    }
-    draw(ctx) {
-        ctx.save();
-        ctx.fillStyle = this.fill;
-        ctx.font = this.font;
-        ctx.fillText(this.text, 0, 0);
-        ctx.restore();
-    }
-    update() {
-
-    }
 }
 
 class Draggable extends Behavior {
@@ -3318,15 +3319,123 @@ class Draggable extends Behavior {
   }
 }
 
-/**
-Axis - Aligned Bounding Box 
-*/
-
-class ConvexCollider extends Collider {
+class RectangleComponent extends Component {
     constructor() {
         super();
-    }
+        this.width = 100;
+        this.height = 100;
+        this.fill = "gray";
+        this.stroke = "black";
+        this.lineWidth = 1;
 
+    }
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(-this.width / 2, -this.height / 2);
+        ctx.fillStyle = this.fill;
+        ctx.strokeStyle = this.stroke;
+        ctx.lineWidth = this.lineWidth;
+        ctx.fillRect(0, 0, this.width, this.height);
+        ctx.strokeRect(0, 0, this.width, this.height);
+        ctx.restore();
+    }
+    update() {
+
+    }
+}
+
+class Stack extends Behavior {
+  start() {
+    // this.mouseDown = false;
+    // this.touchDown = false;
+    this.spawn;
+  }
+
+  update() {
+    // if (this.mouseDown) {
+    //   let point = Input.getMousePositionDelta();
+    //   this.gameObject.x += point.x;
+    //   this.gameObject.y += point.y;
+    // }
+    // if (this.touchDown) {
+    //   let point = Input.getTouchMove()[0]
+    //   this.gameObject.x += point.x;
+    //   this.gameObject.y += point.y;
+    // }
+    
+    // if(Input.anyTouchesEnd()){
+    //   this.touchDown = false;
+    // }
+  }
+  onMouseDown() {
+    this.mouseDown = true;
+    let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
+    spawned.$("Draggable").mouseDown = true;
+  }
+  // onMouseUp() {
+  //   this.mouseDown = false;
+  // }
+  onTouchStart(){
+    let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
+    spawned.$("Draggable").touchDown = true;
+  }
+  
+  // onTouchEnd(){
+  //   this.touchDown = false;
+  // }
+}
+
+class TextComponent extends Component {
+    constructor() {
+        super();
+        this.text = "[Blank]";
+        this.font = "10pt Sans";
+        this.fill = "black";
+    }
+    draw(ctx) {
+        ctx.save();
+        ctx.fillStyle = this.fill;
+        ctx.font = this.font;
+        ctx.fillText(this.text, 0, 0);
+        ctx.restore();
+    }
+    update() {
+
+    }
+}
+
+class Trash extends Behavior {
+  start() {
+   this.colliders = [];
+  }
+
+  update() {
+    
+    if(Input.getMouseButtonUp(0) || Input.getTouchesEnd().length > 0){
+      for(let i = 0; i < this.colliders.length; i++){
+        let collider = this.colliders[i];
+        if(collider.gameObject.$("Trashable")){
+          SceneManager.currentScene.destroy(collider.gameObject);
+        }
+      }
+    }
+    this.colliders = [];
+   
+  }
+  onCollisionStay(collider){
+    this.colliders.push(collider);
+  }
+ 
+}
+
+class Trashable extends Behavior {
+  start() {
+   
+  }
+
+  update() {
+   
+  }
 }
 
 class TriangleComponent extends Component {
@@ -3362,40 +3471,6 @@ class TriangleComponent extends Component {
         if(this.points.length == 0){
             this.points = [new Point(this.pointAX, this.pointAY), new Point(this.pointBX, this.pointBY), new Point(this.pointCX, this.pointCY)];
         }
-
-    }
-}
-
-/**
- * A game object with a camera component will be treated as the camera in the scene.
- * Currently, this game object needs to be in the root of the scene graph and there
- * should only be one.
- */
-class CameraComponent extends Component {
-    constructor() {
-        super();
-        this.backgroundColor="white";
-
-    }
-    
-    update() {
-
-    }
-}
-
-/**
- * A gameObject with a CanvasComponent represents screen space.
- * Currently, there should be no more than one game object with a canvas component 
- * in the root of the scene graph.
- */
-class CanvasComponent extends Component {
-
-    constructor() {
-        super();
-
-    }
-    
-    update() {
 
     }
 }
@@ -3474,47 +3549,6 @@ class RVOSimulator extends Component {
 }
 
 class RVOObstacle extends Component {
-}
-
-class Stack extends Behavior {
-  start() {
-    // this.mouseDown = false;
-    // this.touchDown = false;
-    this.spawn;
-  }
-
-  update() {
-    // if (this.mouseDown) {
-    //   let point = Input.getMousePositionDelta();
-    //   this.gameObject.x += point.x;
-    //   this.gameObject.y += point.y;
-    // }
-    // if (this.touchDown) {
-    //   let point = Input.getTouchMove()[0]
-    //   this.gameObject.x += point.x;
-    //   this.gameObject.y += point.y;
-    // }
-    
-    // if(Input.anyTouchesEnd()){
-    //   this.touchDown = false;
-    // }
-  }
-  onMouseDown() {
-    this.mouseDown = true;
-    let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
-    spawned.$("Draggable").mouseDown = true;
-  }
-  // onMouseUp() {
-  //   this.mouseDown = false;
-  // }
-  onTouchStart(){
-    let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
-    spawned.$("Draggable").touchDown = true;
-  }
-  
-  // onTouchEnd(){
-  //   this.touchDown = false;
-  // }
 }
 
 var Empty = `
@@ -3863,6 +3897,8 @@ let Components = {
   RVOSimulator: RVOSimulator,
   Stack,
   TextComponent,
+  Trash,
+  Trashable,
   TriangleCollider,
   TriangleComponent,
 };
