@@ -1,55 +1,48 @@
 function id(x) { return x[0]; }
+
+//Allow use in node and in browser
+    import moo from "moo";
+
+const lexer = moo.compile({
+  wschar: {match:/[ \t\n\v\f]/, lineBreaks:true},
+  word: /[a-zA-Z_][a-zA-_Z0-9]*/,
+  });
+
+
+
+//Ignore the input by returning null
+function ignore(d){
+    return null;
+}
+
+function value(d, type){
+    let value = d[0];
+    if(d[0].value)
+    value = d[0].value;
+    
+    return {type, value}
+}
+
+function getValue(d){
+    return d[0].value;
+}
+
 var grammar = {
-    Lexer: undefined,
+    Lexer: lexer,
     ParserRules: [
-    {"name": "line", "symbols": ["object", "child"]},
-    {"name": "child$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "child$string$2", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "child$string$3", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "child", "symbols": [{"literal":"<"}, "child$string$1", "object", "child$string$2", {"literal":">"}, "child$string$3"]},
-    {"name": "object$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "object$string$2", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "object$string$3", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "object", "symbols": ["nameline", "object$string$1", "transforms", "object$string$2", "components", "object$string$3"]},
-    {"name": "nameline", "symbols": ["name", "type"]},
-    {"name": "transforms", "symbols": ["translate", "scale", "rotate"]},
-    {"name": "translate$ebnf$1$subexpression$1$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "translate$ebnf$1$subexpression$1", "symbols": ["x", {"literal":","}, "y", "translate$ebnf$1$subexpression$1$string$1"]},
-    {"name": "translate$ebnf$1", "symbols": ["translate$ebnf$1$subexpression$1"]},
-    {"name": "translate$ebnf$1$subexpression$2$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "translate$ebnf$1$subexpression$2", "symbols": ["x", {"literal":","}, "y", "translate$ebnf$1$subexpression$2$string$1"]},
-    {"name": "translate$ebnf$1", "symbols": ["translate$ebnf$1", "translate$ebnf$1$subexpression$2"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "translate", "symbols": ["translate$ebnf$1"]},
-    {"name": "scale$ebnf$1$subexpression$1$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "scale$ebnf$1$subexpression$1", "symbols": ["x", {"literal":","}, "y", "scale$ebnf$1$subexpression$1$string$1"]},
-    {"name": "scale$ebnf$1", "symbols": ["scale$ebnf$1$subexpression$1"]},
-    {"name": "scale$ebnf$1$subexpression$2$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "scale$ebnf$1$subexpression$2", "symbols": ["x", {"literal":","}, "y", "scale$ebnf$1$subexpression$2$string$1"]},
-    {"name": "scale$ebnf$1", "symbols": ["scale$ebnf$1", "scale$ebnf$1$subexpression$2"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "scale", "symbols": ["scale$ebnf$1"]},
-    {"name": "rotate$ebnf$1$subexpression$1$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "rotate$ebnf$1$subexpression$1", "symbols": ["x", "rotate$ebnf$1$subexpression$1$string$1"]},
-    {"name": "rotate$ebnf$1", "symbols": ["rotate$ebnf$1$subexpression$1"]},
-    {"name": "rotate$ebnf$1$subexpression$2$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "rotate$ebnf$1$subexpression$2", "symbols": ["x", "rotate$ebnf$1$subexpression$2$string$1"]},
-    {"name": "rotate$ebnf$1", "symbols": ["rotate$ebnf$1", "rotate$ebnf$1$subexpression$2"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "rotate", "symbols": ["rotate$ebnf$1"]},
-    {"name": "components$ebnf$1$subexpression$1$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "components$ebnf$1$subexpression$1", "symbols": ["component", "components$ebnf$1$subexpression$1$string$1"]},
-    {"name": "components$ebnf$1", "symbols": ["components$ebnf$1$subexpression$1"]},
-    {"name": "components$ebnf$1$subexpression$2$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "components$ebnf$1$subexpression$2", "symbols": ["component", "components$ebnf$1$subexpression$2$string$1"]},
-    {"name": "components$ebnf$1", "symbols": ["components$ebnf$1", "components$ebnf$1$subexpression$2"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "components", "symbols": ["components$ebnf$1"]},
-    {"name": "component", "symbols": ["component_name", "component_pairs"]},
-    {"name": "component_name$string$1", "symbols": [{"literal":"\r"}, {"literal":"\n"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "component_name", "symbols": ["name", "component_name$string$1"]},
-    {"name": "component_pairs$ebnf$1$subexpression$1", "symbols": ["key", {"literal":"="}, "value"]},
-    {"name": "component_pairs$ebnf$1", "symbols": ["component_pairs$ebnf$1$subexpression$1"]},
-    {"name": "component_pairs$ebnf$1$subexpression$2", "symbols": ["key", {"literal":"="}, "value"]},
-    {"name": "component_pairs$ebnf$1", "symbols": ["component_pairs$ebnf$1", "component_pairs$ebnf$1$subexpression$2"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "component_pairs", "symbols": ["component_pairs$ebnf$1"]}
+    {"name": "Grammar", "symbols": ["Object"], "postprocess": id},
+    {"name": "Object", "symbols": ["Name", "__", "Prefab"], "postprocess": (args)=>{return{name:args[0], prefab:args[2]}}},
+    {"name": "Name", "symbols": ["Word"], "postprocess": id},
+    {"name": "Prefab", "symbols": ["Word"], "postprocess": id},
+    {"name": "Word", "symbols": [(lexer.has("word") ? {type: "word"} : word)], "postprocess": getValue},
+    {"name": "_$ebnf$1", "symbols": []},
+    {"name": "_$ebnf$1", "symbols": ["_$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "_", "symbols": ["_$ebnf$1"], "postprocess": ignore},
+    {"name": "__$ebnf$1", "symbols": ["wschar"]},
+    {"name": "__$ebnf$1", "symbols": ["__$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": ignore},
+    {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id}
 ]
-  , ParserStart: "line"
+  , ParserStart: "Grammar"
 }
 export default grammar

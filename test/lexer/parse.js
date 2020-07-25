@@ -7,8 +7,11 @@ const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
 let files = fs.readdirSync("./test/lexer").filter(x => x.endsWith(".edge"));
 console.log(files);
 
-for (let i = 0; i < 0; i++) {
-  let toParse =
+for (let i = 0; i < files.length && i < 1; i++) {
+  let file = files[i];
+  console.log("Parsing " + file);
+  let string = fs.readFileSync(`./test/lexer/${file}`, "utf-8");
+  let toParse =string;
 
     parser.feed(toParse);
 
