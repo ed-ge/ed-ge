@@ -8,6 +8,7 @@ const lexer = moo.compile({
   float: /[+-]?\d+\.\d+/, //From https://stackoverflow.com/a/10256077/10047920
   word: /[a-zA-Z_][a-zA-_Z0-9]*/,
   ',':',',
+  '|':'|',
   });
 
 
@@ -33,12 +34,16 @@ var grammar = {
     Lexer: lexer,
     ParserRules: [
     {"name": "Grammar", "symbols": ["Object"], "postprocess": id},
-    {"name": "Object$ebnf$1$subexpression$1", "symbols": ["__", "Transforms"]},
+    {"name": "Object$ebnf$1$subexpression$1", "symbols": ["__", {"literal":"|"}, "_", "Layer"]},
     {"name": "Object$ebnf$1", "symbols": ["Object$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Object$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Object", "symbols": ["Name", "__", "Prefab", "Object$ebnf$1"], "postprocess": (args)=>{return{name:args[0], prefab:args[2], transforms:args[3]?args[3][1]:{translate:{x:0,y:0},scale:{x:1,y:1},rotation:0}}}},
+    {"name": "Object$ebnf$2$subexpression$1", "symbols": ["__", "Transforms"]},
+    {"name": "Object$ebnf$2", "symbols": ["Object$ebnf$2$subexpression$1"], "postprocess": id},
+    {"name": "Object$ebnf$2", "symbols": [], "postprocess": function(d) {return null;}},
+    {"name": "Object", "symbols": ["Name", "__", "Prefab", "Object$ebnf$1", "Object$ebnf$2"], "postprocess": (args)=>{return{name:args[0], prefab:args[2], layer:args[3]?args[3][3]:"default", transforms:args[4]?args[4][1]:{translate:{x:0,y:0},scale:{x:1,y:1},rotation:0}}}},
     {"name": "Name", "symbols": ["Word"], "postprocess": id},
     {"name": "Prefab", "symbols": ["Word"], "postprocess": id},
+    {"name": "Layer", "symbols": ["Word"], "postprocess": id},
     {"name": "Transforms$ebnf$1$subexpression$1", "symbols": ["__", "SecondTransforms"]},
     {"name": "Transforms$ebnf$1", "symbols": ["Transforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Transforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},

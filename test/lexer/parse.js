@@ -6,7 +6,7 @@ import grammar from "./grammar.js";
 let files = fs.readdirSync("./test/lexer").filter(x => x.endsWith(".edge"));
 //console.log(files);
 
-for (let i = 0; i < files.length && i < 4; i++) {
+for (let i = 0; i < files.length && i < 5; i++) {
   let file = files[i];
   console.log("Parsing " + file);
   let string = fs.readFileSync(`./test/lexer/${file}`, "utf-8");
