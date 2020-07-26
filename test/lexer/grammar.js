@@ -34,11 +34,24 @@ function getValue(d){
     return d[0].value;
 }
 
+function getComponents(d){
+    let toReturnComponents = [];
+    let toReturn = {components:toReturnComponents};
+    if(d.length == 0 || d[0].length == 0) return toReturn;
+    let componentArgs = d[0];
+    for(let i = 0; i < componentArgs.length; i++){
+        let componentLine = componentArgs[i];
+        let component = componentLine[1];
+        toReturnComponents.push(...component);
+    }
+    return toReturn;
+}
+
 var grammar = {
     Lexer: lexer,
     ParserRules: [
     {"name": "Grammar", "symbols": ["Object"], "postprocess": id},
-    {"name": "Object", "symbols": ["MainLine", "TransformLines", "ComponentLines"], "postprocess": d=>Object.assign(Object.assign(d[0],d[1]), d[2])},
+    {"name": "Object", "symbols": ["MainLine", "TransformLines", "ComponentLines"], "postprocess": d=>{return Object.assign(Object.assign(d[0],d[1]), d[2])}},
     {"name": "MainLine$ebnf$1$subexpression$1", "symbols": ["__", {"literal":"|"}, "_", "Layer"]},
     {"name": "MainLine$ebnf$1", "symbols": ["MainLine$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "MainLine$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
@@ -50,7 +63,7 @@ var grammar = {
     {"name": "ComponentLines$ebnf$1", "symbols": []},
     {"name": "ComponentLines$ebnf$1$subexpression$1", "symbols": ["NewLine", "Components"]},
     {"name": "ComponentLines$ebnf$1", "symbols": ["ComponentLines$ebnf$1", "ComponentLines$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "ComponentLines", "symbols": ["ComponentLines$ebnf$1"], "postprocess": d=>{return{components:d[0]?d[0][1]:[]}}},
+    {"name": "ComponentLines", "symbols": ["ComponentLines$ebnf$1"], "postprocess": getComponents},
     {"name": "Transforms$ebnf$1$subexpression$1", "symbols": ["NewLine", "SecondTransforms"]},
     {"name": "Transforms$ebnf$1", "symbols": ["Transforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Transforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
