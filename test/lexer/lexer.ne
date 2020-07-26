@@ -4,7 +4,7 @@
 
 const lexer = moo.compile({
   wschar: {match:/[ \t\n\v\f]/, lineBreaks:true},
-  float: /^[+-]?\d+(\.\d+)?$/, //From https://stackoverflow.com/a/10256077/10047920
+  float: /^[+-]?\d+(?: \.\d+)?$/, //From https://stackoverflow.com/a/10256077/10047920
   word: /[a-zA-Z_][a-zA-_Z0-9]*/,
   ',':',',
   });
