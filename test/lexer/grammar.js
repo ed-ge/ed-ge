@@ -47,6 +47,28 @@ function getComponents(d){
     return toReturn;
 }
 
+function getComponentList(d){
+    let toReturn = [];
+    let component = {
+        name:d[0],
+        keyValues:[],
+    };
+    toReturn.push(component)
+
+    for(let i = 0; i < d[2].length; i++){
+        let keyValueLine = d[2][i];
+        let keyValue = keyValueLine[4];
+        component.keyValues.push(keyValue);
+    }
+
+    for(let i = 0; i < d[3].length; i++){
+        let component = d[3][i][1];
+        toReturn.push(component);
+    }
+
+    return toReturn;
+}
+
 var grammar = {
     Lexer: lexer,
     ParserRules: [
@@ -81,15 +103,16 @@ var grammar = {
     {"name": "Point", "symbols": ["Float", "_", {"literal":","}, "_", "Float"], "postprocess": d => { return {x:d[0],y:d[4]}}},
     {"name": "Float", "symbols": [(lexer.has("float") ? {type: "float"} : float)], "postprocess": getValue},
     {"name": "Word", "symbols": [(lexer.has("word") ? {type: "word"} : word)], "postprocess": getValue},
+    {"name": "String", "symbols": [(lexer.has("string") ? {type: "string"} : string)], "postprocess": getValue},
     {"name": "Components$ebnf$1", "symbols": []},
     {"name": "Components$ebnf$1$subexpression$1", "symbols": ["NewLine", "_", {"literal":"-"}, "_", "ComponentKeyValue", "_"]},
     {"name": "Components$ebnf$1", "symbols": ["Components$ebnf$1", "Components$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "Components$ebnf$2", "symbols": []},
     {"name": "Components$ebnf$2$subexpression$1", "symbols": ["NewLine", "Components"]},
     {"name": "Components$ebnf$2", "symbols": ["Components$ebnf$2", "Components$ebnf$2$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "Components", "symbols": ["ComponentName", "_", "Components$ebnf$1", "Components$ebnf$2"], "postprocess": d=>{return [{name:d[0]}] }},
+    {"name": "Components", "symbols": ["ComponentName", "_", "Components$ebnf$1", "Components$ebnf$2"], "postprocess": getComponentList},
     {"name": "ComponentName", "symbols": ["Word"], "postprocess": id},
-    {"name": "ComponentKeyValue", "symbols": ["Word", "_", {"literal":"="}, "_", (lexer.has("string") ? {type: "string"} : string), "_"]},
+    {"name": "ComponentKeyValue", "symbols": ["Word", "_", {"literal":"="}, "_", "String", "_"], "postprocess": d => {console.log({key:d[0], value:d[4]});return {key:d[0], value:d[4]}}},
     {"name": "NewLine", "symbols": [(lexer.has("newline") ? {type: "newline"} : newline)], "postprocess": ignore},
     {"name": "_$ebnf$1", "symbols": []},
     {"name": "_$ebnf$1", "symbols": ["_$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},

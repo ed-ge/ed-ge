@@ -40,11 +40,12 @@ Point -> Float _ "," _ Float {% d => { return {x:d[0],y:d[4]}}%}
 
 Float -> %float {% getValue %}
 Word -> %word {% getValue %}
+String -> %string {% getValue %}
 
 
-Components -> ComponentName _ ( NewLine _ "-" _ ComponentKeyValue _ ):*  (NewLine Components):* {%d=>{return [{name:d[0]}] }%}
+Components -> ComponentName _ ( NewLine _ "-" _ ComponentKeyValue _ ):*  (NewLine Components):* {% getComponentList %}
 ComponentName->Word {% id %}
-ComponentKeyValue -> Word _ "=" _ %string _
+ComponentKeyValue -> Word _ "=" _ String _ {% d => {console.log({key:d[0], value:d[4]});return {key:d[0], value:d[4]}}%}
 
 
 
@@ -83,6 +84,28 @@ function getComponents(d){
         let component = componentLine[1];
         toReturnComponents.push(...component);
     }
+    return toReturn;
+}
+
+function getComponentList(d){
+    let toReturn = [];
+    let component = {
+        name:d[0],
+        keyValues:[],
+    };
+    toReturn.push(component)
+
+    for(let i = 0; i < d[2].length; i++){
+        let keyValueLine = d[2][i];
+        let keyValue = keyValueLine[4];
+        component.keyValues.push(keyValue);
+    }
+
+    for(let i = 0; i < d[3].length; i++){
+        let component = d[3][i][1];
+        toReturn.push(component);
+    }
+
     return toReturn;
 }
 
