@@ -18,11 +18,11 @@ const lexer = moo.compile({
 @lexer lexer
 
 Grammar -> Object {% id %}
-Object -> MainLine TransformLines ComponentLines {% d=>Object.assign(Object.assign(d[0],d[1]), d[2]) %}  
+Object -> MainLine TransformLines ComponentLines {% d=>{return Object.assign(Object.assign(d[0],d[1]), d[2])} %}  
 
 MainLine -> Name __ Prefab  (__ "|" _ Layer ):? _ {%d=>{return{name:d[0], prefab:d[2], layer:d[3]?d[3][3]:"default"}}%}
 TransformLines ->  ( NewLine Transforms ):? {%d=>{return{transforms:d[0]?d[0][1]:{translate:{x:0,y:0},scale:{x:1,y:1},rotation:0}}}%}
-ComponentLines -> ( NewLine Components ):* {%d=>{return{components:d[0]?d[0][1]:[]}}%}
+ComponentLines -> ( NewLine Components ):* {% getComponents %}
 
 Transforms -> Translation ( NewLine SecondTransforms ):?   {% d=> {return {translate: d[0], scale:d[1]?d[1][1].scale:{x:1,y:1}, rotation:d[1]?d[1][1].rotation:0}}%}
 Name -> Word    {% id %}
@@ -71,6 +71,19 @@ function value(d, type){
 
 function getValue(d){
     return d[0].value;
+}
+
+function getComponents(d){
+    let toReturnComponents = [];
+    let toReturn = {components:toReturnComponents};
+    if(d.length == 0 || d[0].length == 0) return toReturn;
+    let componentArgs = d[0];
+    for(let i = 0; i < componentArgs.length; i++){
+        let componentLine = componentArgs[i];
+        let component = componentLine[1];
+        toReturnComponents.push(...component);
+    }
+    return toReturn;
 }
 
 %}
