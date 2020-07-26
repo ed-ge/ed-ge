@@ -7,16 +7,18 @@ const lexer = moo.compile({
   float: /[+-]?\d+\.\d+/, //From https://stackoverflow.com/a/10256077/10047920
   word: /[a-zA-Z_][a-zA-_Z0-9]*/,
   ',':',',
+  '|':'|',
   });
 %}
 
 @lexer lexer
 
 Grammar -> Object {% id %}
-Object -> Name __ Prefab ( __ Transforms ):? {%(args)=>{return{name:args[0], prefab:args[2], transforms:args[3]?args[3][1]:{translate:{x:0,y:0},scale:{x:1,y:1},rotation:0}}}%}
+Object -> Name __ Prefab (__ "|" _ Layer ):? ( __ Transforms ):? {%(args)=>{return{name:args[0], prefab:args[2], layer:args[3]?args[3][3]:"default", transforms:args[4]?args[4][1]:{translate:{x:0,y:0},scale:{x:1,y:1},rotation:0}}}%}
 
 Name -> Word    {% id %}
 Prefab -> Word  {% id %}
+Layer -> Word   {% id %}
 
 Transforms -> Translation ( __ SecondTransforms ):?   {% d=> {return {translate: d[0], scale:d[1]?d[1][1].scale:{x:1,y:1}, rotation:d[1]?d[1][1].rotation:0}}%}
 SecondTransforms -> Scale ( __ Rotation ):?          {% d=> {console.log(d[1]?d[1][1]:{x:1,y:1});return {scale: d[0], rotation:d[1]?d[1][1]:0}}%}
