@@ -4,8 +4,8 @@ function id(x) { return x[0]; }
     import moo from "moo";
 
 const lexer = moo.compile({
-  wschar: {match:/[ \t\n\v\f]/, lineBreaks:true},
-  float: /^[+-]?\d+(?: \.\d+)?$/, //From https://stackoverflow.com/a/10256077/10047920
+  wschar: {match:/[ \t\r\n\v\f]/, lineBreaks:true},
+  float: /[+-]?\d+\.\d+/, //From https://stackoverflow.com/a/10256077/10047920
   word: /[a-zA-Z_][a-zA-_Z0-9]*/,
   ',':',',
   });
@@ -36,21 +36,21 @@ var grammar = {
     {"name": "Object$ebnf$1$subexpression$1", "symbols": ["__", "Transforms"]},
     {"name": "Object$ebnf$1", "symbols": ["Object$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Object$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Object", "symbols": ["Name", "__", "Prefab", "Object$ebnf$1"], "postprocess": (args)=>{return{name:args[0], prefab:args[2], transforms:args[3]}}},
+    {"name": "Object", "symbols": ["Name", "__", "Prefab", "Object$ebnf$1"], "postprocess": (args)=>{return{name:args[0], prefab:args[2], transforms:args[3]?args[3][1]:{translate:{x:0,y:0},scale:{x:1,y:1},rotation:0}}}},
     {"name": "Name", "symbols": ["Word"], "postprocess": id},
     {"name": "Prefab", "symbols": ["Word"], "postprocess": id},
     {"name": "Transforms$ebnf$1$subexpression$1", "symbols": ["__", "SecondTransforms"]},
     {"name": "Transforms$ebnf$1", "symbols": ["Transforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Transforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Transforms", "symbols": ["Translation", "Transforms$ebnf$1"], "postprocess": d=> {return {tronslate: d[0], scale:d[0].scale, rotation:d[0].rotation}}},
-    {"name": "SectondTransforms$ebnf$1$subexpression$1", "symbols": ["__", "Rotation"]},
-    {"name": "SectondTransforms$ebnf$1", "symbols": ["SectondTransforms$ebnf$1$subexpression$1"], "postprocess": id},
-    {"name": "SectondTransforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "SectondTransforms", "symbols": ["Scale", "SectondTransforms$ebnf$1"], "postprocess": d=> {return {scale: d[0], rotation:d[1]}}},
+    {"name": "Transforms", "symbols": ["Translation", "Transforms$ebnf$1"], "postprocess": d=> {return {translate: d[0], scale:d[1]?d[1][1].scale:{x:1,y:1}, rotation:d[1]?d[1][1].rotation:0}}},
+    {"name": "SecondTransforms$ebnf$1$subexpression$1", "symbols": ["__", "Rotation"]},
+    {"name": "SecondTransforms$ebnf$1", "symbols": ["SecondTransforms$ebnf$1$subexpression$1"], "postprocess": id},
+    {"name": "SecondTransforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
+    {"name": "SecondTransforms", "symbols": ["Scale", "SecondTransforms$ebnf$1"], "postprocess": d=> {console.log(d[1]?d[1][1]:{x:1,y:1});return {scale: d[0], rotation:d[1]?d[1][1]:0}}},
     {"name": "Rotation", "symbols": ["Float"], "postprocess": id},
     {"name": "Translation", "symbols": ["Point"], "postprocess": id},
     {"name": "Scale", "symbols": ["Point"], "postprocess": id},
-    {"name": "Point", "symbols": ["Float", {"literal":","}, "Float"], "postprocess": d => { return {x:d[0],y:d[2]}}},
+    {"name": "Point", "symbols": ["Float", "_", {"literal":","}, "_", "Float"], "postprocess": d => { return {x:d[0],y:d[4]}}},
     {"name": "Float", "symbols": [(lexer.has("float") ? {type: "float"} : float)], "postprocess": getValue},
     {"name": "Word", "symbols": [(lexer.has("word") ? {type: "word"} : word)], "postprocess": getValue},
     {"name": "_$ebnf$1", "symbols": []},
