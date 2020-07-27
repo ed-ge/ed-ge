@@ -19,7 +19,7 @@ const lexer = moo.compile({
 
 @lexer lexer
 
-Grammar -> Object {% id %}
+Grammar -> ( ( NewLine NewLine ):? Object ):+ {% getObjects %}
 Object -> MainLine TransformLines ComponentLines ChildrenList:? {% topLevel %}  
 ChildrenList -> NewLine _ "{" _ NewLine _ Object:+ NewLine _ "}" _ {% d=> {return{children:d[6]}} %}
 
@@ -109,6 +109,16 @@ function topLevel(d){
     }
     return currentObject;
     //return Object.assign(Object.assign(d[0],d[1]), d[2])
+}
+
+function getObjects(d){
+    let toReturn = []
+    for(let i = 0; i < d[0].length; i++)
+    {
+        let object = d[0][i];
+        toReturn.push(object[1]);
+    }
+    return toReturn;
 }
 
 %}
