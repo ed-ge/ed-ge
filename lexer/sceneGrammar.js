@@ -76,6 +76,9 @@ function topLevel(d){
     //return Object.assign(Object.assign(d[0],d[1]), d[2])
 }
 
+
+
+
 function getObjects(d){
     let toReturn = []
     for(let i = 0; i < d[0].length; i++)
@@ -89,17 +92,6 @@ function getObjects(d){
 var grammar = {
     Lexer: lexer,
     ParserRules: [
-    {"name": "Grammar$ebnf$1$subexpression$1$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine"]},
-    {"name": "Grammar$ebnf$1$subexpression$1$ebnf$1", "symbols": ["Grammar$ebnf$1$subexpression$1$ebnf$1$subexpression$1"], "postprocess": id},
-    {"name": "Grammar$ebnf$1$subexpression$1$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Grammar$ebnf$1$subexpression$1", "symbols": ["Grammar$ebnf$1$subexpression$1$ebnf$1", "Object"]},
-    {"name": "Grammar$ebnf$1", "symbols": ["Grammar$ebnf$1$subexpression$1"]},
-    {"name": "Grammar$ebnf$1$subexpression$2$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine"]},
-    {"name": "Grammar$ebnf$1$subexpression$2$ebnf$1", "symbols": ["Grammar$ebnf$1$subexpression$2$ebnf$1$subexpression$1"], "postprocess": id},
-    {"name": "Grammar$ebnf$1$subexpression$2$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Grammar$ebnf$1$subexpression$2", "symbols": ["Grammar$ebnf$1$subexpression$2$ebnf$1", "Object"]},
-    {"name": "Grammar$ebnf$1", "symbols": ["Grammar$ebnf$1", "Grammar$ebnf$1$subexpression$2"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "Grammar", "symbols": ["Grammar$ebnf$1"], "postprocess": getObjects},
     {"name": "Object$ebnf$1", "symbols": ["ChildrenList"], "postprocess": id},
     {"name": "Object$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "Object", "symbols": ["MainLine", "TransformLines", "ComponentLines", "Object$ebnf$1"], "postprocess": topLevel},
@@ -149,8 +141,19 @@ var grammar = {
     {"name": "__$ebnf$1", "symbols": ["wschar"]},
     {"name": "__$ebnf$1", "symbols": ["__$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": ignore},
-    {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id}
+    {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id},
+    {"name": "Scene$ebnf$1$subexpression$1$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine"]},
+    {"name": "Scene$ebnf$1$subexpression$1$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$1$ebnf$1$subexpression$1"], "postprocess": id},
+    {"name": "Scene$ebnf$1$subexpression$1$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
+    {"name": "Scene$ebnf$1$subexpression$1", "symbols": ["Scene$ebnf$1$subexpression$1$ebnf$1", "Object"]},
+    {"name": "Scene$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$1"]},
+    {"name": "Scene$ebnf$1$subexpression$2$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine"]},
+    {"name": "Scene$ebnf$1$subexpression$2$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$2$ebnf$1$subexpression$1"], "postprocess": id},
+    {"name": "Scene$ebnf$1$subexpression$2$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
+    {"name": "Scene$ebnf$1$subexpression$2", "symbols": ["Scene$ebnf$1$subexpression$2$ebnf$1", "Object"]},
+    {"name": "Scene$ebnf$1", "symbols": ["Scene$ebnf$1", "Scene$ebnf$1$subexpression$2"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "Scene", "symbols": ["Scene$ebnf$1"], "postprocess": getObjects}
 ]
-  , ParserStart: "Grammar"
+  , ParserStart: "Scene"
 }
 export default grammar
