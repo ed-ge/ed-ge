@@ -81,10 +81,12 @@ function topLevel(d){
 
 function getObjects(d){
     let toReturn = []
-    for(let i = 0; i < d[0].length; i++)
+    toReturn.push(d[0])
+    for(let i = 0; i < d[1].length; i++)
     {
-        let object = d[0][i];
-        toReturn.push(object[1]);
+        console.log(JSON.stringify(d[1], null, 2));
+        let object = d[1][i];
+        toReturn.push(object[2]);
     }
     return toReturn;
 }
@@ -142,17 +144,12 @@ var grammar = {
     {"name": "__$ebnf$1", "symbols": ["__$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": ignore},
     {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id},
-    {"name": "Scene$ebnf$1$subexpression$1$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine"]},
-    {"name": "Scene$ebnf$1$subexpression$1$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$1$ebnf$1$subexpression$1"], "postprocess": id},
-    {"name": "Scene$ebnf$1$subexpression$1$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Scene$ebnf$1$subexpression$1", "symbols": ["Scene$ebnf$1$subexpression$1$ebnf$1", "Object"]},
-    {"name": "Scene$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$1"]},
-    {"name": "Scene$ebnf$1$subexpression$2$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine"]},
-    {"name": "Scene$ebnf$1$subexpression$2$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$2$ebnf$1$subexpression$1"], "postprocess": id},
-    {"name": "Scene$ebnf$1$subexpression$2$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Scene$ebnf$1$subexpression$2", "symbols": ["Scene$ebnf$1$subexpression$2$ebnf$1", "Object"]},
-    {"name": "Scene$ebnf$1", "symbols": ["Scene$ebnf$1", "Scene$ebnf$1$subexpression$2"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "Scene", "symbols": ["Scene$ebnf$1"], "postprocess": getObjects}
+    {"name": "Scene", "symbols": ["SceneName", "NewLine", "NewLine", "Objects"], "postprocess": d=> {return{name:d[0], objects: d[3]}}},
+    {"name": "Objects$ebnf$1", "symbols": []},
+    {"name": "Objects$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine", "Object"]},
+    {"name": "Objects$ebnf$1", "symbols": ["Objects$ebnf$1", "Objects$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "Objects", "symbols": ["Object", "Objects$ebnf$1"], "postprocess": getObjects},
+    {"name": "SceneName", "symbols": ["Word"], "postprocess": id}
 ]
   , ParserStart: "Scene"
 }
