@@ -1,6 +1,6 @@
 import nearley from "nearley";
 import fs from "fs";
-import grammar from "./grammar.js";
+import grammar from "../../lexer/grammar.js";
 
 
 let files = fs.readdirSync("./test/lexer").filter(x => x.endsWith(".edge"));
