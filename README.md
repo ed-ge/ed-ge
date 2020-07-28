@@ -10,6 +10,8 @@
 [![codecov](https://codecov.io/gh/ed-ge/ed-ge/branch/master/graph/badge.svg)](https://codecov.io/gh/ed-ge/ed-ge)
 # ed-ge
 
+Demo: https://ed-ge.ricks.io
+
 ## The EDucational Game Engine
 
 This game engine is designed to prepare students to use a commerical game engine (e.g. Unity). This began as lecture content for a section of Introduction to Game Programming at the University of Nebraska at Omaha, Spring 2020. The state of the code at the end of that semester can be found on the course website [here](https://github.com/CS2510/Spring2020/blob/9199e8ac636461a5a59acff09f5dee9c91b3ddf5/ed-ge-master.zip).
