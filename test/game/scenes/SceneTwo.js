@@ -5,14 +5,12 @@ SceneTwo
 counter Text
 10, 80
 TextComponent
- text=A
-
+-text=A
 
 timer Timer
 10, 40
 CountDownTimer
- toSceneText=SceneTwoB
-
+-toSceneText=SceneTwoB
 
 MainController Empty
 100, 100

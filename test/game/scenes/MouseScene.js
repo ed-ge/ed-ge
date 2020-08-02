@@ -4,11 +4,11 @@ MouseScene
 MainCamera Camera
 300, 300
 CameraComponent
- backgroundColor=white
+-backgroundColor=white
 CameraMover
 
 Canvas Canvas
-<
+{
 Text Text
 150, 150
 MouseText
@@ -16,7 +16,8 @@ MouseText
 Rectangle Rectangle
 0, 0
 ClickBehavior
->
+}
+
 Rectangle Rectangle
 300, 300
 ClickBehavior

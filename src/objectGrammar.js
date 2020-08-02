@@ -4,12 +4,12 @@ function id(x) { return x[0]; }
     import moo from "../lib/moo.js";
 
 const lexer = moo.compile({
-  componentLine : /=\s*.+\s*$/,
+  componentLine :/=[ \t]*.+[ \t]*$/,
   //string:/"(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/, //From: https://github.com/kach/nearley/blob/0ce577b98484a345c67f7f2c62d8ee700ec9d7d7/examples/json.ne#L10
   newline: {match:/\r?\n/, lineBreaks:true},
   wschar: /[ \t\v\f]/,
   float: /[+-]?\d*\.\d+/, 
-  int: /\d+/,
+  int: /[+-]?\d+/,
   word: /[a-zA-Z_][a-zA-_Z0-9]*/,
   ',':',',
   '|':'|',
@@ -20,6 +20,17 @@ const lexer = moo.compile({
   });
 
 
+
+function parseObjects(d){
+    let first = d[0];
+    let second = d[1];
+    if(!d[1] || d[1].length == 0){
+        return [d[0]]
+    }else{
+        let collect = d[1].map(x=>x[2]);
+        return [d[0], ...collect];
+    }
+}
 
 function handleComponentLine(d){
     return d[0].value.substr(1).trim();
@@ -85,12 +96,13 @@ function topLevel(d){
 var grammar = {
     Lexer: lexer,
     ParserRules: [
+    {"name": "Objects$ebnf$1", "symbols": []},
+    {"name": "Objects$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine", "Object"]},
+    {"name": "Objects$ebnf$1", "symbols": ["Objects$ebnf$1", "Objects$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "Objects", "symbols": ["Object", "Objects$ebnf$1"], "postprocess": parseObjects},
     {"name": "Object$ebnf$1", "symbols": ["ChildrenList"], "postprocess": id},
     {"name": "Object$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "Object", "symbols": ["MainLine", "TransformLines", "ComponentLines", "Object$ebnf$1"], "postprocess": topLevel},
-    {"name": "ChildrenList$ebnf$1", "symbols": ["Object"]},
-    {"name": "ChildrenList$ebnf$1", "symbols": ["ChildrenList$ebnf$1", "Object"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "ChildrenList", "symbols": ["NewLine", "_", {"literal":"{"}, "_", "NewLine", "_", "ChildrenList$ebnf$1", "NewLine", "_", {"literal":"}"}, "_"], "postprocess": d=> {return{children:d[6]}}},
     {"name": "MainLine$ebnf$1$subexpression$1", "symbols": ["__", {"literal":"|"}, "_", "Layer"]},
     {"name": "MainLine$ebnf$1", "symbols": ["MainLine$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "MainLine$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
@@ -103,28 +115,29 @@ var grammar = {
     {"name": "ComponentLines$ebnf$1$subexpression$1", "symbols": ["NewLine", "Components"]},
     {"name": "ComponentLines$ebnf$1", "symbols": ["ComponentLines$ebnf$1", "ComponentLines$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "ComponentLines", "symbols": ["ComponentLines$ebnf$1"], "postprocess": getComponents},
+    {"name": "ChildrenList", "symbols": ["NewLine", "_", {"literal":"{"}, "_", "NewLine", "_", "Objects", "NewLine", "_", {"literal":"}"}, "_"], "postprocess": d=> {return{children:d[6]}}},
+    {"name": "Name", "symbols": ["Word"], "postprocess": id},
+    {"name": "Prefab", "symbols": ["Word"], "postprocess": id},
+    {"name": "Layer", "symbols": ["Word"], "postprocess": id},
     {"name": "Transforms$ebnf$1$subexpression$1", "symbols": ["NewLine", "SecondTransforms"]},
     {"name": "Transforms$ebnf$1", "symbols": ["Transforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Transforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "Transforms", "symbols": ["_", "Translation", "Transforms$ebnf$1"], "postprocess": d=> {return {translate: d[1], scale:d[2]?d[2][1].scale:{x:1,y:1}, rotation:d[2]?d[2][1].rotation:0}}},
-    {"name": "Name", "symbols": ["Word"], "postprocess": id},
-    {"name": "Prefab", "symbols": ["Word"], "postprocess": id},
-    {"name": "Layer", "symbols": ["Word"], "postprocess": id},
     {"name": "SecondTransforms$ebnf$1$subexpression$1", "symbols": ["NewLine", "Rotation"]},
     {"name": "SecondTransforms$ebnf$1", "symbols": ["SecondTransforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "SecondTransforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "SecondTransforms", "symbols": ["_", "Scale", "SecondTransforms$ebnf$1"], "postprocess": d=> {return {scale: d[1], rotation:d[2]?d[2][1]:0}}},
-    {"name": "Rotation", "symbols": ["_", "Number"], "postprocess": d=>d[1]},
     {"name": "Translation", "symbols": ["Point"], "postprocess": id},
     {"name": "Scale", "symbols": ["Point"], "postprocess": id},
     {"name": "Components$ebnf$1", "symbols": []},
-    {"name": "Components$ebnf$1$subexpression$1", "symbols": ["NewLine", "_", {"literal":"-"}, "_", "ComponentKeyValue", "_"]},
+    {"name": "Components$ebnf$1$subexpression$1", "symbols": ["NewLine", "_", {"literal":"-"}, "_", "ComponentKeyValue"]},
     {"name": "Components$ebnf$1", "symbols": ["Components$ebnf$1", "Components$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "Components", "symbols": ["_", "ComponentName", "_", "Components$ebnf$1"], "postprocess": getComponentList},
     {"name": "ComponentName", "symbols": ["Word"], "postprocess": id},
     {"name": "ComponentKeyValue", "symbols": ["Word", "_", "ComponentValue"], "postprocess": d => {return {key:d[0], value:d[2]}}},
     {"name": "ComponentValue", "symbols": [(lexer.has("componentLine") ? {type: "componentLine"} : componentLine)], "postprocess": handleComponentLine},
     {"name": "Point", "symbols": ["Number", "_", {"literal":","}, "_", "Number"], "postprocess": d => { return {x:d[0],y:d[4]}}},
+    {"name": "Rotation", "symbols": ["_", "Number"], "postprocess": d=>d[1]},
     {"name": "Number", "symbols": ["Float"], "postprocess": id},
     {"name": "Number", "symbols": ["Int"], "postprocess": id},
     {"name": "Float", "symbols": [(lexer.has("float") ? {type: "float"} : float)], "postprocess": getValue},
@@ -140,6 +153,6 @@ var grammar = {
     {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": ignore},
     {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id}
 ]
-  , ParserStart: "Object"
+  , ParserStart: "Objects"
 }
 export default grammar
