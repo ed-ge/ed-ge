@@ -9,6 +9,10 @@ class Serializer {
   }
   
   deserializePrefab(string, store = false, parent = null, translate = null, scale = null, rotation = null) {
+    
+    
+    
+    
     const newline = /\r?\n/;
     const commaSeparatedFloats = /^\s*[-+]?[0-9]*\.?[0-9]+,\s*[-+]?[0-9]*\.?[0-9]+\s*$/;
     const floatRegex = /^\s*[-+]?[0-9]*\.?[0-9]+\s*$/;
