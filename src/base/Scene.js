@@ -38,7 +38,7 @@ class Scene extends NameableParent {
       
       let r = parser.results;
       super(r[0].name)
-      this.children = r[0].objects;
+      this.children = Base.Serializer.FromEdge(r[0]);
       this.bootSimulator();
 
       

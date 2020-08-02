@@ -3717,7 +3717,7 @@ var Base = (function () {
           
           let r = parser.results;
           super(r[0].name);
-          this.children = r[0].objects;
+          this.children = Base.Serializer.FromEdge(r[0]);
           this.bootSimulator();
 
           
@@ -4351,6 +4351,60 @@ var Base = (function () {
       constructor(components) {
         this.components = components;
         this.prefabs = {};
+      }
+      FromEdge(arr){
+        let toReturn = [];
+        for(let i = 0; i < arr.objects.length; i++){
+          let edgeChild = arr.objects[i];
+          let toAdd = this.FromEdgeChild(edgeChild);
+          toReturn.push(toAdd);
+        }
+        return toReturn;
+      }
+
+      FromEdgeChild(edge){
+        let toReturn = new GameObject();
+        if (edge.prefab != "Empty") {
+          let toClone = this.prefabs[edge.prefab];
+          toReturn = _.cloneDeep(toClone);
+        }
+        //Handle main line
+        toReturn.name = edge.name;
+        toReturn.prefabName = edge.prefab;
+        toReturn.layer = edge.layer;
+
+        //Handle transforms
+        toReturn.x = edge.transforms.translate.x;
+        toReturn.y = edge.transforms.translate.y;
+        toReturn.scaleX = edge.transforms.scale.x;
+        toReturn.scaleY = edge.transforms.scale.y;
+        toReturn.rotation = edge.transforms.rotation;
+
+        //Handle components
+        for(let i = 0; i < edge.components.length; i++){
+          let edgeComponent = edge.components[i];
+          let component;
+          if(toReturn.anyComponent(edgeComponent.name))
+            component = toReturn.getComponent(edgeComponent.name); 
+          else {
+            component = new this.components[edgeComponent.name]();
+            toReturn.components.push(component);
+          }
+          for(let j = 0; j < edgeComponent.keyValues.length; j++){
+            let edgeComponentKeyValue = edgeComponent.keyValues[j];
+            component[edgeComponentKeyValue.key] = edgeComponentKeyValue[edgeComponentKeyValue.value];
+          }
+          
+        }
+
+        //Now do the children
+        for(let i = 0; i < edge.children; i++){
+          let edgeChild = edge.children[i];
+          let gameObjectChild = this.FromEdgeChild(edgeChild);
+          toReturn.children.push(gameObjectChild);
+        }
+
+        return toReturn;
       }
       
       deserializePrefab(string, store = false, parent = null, translate = null, scale = null, rotation = null) {
