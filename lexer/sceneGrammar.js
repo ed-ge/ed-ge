@@ -9,7 +9,7 @@ const lexer = moo.compile({
   newline: {match:/\r?\n/, lineBreaks:true},
   wschar: /[ \t\v\f]/,
   float: /[+-]?\d*\.\d+/, 
-  int: /\d+/,
+  int: /[+-]?\d+/,
   word: /[a-zA-Z_][a-zA-_Z0-9]*/,
   ',':',',
   '|':'|',
@@ -23,11 +23,12 @@ const lexer = moo.compile({
 
 function parseObjects(d){
     let first = d[0];
-    let second = d[3];
-    if(!d[3]){
+    let second = d[1];
+    if(!d[1] || d[1].length == 0){
         return [d[0]]
     }else{
-        return [d[0], ...d[3]];
+        let collect = d[1].map(x=>x[2]);
+        return [d[0], ...collect];
     }
 }
 
@@ -92,21 +93,6 @@ function topLevel(d){
     //return Object.assign(Object.assign(d[0],d[1]), d[2])
 }
 
-
-
-
-function getObjects(d){
-    let toReturn = []
-    toReturn.push(d[0])
-    for(let i = 0; i < d[1].length; i++)
-    {
-        console.log(JSON.stringify(d[1], null, 2));
-        let object = d[1][i];
-        toReturn.push(object[2]);
-    }
-    return toReturn;
-}
-
 var grammar = {
     Lexer: lexer,
     ParserRules: [
@@ -166,11 +152,10 @@ var grammar = {
     {"name": "__$ebnf$1", "symbols": ["__$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": ignore},
     {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id},
-    {"name": "Scene", "symbols": ["_", "SceneName", "_", "NewLine", "NewLine", "Objects"], "postprocess": d=> {return{name:d[0], objects: d[3]}}},
-    {"name": "Objects$ebnf$1", "symbols": []},
-    {"name": "Objects$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine", "Object"]},
-    {"name": "Objects$ebnf$1", "symbols": ["Objects$ebnf$1", "Objects$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "Objects", "symbols": ["Object", "Objects$ebnf$1"], "postprocess": getObjects},
+    {"name": "Scene$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine", "Objects"]},
+    {"name": "Scene$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$1"], "postprocess": id},
+    {"name": "Scene$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
+    {"name": "Scene", "symbols": ["_", "SceneName", "_", "Scene$ebnf$1"], "postprocess": d=> {return{name:d[1], objects: d[3]? d[3][2]:[]}}},
     {"name": "SceneName", "symbols": ["Word"], "postprocess": id}
 ]
   , ParserStart: "Scene"

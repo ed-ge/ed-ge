@@ -37,6 +37,10 @@ class Scene extends NameableParent {
       console.log(JSON.stringify(parser.results));
       
       let r = parser.results;
+      super(r[0].name)
+      this.children = r[0].objects;
+      this.bootSimulator();
+
       
 
     // let chunks = definition.split(/(\r?\n){2,}/);

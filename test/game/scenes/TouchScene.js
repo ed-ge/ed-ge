@@ -2,13 +2,13 @@
 export default `
 TouchScene
 
-Main Camera Camera
+MainCamera Camera
 300, 300
 CameraComponent
- backgroundColor=lightgray
+-backgroundColor=lightgray
 
 Canvas Canvas
-<
+{
 Text Text
 150, 150
 TouchText
@@ -16,9 +16,9 @@ TouchText
 Text ScreenText
 0, 0
 RectTransform
- anchorHorizontal=center 
- anchorVertical=middle
->
+-anchorHorizontal=center 
+-anchorVertical=middle
+}
 
 Rectangle Rectangle
 300, 300

@@ -9,7 +9,7 @@ const lexer = moo.compile({
   newline: {match:/\r?\n/, lineBreaks:true},
   wschar: /[ \t\v\f]/,
   float: /[+-]?\d*\.\d+/, 
-  int: /\d+/,
+  int: /[+-]?\d+/,
   word: /[a-zA-Z_][a-zA-_Z0-9]*/,
   ',':',',
   '|':'|',
@@ -23,11 +23,12 @@ const lexer = moo.compile({
 
 function parseObjects(d){
     let first = d[0];
-    let second = d[3];
-    if(!d[3]){
+    let second = d[1];
+    if(!d[1] || d[1].length == 0){
         return [d[0]]
     }else{
-        return [d[0], ...d[3]];
+        let collect = d[1].map(x=>x[2]);
+        return [d[0], ...collect];
     }
 }
 

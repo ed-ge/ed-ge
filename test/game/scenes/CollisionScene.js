@@ -2,7 +2,7 @@
 export default `
 CollisionScene
 
-Collision Circle CollisionCircle
+CollisionCircle CollisionCircle
 50, 50
 
 Rectangle Rectangle
@@ -19,7 +19,6 @@ Rectangle Rectangle
 
 Triangle Triangle
 300, 300
-
 
 MainController Empty
 100, 100

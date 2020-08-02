@@ -6,7 +6,7 @@ console.log("Using " + "../../lexer/objectGrammar.js")
 let files = fs.readdirSync("./test/lexer/objectTests").filter(x => x.endsWith(".edge"));
 //console.log(files);
 
-for (let i = 0; i < files.length; i++) {
+for (let i = 0; i < files.length && false; i++) {
   let file = files[i];
   console.log("Parsing " + file);
   let string = fs.readFileSync(`./test/lexer/objectTests/${file}`, "utf-8");

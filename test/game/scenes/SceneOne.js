@@ -54,7 +54,7 @@ ScreenText ScreenText
 0, 0
 RectTransform
 -anchorHorizontal=center
-anchorVertical=middle
+-anchorVertical=middle
 TextComponent
 -text=center middle
 
