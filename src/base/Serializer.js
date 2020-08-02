@@ -7,9 +7,9 @@ class Serializer {
     this.components = components;
     this.prefabs = {};
   }
-  FromEdge(arr){
+  FromEdge(arr) {
     let toReturn = [];
-    for(let i = 0; i < arr.objects.length; i++){
+    for (let i = 0; i < arr.objects.length; i++) {
       let edgeChild = arr.objects[i];
       let toAdd = this.FromEdgeChild(edgeChild);
       toReturn.push(toAdd);
@@ -17,7 +17,7 @@ class Serializer {
     return toReturn;
   }
 
-  FromEdgeChild(edge){
+  FromEdgeChild(edge, store=false) {
     let toReturn = new GameObject();
     if (edge.prefab != "Empty") {
       let toClone = this.prefabs[edge.prefab];
@@ -36,37 +36,41 @@ class Serializer {
     toReturn.rotation = edge.transforms.rotation
 
     //Handle components
-    for(let i = 0; i < edge.components.length; i++){
+    for (let i = 0; i < edge.components.length; i++) {
       let edgeComponent = edge.components[i];
       let component;
-      if(toReturn.anyComponent(edgeComponent.name))
-        component = toReturn.getComponent(edgeComponent.name); 
-      else{
+      if (toReturn.anyComponent(edgeComponent.name))
+        component = toReturn.getComponent(edgeComponent.name);
+      else {
         component = new this.components[edgeComponent.name]();
         toReturn.components.push(component);
       }
-      for(let j = 0; j < edgeComponent.keyValues.length; j++){
+      for (let j = 0; j < edgeComponent.keyValues.length; j++) {
         let edgeComponentKeyValue = edgeComponent.keyValues[j];
         component[edgeComponentKeyValue.key] = edgeComponentKeyValue[edgeComponentKeyValue.value]
       }
-      
+
     }
+    toReturn.components.forEach(x => x.gameObject = toReturn);
 
     //Now do the children
-    for(let i = 0; i < edge.children; i++){
+    for (let i = 0; i < edge.children; i++) {
       let edgeChild = edge.children[i];
       let gameObjectChild = this.FromEdgeChild(edgeChild);
       toReturn.children.push(gameObjectChild)
     }
 
+    if (store)
+      this.prefabs[toReturn.name] = toReturn;
+
     return toReturn;
   }
-  
+
   deserializePrefab(string, store = false, parent = null, translate = null, scale = null, rotation = null) {
-    
-    
-    
-    
+
+
+
+
     const newline = /\r?\n/;
     const commaSeparatedFloats = /^\s*[-+]?[0-9]*\.?[0-9]+,\s*[-+]?[0-9]*\.?[0-9]+\s*$/;
     const floatRegex = /^\s*[-+]?[0-9]*\.?[0-9]+\s*$/;
@@ -100,7 +104,7 @@ class Serializer {
       toReturn.x = +split[0].trim();
       toReturn.y = +split[1].trim();
     }
-    if(translate != null){ //Override if we have a valid argument
+    if (translate != null) { //Override if we have a valid argument
       toReturn.x = translate.x;
       toReturn.y = translate.y
     }
@@ -113,7 +117,7 @@ class Serializer {
       toReturn.scaleX = +split[0].trim();
       toReturn.scaleY = +split[1].trim();
     }
-    if(scale != null){
+    if (scale != null) {
       toReturn.scaleX = scale.x;
       toReturn.scaleY = scale.y;
     }
@@ -124,7 +128,7 @@ class Serializer {
       lineIndex++;
       toReturn.rotation = +possibleRotateLine.trim();
     }
-    if(rotation != null){
+    if (rotation != null) {
       toReturn.rotation = rotation;
     }
 
@@ -172,10 +176,35 @@ class Serializer {
     //check to see if the transforms are set.
     //If they are either add them or override them
 
-    let gameObject = this.deserializePrefab(gameObjectType, false, parent, location, scale, rotation);
-    gameObject.recursiveCall("start")
-    return gameObject;
+    let toReturn = this.FromEdgeChild(gameObjectType);
+
+    if (translate != null) { //Override if we have a valid argument
+      toReturn.x = translate.x;
+      toReturn.y = translate.y
+    }
+    if (scale != null) {
+      toReturn.scaleX = scale.x;
+      toReturn.scaleY = scale.y;
+    }
+    if (rotation != null) {
+      toReturn.rotation = rotation;
+    }
+    if (parent != null) {
+      parent.addChild(toReturn);
+    }
+
+    //let gameObject = this.deserializePrefab(gameObjectType, false, parent, location, scale, rotation);
+    toReturn.recursiveCall("start")
+    return toReturn;
   }
+  // instantiate(gameObjectType, parent, location = null, scale = null, rotation = null) {
+  //   //check to see if the transforms are set.
+  //   //If they are either add them or override them
+
+  //   let gameObject = this.deserializePrefab(gameObjectType, false, parent, location, scale, rotation);
+  //   gameObject.recursiveCall("start")
+  //   return gameObject;
+  // }
 }
 
 export default Serializer;

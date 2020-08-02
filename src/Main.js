@@ -1,6 +1,9 @@
 import Scene from "./base/Scene.js"
 import Input from "./base/Input.js"
 import Base from "./Base.js"
+import grammar from "./objectGrammar.js"
+import nearley from "../../lib/nearley.js"
+
 
 
 /**
@@ -23,11 +26,20 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
   Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
   this.deserializedPrefabs = []
-  for(let key in this.Prefabs){
-    Base.Serializer.deserializePrefab(this.Prefabs[key], true);
+
+  const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+
+  for (let key in this.Prefabs) {
+    parser.feed(this.Prefabs[key].trim());
+
+    let r = parser.results;
+    Base.Serializer.FromEdgeChild(r[0][0], true);
   }
-  for(let key in  gameObjects){
-    Base.Serializer.deserializePrefab(gameObjects[key], true);
+  for (let key in gameObjects) {
+    parser.feed(gameObjects[key].trim());
+
+    let r = parser.results;
+    Base.Serializer.FromEdgeChild(r[0][0], true);
   }
   this.SceneManager.Prefabs = { ...gameObjects, ...this.Prefabs };
   //Base.Serializer.prefabs = this.Prefabs;
@@ -88,10 +100,10 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     document.body.addEventListener('mousemove', mousemove);
     document.body.addEventListener('wheel', wheelevent);
     document.body.addEventListener('contextmenu', contextmenu);
-    document.body.addEventListener("touchstart", touchstart, {passive:false});
-    document.body.addEventListener("touchend", touchend, {passive:false});
-    document.body.addEventListener("touchcancel", touchcancel, {passive:false});
-    document.body.addEventListener("touchmove", touchmove, {passive:false});
+    document.body.addEventListener("touchstart", touchstart, { passive: false });
+    document.body.addEventListener("touchend", touchend, { passive: false });
+    document.body.addEventListener("touchcancel", touchcancel, { passive: false });
+    document.body.addEventListener("touchmove", touchmove, { passive: false });
 
 
 
@@ -235,7 +247,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     // So we fire it manually...
     resizeCanvas();
   }
-  if (options.runUpdate === undefined || options.runUpdate == true) 
+  if (options.runUpdate === undefined || options.runUpdate == true)
     setInterval(gameLoop, 33);
 };
 

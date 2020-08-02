@@ -105,8 +105,8 @@ class Scene extends NameableParent {
     if (next.join("\n").trim().length != 0)
       Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
 
-    this.components = components;
-    */
+      */
+     this.components = components;
     this.layers = ["background", null, "foreground"];
 
     this.frameMouseOver = [];
