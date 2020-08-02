@@ -6,6 +6,8 @@ import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../lib/common
 import Simulator from "../../lib/simulator.js"
 import Base from "../Base.js"
 import CollisionHelper from "../components/CollisionHelper.js";
+import grammar from "../sceneGrammar.js"
+import nearley from "../../lib/nearley.js"
 
 // import Globals from "./Globals.js"
 
@@ -28,13 +30,22 @@ class Scene extends NameableParent {
     )
       console.error("Scene constructor expects 4 argumens.")
 
+      const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
 
+      
+      parser.feed(definition.trim());
+      console.log(JSON.stringify(parser.results));
+      
+      let r = parser.results;
+      
 
     // let chunks = definition.split(/(\r?\n){2,}/);
     // chunks = chunks.filter(c=>c.trim().length > 0);
     // if(chunks.length == 0)
     //   throw new Error("Scene definition was empty.")
     // let nameString = chunks.shift();
+
+    /*
     let splits = definition.trim().split(/\r?\n/);
     if (splits.length == 0)
       throw new Error("Scene definition was empty");
@@ -91,7 +102,7 @@ class Scene extends NameableParent {
       Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
 
     this.components = components;
-
+    */
     this.layers = ["background", null, "foreground"];
 
     this.frameMouseOver = [];

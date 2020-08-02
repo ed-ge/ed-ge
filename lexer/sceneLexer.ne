@@ -1,6 +1,6 @@
 @include "./objectLexer.ne"
 
-Scene -> SceneName NewLine NewLine Objects {% d=> {return{name:d[0], objects: d[3]}}%}
+Scene -> _ SceneName _ NewLine NewLine Objects {% d=> {return{name:d[0], objects: d[3]}}%}
 Objects -> Object (  NewLine NewLine  Object ):* {% getObjects %}
 
 SceneName -> Word {% id %}

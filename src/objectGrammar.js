@@ -1,13 +1,15 @@
 function id(x) { return x[0]; }
 
 //Allow use in node and in browser
-    import moo from "moo";
+    import moo from "../lib/moo.js";
 
 const lexer = moo.compile({
-  string:/"(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/, //From: https://github.com/kach/nearley/blob/0ce577b98484a345c67f7f2c62d8ee700ec9d7d7/examples/json.ne#L10
+  componentLine : /=\s*.+\s*$/,
+  //string:/"(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/, //From: https://github.com/kach/nearley/blob/0ce577b98484a345c67f7f2c62d8ee700ec9d7d7/examples/json.ne#L10
   newline: {match:/\r?\n/, lineBreaks:true},
   wschar: /[ \t\v\f]/,
-  float: /[+-]?\d+\.\d+/, //From https://stackoverflow.com/a/10256077/10047920
+  float: /[+-]?\d*\.\d+/, 
+  int: /\d+/,
   word: /[a-zA-Z_][a-zA-_Z0-9]*/,
   ',':',',
   '|':'|',
@@ -18,6 +20,10 @@ const lexer = moo.compile({
   });
 
 
+
+function handleComponentLine(d){
+    return d[0].value.substr(1).trim();
+}
 
 //Ignore the input by returning null
 function ignore(d){
@@ -108,7 +114,7 @@ var grammar = {
     {"name": "SecondTransforms$ebnf$1", "symbols": ["SecondTransforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "SecondTransforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "SecondTransforms", "symbols": ["_", "Scale", "SecondTransforms$ebnf$1"], "postprocess": d=> {return {scale: d[1], rotation:d[2]?d[2][1]:0}}},
-    {"name": "Rotation", "symbols": ["_", "Float"], "postprocess": d=>d[1]},
+    {"name": "Rotation", "symbols": ["_", "Number"], "postprocess": d=>d[1]},
     {"name": "Translation", "symbols": ["Point"], "postprocess": id},
     {"name": "Scale", "symbols": ["Point"], "postprocess": id},
     {"name": "Components$ebnf$1", "symbols": []},
@@ -116,9 +122,13 @@ var grammar = {
     {"name": "Components$ebnf$1", "symbols": ["Components$ebnf$1", "Components$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "Components", "symbols": ["_", "ComponentName", "_", "Components$ebnf$1"], "postprocess": getComponentList},
     {"name": "ComponentName", "symbols": ["Word"], "postprocess": id},
-    {"name": "ComponentKeyValue", "symbols": ["Word", "_", {"literal":"="}, "_", "String", "_"], "postprocess": d => {return {key:d[0], value:d[4]}}},
-    {"name": "Point", "symbols": ["Float", "_", {"literal":","}, "_", "Float"], "postprocess": d => { return {x:d[0],y:d[4]}}},
+    {"name": "ComponentKeyValue", "symbols": ["Word", "_", "ComponentValue"], "postprocess": d => {return {key:d[0], value:d[2]}}},
+    {"name": "ComponentValue", "symbols": [(lexer.has("componentLine") ? {type: "componentLine"} : componentLine)], "postprocess": handleComponentLine},
+    {"name": "Point", "symbols": ["Number", "_", {"literal":","}, "_", "Number"], "postprocess": d => { return {x:d[0],y:d[4]}}},
+    {"name": "Number", "symbols": ["Float"], "postprocess": id},
+    {"name": "Number", "symbols": ["Int"], "postprocess": id},
     {"name": "Float", "symbols": [(lexer.has("float") ? {type: "float"} : float)], "postprocess": getValue},
+    {"name": "Int", "symbols": [(lexer.has("int") ? {type: "int"} : int)], "postprocess": getValue},
     {"name": "Word", "symbols": [(lexer.has("word") ? {type: "word"} : word)], "postprocess": getValue},
     {"name": "String", "symbols": [(lexer.has("string") ? {type: "string"} : string)], "postprocess": getValue},
     {"name": "NewLine", "symbols": [(lexer.has("newline") ? {type: "newline"} : newline)], "postprocess": ignore},
