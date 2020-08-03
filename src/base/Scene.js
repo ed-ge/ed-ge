@@ -2,12 +2,12 @@ import NameableParent from "./NamableParent.js"
 import GameObject from "./GameObject.js";
 import PointCollider from "../components/PointCollider.js";
 import Input from "./Input.js"
-import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../lib/common.js"
-import Simulator from "../../lib/simulator.js"
+import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../lib/crowds/common.js"
+import Simulator from "../../lib/crowds/simulator.js"
 import Base from "../Base.js"
 import CollisionHelper from "../components/CollisionHelper.js";
 import grammar from "../sceneGrammar.js"
-import nearley from "../../lib/nearley.js"
+import nearley from "../../lib/lexer/nearley.js"
 
 // import Globals from "./Globals.js"
 
@@ -168,8 +168,9 @@ class Scene extends NameableParent {
 
       let RVOAgent = gameObject.getComponent("RVOAgent");
       let destination = RVOAgent.destination;
-      if(!destination.x){//It's probably still a stringified point object
+      if(typeof destination === 'string' || destination instanceof String){//It's probably still a stringified point object
         destination = JSON.parse(destination);
+        RVOAgent.destination = destination;
 
       }
       let goal = new Vector2(destination.x, destination.y)
@@ -236,6 +237,7 @@ class Scene extends NameableParent {
     //Sort them by layer
     this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Background").forEach(i => i.draw(ctx));
     this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && !i.layer).forEach(i => i.draw(ctx));
+    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "default").forEach(i => i.draw(ctx));
     this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Foreground").forEach(i => i.draw(ctx));
 
     ctx.restore();

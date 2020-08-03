@@ -1,7 +1,7 @@
 function id(x) { return x[0]; }
 
 //Allow use in node and in browser
-    import moo from "../lib/moo.js";
+    import moo from "../lib/lexer/moo.js";
 
 const lexer = moo.compile({
   componentLine :/=[ \t]*.+[ \t]*$/,

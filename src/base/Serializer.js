@@ -1,7 +1,8 @@
 import GameObject from "./GameObject.js"
 import Point from "./Point.js"
 import grammar from "../objectGrammar.js"
-import nearley from "../../lib/nearley.js"
+import nearley from "../../lib/lexer/nearley.js"
+import _ from "../../lib/util/lodash.js"
 
 
 
@@ -50,7 +51,7 @@ class Serializer {
       }
       for (let j = 0; j < edgeComponent.keyValues.length; j++) {
         let edgeComponentKeyValue = edgeComponent.keyValues[j];
-        component[edgeComponentKeyValue.key] = edgeComponentKeyValue[edgeComponentKeyValue.value]
+        component[edgeComponentKeyValue.key] = edgeComponentKeyValue.value
       }
 
     }
