@@ -38,8 +38,8 @@ class Scene extends NameableParent {
       
       let r = parser.results;
       super(r[0].name)
-      this.children = Base.Serializer.FromEdge(r[0]);
       this.bootSimulator();
+      Base.Serializer.FromEdge(r[0]).forEach(x=>this.addChild(x));
 
       
 
@@ -168,6 +168,10 @@ class Scene extends NameableParent {
 
       let RVOAgent = gameObject.getComponent("RVOAgent");
       let destination = RVOAgent.destination;
+      if(!destination.x){//It's probably still a stringified point object
+        destination = JSON.parse(destination);
+
+      }
       let goal = new Vector2(destination.x, destination.y)
       this.simulator.addGoal(goal)
       let i = this.simulator.getNumAgents() - 1

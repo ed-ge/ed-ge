@@ -27,15 +27,16 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
   this.deserializedPrefabs = []
 
-  const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
-
+  
   for (let key in this.Prefabs) {
+    const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     parser.feed(this.Prefabs[key].trim());
-
+    
     let r = parser.results;
     Base.Serializer.FromEdgeChild(r[0][0], true);
   }
   for (let key in gameObjects) {
+    const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     parser.feed(gameObjects[key].trim());
 
     let r = parser.results;

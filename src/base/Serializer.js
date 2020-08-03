@@ -1,5 +1,8 @@
 import GameObject from "./GameObject.js"
 import Point from "./Point.js"
+import grammar from "../objectGrammar.js"
+import nearley from "../../lib/nearley.js"
+
 
 
 class Serializer {
@@ -29,11 +32,11 @@ class Serializer {
     toReturn.layer = edge.layer;
 
     //Handle transforms
-    toReturn.x = edge.transforms.translate.x
-    toReturn.y = edge.transforms.translate.y
-    toReturn.scaleX = edge.transforms.scale.x
-    toReturn.scaleY = edge.transforms.scale.y
-    toReturn.rotation = edge.transforms.rotation
+    toReturn.x = +edge.transforms.translate.x
+    toReturn.y = +edge.transforms.translate.y
+    toReturn.scaleX = +edge.transforms.scale.x
+    toReturn.scaleY = +edge.transforms.scale.y
+    toReturn.rotation = +edge.transforms.rotation
 
     //Handle components
     for (let i = 0; i < edge.components.length; i++) {
@@ -57,7 +60,7 @@ class Serializer {
     for (let i = 0; i < edge.children; i++) {
       let edgeChild = edge.children[i];
       let gameObjectChild = this.FromEdgeChild(edgeChild);
-      toReturn.children.push(gameObjectChild)
+      toReturn.addChild(gameObjectChild)
     }
 
     if (store)
@@ -176,12 +179,23 @@ class Serializer {
     //check to see if the transforms are set.
     //If they are either add them or override them
 
-    let toReturn = this.FromEdgeChild(gameObjectType);
-
-    if (translate != null) { //Override if we have a valid argument
-      toReturn.x = translate.x;
-      toReturn.y = translate.y
+    let edge = gameObjectType;
+    if(typeof edge === 'string' || edge instanceof String){
+      const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+      parser.feed(edge.trim());
+      
+      let r = parser.results;
+      edge = r[0][0];
     }
+
+
+    let toReturn = this.FromEdgeChild(edge);
+
+    if (location != null) { //Override if we have a valid argument
+      toReturn.x = location.x;
+      toReturn.y = location.y
+    }
+    
     if (scale != null) {
       toReturn.scaleX = scale.x;
       toReturn.scaleY = scale.y;

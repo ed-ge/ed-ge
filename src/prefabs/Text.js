@@ -1,8 +1,6 @@
 export default
-`
-Text Empty
+`Text Empty
 TextComponent
 -text=Hi
 -font=20pt Times
--fill=black
-`
+-fill=black`
