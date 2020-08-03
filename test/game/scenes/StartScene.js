@@ -38,7 +38,7 @@ TextComponent
 c Text
 10, 240
 TextComponent
--text=Push '' to start the circle collision test game.
+-text=Push 'c' to start the circle collision test game.
 
 m Text
 10, 280

@@ -34,7 +34,7 @@ class Scene extends NameableParent {
 
       
       parser.feed(definition.trim());
-      console.log(JSON.stringify(parser.results));
+      // console.log(JSON.stringify(parser.results));
       
       let r = parser.results;
       super(r[0].name)
