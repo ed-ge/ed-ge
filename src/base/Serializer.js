@@ -58,7 +58,7 @@ class Serializer {
     toReturn.components.forEach(x => x.gameObject = toReturn);
 
     //Now do the children
-    for (let i = 0; i < edge.children; i++) {
+    for (let i = 0; edge.children && i < edge.children.length; i++) {
       let edgeChild = edge.children[i];
       let gameObjectChild = this.FromEdgeChild(edgeChild);
       toReturn.addChild(gameObjectChild)
