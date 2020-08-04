@@ -19,7 +19,10 @@ export default class SpawnBehavior extends Base.Behavior {
             if (Base.SceneManager.currentScene.canEnterSafely(new Base.Point(x, y), collider, "RVOAgent")) {
                 let RVOCopy = _.cloneDeep(Base.Prefabs.RVOAgent).trim();
                 let splits = RVOCopy.split(/\r?\n/);
-                splits.splice(1,0,"" + x+"," +y);
+                if(isNaN(x) || isNaN(y)){
+                    console.log("Bad Number");
+                }
+                splits.splice(1,0,"" + (+x)+"," +(+y));
                 RVOCopy = splits.join("\n");
                 let agent = Base.Serializer.instantiate(RVOCopy, Base._cs, new Base.Point(x, y));
                 let rvo = agent.getComponent("RVOAgent");

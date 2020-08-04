@@ -35,3 +35,9 @@ Below are the goals for this project. Note that not all of them are complete yet
 * Clearly document the code 
 
 Builds of the code can be found in the build branch.
+
+## License
+
+This code is governed by an [MIT license](./LICENSE). Please consult the licenses of the dependencies folder ([lib](./lib)) for the licenes of the immediate dependencies and code in the node_modules folder for licenses used to build any of the components of this library.
+
+Note in particular that the rvo2-js library used for crowd simulation carries a license that does not allow commerical use with written permission.

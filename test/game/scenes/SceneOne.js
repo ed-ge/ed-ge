@@ -47,7 +47,7 @@ ScreenText ScreenText
 RectTransform
 -anchorHorizontal=center
 -anchorVertical=middle
-TextComponen
+TextComponent
 -text=center middle
 
 ScreenText ScreenText
