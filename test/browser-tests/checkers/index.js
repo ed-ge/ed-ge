@@ -20,28 +20,27 @@ BoardBase Empty
 RedKingStack Circle
 400, 200
 Stack
- spawn=RedKing
+-spawn=RedKing
 CircleComponent
- fill=red
- radius=20
+-fill=red
+-radius=20
 TextComponent
- text=K
- fill=white
+-text=K
+-fill=white
 
 BlackKingStack Circle
 -50, 0
 Stack
- spawn=BlackKing
+-spawn=BlackKing
 CircleComponent
- fill=black
- radius=20
+-fill=black
+-radius=20
 TextComponent
- text=K
- fill=white
+-text=K
+-fill=white
 
 MainCamera Camera
 200,200
-
 
 MainController Empty
 MainController
@@ -62,26 +61,26 @@ let RedKing =
 Piece Circle
 Draggable
 TextComponent
- text=K
- fill=white
+-text=K
+-fill=white
 CircleComponent
- fill=red
- radius=20
+-fill=red
+-radius=20
 CircleCollider
- radius=20
+-radius=20
 `
 let BlackKing =
 `
 Piece Circle
 Draggable
 TextComponent
- text=K
- fill=white
+-text=K
+-fill=white
 CircleComponent
- fill=black
- radius=20
+-fill=black
+-radius=20
 CircleCollider
- radius=20
+-radius=20
 `
 
 //Place the prefabs in an object we will pass to Main

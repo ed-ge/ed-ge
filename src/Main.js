@@ -2,7 +2,7 @@ import Scene from "./base/Scene.js"
 import Input from "./base/Input.js"
 import Base from "./Base.js"
 import grammar from "./objectGrammar.js"
-import nearley from "../../lib/lexer/nearley.js"
+import nearley from "../lib/lexer/nearley.js"
 
 
 
