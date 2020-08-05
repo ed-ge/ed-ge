@@ -55,6 +55,7 @@ import UpdatePlugin from "./plugins/UpdatePlugin.js"
 import DrawPlugin from "./plugins/DrawPlugin.js"
 import CollisionPlugin from "./plugins/CollisionPlugin.js"
 import MouseCollisionPlugin from "./plugins/MouseCollisionPlugin.js"
+import TouchCollisionPlugin from "./plugins/TouchCollisionPlugin.js"
 
 /** The main function */
 import main from "./Main.js"
@@ -105,7 +106,8 @@ const Plugins = [
   new UpdatePlugin(), 
   new DrawPlugin(),
   new CollisionPlugin(),
-  new MouseCollisionPlugin()
+  new MouseCollisionPlugin(),
+  new TouchCollisionPlugin(),
 ];
 
 const Base = {
