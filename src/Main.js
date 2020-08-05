@@ -84,7 +84,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
 
 
     if (shouldUpdate) {
-      Base.Plugins.forEach(plugin => plugin.update ? plugin.update() : {/*no op*/ });
+      Base.Plugins.forEach(plugin => plugin.update ? plugin.update(ctx) : {/*no op*/ });
       that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
     }
 
