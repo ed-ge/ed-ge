@@ -50,6 +50,10 @@ import RVOAgent from "./prefabs/RVOAgent.js"
 import RVOSimulator from "./prefabs/RVOSimulator.js"
 import RVOObstacle from "./prefabs/RVOObstacle.js"
 
+/** Plugins */
+import UpdatePlugin from "./plugins/UpdatePlugin.js"
+import DrawPlugin from "./plugins/DrawPlugin.js"
+
 /** The main function */
 import main from "./Main.js"
 
@@ -95,6 +99,8 @@ const Prefabs = {
   RVOObstacle,
 };
 
+const Plugins = [new UpdatePlugin(), new DrawPlugin()];
+
 const Base = {
   Behavior,
   Behaviors: {},
@@ -114,8 +120,12 @@ const Base = {
   State,
   StateMachine,
   Time,
+  Plugins, //Make the architecture more flexible with plugins
   get _cs(){
     return this.SceneManager.currentScene;
+  },
+  get $$(){
+    return this._cs;
   },
   $ : function(string){
     return this.SceneManager.currentScene.findByName(string);
