@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: plugins/CollisionPlugin.js</title>
+    <title>JSDoc: Source: plugins/MouseCollisionPlugin.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: plugins/CollisionPlugin.js</h1>
+    <h1 class="page-title">Source: plugins/MouseCollisionPlugin.js</h1>
 
     
 
@@ -27,61 +27,98 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import Base from "../Base.js"
-class CollisionPlugin{
+import Input from "../base/Input.js"
+import GameObject from "../base/GameObject.js"
+import PointCollider from "../components/PointCollider.js"
+class MouseCollisionPlugin{
   constructor(){
-    this.frameCollisionOver = [];
-
+    this.frameMouseOver = [];
   }
-  update(){
-    //
-    //First we do collisions
-    //
-
+  update(ctx){
     let collidableType = Base.Serializer.components.Collider;
     let collisionHelper = Base.Serializer.components.CollisionHelper;
-
+    let children = Base.$$.children;
     //Add collision behavior
     let collidableChildren = [];
     this.getCollidable(Base.$$, collidableChildren, collidableType);
 
-    for (let i = 0; i &lt; collidableChildren.length; i++) {
-      let gameObjectOne = collidableChildren[i].gameObject;
-      let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
-      for (let j = i + 1; j &lt; collidableChildren.length; j++) {
-        let gameObjectTwo = collidableChildren[j].gameObject;
-        let isInScreenSpaceTwo = this.isInScreenSpace(gameObjectTwo);
-        if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
-        let collisionPair = { one: collidableChildren[i], two: collidableChildren[j] };
-        if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
-          gameObjectOne.components.forEach(x => {
-            if (x.onCollisionStay)
-              x.onCollisionStay(collidableChildren[j])
-          })
-          gameObjectTwo.components.forEach(x => {
-            if (x.onCollisionStay)
-              x.onCollisionStay(collidableChildren[i])
+    //
+    //Now go through and see if the point represented by the mouse collides with any of the colliders
+    //
+    //First get the world space position of the mouse
+    let cameras = children.filter(i => i.anyComponent("CameraComponent"))
+    let point = { x: 0, y: 0 };
+    point.x = parseInt(Input.mousePosition.x);
+    point.y = parseInt(Input.mousePosition.y);
+    let screenPoint = { x: point.x, y: point.y };
+    if (cameras.length > 0) {
 
-          })
-          if (this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))==-1) {
-            this.frameCollisionOver.push(collisionPair);
-            gameObjectOne.components.filter(x=>x.onCollisionEnter).forEach(x => {
-              x.onCollisionEnter(collidableChildren[j])
-            })
-            gameObjectTwo.components.filter(x=>x.onCollisionEnter).forEach(x => {
-              x.onCollisionEnter(collidableChildren[i])
-            })
+      let camera = cameras[0];
+      //let cameraComponent = camera.getComponent("CameraComponent")
+      let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, ctx.canvas.width / 2, ctx.canvas.height / 2];
+
+
+
+      point.x = (point.x - hx) / sx + tx;
+      point.y = (point.y - hy) / sy + ty;
+    }
+
+    //Put the mouse in world space
+    let colliderObjectWorld = {};
+    colliderObjectWorld.gameObject = new GameObject();
+    colliderObjectWorld.gameObject.x = point.x;
+    colliderObjectWorld.gameObject.y = point.y;
+    colliderObjectWorld.collider = new PointCollider();
+
+    let colliderObjectScreen = {};
+    colliderObjectScreen.gameObject = new GameObject();
+    colliderObjectScreen.gameObject.x = screenPoint.x;
+    colliderObjectScreen.gameObject.y = screenPoint.y;
+    colliderObjectScreen.collider = new PointCollider();
+
+    let colliderObject;
+
+    for (let i = 0; i &lt; collidableChildren.length; i++) {
+      let collidableChild = collidableChildren[i];
+
+      if (!this.isInScreenSpace(collidableChild.gameObject))
+        colliderObject = colliderObjectWorld;
+      else
+        colliderObject = colliderObjectScreen;
+
+      if (collisionHelper.inCollision(collidableChild, colliderObject)) {
+        let gameObjectOne = collidableChild.gameObject;
+
+        //Now loop over all the behaviors too see if any are listening for collision events\
+        if (Input.getMouseButtonDown(0))
+          gameObjectOne.components.filter(x => x.onMouseDown).forEach(x => x.onMouseDown())
+        if (Input.getMouseButtonUp(0))
+          gameObjectOne.components.filter(x => x.onMouseUp).forEach(x => x.onMouseUp())
+        for (let i = 0; i &lt; gameObjectOne.components.length; i++) {
+          let component = gameObjectOne.components[i];
+          if (component.onMouseOver) {
+            component.onMouseOver();
           }
+          if (!this.frameMouseOver.includes(component)) {
+            if (component.onMouseEnter) {
+              component.onMouseEnter()
+            }
+            this.frameMouseOver.push(component);
+          }
+
+
+
         }
-        else{
-          if(this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))!=-1)
-          {
-            this.frameCollisionOver = this.frameCollisionOver.filter(x=>!this.collisionPairMatch(x, collisionPair));
-            gameObjectOne.components.filter(x=>x.onCollisionExit).forEach(x => {
-              x.onCollisionExit(collidableChildren[j])
-            })
-            gameObjectTwo.components.filter(x=>x.onCollisionExit).forEach(x => {
-              x.onCollisionExit(collidableChildren[i])
-            })
+      } else {
+        let gameObjectOne = collidableChild.gameObject;
+        for (let i = 0; i &lt; gameObjectOne.components.length; i++) {
+          let component = gameObjectOne.components[i];
+
+          if (this.frameMouseOver.includes(component)) {
+            _.pull(this.frameMouseOver, component);
+            if (component.onMouseExit) {
+              component.onMouseExit();
+            }
           }
         }
       }
@@ -130,15 +167,9 @@ class CollisionPlugin{
     }
     return false;
   }
-  collisionPairMatch(one, two){
-    return one.one.gameObject == two.one.gameObject &amp;&amp;
-      one.two.gameObject == two.two.gameObject &amp;&amp;
-      one.one.collider == two.one.collider &amp;&amp;
-      one.two.collider == two.two.collider;
-  }
 }
 
-export default CollisionPlugin;</code></pre>
+export default MouseCollisionPlugin;</code></pre>
         </article>
     </section>
 
