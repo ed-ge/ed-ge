@@ -54,6 +54,7 @@ import RVOObstacle from "./prefabs/RVOObstacle.js"
 import UpdatePlugin from "./plugins/UpdatePlugin.js"
 import DrawPlugin from "./plugins/DrawPlugin.js"
 import CollisionPlugin from "./plugins/CollisionPlugin.js"
+import MouseCollisionPlugin from "./plugins/MouseCollisionPlugin.js"
 
 /** The main function */
 import main from "./Main.js"
@@ -103,7 +104,8 @@ const Prefabs = {
 const Plugins = [
   new UpdatePlugin(), 
   new DrawPlugin(),
-  new CollisionPlugin()
+  new CollisionPlugin(),
+  new MouseCollisionPlugin()
 ];
 
 const Base = {
