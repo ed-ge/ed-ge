@@ -27,11 +27,11 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
   this.deserializedPrefabs = []
 
-  
+
   for (let key in this.Prefabs) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     parser.feed(this.Prefabs[key].trim());
-    
+
     let r = parser.results;
     Base.Serializer.FromEdgeChild(r[0][0], true);
   }
@@ -47,9 +47,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   this.Behaviors = gameBehaviors;
   let canv, ctx;
 
-  let shouldDraw = true;
-  if (typeof options.runDraw !== 'undefined' || options.runDraw === false)
-    shouldDraw = false;
+
 
   this.SceneManager.clearScenes();
   scenes.allScenes
@@ -57,7 +55,11 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
 
   this.SceneManager.currentScene = options.startScene || scenes.startScene;
 
-  if (shouldDraw) {
+  this.shouldDraw = true;
+  if (typeof options.runDraw !== 'undefined' || options.runDraw === false)
+    this.shouldDraw = false;
+
+  if (this.shouldDraw) {
     canv = document.querySelector("#canv");
     ctx = canv.getContext('2d');
   }
@@ -65,31 +67,37 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     //don't get the value of canv and ctx
   }
 
+  this.shouldUpdate = true;
+  if (typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
+    this.shouldUpdate = false;
+
+
   let that = this;
 
-  function gameLoop() {
-
-    let shouldUpdate = true;
-
-
-    if (typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
-      shouldUpdate = false;
-
-
+  function gameLoop(shouldUpdate, shouldDraw) {
     Input.swapUpDownArrays();
-    if (shouldUpdate)
-      update(ctx);
-    if (shouldDraw)
-      draw(ctx);
+
+    callPlugins(ctx, shouldUpdate, shouldDraw);
   }
 
-  function update(ctx) {
-    that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
+  function callPlugins(ctx, shouldUpdate, shouldDraw) {
+
+
+    if (shouldUpdate) {
+      Base.Plugins.forEach(plugin => plugin.update ? plugin.update() : {/*no op*/ });
+      that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
+    }
+
+
+
+
+    if (shouldDraw) {
+      Base.Plugins.forEach(plugin => plugin.draw ? plugin.draw(ctx, canv.width, canv.height) : {/*no op*/ });
+
+    }
   }
 
-  function draw(ctx) {
-    that.SceneManager.currentScene.draw(ctx, canv.width, canv.height);
-  }
+
 
   //Setup event handling
   if (options.runUpdate === undefined || options.runUpdate == true) {
@@ -241,7 +249,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   };
 
   //Don't look for or respond to the canvas if we're in "headless" mode
-  if (shouldDraw) {
+  if (this.shouldDraw) {
     window.onresize = resizeCanvas;
 
     // Webkit/Blink will fire this on load, but Gecko doesn't.
@@ -249,7 +257,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     resizeCanvas();
   }
   if (options.runUpdate === undefined || options.runUpdate == true)
-    setInterval(gameLoop, 33);
+    setInterval(()=>gameLoop(this.shouldUpdate, this.shouldDraw), 33);
 };
 
 export default main;

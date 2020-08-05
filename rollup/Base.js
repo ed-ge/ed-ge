@@ -3802,63 +3802,7 @@ class Scene extends NameableParent {
     }
   }
 
-  draw(ctx, width, height) {
-    if (arguments.length != 3 ||
-      !(typeof ctx == 'object') ||
-      !(typeof width == 'number') ||
-      !(typeof height == 'number')) throw new Error("draw expects exactly three arguments of type object, number, and number")
-
-    //Before we draw, see if we have a camera game object and use that
-    ctx.save();
-    let tx = 0, ty = 0, sx = 1, sy = 1, r = 0, hx = 0, hy = 0;
-    let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
-    if (cameras.length == 0) {
-      //You really should add a camera
-      //console.log("You should add a camera to the scene. C'mon.")
-      ctx.fillStyle = "cyan";
-      ctx.fillRect(0, 0, width, height);
-    }
-    else {
-      if (cameras.length > 1)
-        console.log("More than 1 camera detected in the scene. You should only have exactly one root game object with a camera component attached.");
-      let camera = cameras[0];
-      let cameraComponent = camera.getComponent("CameraComponent");
-      ctx.fillStyle = cameraComponent.backgroundColor;
-      ctx.fillRect(0, 0, width, height);
-      [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, width / 2, height / 2];
-
-    }
-
-    ctx.translate(hx, hy);
-    ctx.rotate(r);
-    ctx.scale(sx, sy);
-    ctx.translate(-tx, -ty);
-
-    //Draw children that are not in screen space
-    //Sort them by layer
-    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Background").forEach(i => i.draw(ctx));
-    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && !i.layer).forEach(i => i.draw(ctx));
-    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "default").forEach(i => i.draw(ctx));
-    this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Foreground").forEach(i => i.draw(ctx));
-
-    ctx.restore();
-
-    //We're now back in screen space. It's time to draw any GUI components
-    //if we have a gameObject with an attached CanvasComponent
-    ctx.save();
-    let canvases = this.children.filter(i => i.anyComponent("CanvasComponent"));
-    if (canvases.length == 0) ;
-    else {
-      if (canvases.length > 1) {
-        console.log("More than 1 canvas object found in the root of your scene graph. You should only have exactly one game object with a canvas component. The other object(s) and its children will not be rendered.");
-      }
-      let canvas = canvases[0];
-      canvas.draw(ctx);
-    }
-    ctx.restore();
-
-    this.lastCtx = ctx;
-  }
+  
 
   isInScreenSpace(gameObject) {
     if (arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
@@ -3885,9 +3829,7 @@ class Scene extends NameableParent {
       !(typeof collidableType == 'function') ||
       !(typeof collisionHelper == 'object')) throw new Error("update expects exactly three arguments of type object, object, and CollisionHelper")
 
-    //Update all the objects
-    this.children.filter(i => i.update).forEach(i => i.update());
-
+    
     /**
      * Now run the simulators
      */
@@ -22241,6 +22183,82 @@ RectangleComponent
 -fill=black
 `;
 
+class UpdatePlugin{
+  constructor(){
+
+  }
+  update(){
+    //Update all the objects
+    Base.$$.children.filter(i => i.update).forEach(i => i.update());
+
+  }
+}
+
+class DrawPlugin{
+  constructor(){
+
+  }
+  
+  draw(ctx, width, height) {
+    if (arguments.length != 3 ||
+      !(typeof ctx == 'object') ||
+      !(typeof width == 'number') ||
+      !(typeof height == 'number')) throw new Error("draw expects exactly three arguments of type object, number, and number")
+
+    //Before we draw, see if we have a camera game object and use that
+    ctx.save();
+    let tx = 0, ty = 0, sx = 1, sy = 1, r = 0, hx = 0, hy = 0;
+    let children = Base.$$.children;
+    let cameras = children.filter(i => i.anyComponent("CameraComponent"));
+    if (cameras.length == 0) {
+      //You really should add a camera
+      //console.log("You should add a camera to the scene. C'mon.")
+      ctx.fillStyle = "cyan";
+      ctx.fillRect(0, 0, width, height);
+    }
+    else {
+      if (cameras.length > 1)
+        console.log("More than 1 camera detected in the scene. You should only have exactly one root game object with a camera component attached.");
+      let camera = cameras[0];
+      let cameraComponent = camera.getComponent("CameraComponent");
+      ctx.fillStyle = cameraComponent.backgroundColor;
+      ctx.fillRect(0, 0, width, height);
+      [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, width / 2, height / 2];
+
+    }
+
+    ctx.translate(hx, hy);
+    ctx.rotate(r);
+    ctx.scale(sx, sy);
+    ctx.translate(-tx, -ty);
+
+    //Draw children that are not in screen space
+    //Sort them by layer
+    children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Background").forEach(i => i.draw(ctx));
+    children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && !i.layer).forEach(i => i.draw(ctx));
+    children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "default").forEach(i => i.draw(ctx));
+    children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Foreground").forEach(i => i.draw(ctx));
+
+    ctx.restore();
+
+    //We're now back in screen space. It's time to draw any GUI components
+    //if we have a gameObject with an attached CanvasComponent
+    ctx.save();
+    let canvases = children.filter(i => i.anyComponent("CanvasComponent"));
+    if (canvases.length == 0) ;
+    else {
+      if (canvases.length > 1) {
+        console.log("More than 1 canvas object found in the root of your scene graph. You should only have exactly one game object with a canvas component. The other object(s) and its children will not be rendered.");
+      }
+      let canvas = canvases[0];
+      canvas.draw(ctx);
+    }
+    ctx.restore();
+
+    Base.$$.lastCtx = ctx;
+  }
+}
+
 /**
  * Main function for the game.
  * This functon takes in game-specific game objects, behaviors, and scenes
@@ -22262,11 +22280,11 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
   this.deserializedPrefabs = [];
 
-  
+
   for (let key in this.Prefabs) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar$1));
     parser.feed(this.Prefabs[key].trim());
-    
+
     let r = parser.results;
     Base.Serializer.FromEdgeChild(r[0][0], true);
   }
@@ -22282,9 +22300,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   this.Behaviors = gameBehaviors;
   let canv, ctx;
 
-  let shouldDraw = true;
-  if (typeof options.runDraw !== 'undefined' || options.runDraw === false)
-    shouldDraw = false;
+
 
   this.SceneManager.clearScenes();
   scenes.allScenes
@@ -22292,36 +22308,46 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
 
   this.SceneManager.currentScene = options.startScene || scenes.startScene;
 
-  if (shouldDraw) {
+  this.shouldDraw = true;
+  if (typeof options.runDraw !== 'undefined' || options.runDraw === false)
+    this.shouldDraw = false;
+
+  if (this.shouldDraw) {
     canv = document.querySelector("#canv");
     ctx = canv.getContext('2d');
   }
 
+  this.shouldUpdate = true;
+  if (typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
+    this.shouldUpdate = false;
+
+
   let that = this;
 
-  function gameLoop() {
-
-    let shouldUpdate = true;
-
-
-    if (typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
-      shouldUpdate = false;
-
-
+  function gameLoop(shouldUpdate, shouldDraw) {
     Input.swapUpDownArrays();
-    if (shouldUpdate)
-      update(ctx);
-    if (shouldDraw)
-      draw(ctx);
+
+    callPlugins(ctx, shouldUpdate, shouldDraw);
   }
 
-  function update(ctx) {
-    that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
+  function callPlugins(ctx, shouldUpdate, shouldDraw) {
+
+
+    if (shouldUpdate) {
+      Base.Plugins.forEach(plugin => plugin.update ? plugin.update() : {/*no op*/ });
+      that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
+    }
+
+
+
+
+    if (shouldDraw) {
+      Base.Plugins.forEach(plugin => plugin.draw ? plugin.draw(ctx, canv.width, canv.height) : {/*no op*/ });
+
+    }
   }
 
-  function draw(ctx) {
-    that.SceneManager.currentScene.draw(ctx, canv.width, canv.height);
-  }
+
 
   //Setup event handling
   if (options.runUpdate === undefined || options.runUpdate == true) {
@@ -22472,7 +22498,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     }
   }
   //Don't look for or respond to the canvas if we're in "headless" mode
-  if (shouldDraw) {
+  if (this.shouldDraw) {
     window.onresize = resizeCanvas;
 
     // Webkit/Blink will fire this on load, but Gecko doesn't.
@@ -22480,7 +22506,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     resizeCanvas();
   }
   if (options.runUpdate === undefined || options.runUpdate == true)
-    setInterval(gameLoop, 33);
+    setInterval(()=>gameLoop(this.shouldUpdate, this.shouldDraw), 33);
 }
 
 let Components = {
@@ -22522,6 +22548,8 @@ const Prefabs = {
   RVOObstacle: RVOObstacle$1,
 };
 
+const Plugins = [new UpdatePlugin(), new DrawPlugin()];
+
 const Base = {
   Behavior,
   Behaviors: {},
@@ -22541,8 +22569,12 @@ const Base = {
   State: State$1,
   StateMachine,
   Time,
+  Plugins, //Make the architecture more flexible with plugins
   get _cs(){
     return this.SceneManager.currentScene;
+  },
+  get $$(){
+    return this._cs;
   },
   $ : function(string){
     return this.SceneManager.currentScene.findByName(string);
