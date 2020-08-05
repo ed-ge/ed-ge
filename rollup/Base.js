@@ -3685,8 +3685,6 @@ var nearley = {
   Rule: Rule,
 };
 
-// import Globals from "./Globals.js"
-
 /**
  * A scene represents a level in a game.
  */
@@ -3707,7 +3705,6 @@ class Scene extends NameableParent {
       console.error("Scene constructor expects 4 argumens.");
 
       const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
-
       
       parser.feed(definition.trim());
       // console.log(JSON.stringify(parser.results));
@@ -3716,9 +3713,6 @@ class Scene extends NameableParent {
       super(r[0].name);
       this.bootSimulator();
       Base.Serializer.FromEdge(r[0]).forEach(x=>this.addChild(x));
-
-      
-
     
      this.components = components;
     this.layers = ["background", null, "foreground"];
@@ -3744,7 +3738,6 @@ class Scene extends NameableParent {
     this.simulator.addObstacle([]);
     this.simulator.processObstacles();
   }
-
 
   /**
    * Load the scene from its declarative syntax
@@ -3800,21 +3793,6 @@ class Scene extends NameableParent {
     }
   }
 
-  isInScreenSpace(gameObject) {
-    if (arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
-
-    let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
-    if (canvases.length == 0) return false; // We don't have screen space
-    for (let canvas of canvases) {
-      if (canvas.isADescendant(gameObject)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  
-
     /**
    * Get a flat list of all the collidable components in the scene
    * @param {*} gameObject The root game object in the tree we are searching
@@ -3866,12 +3844,6 @@ class Scene extends NameableParent {
     let collidableChildren = [];
     this.getCollidable(this, collidableChildren, collidableType);
 
-
-    
-
-
-    
-
     //
     // Now we simulate the crowds
     //
@@ -3897,24 +3869,24 @@ class Scene extends NameableParent {
 
   
 
-  /**
-   * Convert the point in screen space to world space
-   * @param {Base.Point} position 
-   */
-  toWorldSpace(position) {
-    let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
-    let point = position.clone();
+  // /**
+  //  * Convert the point in screen space to world space
+  //  * @param {Base.Point} position 
+  //  */
+  // toWorldSpace(position) {
+  //   let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
+  //   let point = position.clone();
 
-    if (cameras.length > 0 && this.lastCtx) {
+  //   if (cameras.length > 0 && this.lastCtx) {
 
-      let camera = cameras[0];
-      let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, this.lastCtx.canvas.width / 2, this.lastCtx.canvas.height / 2];
+  //     let camera = cameras[0];
+  //     let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, this.lastCtx.canvas.width / 2, this.lastCtx.canvas.height / 2];
 
-      point.x = (point.x - hx) / sx + tx;
-      point.y = (point.y - hy) / sy + ty;
-    }
-    return point
-  }
+  //     point.x = (point.x - hx) / sx + tx;
+  //     point.y = (point.y - hy) / sy + ty;
+  //   }
+  //   return point
+  // }
 
   /**
    * 
@@ -3943,9 +3915,6 @@ class Scene extends NameableParent {
     return true;
   }
 
-
-
-
   updateRVOAgent(gameObject) {
     if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
 
@@ -3969,10 +3938,6 @@ class Scene extends NameableParent {
     }
 
   }
-
-
-
-
 }
 
 // import Globals from "./Globals.js"
