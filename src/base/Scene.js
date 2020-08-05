@@ -43,69 +43,7 @@ class Scene extends NameableParent {
 
       
 
-    // let chunks = definition.split(/(\r?\n){2,}/);
-    // chunks = chunks.filter(c=>c.trim().length > 0);
-    // if(chunks.length == 0)
-    //   throw new Error("Scene definition was empty.")
-    // let nameString = chunks.shift();
-
-    /*
-    let splits = definition.trim().split(/\r?\n/);
-    if (splits.length == 0)
-      throw new Error("Scene definition was empty");
-    let firstLine = splits[0].trim();
-
-
-
-
-    // console.error("Scene constructor expects exactly four argumens of type object")
-    super(firstLine);
-
-    this.bootSimulator();
-
-
-    let remainder = splits.slice(1).join("\n").trim();
-
-    this.children = [];
-
-
-    let lines = remainder.split("\n");
-    let parentStack = [];
-    parentStack.push(this);
-    let next = [];
-    for (var i = 0; i < lines.length; i++) {
-      let parse = false;
-      let line = lines[i];
-      if (line.trim() == '<') {
-        parse = true;
-      }
-      else if (line.trim() == '>') {
-
-        parse = true;
-      }
-      else if (line.trim() == '') {
-        parse = true;
-      }
-      if (parse) {
-        let potentialJoin = next.join("\n");
-        if (potentialJoin.trim().length != 0)
-          Base.Serializer.deserializePrefab(potentialJoin, false, _.last(parentStack));
-        if (line.trim() == '<')
-          parentStack.push(_.last(_.last(parentStack).children));
-        if (line.trim() == '>') {
-          parentStack.pop();
-          if (parentStack.length <= 0)
-            throw new Error("Unbalanced <>'s");
-        }
-        next = [];
-      }
-      else
-        next.push(line)
-    }
-    if (next.join("\n").trim().length != 0)
-      Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
-
-      */
+    
      this.components = components;
     this.layers = ["background", null, "foreground"];
 
@@ -140,20 +78,7 @@ class Scene extends NameableParent {
    */
   boot() {
     if (arguments.length != 0) throw new Error("boot expects no arguments");
-    // Setup up the simulations within the scene
-
-    // this.children = [];//Clear the children in case the scene has been built before
-
-    // // if (this.objects)
-    // //   this.objects.forEach(obj => {
-    // //     this.buildChild(obj, this)
-    // //   })
-    // let that = this;
-    // if (this.objects) {
-    //   this.objects.forEach(obj => {
-    //     Base.Serializer.deserializeGameObject(obj, that);
-    //   })
-    // }
+    
     if (this.children) {
       this.children.forEach(child => {
         child.recursiveCall("start");
