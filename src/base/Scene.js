@@ -1,11 +1,8 @@
 import NameableParent from "./NamableParent.js"
 import GameObject from "./GameObject.js";
-import PointCollider from "../components/PointCollider.js";
-import Input from "./Input.js"
-import { Vector2, Line, Obstacle, KeyValuePair, RVOMath } from "../../lib/crowds/common.js"
+import { Vector2, RVOMath } from "../../lib/crowds/common.js"
 import Simulator from "../../lib/crowds/simulator.js"
 import Base from "../Base.js"
-import CollisionHelper from "../components/CollisionHelper.js";
 import grammar from "../sceneGrammar.js"
 import nearley from "../../lib/lexer/nearley.js"
 
