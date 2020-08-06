@@ -179,16 +179,7 @@ class Scene extends NameableParent {
     return true;
   }
 
-  updateRVOAgent(gameObject) {
-    if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
-
-    let RVOAgent = gameObject.getComponent("RVOAgent");
-    let i = RVOAgent._id;
-    let destination = RVOAgent.destination;
-    let goal = new Vector2(destination.x, destination.y)
-    this.simulator.setGoal(goal, i)
-    this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(this.simulator.getAgentPosition(i))));
-  }
+  
   removeRVOAgent(gameObject) {
     if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
 
