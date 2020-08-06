@@ -25,20 +25,20 @@ class Scene extends NameableParent {
     )
       console.error("Scene constructor expects 4 argumens.")
 
-      const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
-      
-      parser.feed(definition.trim());
-      // console.log(JSON.stringify(parser.results));
-      
-      let r = parser.results;
-      super(r[0].name)
-      this.bootSimulator();
-      Base.Serializer.FromEdge(r[0]).forEach(x=>this.addChild(x));
-    
-     this.components = components;
+    const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+
+    parser.feed(definition.trim());
+    // console.log(JSON.stringify(parser.results));
+
+    let r = parser.results;
+    super(r[0].name)
+    this.bootSimulator();
+    Base.Serializer.FromEdge(r[0]).forEach(x => this.addChild(x));
+
+    this.components = components;
     this.layers = ["background", null, "foreground"];
 
-    
+
     this.lastCtx = null;
   }
 
@@ -61,12 +61,43 @@ class Scene extends NameableParent {
   }
 
   /**
+  * Get a flat list of all the collidable components in the scene
+  * @param {*} gameObject The root game object in the tree we are searching
+  * @param {*} collidableChildren The list we are modifying
+  * @param {*} type The type a game object needs in order to be considered collidable
+  */
+  getCollidable(gameObject, collidableChildren, type) {
+    if (arguments.length != 3 ||
+      !(typeof gameObject == 'object') ||
+      !(Array.isArray(collidableChildren)) ||
+      !(typeof type == 'function')) throw new Error("getCollidable expects exactly three arguments of type GameObject, array, and type")
+
+
+    if (gameObject.getComponent) {
+      try {
+        let collidableComponent = gameObject.getComponent(type);
+        if (collidableComponent) {
+          collidableChildren.push({ collider: collidableComponent, gameObject });
+        }
+      } catch (e) {
+        //no-op
+      }
+    }
+
+    for (let i = 0; i < gameObject.children.length; i++) {
+      let child = gameObject.children[i];
+
+      this.getCollidable(child, collidableChildren, type);
+    }
+  }
+
+  /**
    * Load the scene from its declarative syntax
    * 
    */
   boot() {
     if (arguments.length != 0) throw new Error("boot expects no arguments");
-    
+
     if (this.children) {
       this.children.forEach(child => {
         child.recursiveCall("start");
@@ -81,7 +112,7 @@ class Scene extends NameableParent {
 
       let RVOAgent = gameObject.getComponent("RVOAgent");
       let destination = RVOAgent.destination;
-      if(typeof destination === 'string' || destination instanceof String){//It's probably still a stringified point object
+      if (typeof destination === 'string' || destination instanceof String) {//It's probably still a stringified point object
         destination = JSON.parse(destination);
         RVOAgent.destination = destination;
 
@@ -114,36 +145,7 @@ class Scene extends NameableParent {
     }
   }
 
-    /**
-   * Get a flat list of all the collidable components in the scene
-   * @param {*} gameObject The root game object in the tree we are searching
-   * @param {*} collidableChildren The list we are modifying
-   * @param {*} type The type a game object needs in order to be considered collidable
-   */
-  getCollidable(gameObject, collidableChildren, type) {
-    if (arguments.length != 3 ||
-      !(typeof gameObject == 'object') ||
-      !(Array.isArray(collidableChildren)) ||
-      !(typeof type == 'function')) throw new Error("getCollidable expects exactly three arguments of type GameObject, array, and type")
 
-
-    if (gameObject.getComponent) {
-      try {
-        let collidableComponent = gameObject.getComponent(type);
-        if (collidableComponent) {
-          collidableChildren.push({ collider: collidableComponent, gameObject });
-        }
-      } catch (e) {
-        //no-op
-      }
-    }
-
-    for (let i = 0; i < gameObject.children.length; i++) {
-      let child = gameObject.children[i];
-
-      this.getCollidable(child, collidableChildren, type);
-    }
-  }
 
   /**
    * Update the scene
@@ -157,38 +159,16 @@ class Scene extends NameableParent {
       !(typeof collidableType == 'function') ||
       !(typeof collisionHelper == 'object')) throw new Error("update expects exactly three arguments of type object, object, and CollisionHelper")
 
-    
+
     /**
      * Now run the simulators
      */
 
-    let collidableChildren = [];
-    this.getCollidable(this, collidableChildren, collidableType);
 
-    //
-    // Now we simulate the crowds
-    //
-    this.simulator.run();
-
-    // Go back and update the gameObjects represented by the agents
-    let numAgents = this.simulator.getNumAgents();
-    for (let i = 0; i < numAgents; i++) {
-      let gameObject = this.simulator.getAgentGameObject(i);
-      let position = this.simulator.getAgentPosition(i);
-      gameObject.x = position.x;
-      gameObject.y = position.y;
-      if (RVOMath.absSq(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))) < 10) {
-        // Agent is within one radius of its goal, set preferred velocity to zero
-        this.simulator.setAgentPrefVelocity(i, new Vector2(0.0, 0.0));
-      } else {
-        // Agent is far away from its goal, set preferred velocity as unit vector towards agent's goal.
-        this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))));
-      }
-    }
   }
-  
 
-  
+
+
 
   // /**
   //  * Convert the point in screen space to world space
