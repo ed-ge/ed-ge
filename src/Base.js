@@ -56,6 +56,7 @@ import DrawPlugin from "./plugins/DrawPlugin.js"
 import CollisionPlugin from "./plugins/CollisionPlugin.js"
 import MouseCollisionPlugin from "./plugins/MouseCollisionPlugin.js"
 import TouchCollisionPlugin from "./plugins/TouchCollisionPlugin.js"
+import CrowdSimulationPlugin from "./plugins/CrowdSimulationPlugin.js"
 
 /** The main function */
 import main from "./Main.js"
@@ -108,6 +109,7 @@ const Plugins = [
   new CollisionPlugin(),
   new MouseCollisionPlugin(),
   new TouchCollisionPlugin(),
+  new CrowdSimulationPlugin(),
 ];
 
 const Base = {
