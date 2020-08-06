@@ -81,9 +81,22 @@ class CrowdSimulationPlugin {
     simulator.processObstacles();
     return simulator;
   }
+  updateRVOAgent(gameObject, simulator) {
+    //if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
+
+    let RVOAgent = gameObject.getComponent("RVOAgent");
+    let i = RVOAgent._id;
+    let destination = RVOAgent.destination;
+    let goal = new Vector2(destination.x, destination.y)
+    simulator.setGoal(goal, i)
+    simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(simulator.getAgentPosition(i))));
+  }
   update() {
+
     let collidableType = Base.Serializer.components.Collider;
     let collisionHelper = Base.Serializer.components.CollisionHelper;
+
+    let toUpdate = Base.$$.recurseFindAllWithComponent(Base.Components.RVOAgent);
 
     let collidableChildren = [];
     this.getCollidable(Base.$$, collidableChildren, collidableType);
