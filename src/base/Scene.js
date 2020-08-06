@@ -32,7 +32,7 @@ class Scene extends NameableParent {
 
     let r = parser.results;
     super(r[0].name)
-    this.bootSimulator();
+    //this.bootSimulator();
     Base.Serializer.FromEdge(r[0]).forEach(x => this.addChild(x));
 
     this.components = components;
@@ -40,25 +40,26 @@ class Scene extends NameableParent {
 
 
     this.lastCtx = null;
+    
   }
 
-  bootSimulator() {
-    this.simulator = new Simulator();
+  // bootSimulator() {
+  //   this.simulator = new Simulator();
 
-    this.simulator.setAgentDefaults(
-      30, // neighbor distance (min = radius * radius)
-      30, // max neighbors
-      100, // time horizon
-      10, // time horizon obstacles
-      1.5, // agent radius
-      1.0, // max speed
-      new Vector2(1, 1) // default velocity
-    );
+  //   this.simulator.setAgentDefaults(
+  //     30, // neighbor distance (min = radius * radius)
+  //     30, // max neighbors
+  //     100, // time horizon
+  //     10, // time horizon obstacles
+  //     1.5, // agent radius
+  //     1.0, // max speed
+  //     new Vector2(1, 1) // default velocity
+  //   );
 
-    this.simulator.setTimeStep(.25);
-    this.simulator.addObstacle([]);
-    this.simulator.processObstacles();
-  }
+  //   this.simulator.setTimeStep(.25);
+  //   this.simulator.addObstacle([]);
+  //   this.simulator.processObstacles();
+  // }
 
   /**
   * Get a flat list of all the collidable components in the scene
@@ -105,45 +106,7 @@ class Scene extends NameableParent {
     }
   }
 
-  newChildEvent(gameObject) {
-    if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("newChildEvent expects exactly one argument of type GameObject")
-    if (gameObject.anyComponent("RVOAgent")) {
-      this.simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
 
-      let RVOAgent = gameObject.getComponent("RVOAgent");
-      let destination = RVOAgent.destination;
-      if (typeof destination === 'string' || destination instanceof String) {//It's probably still a stringified point object
-        destination = JSON.parse(destination);
-        RVOAgent.destination = destination;
-
-      }
-      let goal = new Vector2(destination.x, destination.y)
-      this.simulator.addGoal(goal)
-      let i = this.simulator.getNumAgents() - 1
-      RVOAgent._id = i;
-      this.updateRVOAgent(gameObject);
-
-    }
-    if (gameObject.anyComponent("RVOObstacle")) {
-      let rectangleComponent = gameObject.getComponent("RectangleComponent");
-      let width = +(rectangleComponent.width * gameObject.scaleX);
-      let height = +(rectangleComponent.height * gameObject.scaleY);
-      let rx = gameObject.x - width / 2;
-      let ry = gameObject.y - height / 2;
-
-      let a = new Vector2(rx, ry);
-      let b = new Vector2(rx, ry + height);
-      let c = new Vector2(rx + width, ry + height)
-      let d = new Vector2(rx + width, ry);
-
-      this.simulator.addObstacle([a, b]);
-      this.simulator.addObstacle([b, c]);
-      this.simulator.addObstacle([c, d]);
-      this.simulator.addObstacle([d, a]);
-
-      this.simulator.processObstacles();
-    }
-  }
 
 
 

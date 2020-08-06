@@ -52,6 +52,9 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
   this.SceneManager.clearScenes();
   scenes.allScenes
     .forEach(i => this.SceneManager.addScene(new Scene(i, this.Prefabs, gameBehaviors, this.Components)))
+  
+  Base.Plugins.filter(plugin => plugin.OnNewScene).forEach(plugin => Base.SceneManager.scenes.forEach(scene => plugin.OnNewScene(scene)))
+
 
   this.SceneManager.currentScene = options.startScene || scenes.startScene;
 
@@ -257,7 +260,7 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     resizeCanvas();
   }
   if (options.runUpdate === undefined || options.runUpdate == true)
-    setInterval(()=>gameLoop(this.shouldUpdate, this.shouldDraw), 33);
+    setInterval(() => gameLoop(this.shouldUpdate, this.shouldDraw), 33);
 };
 
 export default main;

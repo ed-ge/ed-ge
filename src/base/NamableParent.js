@@ -5,6 +5,8 @@
  * The Scene class and the GameObject class both descend from this class.
  */
 
+import Base from "../Base.js";
+
 
 class NameableParent {
 
@@ -67,12 +69,18 @@ class NameableParent {
 
     }
 
-    addChild(child){
-        if(arguments.length != 1 || !(child instanceof NameableParent)) throw new Error("addChild requires exactly one argument of type NameableParent")
-        if(!child || child.parent === undefined) throw  new Error("addChild requires one argument that have a parent member variable");
+    addChild(child, scene){
+        //if(arguments.length != 1 || !(child instanceof NameableParent)) throw new Error("addChild requires exactly one argument of type NameableParent")
+        //if(!child || child.parent === undefined) throw  new Error("addChild requires one argument that have a parent member variable");
         if(this.children.includes(child)) return console.log("Warning: This parent already has that child. Child not added");
         this.children.push(child);
         child.parent = this;
+        //Find the terminal parent
+        let highestParent = child.parent;
+        while(highestParent.parent != null){
+            highestParent = highestParent.parent;
+        }
+        Base.Plugins.filter(plugin=>plugin.OnNewChild).forEach(plugin=>plugin.OnNewChild(child, highestParent));
         if(this.newChildEvent)
             this.newChildEvent(child);
     }
