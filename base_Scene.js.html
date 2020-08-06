@@ -53,101 +53,48 @@ class Scene extends NameableParent {
     )
       console.error("Scene constructor expects 4 argumens.")
 
-      const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
-      
-      parser.feed(definition.trim());
-      // console.log(JSON.stringify(parser.results));
-      
-      let r = parser.results;
-      super(r[0].name)
-      this.bootSimulator();
-      Base.Serializer.FromEdge(r[0]).forEach(x=>this.addChild(x));
-    
-     this.components = components;
+    const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+
+    parser.feed(definition.trim());
+    // console.log(JSON.stringify(parser.results));
+
+    let r = parser.results;
+    super(r[0].name)
+    //this.bootSimulator();
+    Base.Serializer.FromEdge(r[0]).forEach(x => this.addChild(x));
+
+    this.components = components;
     this.layers = ["background", null, "foreground"];
 
-    
+
     this.lastCtx = null;
+    
   }
 
-  bootSimulator() {
-    this.simulator = new Simulator();
+  // bootSimulator() {
+  //   this.simulator = new Simulator();
 
-    this.simulator.setAgentDefaults(
-      30, // neighbor distance (min = radius * radius)
-      30, // max neighbors
-      100, // time horizon
-      10, // time horizon obstacles
-      1.5, // agent radius
-      1.0, // max speed
-      new Vector2(1, 1) // default velocity
-    );
+  //   this.simulator.setAgentDefaults(
+  //     30, // neighbor distance (min = radius * radius)
+  //     30, // max neighbors
+  //     100, // time horizon
+  //     10, // time horizon obstacles
+  //     1.5, // agent radius
+  //     1.0, // max speed
+  //     new Vector2(1, 1) // default velocity
+  //   );
 
-    this.simulator.setTimeStep(.25);
-    this.simulator.addObstacle([]);
-    this.simulator.processObstacles();
-  }
+  //   this.simulator.setTimeStep(.25);
+  //   this.simulator.addObstacle([]);
+  //   this.simulator.processObstacles();
+  // }
 
   /**
-   * Load the scene from its declarative syntax
-   * 
-   */
-  boot() {
-    if (arguments.length != 0) throw new Error("boot expects no arguments");
-    
-    if (this.children) {
-      this.children.forEach(child => {
-        child.recursiveCall("start");
-      })
-    }
-  }
-
-  newChildEvent(gameObject) {
-    if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("newChildEvent expects exactly one argument of type GameObject")
-    if (gameObject.anyComponent("RVOAgent")) {
-      this.simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
-
-      let RVOAgent = gameObject.getComponent("RVOAgent");
-      let destination = RVOAgent.destination;
-      if(typeof destination === 'string' || destination instanceof String){//It's probably still a stringified point object
-        destination = JSON.parse(destination);
-        RVOAgent.destination = destination;
-
-      }
-      let goal = new Vector2(destination.x, destination.y)
-      this.simulator.addGoal(goal)
-      let i = this.simulator.getNumAgents() - 1
-      RVOAgent._id = i;
-      this.updateRVOAgent(gameObject);
-
-    }
-    if (gameObject.anyComponent("RVOObstacle")) {
-      let rectangleComponent = gameObject.getComponent("RectangleComponent");
-      let width = +(rectangleComponent.width * gameObject.scaleX);
-      let height = +(rectangleComponent.height * gameObject.scaleY);
-      let rx = gameObject.x - width / 2;
-      let ry = gameObject.y - height / 2;
-
-      let a = new Vector2(rx, ry);
-      let b = new Vector2(rx, ry + height);
-      let c = new Vector2(rx + width, ry + height)
-      let d = new Vector2(rx + width, ry);
-
-      this.simulator.addObstacle([a, b]);
-      this.simulator.addObstacle([b, c]);
-      this.simulator.addObstacle([c, d]);
-      this.simulator.addObstacle([d, a]);
-
-      this.simulator.processObstacles();
-    }
-  }
-
-    /**
-   * Get a flat list of all the collidable components in the scene
-   * @param {*} gameObject The root game object in the tree we are searching
-   * @param {*} collidableChildren The list we are modifying
-   * @param {*} type The type a game object needs in order to be considered collidable
-   */
+  * Get a flat list of all the collidable components in the scene
+  * @param {*} gameObject The root game object in the tree we are searching
+  * @param {*} collidableChildren The list we are modifying
+  * @param {*} type The type a game object needs in order to be considered collidable
+  */
   getCollidable(gameObject, collidableChildren, type) {
     if (arguments.length != 3 ||
       !(typeof gameObject == 'object') ||
@@ -174,6 +121,24 @@ class Scene extends NameableParent {
   }
 
   /**
+   * Load the scene from its declarative syntax
+   * 
+   */
+  boot() {
+    if (arguments.length != 0) throw new Error("boot expects no arguments");
+
+    if (this.children) {
+      this.children.forEach(child => {
+        child.recursiveCall("start");
+      })
+    }
+  }
+
+
+
+
+
+  /**
    * Update the scene
    * @param {*} ctx 
    * @param {*} collidableType 
@@ -185,38 +150,16 @@ class Scene extends NameableParent {
       !(typeof collidableType == 'function') ||
       !(typeof collisionHelper == 'object')) throw new Error("update expects exactly three arguments of type object, object, and CollisionHelper")
 
-    
+
     /**
      * Now run the simulators
      */
 
-    let collidableChildren = [];
-    this.getCollidable(this, collidableChildren, collidableType);
 
-    //
-    // Now we simulate the crowds
-    //
-    this.simulator.run();
-
-    // Go back and update the gameObjects represented by the agents
-    let numAgents = this.simulator.getNumAgents();
-    for (let i = 0; i &lt; numAgents; i++) {
-      let gameObject = this.simulator.getAgentGameObject(i);
-      let position = this.simulator.getAgentPosition(i);
-      gameObject.x = position.x;
-      gameObject.y = position.y;
-      if (RVOMath.absSq(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))) &lt; 10) {
-        // Agent is within one radius of its goal, set preferred velocity to zero
-        this.simulator.setAgentPrefVelocity(i, new Vector2(0.0, 0.0));
-      } else {
-        // Agent is far away from its goal, set preferred velocity as unit vector towards agent's goal.
-        this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))));
-      }
-    }
   }
-  
 
-  
+
+
 
   // /**
   //  * Convert the point in screen space to world space
@@ -305,7 +248,7 @@ export default Scene;</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Wed Aug 05 2020 10:20:51 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Thu Aug 06 2020 10:35:19 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
