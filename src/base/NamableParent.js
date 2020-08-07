@@ -114,7 +114,7 @@ class NameableParent {
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
 
-            let childResults = this.recurseFindAllWithComponent(type);
+            let childResults = child.recurseFindAllWithComponent(type);
             toReturn.push(...childResults);
         }
         return toReturn;

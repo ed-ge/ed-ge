@@ -28,7 +28,7 @@ export default class SpawnBehavior extends Base.Behavior {
                 let rvo = agent.getComponent("RVOAgent");
                 rvo.color = this.color;
                 rvo.destination = new Base.Point(+this.goalX, y);
-                Base.SceneManager.currentScene.updateRVOAgent(agent)
+                // Base.SceneManager.currentScene.updateRVOAgent(agent)
                 let circle = agent.getComponent("CircleComponent");
                 circle.fill = this.color;
                 circle.stroke = "black";

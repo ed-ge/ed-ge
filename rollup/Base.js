@@ -198,7 +198,7 @@ class NameableParent {
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
 
-            let childResults = this.recurseFindAllWithComponent(type);
+            let childResults = child.recurseFindAllWithComponent(type);
             toReturn.push(...childResults);
         }
         return toReturn;
@@ -22380,9 +22380,10 @@ class CrowdSimulationPlugin {
   }
   OnNewChild(gameObject, highestParent) {
     //if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("newChildEvent expects exactly one argument of type GameObject")
-    let simulator = this.simulators.filter(s => s.scene == highestParent.uuid).simulator;
-    if (!simulator)
+    let simulatorObject = this.simulators.find(s => s.scene == highestParent.uuid);
+    if (!simulatorObject)
       return //The scene hasn't been initialized yet
+    let simulator = simulatorObject.simulator;
     if (gameObject.anyComponent("RVOAgent")) {
 
       simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
@@ -22398,8 +22399,11 @@ class CrowdSimulationPlugin {
       simulator.addGoal(goal);
       let i = simulator.getNumAgents() - 1;
       RVOAgent._id = i;
-      updateRVOAgent(gameObject);
-
+      //this.updateRVOAgent(gameObject, simulator);
+      //Check to see if our destination has changed
+      
+      simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(simulator.getAgentPosition(i))));
+ 
     }
     if (gameObject.anyComponent("RVOObstacle")) {
       let rectangleComponent = gameObject.getComponent("RectangleComponent");
@@ -22450,20 +22454,33 @@ class CrowdSimulationPlugin {
     let i = RVOAgent._id;
     let destination = RVOAgent.destination;
     let goal = new Vector2(destination.x, destination.y);
-    simulator.setGoal(goal, i);
-    simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(simulator.getAgentPosition(i))));
-  }
+    //simulator.setGoal(goal, i)
+ }
   update() {
 
+    let simulator = this.simulators.find(x=>x.scene == Base.$$.uuid).simulator;
+    
     let collidableType = Base.Serializer.components.Collider;
     let collisionHelper = Base.Serializer.components.CollisionHelper;
 
     let toUpdate = Base.$$.recurseFindAllWithComponent(Base.Components.RVOAgent);
 
+    //Check to see if anyone's destinantion has changed
+    for(let i = 0; i < toUpdate.length; i++){
+      let agent = toUpdate[i].gameObject;
+      let RVOComponent = agent.getComponent("RVOAgent");
+      let goal = new Vector2(RVOComponent.destination.x, RVOComponent.destination.y);
+      let id = RVOComponent._id;
+      let storedGoal = simulator.getGoal(id);
+      if(storedGoal.x != goal.x || storedGoal.y != goal.y ){
+        simulator.setGoal(new Vector2(goal.x, goal.y));
+        simulator.setAgentPrefVelocity(id, RVOMath.normalize(goal.minus(simulator.getAgentPosition(id))));
+      }
+    }
+
+    
     let collidableChildren = [];
     this.getCollidable(Base.$$, collidableChildren, collidableType);
-    
-    let simulator = this.simulators.find(x=>x.scene == Base.$$.uuid).simulator;
     simulator.run();
     //
     // Now we simulate the crowds
