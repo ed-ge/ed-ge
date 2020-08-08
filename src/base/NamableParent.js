@@ -61,9 +61,9 @@ class NameableParent {
             for (let i = 0; i < this.children.length && !found; i++) {
                 let child = this.children[i];
                 let result = child.destroy(gameObject);
-                if (result){
+                if (result) {
                     return true;
-                } 
+                }
             }
             //If we get here we didn't find anything
             return false;
@@ -71,10 +71,10 @@ class NameableParent {
 
 
     }
-    callDestroyEvent(gameObject, parent){
+    callDestroyEvent(gameObject, parent) {
         Base.Plugins
             .filter(plugin => plugin.OnDestroy)
-            .forEach(plugin=>plugin.OnDestroy(gameObject, parent))
+            .forEach(plugin => plugin.OnDestroy(gameObject, parent))
     }
 
     addChild(child, scene) {
@@ -109,13 +109,9 @@ class NameableParent {
     recurseFindAllWithComponent(type) {
         let toReturn = [];
         if (this.getComponent) {
-            try {
-                let component = this.getComponent(type);
-                if (component) {
-                    toReturn.push({ component, gameObject:this });
-                }
-            } catch (e) {
-                //no-op
+            let component = this.getComponent(type);
+            if (component) {
+                toReturn.push({ component, gameObject: this });
             }
         }
 

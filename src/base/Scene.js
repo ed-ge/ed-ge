@@ -1,7 +1,5 @@
 import NameableParent from "./NamableParent.js"
 import GameObject from "./GameObject.js";
-import { Vector2, RVOMath } from "../../lib/crowds/common.js"
-import Simulator from "../../lib/crowds/simulator.js"
 import Base from "../Base.js"
 import grammar from "../sceneGrammar.js"
 import nearley from "../../lib/lexer/nearley.js"
