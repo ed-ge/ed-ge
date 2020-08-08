@@ -13,7 +13,7 @@ class CollisionPlugin{
     let collisionHelper = Base.Serializer.components.CollisionHelper;
 
     //Add collision behavior
-    let collidableChildren = Base.$$.recurseFindAllWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
     
     for (let i = 0; i < collidableChildren.length; i++) {
       let gameObjectOne = collidableChildren[i].gameObject;
@@ -66,7 +66,7 @@ class CollisionPlugin{
     let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
     if (canvases.length == 0) return false; // We don't have screen space
     for (let canvas of canvases) {
-      if (canvas.isADescendant(gameObject)) {
+      if (canvas.isChildDeep(gameObject)) {
         return true;
       }
     }

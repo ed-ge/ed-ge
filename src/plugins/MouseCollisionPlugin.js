@@ -11,7 +11,7 @@ class MouseCollisionPlugin{
     let collisionHelper = Base.Serializer.components.CollisionHelper;
     let children = Base.$$.children;
     //Add collision behavior
-    let collidableChildren = Base.$$.recurseFindAllWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
     
     //
     //Now go through and see if the point represented by the mouse collides with any of the colliders
@@ -103,7 +103,7 @@ class MouseCollisionPlugin{
     let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
     if (canvases.length == 0) return false; // We don't have screen space
     for (let canvas of canvases) {
-      if (canvas.isADescendant(gameObject)) {
+      if (canvas.isChildDeep(gameObject)) {
         return true;
       }
     }
