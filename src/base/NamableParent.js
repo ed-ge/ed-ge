@@ -10,7 +10,7 @@ import Base from "../Base.js";
 
 class NameableParent {
 
-    
+
 
     /**
      * 
@@ -60,15 +60,12 @@ class NameableParent {
             //If we get here we didn't find anything
             return false;
         }
-
-
     }
     callDestroyEvent(gameObject, parent) {
         Base.Plugins
             .filter(plugin => plugin.OnDestroy)
             .forEach(plugin => plugin.OnDestroy(gameObject, parent))
     }
-
     addChild(child, scene) {
         //if(arguments.length != 1 || !(child instanceof NameableParent)) throw new Error("addChild requires exactly one argument of type NameableParent")
         //if(!child || child.parent === undefined) throw  new Error("addChild requires one argument that have a parent member variable");
@@ -101,9 +98,6 @@ class NameableParent {
         }
         return false;
     }
-    $(name) {
-        return this.findByName(name);
-    }
     allWithComponent(type) {
         let toReturn = [];
         if (this.getComponent) {
@@ -121,35 +115,29 @@ class NameableParent {
         }
         return toReturn;
     }
-    findByName(name) {
-        this.findBy(o=>o.name==name);
+    $(name) {
+        return this.findByName(name);
     }
-    findBy(lambda){
-        if(lambda(this))
+    findByName(name) {
+        this.findBy(o => o.name == name);
+    }
+    /** Find a NameableParent by UUID */
+    findByUUID(uuid) {
+        this.findBy(o => o.uuid == uuid)
+    }
+    findBy(lambda) {
+        if (lambda(this))
             return this;
-        for(let child of this.children)
-        {
+        for (let child of this.children) {
             let result = child.findBy(lambda);
-            if(result != null)
+            if (result != null)
                 return result;
         }
         return null;
     }
-
-    /** Find a NameableParent by UUID */
-    findByUUID(uuid) {
-        if (arguments.length != 1 || !(typeof uuid == 'string' || uuid instanceof String)) throw new Error("findByUUID expects exactly one string argument.")
-
-        if (this.uuid == uuid)
-            return this;
-        for (let child of this.children) {
-            let result = child.findByUUID(uuid);
-            if (result != null) return result;
-        }
-        //We didn't find anything
-        return null;
+    hasParentWithComponet(component){
+        
     }
-
     /**Generate a uuid
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
      */
