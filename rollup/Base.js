@@ -138,19 +138,27 @@ class NameableParent {
         }
         if (found) {
             this.children = this.children.filter(i => i != gameObject);
+            this.callDestroyEvent(gameObject, this);
             return true;
         } else {
             //Loop again and destroy recursively
             for (let i = 0; i < this.children.length && !found; i++) {
                 let child = this.children[i];
                 let result = child.destroy(gameObject);
-                if (result) return true;
+                if (result){
+                    return true;
+                } 
             }
             //If we get here we didn't find anything
             return false;
         }
 
 
+    }
+    callDestroyEvent(gameObject, parent){
+        Base.Plugins
+            .filter(plugin => plugin.OnDestroy)
+            .forEach(plugin=>plugin.OnDestroy(gameObject, parent));
     }
 
     addChild(child, scene) {
@@ -22374,7 +22382,7 @@ class CrowdSimulationPlugin {
     let simulator = this.bootSimulator();
     let toAdd = { scene: scene.uuid, simulator };
     this.simulators.push(toAdd);
-    for(let i = 0; i < scene.children.length; i++){
+    for (let i = 0; i < scene.children.length; i++) {
       this.OnNewChild(scene.children[i], scene);
     }
   }
@@ -22401,9 +22409,9 @@ class CrowdSimulationPlugin {
       RVOAgent._id = i;
       //this.updateRVOAgent(gameObject, simulator);
       //Check to see if our destination has changed
-      
+
       simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(simulator.getAgentPosition(i))));
- 
+
     }
     if (gameObject.anyComponent("RVOObstacle")) {
       let rectangleComponent = gameObject.getComponent("RectangleComponent");
@@ -22424,7 +22432,7 @@ class CrowdSimulationPlugin {
 
       simulator.processObstacles();
     }
-    for(let i = 0; i < gameObject.children.length; i++){
+    for (let i = 0; i < gameObject.children.length; i++) {
       let child = gameObject.children[i];
       this.OnNewChild(child, highestParent);
     }
@@ -22455,30 +22463,50 @@ class CrowdSimulationPlugin {
     let destination = RVOAgent.destination;
     let goal = new Vector2(destination.x, destination.y);
     //simulator.setGoal(goal, i)
- }
+  }
+  OnDestroy(gameObject, parent){
+    if(!gameObject.anyComponent(Base.Components.RVOAgent)) return;
+    this.removeRVOAgent(gameObject);
+  }
+  removeRVOAgent(gameObject) {
+    if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
+
+    let simulator = this.simulators.find(x => x.scene == Base.$$.uuid).simulator;
+
+    console.log("Removing agent");
+    let RVOAgent = gameObject.getComponent("RVOAgent");
+    let i = RVOAgent._id;
+    simulator.removeRVOAgent(i);
+    for (let i = 0; i < simulator.getNumAgents(); i++) {
+      let gameObject = simulator.getAgentGameObject(i);
+      let component = gameObject.getComponent("RVOAgent");
+      component._id = i;
+    }
+
+  }
   update() {
 
-    let simulator = this.simulators.find(x=>x.scene == Base.$$.uuid).simulator;
-    
+    let simulator = this.simulators.find(x => x.scene == Base.$$.uuid).simulator;
+
     let collidableType = Base.Serializer.components.Collider;
     let collisionHelper = Base.Serializer.components.CollisionHelper;
 
     let toUpdate = Base.$$.recurseFindAllWithComponent(Base.Components.RVOAgent);
 
     //Check to see if anyone's destinantion has changed
-    for(let i = 0; i < toUpdate.length; i++){
+    for (let i = 0; i < toUpdate.length; i++) {
       let agent = toUpdate[i].gameObject;
       let RVOComponent = agent.getComponent("RVOAgent");
       let goal = new Vector2(RVOComponent.destination.x, RVOComponent.destination.y);
       let id = RVOComponent._id;
       let storedGoal = simulator.getGoal(id);
-      if(storedGoal.x != goal.x || storedGoal.y != goal.y ){
+      if (storedGoal.x != goal.x || storedGoal.y != goal.y) {
         simulator.setGoal(new Vector2(goal.x, goal.y));
         simulator.setAgentPrefVelocity(id, RVOMath.normalize(goal.minus(simulator.getAgentPosition(id))));
       }
     }
 
-    
+
     let collidableChildren = [];
     this.getCollidable(Base.$$, collidableChildren, collidableType);
     simulator.run();

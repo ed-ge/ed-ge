@@ -54,19 +54,27 @@ class NameableParent {
         }
         if (found) {
             this.children = this.children.filter(i => i != gameObject);
+            this.callDestroyEvent(gameObject, this)
             return true;
         } else {
             //Loop again and destroy recursively
             for (let i = 0; i < this.children.length && !found; i++) {
                 let child = this.children[i];
                 let result = child.destroy(gameObject);
-                if (result) return true;
+                if (result){
+                    return true;
+                } 
             }
             //If we get here we didn't find anything
             return false;
         }
 
 
+    }
+    callDestroyEvent(gameObject, parent){
+        Base.Plugins
+            .filter(plugin => plugin.OnDestroy)
+            .forEach(plugin=>plugin.OnDestroy(gameObject, parent))
     }
 
     addChild(child, scene) {
