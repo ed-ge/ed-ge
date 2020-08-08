@@ -94,8 +94,8 @@ class CrowdSimulationPlugin {
     let goal = new Vector2(destination.x, destination.y)
     //simulator.setGoal(goal, i)
   }
-  OnDestroy(gameObject, parent){
-    if(!gameObject.anyComponent(Base.Components.RVOAgent)) return;
+  OnDestroy(gameObject, parent) {
+    if (!gameObject.anyComponent(Base.Components.RVOAgent)) return;
     this.removeRVOAgent(gameObject);
   }
   removeRVOAgent(gameObject) {
@@ -137,8 +137,8 @@ class CrowdSimulationPlugin {
     }
 
 
-    let collidableChildren = [];
-    this.getCollidable(Base.$$, collidableChildren, collidableType);
+    //let collidableChildren = [];
+    // this.getCollidable(Base.$$, collidableChildren, collidableType);
     simulator.run();
     //
     // Now we simulate the crowds
@@ -160,6 +160,30 @@ class CrowdSimulationPlugin {
       }
     }
 
+  }
+  canEnterSafely(location, collider, component) {
+    if (arguments.length != 3 ||
+      !(location instanceof Base.Point) ||
+      !(typeof collider == 'object') ||
+      !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
+
+    let collidableType = Base.Serializer.components.Collider;
+    let collisionHelper = Base.Serializer.components.CollisionHelper;
+    let children = Base.$$.children;
+
+    let collidableChildren = [];
+    this.getCollidable(Base.$$, collidableChildren, collidableType);
+    let proposed = new GameObject();
+    proposed.x = location.x;
+    proposed.y = location.y;
+
+    for (let i = 0; i < collidableChildren.length; i++) {
+      if (collidableChildren[i].gameObject.anyComponent(component))
+        if (Base.$$.components.CollisionHelper.inCollision(collidableChildren[i], { collider, gameObject: proposed })) {
+          return false;
+        }
+    }
+    return true;
   }
   /**
   * Get a flat list of all the collidable components in the scene

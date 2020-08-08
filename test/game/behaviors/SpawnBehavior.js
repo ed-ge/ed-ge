@@ -16,7 +16,7 @@ export default class SpawnBehavior extends Base.Behavior {
             let x = this.gameObject.x;
             let collider = new Base.Components.CircleCollider();
             collider.radius = 5;
-            if (Base.SceneManager.currentScene.canEnterSafely(new Base.Point(x, y), collider, "RVOAgent")) {
+            if (Base.Plugins.find(x=>x.constructor.name == "CrowdSimulationPlugin").canEnterSafely(new Base.Point(x, y), collider, "RVOAgent")) {
                 let RVOCopy = _.cloneDeep(Base.Prefabs.RVOAgent).trim();
                 let splits = RVOCopy.split(/\r?\n/);
                 if(isNaN(x) || isNaN(y)){
@@ -28,7 +28,6 @@ export default class SpawnBehavior extends Base.Behavior {
                 let rvo = agent.getComponent("RVOAgent");
                 rvo.color = this.color;
                 rvo.destination = new Base.Point(+this.goalX, y);
-                // Base.SceneManager.currentScene.updateRVOAgent(agent)
                 let circle = agent.getComponent("CircleComponent");
                 circle.fill = this.color;
                 circle.stroke = "black";
@@ -36,6 +35,7 @@ export default class SpawnBehavior extends Base.Behavior {
         }
 
     }
+    
     onCollisionStay(colliderObject) {
         let gameObject = colliderObject.gameObject;
         if (gameObject.anyComponent("RVOAgent")) {
@@ -43,7 +43,6 @@ export default class SpawnBehavior extends Base.Behavior {
             let color = RVOAgent.color;
             if (color != this.color) {
                 Base.SceneManager.currentScene.destroy(gameObject);
-                //Base.SceneManager.currentScene.removeRVOAgent(gameObject);
             }
         }
     }
