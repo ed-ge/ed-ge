@@ -43,7 +43,7 @@ export default class SpawnBehavior extends Base.Behavior {
             let color = RVOAgent.color;
             if (color != this.color) {
                 Base.SceneManager.currentScene.destroy(gameObject);
-                Base.SceneManager.currentScene.removeRVOAgent(gameObject);
+                //Base.SceneManager.currentScene.removeRVOAgent(gameObject);
             }
         }
     }
