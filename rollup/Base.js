@@ -94,15 +94,7 @@ class Behavior extends Component {
 
 class NameableParent {
 
-    /**
-     * An array of children this instance has
-     */
-    //children = [];
-
-    /**
-     * The name of this instance
-     */
-    //name = "";
+    
 
     /**
      * 
@@ -176,12 +168,19 @@ class NameableParent {
         if (this.newChildEvent)
             this.newChildEvent(child);
     }
-
-    isADescendant(descendant) {
-        if (arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isADescendant expects exactly one argument of type NameableParent")
+    isChild(descendant) {
+        if (arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isChildDeep expects exactly one argument of type NameableParent")
         if (this == descendant) return true;
         for (let child of this.children) {
-            let result = child.isADescendant(descendant);
+            if (child == descendant) return true;
+        }
+        return false;
+    }
+    isChildDeep(descendant) {
+        if (arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isChildDeep expects exactly one argument of type NameableParent")
+        if (this == descendant) return true;
+        for (let child of this.children) {
+            let result = child.isChildDeep(descendant);
             if (result) return true;
         }
         return false;
@@ -189,8 +188,7 @@ class NameableParent {
     $(name) {
         return this.findByName(name);
     }
-
-    recurseFindAllWithComponent(type) {
+    allWithComponent(type) {
         let toReturn = [];
         if (this.getComponent) {
             let component = this.getComponent(type);
@@ -202,21 +200,23 @@ class NameableParent {
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
 
-            let childResults = child.recurseFindAllWithComponent(type);
+            let childResults = child.allWithComponent(type);
             toReturn.push(...childResults);
         }
         return toReturn;
     }
-
     findByName(name) {
-        if (arguments.length != 1 || !(typeof name == 'string' || name instanceof String)) throw new Error("findByName expects exactly one string argument.")
-        if (this.name == name)
+        this.findBy(o=>o.name==name);
+    }
+    findBy(lambda){
+        if(lambda(this))
             return this;
-        for (let child of this.children) {
-            let result = child.findByName(name);
-            if (result != null) return result;
+        for(let child of this.children)
+        {
+            let result = child.findBy(lambda);
+            if(result != null)
+                return result;
         }
-        //We didn't find anything
         return null;
     }
 
@@ -21891,7 +21891,7 @@ class CollisionPlugin{
     let collisionHelper = Base.Serializer.components.CollisionHelper;
 
     //Add collision behavior
-    let collidableChildren = Base.$$.recurseFindAllWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
     
     for (let i = 0; i < collidableChildren.length; i++) {
       let gameObjectOne = collidableChildren[i].gameObject;
@@ -21944,7 +21944,7 @@ class CollisionPlugin{
     let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
     if (canvases.length == 0) return false; // We don't have screen space
     for (let canvas of canvases) {
-      if (canvas.isADescendant(gameObject)) {
+      if (canvas.isChildDeep(gameObject)) {
         return true;
       }
     }
@@ -21967,7 +21967,7 @@ class MouseCollisionPlugin{
     let collisionHelper = Base.Serializer.components.CollisionHelper;
     let children = Base.$$.children;
     //Add collision behavior
-    let collidableChildren = Base.$$.recurseFindAllWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
     
     //
     //Now go through and see if the point represented by the mouse collides with any of the colliders
@@ -22059,7 +22059,7 @@ class MouseCollisionPlugin{
     let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
     if (canvases.length == 0) return false; // We don't have screen space
     for (let canvas of canvases) {
-      if (canvas.isADescendant(gameObject)) {
+      if (canvas.isChildDeep(gameObject)) {
         return true;
       }
     }
@@ -22077,7 +22077,7 @@ class TouchCollisionPlugin {
     let children = Base.$$.children;
 
     //Add collision behavior
-    let collidableChildren = Base.$$.recurseFindAllWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
     let cameras = children.filter(i => i.anyComponent("CameraComponent"));
 
     //
@@ -22141,7 +22141,7 @@ class TouchCollisionPlugin {
     let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
     if (canvases.length == 0) return false; // We don't have screen space
     for (let canvas of canvases) {
-      if (canvas.isADescendant(gameObject)) {
+      if (canvas.isChildDeep(gameObject)) {
         return true;
       }
     }
@@ -22266,7 +22266,7 @@ class CrowdSimulationPlugin {
     let collidableType = Base.Serializer.components.Collider;
     let collisionHelper = Base.Serializer.components.CollisionHelper;
 
-    let toUpdate = Base.$$.recurseFindAllWithComponent(Base.Components.RVOAgent);
+    let toUpdate = Base.$$.allWithComponent(Base.Components.RVOAgent);
 
     //Check to see if anyone's destinantion has changed
     for (let i = 0; i < toUpdate.length; i++) {
@@ -22314,7 +22314,7 @@ class CrowdSimulationPlugin {
     let collisionHelper = Base.Serializer.components.CollisionHelper;
     let children = Base.$$.children;
 
-    let collidableChildren = Base.$$.recurseFindAllWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
     let proposed = new GameObject();
     proposed.x = location.x;
     proposed.y = location.y;

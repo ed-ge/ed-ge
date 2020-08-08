@@ -121,7 +121,7 @@ class CrowdSimulationPlugin {
     let collidableType = Base.Serializer.components.Collider;
     let collisionHelper = Base.Serializer.components.CollisionHelper;
 
-    let toUpdate = Base.$$.recurseFindAllWithComponent(Base.Components.RVOAgent);
+    let toUpdate = Base.$$.allWithComponent(Base.Components.RVOAgent);
 
     //Check to see if anyone's destinantion has changed
     for (let i = 0; i < toUpdate.length; i++) {
@@ -169,7 +169,7 @@ class CrowdSimulationPlugin {
     let collisionHelper = Base.Serializer.components.CollisionHelper;
     let children = Base.$$.children;
 
-    let collidableChildren = Base.$$.recurseFindAllWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
     let proposed = new GameObject();
     proposed.x = location.x;
     proposed.y = location.y;

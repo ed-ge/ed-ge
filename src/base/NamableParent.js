@@ -10,15 +10,7 @@ import Base from "../Base.js";
 
 class NameableParent {
 
-    /**
-     * An array of children this instance has
-     */
-    //children = [];
-
-    /**
-     * The name of this instance
-     */
-    //name = "";
+    
 
     /**
      * 
@@ -92,12 +84,19 @@ class NameableParent {
         if (this.newChildEvent)
             this.newChildEvent(child);
     }
-
-    isADescendant(descendant) {
-        if (arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isADescendant expects exactly one argument of type NameableParent")
+    isChild(descendant) {
+        if (arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isChildDeep expects exactly one argument of type NameableParent")
         if (this == descendant) return true;
         for (let child of this.children) {
-            let result = child.isADescendant(descendant);
+            if (child == descendant) return true;
+        }
+        return false;
+    }
+    isChildDeep(descendant) {
+        if (arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isChildDeep expects exactly one argument of type NameableParent")
+        if (this == descendant) return true;
+        for (let child of this.children) {
+            let result = child.isChildDeep(descendant);
             if (result) return true;
         }
         return false;
@@ -105,8 +104,7 @@ class NameableParent {
     $(name) {
         return this.findByName(name);
     }
-
-    recurseFindAllWithComponent(type) {
+    allWithComponent(type) {
         let toReturn = [];
         if (this.getComponent) {
             let component = this.getComponent(type);
@@ -118,21 +116,23 @@ class NameableParent {
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
 
-            let childResults = child.recurseFindAllWithComponent(type);
+            let childResults = child.allWithComponent(type);
             toReturn.push(...childResults);
         }
         return toReturn;
     }
-
     findByName(name) {
-        if (arguments.length != 1 || !(typeof name == 'string' || name instanceof String)) throw new Error("findByName expects exactly one string argument.")
-        if (this.name == name)
+        this.findBy(o=>o.name==name);
+    }
+    findBy(lambda){
+        if(lambda(this))
             return this;
-        for (let child of this.children) {
-            let result = child.findByName(name);
-            if (result != null) return result;
+        for(let child of this.children)
+        {
+            let result = child.findBy(lambda);
+            if(result != null)
+                return result;
         }
-        //We didn't find anything
         return null;
     }
 
