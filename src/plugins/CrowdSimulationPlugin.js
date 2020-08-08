@@ -199,13 +199,9 @@ class CrowdSimulationPlugin {
 
 
     if (gameObject.getComponent) {
-      try {
-        let collidableComponent = gameObject.getComponent(type);
-        if (collidableComponent) {
-          collidableChildren.push({ collider: collidableComponent, gameObject });
-        }
-      } catch (e) {
-        //no-op
+      let collidableComponent = gameObject.getComponent(type);
+      if (collidableComponent) {
+        collidableChildren.push({ collider: collidableComponent, gameObject });
       }
     }
 

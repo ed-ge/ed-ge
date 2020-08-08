@@ -84,14 +84,10 @@ class TouchCollisionPlugin {
 
 
     if (gameObject.getComponent) {
-      try {
         let collidableComponent = gameObject.getComponent(type);
         if (collidableComponent) {
           collidableChildren.push({ collider: collidableComponent, gameObject });
         }
-      } catch (e) {
-        //no-op
-      }
     }
 
     for (let i = 0; i < gameObject.children.length; i++) {
