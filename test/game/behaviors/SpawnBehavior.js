@@ -11,7 +11,7 @@ export default class SpawnBehavior extends Base.Behavior {
 
     }
     update() {
-        if (Math.random() < .01) {
+        if (Math.random() < .1) {
             let y = this.gameObject.y + (Math.random() - .5) * 1
             let x = this.gameObject.x;
             let collider = new Base.Components.CircleCollider();

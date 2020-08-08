@@ -11,9 +11,8 @@ class MouseCollisionPlugin{
     let collisionHelper = Base.Serializer.components.CollisionHelper;
     let children = Base.$$.children;
     //Add collision behavior
-    let collidableChildren = [];
-    this.getCollidable(Base.$$, collidableChildren, collidableType);
-
+    let collidableChildren = Base.$$.recurseFindAllWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
+    
     //
     //Now go through and see if the point represented by the mouse collides with any of the colliders
     //
@@ -97,32 +96,7 @@ class MouseCollisionPlugin{
     }
 
   }
-  /**
-   * Get a flat list of all the collidable components in the scene
-   * @param {*} gameObject The root game object in the tree we are searching
-   * @param {*} collidableChildren The list we are modifying
-   * @param {*} type The type a game object needs in order to be considered collidable
-   */
-  getCollidable(gameObject, collidableChildren, type) {
-    if (arguments.length != 3 ||
-      !(typeof gameObject == 'object') ||
-      !(Array.isArray(collidableChildren)) ||
-      !(typeof type == 'function')) throw new Error("getCollidable expects exactly three arguments of type GameObject, array, and type")
-
-
-    if (gameObject.getComponent) {
-        let collidableComponent = gameObject.getComponent(type);
-        if (collidableComponent) {
-          collidableChildren.push({ collider: collidableComponent, gameObject });
-        }
-    }
-
-    for (let i = 0; i < gameObject.children.length; i++) {
-      let child = gameObject.children[i];
-
-      this.getCollidable(child, collidableChildren, type);
-    }
-  }
+  
   isInScreenSpace(gameObject) {
     if (arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
 
