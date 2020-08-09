@@ -17,10 +17,11 @@ class CollisionPlugin{
     
     for (let i = 0; i < collidableChildren.length; i++) {
       let gameObjectOne = collidableChildren[i].gameObject;
-      let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
+      // let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
+      let isInScreenSpaceOne = gameObjectOne.hasParentWithComponent(Base.Components.CanvasComponent);
       for (let j = i + 1; j < collidableChildren.length; j++) {
         let gameObjectTwo = collidableChildren[j].gameObject;
-        let isInScreenSpaceTwo = this.isInScreenSpace(gameObjectTwo);
+        let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
         if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
         let collisionPair = { one: collidableChildren[i], two: collidableChildren[j] };
         if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
@@ -60,18 +61,7 @@ class CollisionPlugin{
 
   }
   
-  isInScreenSpace(gameObject) {
-    if (arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
-
-    let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
-    if (canvases.length == 0) return false; // We don't have screen space
-    for (let canvas of canvases) {
-      if (canvas.isChildDeep(gameObject)) {
-        return true;
-      }
-    }
-    return false;
-  }
+  
   collisionPairMatch(one, two){
     return one.one.gameObject == two.one.gameObject &&
       one.two.gameObject == two.two.gameObject &&

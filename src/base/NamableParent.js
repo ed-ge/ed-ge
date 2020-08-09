@@ -135,9 +135,17 @@ class NameableParent {
         }
         return null;
     }
-    hasParentWithComponet(component){
-        
+    hasParentWithComponent(component){
+        let candidates = Base.$$.children.filter(i => i.anyComponent(component));
+        if (candidates.length == 0) return false; // We don't have screen space
+        for (let candidate of candidates) {
+          if (candidate.isChildDeep(this)) {
+            return true;
+          }
+        }
+        return false;
     }
+    
     /**Generate a uuid
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
      */
