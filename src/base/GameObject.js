@@ -11,38 +11,7 @@ import Base from "../Base.js";
  * or an invisible container for logic
  */
 class GameObject extends NameableParent {
-  /**
-   * The x position of the game object relative to its parent
-   */
-  //x;
-
-  /**
-   * The y position of the game object relative to its parent
-   */
-  //y;
-
-  /**
-   * The scale of the game object in x relative to its parent
-   */
-  //scaleX;
-
-  /**
-   * The scale of the game object in y relative to its parent
-   */
-  //scaleY;
-
-  /**
-   * The rotation of the game object relative to its parent
-   */
-  //rotation;
-
-  /**
-   * Array of components this game object has. Note, components should only be
-   * added to this array used GameObject.addComponent() to components.push().
-   * Otherwise the components won't have their parent game object member
-   * variable method populated.
-   */
-  //components = [];
+  
 
 
   /**
