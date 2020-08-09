@@ -89,9 +89,7 @@ class CrowdSimulationPlugin {
     //if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
 
     let RVOAgent = gameObject.getComponent("RVOAgent");
-    let i = RVOAgent._id;
     let destination = RVOAgent.destination;
-    let goal = new Vector2(destination.x, destination.y)
     //simulator.setGoal(goal, i)
   }
   OnDestroy(gameObject, parent) {
@@ -118,9 +116,7 @@ class CrowdSimulationPlugin {
 
     let simulator = this.simulators.find(x => x.scene == Base.$$.uuid).simulator;
 
-    let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
-
+    
     let toUpdate = Base.$$.allWithComponent(Base.Components.RVOAgent);
 
     //Check to see if anyone's destinantion has changed
@@ -166,9 +162,7 @@ class CrowdSimulationPlugin {
       !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
 
     let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
-    let children = Base.$$.children;
-
+    
     let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
     let proposed = new GameObject();
     proposed.x = location.x;

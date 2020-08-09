@@ -52,7 +52,7 @@ class MouseCollisionPlugin{
     for (let i = 0; i < collidableChildren.length; i++) {
       let collidableChild = collidableChildren[i];
 
-      if (!this.isInScreenSpace(collidableChild.gameObject))
+      if (!collidableChild.gameObject.hasParentWithComponent(Base.Components.CanvasComponent))
         colliderObject = colliderObjectWorld;
       else
         colliderObject = colliderObjectScreen;

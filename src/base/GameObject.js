@@ -247,10 +247,7 @@ class GameObject extends NameableParent {
     }
   }
 
-  // serialize() {
-  //   if(arguments.length != 0) throw new Error("seralize expects no arguments")
-    
-  // }
+  
 
   onDestroy(){
     if(arguments.length != 0) throw new Error("onDestroy expects no arguments");

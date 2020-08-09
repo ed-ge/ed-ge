@@ -219,9 +219,17 @@ class NameableParent {
         }
         return null;
     }
-    hasParentWithComponet(component){
-        
+    hasParentWithComponent(component){
+        let candidates = Base.$$.children.filter(i => i.anyComponent(component));
+        if (candidates.length == 0) return false; // We don't have screen space
+        for (let candidate of candidates) {
+          if (candidate.isChildDeep(this)) {
+            return true;
+          }
+        }
+        return false;
     }
+    
     /**Generate a uuid
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
      */
@@ -740,10 +748,7 @@ class GameObject extends NameableParent {
     }
   }
 
-  // serialize() {
-  //   if(arguments.length != 0) throw new Error("seralize expects no arguments")
-    
-  // }
+  
 
   onDestroy(){
     if(arguments.length != 0) throw new Error("onDestroy expects no arguments");
@@ -21883,10 +21888,11 @@ class CollisionPlugin{
     
     for (let i = 0; i < collidableChildren.length; i++) {
       let gameObjectOne = collidableChildren[i].gameObject;
-      let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
+      // let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
+      let isInScreenSpaceOne = gameObjectOne.hasParentWithComponent(Base.Components.CanvasComponent);
       for (let j = i + 1; j < collidableChildren.length; j++) {
         let gameObjectTwo = collidableChildren[j].gameObject;
-        let isInScreenSpaceTwo = this.isInScreenSpace(gameObjectTwo);
+        let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
         if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
         let collisionPair = { one: collidableChildren[i], two: collidableChildren[j] };
         if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
@@ -21926,18 +21932,7 @@ class CollisionPlugin{
 
   }
   
-  isInScreenSpace(gameObject) {
-    if (arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
-
-    let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
-    if (canvases.length == 0) return false; // We don't have screen space
-    for (let canvas of canvases) {
-      if (canvas.isChildDeep(gameObject)) {
-        return true;
-      }
-    }
-    return false;
-  }
+  
   collisionPairMatch(one, two){
     return one.one.gameObject == two.one.gameObject &&
       one.two.gameObject == two.two.gameObject &&
@@ -21996,7 +21991,7 @@ class MouseCollisionPlugin{
     for (let i = 0; i < collidableChildren.length; i++) {
       let collidableChild = collidableChildren[i];
 
-      if (!this.isInScreenSpace(collidableChild.gameObject))
+      if (!collidableChild.gameObject.hasParentWithComponent(Base.Components.CanvasComponent))
         colliderObject = colliderObjectWorld;
       else
         colliderObject = colliderObjectScreen;
@@ -22103,7 +22098,7 @@ class TouchCollisionPlugin {
       [colliderObjectScreen.gameObject.x, colliderObjectScreen.gameObject.y] = [screenPoint.x, screenPoint.y];
       for (let i = 0; i < collidableChildren.length; i++) {
         let collidableChild = collidableChildren[i];
-        if (!this.isInScreenSpace(collidableChild.gameObject))
+        if (!collidableChild.gameObject.hasParentWithComponent(Base.Components.CanvasComponent))
           colliderObject = colliderObjectWorld;
         else
           colliderObject = colliderObjectScreen;
@@ -22222,9 +22217,7 @@ class CrowdSimulationPlugin {
     //if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
 
     let RVOAgent = gameObject.getComponent("RVOAgent");
-    let i = RVOAgent._id;
     let destination = RVOAgent.destination;
-    let goal = new Vector2(destination.x, destination.y);
     //simulator.setGoal(goal, i)
   }
   OnDestroy(gameObject, parent) {
@@ -22251,9 +22244,7 @@ class CrowdSimulationPlugin {
 
     let simulator = this.simulators.find(x => x.scene == Base.$$.uuid).simulator;
 
-    let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
-
+    
     let toUpdate = Base.$$.allWithComponent(Base.Components.RVOAgent);
 
     //Check to see if anyone's destinantion has changed
@@ -22299,9 +22290,7 @@ class CrowdSimulationPlugin {
       !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
 
     let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
-    let children = Base.$$.children;
-
+    
     let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
     let proposed = new GameObject();
     proposed.x = location.x;
