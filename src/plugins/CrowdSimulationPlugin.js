@@ -1,8 +1,9 @@
 import Base from "../Base.js"
 import { Vector2, RVOMath } from "../../lib/crowds/common.js"
+'use strict'
+
 import Simulator from "../../lib/crowds/simulator.js"
 import GameObject from "../base/GameObject.js"
-
 
 class CrowdSimulationPlugin {
   constructor() {
