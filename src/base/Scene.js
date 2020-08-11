@@ -50,6 +50,7 @@ class Scene extends NameableParent {
         child.recursiveCall("start");
       })
     }
+    Base.Plugins.filter(x=>x.sceneBoot).forEach(x=>x.sceneBoot(this));
   }
 
   /**

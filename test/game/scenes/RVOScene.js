@@ -52,11 +52,20 @@ Agent RVOAgent
 RVOAgent
 -destination={"x":-100, "y":11}
 
-Obstacle RVOObstacle
+Wall RVOObstacle
 25, 0
 30, 1
 
-Obstacle RVOObstacle
+Wall RVOObstacle
 25, 25
 30, 1
+
+Obstacle Rectangle
+25, 12
+AABBCollider
+-width=1
+-height=1
+RectangleComponent
+-width=1
+-height=1
 `
