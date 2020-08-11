@@ -2323,6 +2323,7 @@ class Scene extends NameableParent {
         child.recursiveCall("start");
       });
     }
+    Base.Plugins.filter(x=>x.sceneBoot).forEach(x=>x.sceneBoot(this));
   }
 
   /**
@@ -22101,13 +22102,27 @@ class TouchCollisionPlugin {
   }
 }
 
+let floorObj = `
+o Plane
+v -100.000000 0.000000 100.000000
+v 100.000000 0.000000 100.000000
+v -100.000000 0.000000 -100.000000
+v 100.000000 0.000000 -100.000000
+vt 0.000000 0.000000
+vt 1.000000 0.000000
+vt 1.000000 1.000000
+vt 0.000000 1.000000
+vn 0.0000 1.0000 0.0000
+f 1/1/1 2/2/1 4/3/1 3/4/1
+`;
+
 class CrowdSimulationPlugin {
   constructor() {
     this.simulators = [];
   }
   OnNewScene(scene) {
     let simulator = this.bootSimulator();
-    let toAdd = { scene: scene.uuid, simulator };
+    let toAdd = { scene: scene.uuid, simulator, recastInfo:{objs:[floorObj],navmesh:{}} };
     this.simulators.push(toAdd);
     for (let i = 0; i < scene.children.length; i++) {
       this.OnNewChild(scene.children[i], scene);
@@ -22159,10 +22174,29 @@ class CrowdSimulationPlugin {
 
       simulator.processObstacles();
     }
+    //Look for objects with colliders and add objs
+    if(gameObject.$any(Base.Components.Collider)){
+      if(gameObject.$any(Base.Components.AABBCollider));
+    }
+
+    
+
+
+    //Recurse
     for (let i = 0; i < gameObject.children.length; i++) {
       let child = gameObject.children[i];
       this.OnNewChild(child, highestParent);
     }
+
+  }
+  sceneBoot(scene){
+    let simulatorObject = this.simulators.find(s => s.scene == scene.uuid);
+    
+    let recast = window.recast;
+    recast.OBJDataLoader(floorObj, ()=>{
+      simulatorObject.recastInfo.navmesh = recast.buildTiled();
+
+    });
   }
   bootSimulator() {
     let simulator = new Simulator();
