@@ -41,6 +41,14 @@ export default class TextBehavior extends Base.Behavior {
         {
             Base.SceneManager.currentScene = "TouchScene";
         }
+        if(Base.Input.getKeyUp('p'))
+        {
+            Base.SceneManager.currentScene = "P2PServer";
+        }
+        if(Base.Input.getKeyUp(';'))
+        {
+            Base.SceneManager.currentScene = "P2PClient";
+        }
 
         
 

@@ -23,6 +23,8 @@ import CircleCollider from "./components/CircleCollider.js"
 import CollisionHelper from "./components/CollisionHelper.js"
 import ConvexCollider from "./components/ConvexCollider.js"
 import Draggable from "./components/Draggable.js"
+import PeerServer from "./components/PeerServer.js"
+import PeerClient from "./components/PeerClient.js"
 import PointCollider from "./components/PointCollider.js"
 import RectangleComponent from "./components/RectangleComponent.js"
 import Stack from "./components/Stack.js"
@@ -57,6 +59,7 @@ import CollisionPlugin from "./plugins/CollisionPlugin.js"
 import MouseCollisionPlugin from "./plugins/MouseCollisionPlugin.js"
 import TouchCollisionPlugin from "./plugins/TouchCollisionPlugin.js"
 import CrowdSimulationPlugin from "./plugins/CrowdSimulationPlugin.js"
+import Peer2PeerPlugin from "./plugins/Peer2PeerPlugin.js"
 
 /** The main function */
 import main from "./Main.js"
@@ -74,6 +77,8 @@ let Components = {
   CollisionHelper,
   ConvexCollider,
   Draggable,
+  PeerServer,
+  PeerClient,
   PointCollider,
   RectangleComponent,
   RectTransform,
@@ -110,6 +115,7 @@ const Plugins = [
   new MouseCollisionPlugin(),
   new TouchCollisionPlugin(),
   new CrowdSimulationPlugin(),
+  new Peer2PeerPlugin(),
 ];
 
 const Base = {

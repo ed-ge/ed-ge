@@ -10,6 +10,8 @@ import MouseScene from "./scenes/MouseScene.js"
 import RVOScene from "./scenes/RVOScene.js"
 import TouchScene from "./scenes/TouchScene.js"
 import EmptyScene from "./scenes/EmptyScene.js"
+import P2PServer from "./scenes/P2PServer.js"
+import P2PClient from "./scenes/P2PClient.js"
 
 export default {
   startScene: "StartScene",
@@ -26,5 +28,7 @@ export default {
     RVOScene,
     TouchScene,
     EmptyScene,
+    P2PServer,
+    P2PClient,
   ]
 }

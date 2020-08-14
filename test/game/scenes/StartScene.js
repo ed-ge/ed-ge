@@ -55,5 +55,15 @@ t Text
 TextComponent
 -text=Push 't' to start the circle touch test game.
 
+p Text
+10, 400
+TextComponent
+-text=Push 'p' to start the p2p server.
+
+z Text
+10, 440
+TextComponent
+-text=Push ';' to start the p2p client.
+
 StartSceneListener StartSceneListener
 `
