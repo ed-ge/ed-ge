@@ -97,11 +97,11 @@ class CrowdSimulationPlugin {
   sceneBoot(scene){
     let simulatorObject = this.simulators.find(s => s.scene == scene.uuid);
     
-    let recast = window.recast;
-    recast.OBJDataLoader(floorObj, ()=>{
-      simulatorObject.recastInfo.navmesh = recast.buildTiled();
+    // let recast = window.recast;
+    // recast.OBJDataLoader(floorObj, ()=>{
+    //   simulatorObject.recastInfo.navmesh = recast.buildTiled();
 
-    })
+    // })
   }
   bootSimulator() {
     let simulator = new Simulator();

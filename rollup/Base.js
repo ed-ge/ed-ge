@@ -20217,6 +20217,59 @@ class Draggable extends Behavior {
   }
 }
 
+class PeerServer extends Component {
+  constructor() {
+    super();
+  }
+  start() {
+    console.log("Start server");
+    this.peer = new Peer("aeuaeouaoeuaeu", {debug:2});
+    this.peer.on('open', function (id) {
+      console.log("My id is " + id);
+    });
+    this.peer.on('connection', function (conn) {
+      conn.on('open', function () {
+        conn.on('data', function (data) {
+          console.log("Received " + data);
+        });
+      });
+      conn.on('error', function(error){
+        console.log(error);
+      });
+    });
+    this.peer.on('error', function(error){
+      console.log(error);
+    });
+    
+  }
+  update() {
+    // console.log("Peer server");
+  }
+}
+
+class PeerClient extends Component {
+  constructor() {
+    super();
+  }
+  start() {
+    console.log("Start client");
+    this.peer = new Peer(null, {debug:2});
+    var conn = this.peer.connect('aeuaeouaoeuaeu');
+    conn.on('open', function () {
+      conn.send("Bye, Harry");
+    });
+    this.peer.on('error', function(error){
+      console.log(error);
+    });
+    conn.on('error', function(error){
+      console.log(error);
+    });
+  }
+  update() {
+    // console.log("Peer client");
+  }
+}
+
 class RectangleComponent extends Component {
     constructor() {
         super();
@@ -22192,11 +22245,11 @@ class CrowdSimulationPlugin {
   sceneBoot(scene){
     let simulatorObject = this.simulators.find(s => s.scene == scene.uuid);
     
-    let recast = window.recast;
-    recast.OBJDataLoader(floorObj, ()=>{
-      simulatorObject.recastInfo.navmesh = recast.buildTiled();
+    // let recast = window.recast;
+    // recast.OBJDataLoader(floorObj, ()=>{
+    //   simulatorObject.recastInfo.navmesh = recast.buildTiled();
 
-    });
+    // })
   }
   bootSimulator() {
     let simulator = new Simulator();
@@ -22308,6 +22361,27 @@ class CrowdSimulationPlugin {
     return true;
   }
   
+}
+
+// import * as Peer from "../../lib/peerjs/peerjs.min.js"
+class Peer2PeerPlugin{
+  constructor(){
+    this.firstUpdate = false;
+    
+  }
+  update(){
+    if(!this.firstUpdate){
+      this.firstUpdate = false;
+     
+    }
+    
+  }
+  getServer(){
+    return new Peer();
+  }
+  getClient(){
+    return null;
+  }
 }
 
 /**
@@ -22573,6 +22647,8 @@ let Components = {
   CollisionHelper,
   ConvexCollider,
   Draggable,
+  PeerServer,
+  PeerClient,
   PointCollider,
   RectangleComponent,
   RectTransform,
@@ -22609,6 +22685,7 @@ const Plugins = [
   new MouseCollisionPlugin(),
   new TouchCollisionPlugin(),
   new CrowdSimulationPlugin(),
+  new Peer2PeerPlugin(),
 ];
 
 const Base = {
