@@ -14,7 +14,7 @@ import P2PServer from "./scenes/P2PServer.js"
 import P2PClient from "./scenes/P2PClient.js"
 
 export default {
-  startScene: "StartScene",
+  startScene: "RVOScene",
   allScenes: [
     SceneOne,
     SceneTwo,
