@@ -96,12 +96,13 @@ class CrowdSimulationPlugin {
   }
   sceneBoot(scene){
     let simulatorObject = this.simulators.find(s => s.scene == scene.uuid);
-    
-    // let recast = window.recast;
-    // recast.OBJDataLoader(floorObj, ()=>{
-    //   simulatorObject.recastInfo.navmesh = recast.buildTiled();
+    console.log(_.VERSION);
+    let recast = _.cloneDeep(window.recast);
+    console.log("Done with clone");
+    recast.OBJDataLoader(floorObj, ()=>{
+      simulatorObject.recastInfo.navmesh = recast.buildTiled();
 
-    // })
+    })
   }
   bootSimulator() {
     let simulator = new Simulator();
@@ -137,7 +138,7 @@ class CrowdSimulationPlugin {
 
     let simulator = this.simulators.find(x => x.scene == Base.$$.uuid).simulator;
 
-    console.log("Removing agent");
+    //console.log("Removing agent");
     let RVOAgent = gameObject.getComponent("RVOAgent");
     let i = RVOAgent._id;
     simulator.removeRVOAgent(i);
