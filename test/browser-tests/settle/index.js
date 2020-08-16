@@ -311,8 +311,26 @@ AABBCollider
 -height=30
  `
 
+ let Trade = 
+ `
+ Trade RectangleNoCollider
+ RectangleComponent
+ -width=40
+ -height=40
+ -fill=white
+ {
+  Icon Text
+  0, 0
+  TextComponent
+  -font=20px FontAwesome
+  -text=\uf1f8
+  -fill=black
+  -centered=true
+  }
+ `
+
 
 //Place the prefabs in an object we will pass to Main
-let Prefabs = { Wheat, Sheep, Brick, Wood, Stone, WheatStack, SheepStack, BrickStack, WoodStack, StoneStack, Hexagon, City, Town, Road  };
+let Prefabs = { Wheat, Sheep, Brick, Wood, Stone, WheatStack, SheepStack, BrickStack, WoodStack, StoneStack, Hexagon, City, Town, Road, Trade  };
 
 Base.Main = Base.main(Prefabs, GameBehaviors, Scenes);

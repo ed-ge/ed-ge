@@ -65,6 +65,34 @@ export default class MainController extends Base.Behavior {
       }
     }
 
+    //Setup trade spots
+    let tradeCoords = [0,-radius*1.5,0,radius*3,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    let pushPull = [0,0,
+                    Math.PI*2/60,0,
+                    Math.PI*2/120,-.25,
+                    0,0,
+                    Math.PI*2/60,0,
+                    Math.PI*2/120,-.25,
+                    0,0,
+                    Math.PI*2/60,0,
+                    Math.PI*2/120,-.25];
+
+    let tradeIcons = ["\uf128","\uf128","\uf128","\uf128","\uf7ec","\uf553","\uf84c","\uf1bb","\uf19c"];
+    tradeIcons = this.shuffleArray(tradeIcons);
+
+    for(let i = 0; i < tradeCoords.length; i+=2){
+      let angle = Math.PI*2/tradeCoords.length*i + (Math.PI*2/50) + pushPull[i];
+      let x = Math.cos(angle)*(4.5+pushPull[i+1])*radius;
+      let y = Math.sin(angle)*(4.5+pushPull[i+1])*radius;
+      tradeCoords[i] = x;
+      tradeCoords[i+1] = y;
+    }
+
+    for(let i = 0 ; i < tradeCoords.length; i+=2){
+      let trade = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Trade, Base._cs, new Base.Point(tradeCoords[i] + startX, tradeCoords[i+1] + startY+3*radius));
+      trade.findByName("Icon").$("TextComponent").text = tradeIcons[i/2];
+    }
+
     //Now setup the players
     let px = 300;
     let py = -300;
