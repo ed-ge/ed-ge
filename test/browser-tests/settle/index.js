@@ -287,6 +287,15 @@ CircleComponent
 -stroke=black
 CircleCollider
 -radius=20
+{
+  Icon Text
+  0, 0
+  TextComponent
+  -font=20px FontAwesome
+  -text=\uf1ad
+  -fill=white
+  -centered=true
+  }
  `
  let Road =
  `
@@ -297,19 +306,37 @@ CircleComponent
 -stroke=black
 CircleCollider
 -radius=15
- `
- let Town =
- `
-City Rectangle
-Draggable
-RectangleComponent
--width=30
--height=30
--stroke=black
-AABBCollider
--width=30
--height=30
- `
+{
+  Icon Text
+  0, 0
+  TextComponent
+  -font=20px FontAwesome
+  -text=\uf018
+  -fill=white
+  -centered=true
+  }
+  `
+  let Town =
+  `
+  City Rectangle
+  Draggable
+  RectangleComponent
+  -width=30
+  -height=30
+  -stroke=black
+  AABBCollider
+  -width=30
+  -height=30
+  {
+    Icon Text
+    0, 0
+    TextComponent
+    -font=20px FontAwesome
+    -text=\uf015
+    -fill=white
+    -centered=true
+    }
+  `
 
  let Trade = 
  `
