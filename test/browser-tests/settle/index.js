@@ -1,10 +1,12 @@
 //Import any custom behaviors
 import Base from "../../../src/Base.js"
 import MainController from "./MainController.js"
+import DiceController from "./DiceController.js"
 
 //Add custom behaviors to an object we pass to Main
 let GameBehaviors = {
   MainController,
+  DiceController,
 }
 
 //Add objects to our scene that we pass to main
@@ -20,6 +22,38 @@ BoardBase Empty
 Stacks Empty
 -500,-100
 {
+Dice Rectangle
+0,-200
+DiceController
+RectangleComponent
+-width=100
+-height=50
+AABBCollider
+-width=100
+-height=50
+{
+Die1 Text
+-40,10
+TextComponent
+-text=Di
+
+Die2 Text
+10,10
+TextComponent
+-text=ce
+}
+
+Robber Rectangle
+0,-50
+Draggable
+RectangleComponent
+-width=30
+-height=30
+-fill=black
+AABBCollider
+-width=30
+-height=30
+
 WheatStack WheatStack
 0,0
 
@@ -181,6 +215,16 @@ CircleCollider
  Hexagon Empty
  HexagonComponent
  -radius=75
+ {
+  Circle Circle
+  CircleComponent
+  -fill=white
+  -radius=30
+  {
+    Cost Text
+    -7,5
+  }
+ }
  `
 
  let City =
