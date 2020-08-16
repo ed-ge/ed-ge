@@ -23,6 +23,7 @@ import CircleCollider from "./components/CircleCollider.js"
 import CollisionHelper from "./components/CollisionHelper.js"
 import ConvexCollider from "./components/ConvexCollider.js"
 import Draggable from "./components/Draggable.js"
+import GUIOnlyCollider from "./components/GUIOnlyCollider.js"
 import HexagonComponent from "./components/HexagonComponent.js"
 import PeerServer from "./components/PeerServer.js"
 import PeerClient from "./components/PeerClient.js"
@@ -78,6 +79,7 @@ let Components = {
   CollisionHelper,
   ConvexCollider,
   Draggable,
+  GUIOnlyCollider,
   HexagonComponent,
   PeerServer,
   PeerClient,
