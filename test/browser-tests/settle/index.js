@@ -28,6 +28,7 @@ DiceController
 RectangleComponent
 -width=100
 -height=50
+-fill=lightgray
 AABBCollider
 -width=100
 -height=50
@@ -47,27 +48,75 @@ Robber Rectangle
 0,-50
 Draggable
 RectangleComponent
--width=30
--height=30
+-width=40
+-height=40
 -fill=black
 AABBCollider
--width=30
--height=30
+-width=40
+-height=40
+{
+Icon Text
+TextComponent
+-font=25px FontAwesome
+-text=\uf21b
+-fill=white
+-centered=true
+}
 
 WheatStack WheatStack
 0,0
+{
+WheatIcon Text
+TextComponent
+-font=25px FontAwesome
+-text=\uf7ec
+-fill=black
+-centered=true
+}
 
 SheepStack SheepStack
 0,50
+{
+Icon Text
+TextComponent
+-font=25px FontAwesome
+-text=\uf553
+-fill=black
+-centered=true
+}
 
 BrickStack BrickStack
 0,100
+{
+Icon Text
+TextComponent
+-font=25px FontAwesome
+-text=\uf84c
+-fill=black
+-centered=true
+}
 
-WoddStack WoodStack
+WoodStack WoodStack
 0,150
+{
+Icon Text
+TextComponent
+-font=25px FontAwesome
+-text=\uf1bb
+-fill=black
+-centered=true
+}
 
-StoneStack StoneStack
+Stone StoneStack
 0,200
+{
+Icon Text
+TextComponent
+-font=25px FontAwesome
+-text=\uf19c
+-fill=black
+-centered=true
+}
 
 Trash Circle
 0, 275
@@ -79,11 +128,12 @@ CircleCollider
 -radius=20
 {
 TrashIcon Text
--12, 10
+0, 0
 TextComponent
--font=30px FontAwesome
--text=\uF1F8
+-font=20px FontAwesome
+-text=\uf1f8
 -fill=white
+-centered=true
 }
 }
 
@@ -171,7 +221,7 @@ SheepStack Circle
 Stack
 -spawn=Sheep
 CircleComponent
--fill=green
+-fill=lime
 -radius=20
 CircleCollider
 -radius=20
@@ -204,7 +254,7 @@ WoodStack Circle
 Stack
 -spawn=Wood
 CircleComponent
--fill=chocolate
+-fill=green
 -radius=20
 CircleCollider
 -radius=20
@@ -212,17 +262,18 @@ CircleCollider
 
  let Hexagon = 
  `
- Hexagon Empty
+ Hexagon Empty | Background
  HexagonComponent
  -radius=75
  {
   Circle Circle
   CircleComponent
-  -fill=white
+  -fill=rgba(255,255,255,.8)
   -radius=30
   {
     Cost Text
-    -7,5
+    TextComponent
+    -centered=true
   }
  }
  `
@@ -243,9 +294,9 @@ Road Circle
 Draggable
 CircleComponent
 -fill=chocolate
--radius=10
+-radius=15
 CircleCollider
--radius=10
+-radius=15
  `
  let Town =
  `
@@ -253,11 +304,11 @@ City Rectangle
 Draggable
 RectangleComponent
 -fill=chocolate
--width=20
--height=20
+-width=30
+-height=30
 AABBCollider
--width=20
--height=20
+-width=30
+-height=30
  `
 
 

@@ -67,8 +67,8 @@ export default class MainController extends Base.Behavior {
 
     //Now setup the players
     let px = 300;
-    let py = -200;
-    let yMargin = 150
+    let py = -300;
+    let yMargin = 175
     let playerColors = ["orange", "violet", "blue", "cyan"];
     for (let i = 0; i < 4; i++) {
       let x = px;
@@ -78,13 +78,13 @@ export default class MainController extends Base.Behavior {
         city.$("CircleComponent").fill = playerColors[i];
       }
       x += 4 * 30;
-      for (let t = 0; t < 4; t++) {
+      for (let t = 0; t < 5; t++) {
         let town = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Town, Base._cs, new Point(x + t * 30, py + i * yMargin));
         town.$("RectangleComponent").fill = playerColors[i];
       }
-      x += 4 * 30
-      for (let t = 0; t < 4; t++) {
-        let road = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Road, Base._cs, new Point(x + t * 30, py + i * yMargin));
+      x = px
+      for (let t = 0; t < 15; t++) {
+        let road = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Road, Base._cs, new Point(x + (t%8 * 30), py + 30*(1+Math.floor(t/8)) + i*yMargin));
         road.$("CircleComponent").fill = playerColors[i];
       }
     }

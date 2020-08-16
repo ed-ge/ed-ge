@@ -20361,14 +20361,14 @@ class Stack extends Behavior {
   }
   onMouseDown() {
     this.mouseDown = true;
-    let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
+    let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], Base._cs, this.$go.worldLocation);
     spawned.$("Draggable").mouseDown = true;
   }
   // onMouseUp() {
   //   this.mouseDown = false;
   // }
   onTouchStart(){
-    let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
+    let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], Base._cs, this.$go.worldLocation);
     spawned.$("Draggable").touchDown = true;
   }
   
@@ -20383,12 +20383,20 @@ class TextComponent extends Component {
         this.text = "[Blank]";
         this.font = "10pt Sans";
         this.fill = "black";
+        this.centered = false;
     }
     draw(ctx) {
         ctx.save();
         ctx.fillStyle = this.fill;
         ctx.font = this.font;
-        ctx.fillText(this.text, 0, 0);
+        if (!this.centered)
+            ctx.fillText(this.text, 0, 0);
+        else {
+            let metrics = ctx.measureText(this.text);
+            let fontHeight = metrics.actualBoundingBoxAscent;
+            
+            ctx.fillText(this.text, -metrics.width/2, fontHeight/2);
+        }
         ctx.restore();
     }
     update() {
