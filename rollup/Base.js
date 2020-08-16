@@ -203,11 +203,11 @@ class NameableParent {
         return this.findByName(name);
     }
     findByName(name) {
-        this.findBy(o => o.name == name);
+        return this.findBy(o => o.name == name);
     }
     /** Find a NameableParent by UUID */
     findByUUID(uuid) {
-        this.findBy(o => o.uuid == uuid);
+        return this.findBy(o => o.uuid == uuid)
     }
     findBy(lambda) {
         if (lambda(this))
@@ -22286,12 +22286,12 @@ class CrowdSimulationPlugin {
   sceneBoot(scene){
     let simulatorObject = this.simulators.find(s => s.scene == scene.uuid);
     console.log(_.VERSION);
-    let recast = _.cloneDeep(window.recast);
-    console.log("Done with clone");
-    recast.OBJDataLoader(floorObj, ()=>{
-      simulatorObject.recastInfo.navmesh = recast.buildTiled();
+    // let recast = _.cloneDeep(window.recast);
+    // console.log("Done with clone");
+    // recast.OBJDataLoader(floorObj, ()=>{
+    //   simulatorObject.recastInfo.navmesh = recast.buildTiled();
 
-    });
+    // })
   }
   bootSimulator() {
     let simulator = new Simulator();

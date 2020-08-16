@@ -119,11 +119,11 @@ class NameableParent {
         return this.findByName(name);
     }
     findByName(name) {
-        this.findBy(o => o.name == name);
+        return this.findBy(o => o.name == name);
     }
     /** Find a NameableParent by UUID */
     findByUUID(uuid) {
-        this.findBy(o => o.uuid == uuid)
+        return this.findBy(o => o.uuid == uuid)
     }
     findBy(lambda) {
         if (lambda(this))

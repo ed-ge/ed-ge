@@ -15,6 +15,7 @@ export default class MainController extends Base.Behavior {
     let indeces = [0, 1, -1, 2, -2]
     let hexagonsAcross = [3, 4, 5, 4, 3];
 
+
     for (let i = 0; i < hexagonsAcross.length; i++) {
       let across = hexagonsAcross[i];
       let lineStartX = startX;
@@ -24,6 +25,7 @@ export default class MainController extends Base.Behavior {
       for (let j = 0; j < across; j++) {
         let index = indeces[j]
         let tile = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Hexagon, Base._cs, new Base.Point(lineStartX + index * apothem * 2, startY + i * radius * 1.5), new Base.Point(1, 1), 0);
+
         tiles.push(tile);
       }
     }
@@ -34,44 +36,55 @@ export default class MainController extends Base.Behavior {
       assignmentArray.push(i);
     }
     assignmentArray = this.shuffleArray(assignmentArray);
+    let rollArray = ["12", "11", "11", "10", "10", "9", "9", "8", "8", "6", "6", "5", "5", "4", "4", "3", "3", "2"];
+    rollArray = this.shuffleArray(rollArray);
+
     //Assign titles
     let tileTypes = [
-      {name: "Empty", color:"lightgray", count:1},
-      {name: "Brick", color:"red", count:3},
-      {name: "Stone", color:"gray", count:3},
-      {name: "Wheat", color:"yellow", count:4},
-      {name: "Sheep", color:"lime", count:4},
-      {name: "Wood", color:"green", count:4},
+      { name: "Empty", color: "lightgray", count: 1 },
+      { name: "Brick", color: "red", count: 3 },
+      { name: "Stone", color: "gray", count: 3 },
+      { name: "Wheat", color: "yellow", count: 4 },
+      { name: "Sheep", color: "lime", count: 4 },
+      { name: "Wood", color: "green", count: 4 },
     ]
 
     let inc = 0;
-    for(let i = 0; i < tileTypes.length; i++){
+    let foundBlank = false;
+    for (let i = 0; i < tileTypes.length; i++) {
       let type = tileTypes[i];
-      for(let j = 0; j < type.count; j++,inc++){
-        tiles[assignmentArray[inc]].$("HexagonComponent").fill = type.color; 
+      for (let j = 0; j < type.count; j++, inc++) {
+        tiles[assignmentArray[inc]].$("HexagonComponent").fill = type.color;
+        if (inc == 0) {
+          foundBlank = true;
+          tiles[assignmentArray[inc]].findByName("Cost").$("TextComponent").text = "--";
+        }
+        else {
+          tiles[assignmentArray[inc]].findByName("Cost").$("TextComponent").text = rollArray[foundBlank ? inc - 1 : inc];
+        }
       }
     }
 
     //Now setup the players
     let px = 300;
     let py = -200;
-    let yMargin = 80
-    let playerColors = ["red", "greed", "blue", "cyan"];
-    for(let i = 0; i < 4; i++){
+    let yMargin = 150
+    let playerColors = ["orange", "violet", "blue", "cyan"];
+    for (let i = 0; i < 4; i++) {
       let x = px;
       //Cities
-      for(let c = 0; c < 4; c++){
-        let city = Base.Serializer.instantiate(Base.SceneManager.Prefabs.City, Base._cs, new Point(px + c *30, py + i * yMargin ));
+      for (let c = 0; c < 4; c++) {
+        let city = Base.Serializer.instantiate(Base.SceneManager.Prefabs.City, Base._cs, new Point(px + c * 30, py + i * yMargin));
         city.$("CircleComponent").fill = playerColors[i];
       }
-      x += 4*30;
-      for(let t = 0; t < 4; t++){
-        let town = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Town, Base._cs, new Point(x + t *30, py + i * yMargin ));
+      x += 4 * 30;
+      for (let t = 0; t < 4; t++) {
+        let town = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Town, Base._cs, new Point(x + t * 30, py + i * yMargin));
         town.$("RectangleComponent").fill = playerColors[i];
       }
-      x += 4*30
-      for(let t = 0; t < 4; t++){
-        let road = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Road, Base._cs, new Point(x + t *30, py + i * yMargin ));
+      x += 4 * 30
+      for (let t = 0; t < 4; t++) {
+        let road = Base.Serializer.instantiate(Base.SceneManager.Prefabs.Road, Base._cs, new Point(x + t * 30, py + i * yMargin));
         road.$("CircleComponent").fill = playerColors[i];
       }
     }
@@ -84,7 +97,7 @@ export default class MainController extends Base.Behavior {
       .map(a => [Math.random(), a])
       .sort((a, b) => a[0] - b[0])
       .map(a => a[1]);
-    
+
   }
 
 

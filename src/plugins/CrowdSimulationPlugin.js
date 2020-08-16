@@ -97,12 +97,12 @@ class CrowdSimulationPlugin {
   sceneBoot(scene){
     let simulatorObject = this.simulators.find(s => s.scene == scene.uuid);
     console.log(_.VERSION);
-    let recast = _.cloneDeep(window.recast);
-    console.log("Done with clone");
-    recast.OBJDataLoader(floorObj, ()=>{
-      simulatorObject.recastInfo.navmesh = recast.buildTiled();
+    // let recast = _.cloneDeep(window.recast);
+    // console.log("Done with clone");
+    // recast.OBJDataLoader(floorObj, ()=>{
+    //   simulatorObject.recastInfo.navmesh = recast.buildTiled();
 
-    })
+    // })
   }
   bootSimulator() {
     let simulator = new Simulator();
