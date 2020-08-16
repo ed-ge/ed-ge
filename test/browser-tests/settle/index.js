@@ -25,6 +25,7 @@ Stacks Empty
 Dice Rectangle
 0,-200
 DiceController
+GUIOnlyCollider
 RectangleComponent
 -width=100
 -height=50
@@ -46,6 +47,7 @@ TextComponent
 
 Robber Rectangle
 0,-50
+GUIOnlyCollider
 Draggable
 RectangleComponent
 -width=40
@@ -159,6 +161,14 @@ CircleComponent
 -radius=20
 CircleCollider
 -radius=20
+{
+  WheatIcon Text
+  TextComponent
+  -font=25px FontAwesome
+  -text=\uf7ec
+  -fill=black
+  -centered=true
+  }
 `
 let Sheep =
 `
@@ -166,10 +176,18 @@ Sheep Circle
 Draggable
 Trashable
 CircleComponent
--fill=green
+-fill=lime
 -radius=20
 CircleCollider
 -radius=20
+{
+  Icon Text
+  TextComponent
+  -font=25px FontAwesome
+  -text=\uf553
+  -fill=black
+  -centered=true
+  }
 `
 let Brick =
 `
@@ -181,6 +199,14 @@ CircleComponent
 -radius=20
 CircleCollider
 -radius=20
+{
+  Icon Text
+  TextComponent
+  -font=25px FontAwesome
+  -text=\uf84c
+  -fill=black
+  -centered=true
+  }
 `
 let Wood =
 `
@@ -192,6 +218,14 @@ CircleComponent
 -radius=20
 CircleCollider
 -radius=20
+{
+  Icon Text
+  TextComponent
+  -font=25px FontAwesome
+  -text=\uf1bb
+  -fill=black
+  -centered=true
+  }
 `
 let Stone =
 `
@@ -203,6 +237,14 @@ CircleComponent
 -radius=20
 CircleCollider
 -radius=20
+{
+  Icon Text
+  TextComponent
+  -font=25px FontAwesome
+  -text=\uf19c
+  -fill=black
+  -centered=true
+  }
 `
 let WheatStack = 
 `
@@ -281,6 +323,7 @@ CircleCollider
  let City =
  `
 City Circle
+GUIOnlyCollider
 Draggable
 CircleComponent
 -radius=20
@@ -300,6 +343,7 @@ CircleCollider
  let Road =
  `
 Road Circle
+GUIOnlyCollider
 Draggable
 CircleComponent
 -radius=15
@@ -319,6 +363,7 @@ CircleCollider
   let Town =
   `
   City Rectangle
+  GUIOnlyCollider
   Draggable
   RectangleComponent
   -width=30

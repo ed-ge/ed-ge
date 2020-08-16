@@ -20217,6 +20217,12 @@ class Draggable extends Behavior {
   }
 }
 
+class GUIOnlyCollider extends Component {
+  constructor(){
+    super();
+  }
+}
+
 class HexagonComponent extends Component {
 
   constructor() {
@@ -21956,8 +21962,11 @@ class CollisionPlugin{
     let collisionHelper = Base.Serializer.components.CollisionHelper;
 
     //Add collision behavior
-    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+    // let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
     
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+    collidableChildren = collidableChildren.filter(x=>!x.gameObject.anyComponent(Base.Serializer.components.GUIOnlyCollider));
+
     for (let i = 0; i < collidableChildren.length; i++) {
       let gameObjectOne = collidableChildren[i].gameObject;
       // let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
@@ -22697,6 +22706,7 @@ let Components = {
   CollisionHelper,
   ConvexCollider,
   Draggable,
+  GUIOnlyCollider,
   HexagonComponent,
   PeerServer,
   PeerClient,
