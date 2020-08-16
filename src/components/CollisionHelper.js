@@ -62,7 +62,7 @@ const CollisionHelper = {
 
     },
     inCollisionCircleCircle(circle1, circle2) {
-        let distance = circle1.gameObject.location.distance(circle2.gameObject.location);
+        let distance = circle1.gameObject.worldLocation.distance(circle2.gameObject.worldLocation);
 
         if (distance < +circle1.collider.radius + +circle2.collider.radius)
             return true;

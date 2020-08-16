@@ -188,7 +188,7 @@ Wood Circle
 Draggable
 Trashable
 CircleComponent
--fill=chocolate
+-fill=green
 -radius=20
 CircleCollider
 -radius=20
@@ -283,8 +283,8 @@ CircleCollider
 City Circle
 Draggable
 CircleComponent
--fill=chocolate
 -radius=20
+-stroke=black
 CircleCollider
 -radius=20
  `
@@ -293,8 +293,8 @@ CircleCollider
 Road Circle
 Draggable
 CircleComponent
--fill=chocolate
 -radius=15
+-stroke=black
 CircleCollider
 -radius=15
  `
@@ -303,9 +303,9 @@ CircleCollider
 City Rectangle
 Draggable
 RectangleComponent
--fill=chocolate
 -width=30
 -height=30
+-stroke=black
 AABBCollider
 -width=30
 -height=30
