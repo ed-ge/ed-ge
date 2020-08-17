@@ -10,6 +10,7 @@
         "rollup": "./node_modules/rollup/dist/bin/rollup src/Base.js --file ./rollup/Base.js --format es --name 'Base'",
         "rollupWatch": "./node_modules/rollup/dist/bin/rollup src/Base.js --file ./rollup/Base.js --format es --name 'Base' -w",
         "free": "rollup src/Base.js --file ./free/Base.js --format iife --name 'Base'",
+        "buildExamples": "bash ./buildExamples.sh",
         "doc": "./node_modules/.bin/jsdoc -d ./docs -r ./src -c ./config/.jsdoc.json"
     },
     "keywords": [
