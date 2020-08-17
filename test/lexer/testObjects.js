@@ -21,3 +21,4 @@ for (let i = 0; i < files.length; i++) {
   console.log(parser.results.length + " total way(s) to parse the program.");
   console.log("--- Done with " + file);
 }
+console.log("All the way done.")
