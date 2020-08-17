@@ -28,19 +28,19 @@ Object -> MainLine TransformLines ComponentLines ChildrenList:? {% topLevel %}
 MainLine -> Name __ Prefab  (__ "|" _ Layer ):? _ {%d=>{return{name:d[0], prefab:d[2], layer:d[3]?d[3][3]:"default"}}%}
 TransformLines ->  ( NewLine Transforms ):? {%d=>{return{transforms:d[0]?d[0][1]:{translate:{x:0,y:0},scale:{x:1,y:1},rotation:0}}}%}
 ComponentLines -> ( NewLine Components ):* {% getComponents %}
-ChildrenList -> NewLine _ "{" _ NewLine _ Objects NewLine _ "}" _ {% d=> {return{children:d[6]}} %}
+ChildrenList -> NewLine  "{" _ NewLine Objects NewLine "}" _ {% d=> {return{children:d[4]}} %}
 
 Name -> Word    {% id %}
 Prefab -> Word  {% id %}
 Layer -> Word   {% id %}
 
-Transforms -> _ Translation ( NewLine SecondTransforms ):?   {% d=> {return {translate: d[1], scale:d[2]?d[2][1].scale:{x:1,y:1}, rotation:d[2]?d[2][1].rotation:0}}%}
-SecondTransforms -> _ Scale ( NewLine Rotation ):?          {% d=> {return {scale: d[1], rotation:d[2]?d[2][1]:0}}%}
+Transforms -> Translation ( NewLine SecondTransforms ):?   {% d=> {return {translate: d[0], scale:d[1]?d[1][1].scale:{x:1,y:1}, rotation:d[2]?d[2][1].rotation:0}}%}
+SecondTransforms ->  Scale ( NewLine Rotation ):?          {% d=> {return {scale: d[0], rotation:d[1]?d[1][1]:0}}%}
 Translation ->  Point _ {% id %}
 
 Scale -> Point _       {% id %}
 
-Components -> _ ComponentName _ ( NewLine _ "-" _ ComponentKeyValue):*   {% getComponentList %}
+Components ->  ComponentName _ ( NewLine "-" _ ComponentKeyValue):*   {% getComponentList %}
 ComponentName->Word {% id %}
 ComponentKeyValue -> Word _ ComponentValue {% d => {return {key:d[0], value:d[2]}}%}
 ComponentValue -> %componentLine {% handleComponentLine %}
@@ -54,7 +54,7 @@ Int -> %int {% getValue %}
 Word -> %word {% getValue %}
 String -> %string {% getValue %}
 
-NewLine -> %newline {% ignore %}
+NewLine -> %newline _ {% ignore %}
 _  -> wschar:* {% ignore %}
 __ -> wschar:+ {% ignore %}
 wschar -> %wschar {% id %}
@@ -109,14 +109,14 @@ function getComponents(d){
 function getComponentList(d){
     let toReturn = [];
     let component = {
-        name:d[1],
+        name:d[0],
         keyValues:[],
     };
     toReturn.push(component)
 
-    for(let i = 0; i < d[3].length; i++){
-        let keyValueLine = d[3][i];
-        let keyValue = keyValueLine[4];
+    for(let i = 0; i < d[2].length; i++){
+        let keyValueLine = d[2][i];
+        let keyValue = keyValueLine[3];
         component.keyValues.push(keyValue);
     }
 

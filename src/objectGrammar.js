@@ -69,14 +69,14 @@ function getComponents(d){
 function getComponentList(d){
     let toReturn = [];
     let component = {
-        name:d[1],
+        name:d[0],
         keyValues:[],
     };
     toReturn.push(component)
 
-    for(let i = 0; i < d[3].length; i++){
-        let keyValueLine = d[3][i];
-        let keyValue = keyValueLine[4];
+    for(let i = 0; i < d[2].length; i++){
+        let keyValueLine = d[2][i];
+        let keyValue = keyValueLine[3];
         component.keyValues.push(keyValue);
     }
 
@@ -117,36 +117,36 @@ var grammar = {
     {"name": "ComponentLines$ebnf$1$subexpression$1", "symbols": ["NewLine", "Components"]},
     {"name": "ComponentLines$ebnf$1", "symbols": ["ComponentLines$ebnf$1", "ComponentLines$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "ComponentLines", "symbols": ["ComponentLines$ebnf$1"], "postprocess": getComponents},
-    {"name": "ChildrenList", "symbols": ["NewLine", "_", {"literal":"{"}, "_", "NewLine", "_", "Objects", "NewLine", "_", {"literal":"}"}, "_"], "postprocess": d=> {return{children:d[6]}}},
+    {"name": "ChildrenList", "symbols": ["NewLine", {"literal":"{"}, "_", "NewLine", "Objects", "NewLine", {"literal":"}"}, "_"], "postprocess": d=> {return{children:d[4]}}},
     {"name": "Name", "symbols": ["Word"], "postprocess": id},
     {"name": "Prefab", "symbols": ["Word"], "postprocess": id},
     {"name": "Layer", "symbols": ["Word"], "postprocess": id},
     {"name": "Transforms$ebnf$1$subexpression$1", "symbols": ["NewLine", "SecondTransforms"]},
     {"name": "Transforms$ebnf$1", "symbols": ["Transforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Transforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Transforms", "symbols": ["_", "Translation", "Transforms$ebnf$1"], "postprocess": d=> {return {translate: d[1], scale:d[2]?d[2][1].scale:{x:1,y:1}, rotation:d[2]?d[2][1].rotation:0}}},
+    {"name": "Transforms", "symbols": ["Translation", "Transforms$ebnf$1"], "postprocess": d=> {return {translate: d[0], scale:d[1]?d[1][1].scale:{x:1,y:1}, rotation:d[2]?d[2][1].rotation:0}}},
     {"name": "SecondTransforms$ebnf$1$subexpression$1", "symbols": ["NewLine", "Rotation"]},
     {"name": "SecondTransforms$ebnf$1", "symbols": ["SecondTransforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "SecondTransforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "SecondTransforms", "symbols": ["_", "Scale", "SecondTransforms$ebnf$1"], "postprocess": d=> {return {scale: d[1], rotation:d[2]?d[2][1]:0}}},
-    {"name": "Translation", "symbols": ["Point"], "postprocess": id},
-    {"name": "Scale", "symbols": ["Point"], "postprocess": id},
+    {"name": "SecondTransforms", "symbols": ["Scale", "SecondTransforms$ebnf$1"], "postprocess": d=> {return {scale: d[0], rotation:d[1]?d[1][1]:0}}},
+    {"name": "Translation", "symbols": ["Point", "_"], "postprocess": id},
+    {"name": "Scale", "symbols": ["Point", "_"], "postprocess": id},
     {"name": "Components$ebnf$1", "symbols": []},
-    {"name": "Components$ebnf$1$subexpression$1", "symbols": ["NewLine", "_", {"literal":"-"}, "_", "ComponentKeyValue"]},
+    {"name": "Components$ebnf$1$subexpression$1", "symbols": ["NewLine", {"literal":"-"}, "_", "ComponentKeyValue"]},
     {"name": "Components$ebnf$1", "symbols": ["Components$ebnf$1", "Components$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "Components", "symbols": ["_", "ComponentName", "_", "Components$ebnf$1"], "postprocess": getComponentList},
+    {"name": "Components", "symbols": ["ComponentName", "_", "Components$ebnf$1"], "postprocess": getComponentList},
     {"name": "ComponentName", "symbols": ["Word"], "postprocess": id},
     {"name": "ComponentKeyValue", "symbols": ["Word", "_", "ComponentValue"], "postprocess": d => {return {key:d[0], value:d[2]}}},
     {"name": "ComponentValue", "symbols": [(lexer.has("componentLine") ? {type: "componentLine"} : componentLine)], "postprocess": handleComponentLine},
     {"name": "Point", "symbols": ["Number", "_", {"literal":","}, "_", "Number"], "postprocess": d => { return {x:d[0],y:d[4]}}},
-    {"name": "Rotation", "symbols": ["_", "Number"], "postprocess": d=>d[1]},
+    {"name": "Rotation", "symbols": ["Number", "_"], "postprocess": d=>d[1]},
     {"name": "Number", "symbols": ["Float"], "postprocess": id},
     {"name": "Number", "symbols": ["Int"], "postprocess": id},
     {"name": "Float", "symbols": [(lexer.has("float") ? {type: "float"} : float)], "postprocess": getValue},
     {"name": "Int", "symbols": [(lexer.has("int") ? {type: "int"} : int)], "postprocess": getValue},
     {"name": "Word", "symbols": [(lexer.has("word") ? {type: "word"} : word)], "postprocess": getValue},
     {"name": "String", "symbols": [(lexer.has("string") ? {type: "string"} : string)], "postprocess": getValue},
-    {"name": "NewLine", "symbols": [(lexer.has("newline") ? {type: "newline"} : newline)], "postprocess": ignore},
+    {"name": "NewLine", "symbols": [(lexer.has("newline") ? {type: "newline"} : newline), "_"], "postprocess": ignore},
     {"name": "_$ebnf$1", "symbols": []},
     {"name": "_$ebnf$1", "symbols": ["_$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "_", "symbols": ["_$ebnf$1"], "postprocess": ignore},
