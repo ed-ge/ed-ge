@@ -21,7 +21,7 @@ const lexer = moo.compile({
 
 @lexer lexer
 
-Objects -> Object ( NewLine NewLine Object):* {% parseObjects %}
+Objects -> Object ( NewLine NewLine:+ Object):* {% parseObjects %}
 
 Object -> MainLine TransformLines ComponentLines ChildrenList:? {% topLevel %}  
 
