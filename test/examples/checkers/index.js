@@ -1,4 +1,5 @@
 //Import any custom behaviors
+import Base from "../../../src/Base.js"
 import MainController from "./MainController.js"
 
 //Add custom behaviors to an object we pass to Main

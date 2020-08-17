@@ -95,24 +95,9 @@ var Base = (function () {
 
     }
 
-    /**
-     * Parent interface for scenes and game objects.
-     * 
-     * The Scene class and the GameObject class both descend from this class.
-     */
-
-
     class NameableParent {
 
-        /**
-         * An array of children this instance has
-         */
-        //children = [];
 
-        /**
-         * The name of this instance
-         */
-        //name = "";
 
         /**
          * 
@@ -135,7 +120,7 @@ var Base = (function () {
          */
 
         destroy(gameObject) {
-            if(arguments.length != 1 || !(gameObject instanceof NameableParent)) throw new Error("destroy takes exactly one argument of type NameableParent")
+            if (arguments.length != 1 || !(gameObject instanceof NameableParent)) throw new Error("destroy takes exactly one argument of type NameableParent")
             let found = false;
             for (let i = 0; i < this.children.length && !found; i++) {
                 let child = this.children[i];
@@ -148,83 +133,119 @@ var Base = (function () {
             }
             if (found) {
                 this.children = this.children.filter(i => i != gameObject);
+                this.callDestroyEvent(gameObject, this);
                 return true;
             } else {
                 //Loop again and destroy recursively
                 for (let i = 0; i < this.children.length && !found; i++) {
                     let child = this.children[i];
                     let result = child.destroy(gameObject);
-                    if (result) return true;
+                    if (result) {
+                        return true;
+                    }
                 }
                 //If we get here we didn't find anything
                 return false;
             }
-
-
         }
-
-        addChild(child){
-            if(arguments.length != 1 || !(child instanceof NameableParent)) throw new Error("addChild requires exactly one argument of type NameableParent")
-            if(!child || child.parent === undefined) throw  new Error("addChild requires one argument that have a parent member variable");
-            if(this.children.includes(child)) return console.log("Warning: This parent already has that child. Child not added");
+        callDestroyEvent(gameObject, parent) {
+            Base.Plugins
+                .filter(plugin => plugin.OnDestroy)
+                .forEach(plugin => plugin.OnDestroy(gameObject, parent));
+        }
+        addChild(child, scene) {
+            //if(arguments.length != 1 || !(child instanceof NameableParent)) throw new Error("addChild requires exactly one argument of type NameableParent")
+            //if(!child || child.parent === undefined) throw  new Error("addChild requires one argument that have a parent member variable");
+            if (this.children.includes(child)) return console.log("Warning: This parent already has that child. Child not added");
             this.children.push(child);
             child.parent = this;
-            if(this.newChildEvent)
+            //Find the terminal parent
+            let highestParent = child.parent;
+            while (highestParent.parent != null) {
+                highestParent = highestParent.parent;
+            }
+            Base.Plugins.filter(plugin => plugin.OnNewChild).forEach(plugin => plugin.OnNewChild(child, highestParent));
+            if (this.newChildEvent)
                 this.newChildEvent(child);
         }
-
-        isADescendant(descendant){
-            if(arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isADescendant expects exactly one argument of type NameableParent")
-            if(this == descendant) return true;
-            for(let child of this.children){
-                let result = child.isADescendant(descendant);
-                if(result) return true;
+        isChild(descendant) {
+            if (arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isChildDeep expects exactly one argument of type NameableParent")
+            if (this == descendant) return true;
+            for (let child of this.children) {
+                if (child == descendant) return true;
             }
             return false;
         }
-        $(name){
+        isChildDeep(descendant) {
+            if (arguments.length != 1 || !(descendant instanceof NameableParent)) throw new Error("isChildDeep expects exactly one argument of type NameableParent")
+            if (this == descendant) return true;
+            for (let child of this.children) {
+                let result = child.isChildDeep(descendant);
+                if (result) return true;
+            }
+            return false;
+        }
+        allWithComponent(type) {
+            let toReturn = [];
+            if (this.getComponent) {
+                let component = this.getComponent(type);
+                if (component) {
+                    toReturn.push({ component, gameObject: this });
+                }
+            }
+
+            for (let i = 0; i < this.children.length; i++) {
+                let child = this.children[i];
+
+                let childResults = child.allWithComponent(type);
+                toReturn.push(...childResults);
+            }
+            return toReturn;
+        }
+        $(name) {
             return this.findByName(name);
         }
-
-        findByName(name){
-            if(arguments.length != 1 || !(typeof name == 'string' || name instanceof String)) throw new Error("findByName expects exactly one string argument.")
-            if(this.name == name)
-                return this;
-            for(let child of this.children){
-                let result = child.findByName(name);
-                if(result != null) return result;        
-            }
-            //We didn't find anything
-            return null;
+        findByName(name) {
+            return this.findBy(o => o.name == name);
         }
-
         /** Find a NameableParent by UUID */
-        findByUUID(uuid){
-            if(arguments.length != 1 || !(typeof uuid == 'string' || uuid instanceof String)) throw new Error("findByUUID expects exactly one string argument.")
-             
-          if(this.uuid == uuid)
+        findByUUID(uuid) {
+            return this.findBy(o => o.uuid == uuid)
+        }
+        findBy(lambda) {
+            if (lambda(this))
                 return this;
-            for(let child of this.children){
-                let result = child.findByUUID(uuid);
-                if(result != null) return result;        
+            for (let child of this.children) {
+                let result = child.findBy(lambda);
+                if (result != null)
+                    return result;
             }
-            //We didn't find anything
             return null;
         }
-
+        hasParentWithComponent(component){
+            let candidates = Base.$$.children.filter(i => i.anyComponent(component));
+            if (candidates.length == 0) return false; // We don't have screen space
+            for (let candidate of candidates) {
+              if (candidate.isChildDeep(this)) {
+                return true;
+              }
+            }
+            return false;
+        }
+        
         /**Generate a uuid
          * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
          */
         uuidv4() {
-            if(arguments.length != 0) throw new Error("uuidv4 takes no arguments.")
-            
-          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-          });
+            if (arguments.length != 0) throw new Error("uuidv4 takes no arguments.")
+
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
         }
 
-        
+
     }
 
     /**
@@ -494,38 +515,7 @@ var Base = (function () {
      * or an invisible container for logic
      */
     class GameObject extends NameableParent {
-      /**
-       * The x position of the game object relative to its parent
-       */
-      //x;
-
-      /**
-       * The y position of the game object relative to its parent
-       */
-      //y;
-
-      /**
-       * The scale of the game object in x relative to its parent
-       */
-      //scaleX;
-
-      /**
-       * The scale of the game object in y relative to its parent
-       */
-      //scaleY;
-
-      /**
-       * The rotation of the game object relative to its parent
-       */
-      //rotation;
-
-      /**
-       * Array of components this game object has. Note, components should only be
-       * added to this array used GameObject.addComponent() to components.push().
-       * Otherwise the components won't have their parent game object member
-       * variable method populated.
-       */
-      //components = [];
+      
 
 
       /**
@@ -684,16 +674,11 @@ var Base = (function () {
           //https://stackoverflow.com/a/7772724/10047920
           let component = this.components.find(i => i.constructor.name === type);
           if (component) return component;
-          throw new Error("Error, couldn't find type " + type);
+          return null;
         } else {
           let component;
-          try {
             component = this.components.find(i => i instanceof type);
-          } catch (e) {
-            console.log(e);
-          }
-          if (component) return component;
-          throw new Error("Error, couldn't find type " + type);
+            return component;
         }
       }
       /**
@@ -735,10 +720,7 @@ var Base = (function () {
         }
       }
 
-      // serialize() {
-      //   if(arguments.length != 0) throw new Error("seralize expects no arguments")
-        
-      // }
+      
 
       onDestroy(){
         if(arguments.length != 0) throw new Error("onDestroy expects no arguments");
@@ -1002,1396 +984,6 @@ var Base = (function () {
             return this.a * point.x + this.b * point.y + this.c;
         }
     }
-
-    class Collider extends Component {
-        constructor() {
-            super();
-        }
-
-
-
-    }
-
-    class PointCollider extends Collider {
-        constructor() {
-            super();
-        }
-
-    }
-
-    /* c8 ignore next 1000 */
-    function Vector2(x, y) {
-        this.x = x;
-        this.y = y;
-
-        this.plus = function(vector) {
-        	return new Vector2(x + vector.x, y + vector.y);
-        };
-        
-        this.minus = function(vector) {
-        	return new Vector2(x - vector.x, y - vector.y);
-        };
-        
-        this.multiply = function(vector) {
-        	return x * vector.x + y * vector.y;
-        };
-        
-        this.scale = function(k) {
-            return new Vector2(x*k, y*k);
-        };
-    }
-
-    function Line$1() {
-    	/*
-    	this.point; // Vector2
-    	this.direction; // Vector2
-    	*/
-    }
-
-    function Obstacle() {
-    	/*
-    	this.point; // Vector2
-    	this.unitDir; // Vector2;
-    	this.isConvex; // boolean
-    	this.id; // int
-    	this.prevObstacle; // Obstacle
-    	this.nextObstacle; // Obstacle
-    	*/
-    }
-
-    function KeyValuePair(key, value) {
-    	this.key = key;
-    	this.value = value;
-    }
-
-    let RVOMath = {};
-
-    RVOMath.RVO_EPSILON = 0.01;
-
-    RVOMath.absSq = function(v) {
-        return v.multiply(v);
-    };
-
-    RVOMath.normalize = function(v) {
-    	return v.scale(1 / RVOMath.abs(v)); // v / abs(v)
-    };
-
-    RVOMath.distSqPointLineSegment = function(a, b, c) {
-    	var aux1 = c.minus(a);
-    	var aux2 = b.minus(a);
-    	
-    	// r = ((c - a) * (b - a)) / absSq(b - a);
-    	var r = aux1.multiply(aux2) / RVOMath.absSq(aux2);
-    	
-    	if (r < 0) {
-    		return RVOMath.absSq(aux1); // absSq(c - a)
-    	} else if (r > 1) {
-    		return RVOMath.absSq(aux2); // absSq(c - b)
-    	} else {
-    		return RVOMath.absSq( c.minus(a.plus(aux2.scale(r))) ); // absSq(c - (a + r * (b - a)));
-    	}
-    };
-
-    RVOMath.sqr = function(p) {
-    	return p * p;
-    };
-
-    RVOMath.det = function(v1, v2) {
-    	return v1.x * v2.y - v1.y* v2.x;
-    };
-
-    RVOMath.abs = function(v) {
-    	return Math.sqrt(RVOMath.absSq(v));
-    };
-
-    RVOMath.leftOf = function(a, b, c) {
-    	return RVOMath.det(a.minus(c), b.minus(a));
-    };
-
-    /* c8 ignore next 1000 */
-
-
-    function KdTree() {
-    	var MAXLEAF_SIZE = 100;
-    	
-    	function FloatPair(a, b) {
-    		this.a = a;
-    		this.b = b;
-    		
-    		this.mt = function(rhs) {
-    			return this.a < rhs.a || !(rhs.a < this.a) && this.b < rhs.b;
-    		};
-    		
-    		this.met = function(rhs) {
-    			return (this.a == rhs.a && this.b == rhs.b) || this.mt(rhs); 
-    		};
-    		
-    		this.gt = function(rhs) {
-    			return !this.met(rhs);
-    		};
-    		
-    		this.get = function(rhs) {
-    			return !this.mt(rhs);
-    		};
-    	}
-    	
-    	function AgentTreeNode() {
-    		/**
-            int begin;
-            int end;
-            int left;
-            float maxX;
-            float maxY;
-            float minX;
-            float minY;
-            int right;
-            */
-    	}
-    	
-    	function ObstacleTreeNode() {
-    		/**
-    		ObstacleTreeNode left;
-            Obstacle obstacle;
-            ObstacleTreeNode right;
-    		*/
-    	}
-    	
-    	var agents = []; // Agent[]
-    	var agentTree = []; // AgentTreeNode[]
-    	var obstacleTree = {}; // ObstacleTreeNode
-    	
-    	this.buildAgentTree = function(simulator) {
-    		if (agents.length != simulator.getNumAgents()) {
-    			agents = simulator.agents;
-    			
-    			for (var i=0; i<2*agents.length; i++) {
-    				agentTree.push(new AgentTreeNode());
-    			}
-    		}
-    		
-    		if (agents.length > 0) {
-    			buildAgentTreeRecursive(0, agents.length, 0);
-    		}
-    	};
-    	
-    	var buildAgentTreeRecursive = function(begin, end, node) {
-    		agentTree[node].begin = begin;
-    		agentTree[node].end = end;
-    		agentTree[node].minX = agentTree[node].maxX = agents[begin].position.x;
-    		agentTree[node].minY = agentTree[node].maxY = agents[begin].position.y;
-    		
-    		for (var i = begin+1; i<end; ++i) {
-    			agentTree[node].maxX = Math.max(agentTree[node].maxX, agents[i].position.x);
-    			agentTree[node].minX = Math.max(agentTree[node].minX, agents[i].position.x);
-    			agentTree[node].maxY = Math.max(agentTree[node].maxX, agents[i].position.y);
-    			agentTree[node].minY = Math.max(agentTree[node].minY, agents[i].position.y);
-    		}
-    		
-    		if (end - begin > MAXLEAF_SIZE) {
-    			// no leaf node
-    			var isVertical = agentTree[node].maxX - agentTree[node].minX > agentTree[node].maxY - agentTree[node].minY;
-    			var splitValue = isVertical ? 0.5 * (agentTree[node].maxX + agentTree[node].minX) : 0.5 * (agentTree[node].maxY + agentTree[node].minY);
-    			
-    			var left = begin;
-    			var right = end;
-    			
-    			while (left < right) {
-    				while (left < right && (isVertical ? agents[left].position.x : agents[left].position.y) < splitValue)
-                    {
-                        ++left;
-                    }
-
-                    while (right > left && (isVertical ? agents[right - 1].position.x : agents[right - 1].position.y) >= splitValue)
-                    {
-                        --right;
-                    }
-
-                    if (left < right)
-                    {
-                        var tmp = agents[left];
-                        agents[left] = agents[right - 1];
-                        agents[right - 1] = tmp;
-                        ++left;
-                        --right;
-                    }
-    			}
-    			
-    			var leftSize = left - begin;
-    			if (leftSize == 0) {
-    				++leftSize;
-    				++left;
-    				++right;
-    			}
-    			
-    			agentTree[node].left = node + 1;
-                agentTree[node].right = node + 1 + (2 * leftSize - 1);
-
-                buildAgentTreeRecursive(begin, left, agentTree[node].left);
-                buildAgentTreeRecursive(left, end, agentTree[node].right);
-    		}
-    	};
-    	
-    	this.buildObstacleTree = function(simulator) {
-    		var obstacles = simulator.obstacles;
-    		obstacleTree = buildObstacleTreeRecursive(obstacles);
-    	};
-    	
-    	var buildObstacleTreeRecursive = function(obstacles, simulator) {
-    		if (obstacles.length == 0) {
-    			return null;
-    		} else {
-    			var node = new ObstacleTreeNode();
-    			var optimalSplit = 0;
-                let minLeft = obstacles.length;
-                let minRight = obstacles.length;
-    			
-    			for (var i=0; i<obstacles.length; ++i) {
-    				let leftSize = 0;
-    				let rightSize = 0;
-    				
-    				let obstacleI1 = obstacles[i];
-    				let obstacleI2 = obstacleI1.nextObstacle;
-    				
-    				for (var j=0; j<obstacles.length; j++) {
-    					if (i == j) {
-    						continue;
-    					}
-    					
-    					let obstacleJ1 = obstacles[j];
-    					let obstacleJ2 = obstacleJ1.nextObstacle;
-    					
-    					let j1LeftOfI = RVOMath.leftOf(obstacleI1.point, obstacleI2.point, obstacleJ1.point);
-                        let j2LeftOfI = RVOMath.leftOf(obstacleI1.point, obstacleI2.point, obstacleJ2.point);
-    					
-                        if (j1LeftOfI >= -RVOMath.RVO_EPSILON && j2LeftOfI >= -RVOMath.RVO_EPSILON)
-                        {
-                            ++leftSize;
-                        }
-                        else if (j1LeftOfI <= RVOMath.RVO_EPSILON && j2LeftOfI <= RVOMath.RVO_EPSILON)
-                        {
-                            ++rightSize;
-                        }
-                        else
-                        {
-                            ++leftSize;
-                            ++rightSize;
-                        }
-                        
-                        var fp1 = new FloatPair(Math.max(leftSize, rightSize), Math.min(leftSize, rightSize));
-                        var fp2 = new FloatPair(Math.max(minLeft, minRight), Math.min(minLeft, minRight));
-                        
-                        if (fp1.get(fp2)) {
-                        	break;
-                        }
-    				}
-    				
-    				var fp1 = new FloatPair(Math.max(leftSize, rightSize), Math.min(leftSize, rightSize));
-    				var fp2 = new FloatPair(Math.max(minLeft, minRight), Math.min(minLeft, minRight));
-    				
-    				if (fp1.mt(fp2)) {
-    					minLeft = leftSize;
-    					minRight = rightSize;
-    					optimalSplit = i;
-    				}
-    			}
-    			
-    			{
-                    /* Build split node. */
-    				let leftObstacles = [];
-                    for (var n = 0; n < minLeft; ++n) leftObstacles.push(null);
-                    
-                    let rightObstacles = [];
-                    for (var n = 0; n < minRight; ++n) rightObstacles.push(null);
-
-                    let leftCounter = 0;
-                    let rightCounter = 0;
-                    let i = optimalSplit;
-
-                    let obstacleI1 = obstacles[i];
-                    let obstacleI2 = obstacleI1.nextObstacle;
-
-                    for (var j = 0; j < obstacles.length; ++j)
-                    {
-                        if (i == j)
-                        {
-                            continue;
-                        }
-
-                        let obstacleJ1 = obstacles[j];
-                        let obstacleJ2 = obstacleJ1.nextObstacle;
-
-                        let j1LeftOfI = RVOMath.leftOf(obstacleI1.point, obstacleI2.point, obstacleJ1.point);
-                        let j2LeftOfI = RVOMath.leftOf(obstacleI1.point, obstacleI2.point, obstacleJ2.point);
-
-                        if (j1LeftOfI >= -RVOMath.RVO_EPSILON && j2LeftOfI >= -RVOMath.RVO_EPSILON)
-                        {
-                            leftObstacles[leftCounter++] = obstacles[j];
-                        }
-                        else if (j1LeftOfI <= RVOMath.RVO_EPSILON && j2LeftOfI <= RVOMath.RVO_EPSILON)
-                        {
-                            rightObstacles[rightCounter++] = obstacles[j];
-                        }
-                        else
-                        {
-                            /* Split obstacle j. */
-                            t = RVOMath.det(obstacleI2.point.minus(obstacleI1.point), obstacleJ1.point.minus(obstacleI1.point)) / 
-                            	RVOMath.det(obstacleI2.point.minus(obstacleI1.point), obstacleJ1.point.minus(obstacleJ2.point));
-
-                            var splitpoint = obstacleJ1.point.plus( (obstacleJ2.point.minus(obstacleJ1.point)).scale(t) );
-
-                            var newObstacle = new Obstacle();
-                            newObstacle.point = splitpoint;
-                            newObstacle.prevObstacle = obstacleJ1;
-                            newObstacle.nextObstacle = obstacleJ2;
-                            newObstacle.isConvex = true;
-                            newObstacle.unitDir = obstacleJ1.unitDir;
-
-                            newObstacle.id = simulator.obstacles.length;
-
-                            simulator.obstacles.push(newObstacle);
-
-                            obstacleJ1.nextObstacle = newObstacle;
-                            obstacleJ2.prevObstacle = newObstacle;
-
-                            if (j1LeftOfI > 0.0)
-                            {
-                                leftObstacles[leftCounter++] = obstacleJ1;
-                                rightObstacles[rightCounter++] = newObstacle;
-                            }
-                            else
-                            {
-                                rightObstacles[rightCounter++] = obstacleJ1;
-                                leftObstacles[leftCounter++] = newObstacle;
-                            }
-                        }
-                    }
-
-                    node.obstacle = obstacleI1;
-                    node.left = buildObstacleTreeRecursive(leftObstacles);
-                    node.right = buildObstacleTreeRecursive(rightObstacles);
-                    return node;
-                }
-    		}
-    	};
-    	
-    	this.computeAgentNeighbors = function(agent, rangeSq) {
-    		queryAgentTreeRecursive(agent, rangeSq, 0);
-    	};
-    	
-    	this.computeObstacleNeighbors = function(agent, rangeSq) {
-    		queryObstacleTreeRecursive(agent, rangeSq, obstacleTree);
-    	};
-    	
-    	var queryAgentTreeRecursive = function(agent, rangeSq, node) {
-    		if (agentTree[node].end - agentTree[node].begin <= MAXLEAF_SIZE)
-            {
-                for (var i = agentTree[node].begin; i < agentTree[node].end; ++i)
-                {
-                    agent.insertAgentNeighbor(agents[i], rangeSq);
-                }
-            }
-            else
-            {
-                distSqLeft = RVOMath.sqr(Math.max(0, agentTree[agentTree[node].left].minX - agent.position.x)) + 
-    	            RVOMath.sqr(Math.max(0, agent.position.x - agentTree[agentTree[node].left].maxX)) + 
-    	            RVOMath.sqr(Math.max(0, agentTree[agentTree[node].left].minY - agent.position.y)) + 
-    	            RVOMath.sqr(Math.max(0, agent.position.y - agentTree[agentTree[node].left].maxY));
-
-                distSqRight = RVOMath.sqr(Math.max(0, agentTree[agentTree[node].right].minX - agent.position.x)) +
-    	            RVOMath.sqr(Math.max(0, agent.position.x - agentTree[agentTree[node].right].maxX)) +
-    	            RVOMath.sqr(Math.max(0, agentTree[agentTree[node].right].minY - agent.position.y)) +
-    	            RVOMath.sqr(Math.max(0, agent.position.y - agentTree[agentTree[node].right].maxY));
-
-                if (distSqLeft < distSqRight)
-                {
-                    if (distSqLeft < rangeSq)
-                    {
-                        queryAgentTreeRecursive(agent, rangeSq, agentTree[node].left);
-
-                        if (distSqRight < rangeSq)
-                        {
-                            queryAgentTreeRecursive(agent, rangeSq, agentTree[node].right);
-                        }
-                    }
-                }
-                else
-                {
-                    if (distSqRight < rangeSq)
-                    {
-                        queryAgentTreeRecursive(agent, rangeSq, agentTree[node].right);
-
-                        if (distSqLeft < rangeSq)
-                        {
-                            queryAgentTreeRecursive(agent, rangeSq, agentTree[node].left);
-                        }
-                    }
-                }
-
-            }
-    	};
-    	
-    	// pass ref range
-    	var queryObstacleTreeRecursive = function(/** Agent */ agent, rangeSq, /** ObstacleTreeNode */ node) {
-            if (node == null)
-            {
-                return;
-            }
-            else
-            {
-                let obstacle1 = node.obstacle;
-                let obstacle2 = obstacle1.nextObstacle;
-
-                let agentLeftOfLine = RVOMath.leftOf(obstacle1.point, obstacle2.point, agent.position);
-
-                queryObstacleTreeRecursive(agent, rangeSq, (agentLeftOfLine >= 0 ? node.left : node.right));
-
-                let distSqLine = RVOMath.sqr(agentLeftOfLine) / RVOMath.absSq(obstacle2.point.minus(obstacle1.point));
-
-                if (distSqLine < rangeSq)
-                {
-                    if (agentLeftOfLine < 0)
-                    {
-                        /*
-                         * Try obstacle at this node only if is on right side of
-                         * obstacle (and can see obstacle).
-                         */
-                        agent.insertObstacleNeighbor(node.obstacle, rangeSq);
-                    }
-
-                    /* Try other side of line. */
-                    queryObstacleTreeRecursive(agent, rangeSq, (agentLeftOfLine >= 0 ? node.right : node.left));
-                }
-            }
-        };
-
-        this.queryVisibility = function (/** Vector2 */ q1, /** Vector2 */ q2, radius)
-        {
-            return queryVisibilityRecursive(q1, q2, radius, obstacleTree);
-        };
-
-        var queryVisibilityRecursive = function(/** Vector2 */ q1, /** Vector2 */ q2, radius, /** ObstacleTreeNode */ node)
-        {
-            if (node == null)
-            {
-                return true;
-            }
-            else
-            {
-                var obstacle1 = node.obstacle;
-                var obstacle2 = obstacle1.nextObstacle;
-
-                var q1LeftOfI = RVOMath.leftOf(obstacle1.point, obstacle2.point, q1);
-                var q2LeftOfI = RVOMath.leftOf(obstacle1.point, obstacle2.point, q2);
-                var invLengthI = 1.0 / RVOMath.absSq(obstacle2.point.minus(obstacle1.point));
-
-                if (q1LeftOfI >= 0 && q2LeftOfI >= 0)
-                {
-                    return queryVisibilityRecursive(q1, q2, radius, node.left) && ((RVOMath.sqr(q1LeftOfI) * invLengthI >= RVOMath.sqr(radius) && RVOMath.sqr(q2LeftOfI) * invLengthI >= RVOMath.sqr(radius)) || queryVisibilityRecursive(q1, q2, radius, node.right));
-                }
-                else if (q1LeftOfI <= 0 && q2LeftOfI <= 0)
-                {
-                    return queryVisibilityRecursive(q1, q2, radius, node.right) && ((RVOMath.sqr(q1LeftOfI) * invLengthI >= RVOMath.sqr(radius) && RVOMath.sqr(q2LeftOfI) * invLengthI >= RVOMath.sqr(radius)) || queryVisibilityRecursive(q1, q2, radius, node.left));
-                }
-                else if (q1LeftOfI >= 0 && q2LeftOfI <= 0)
-                {
-                    /* One can see through obstacle from left to right. */
-                    return queryVisibilityRecursive(q1, q2, radius, node.left) && queryVisibilityRecursive(q1, q2, radius, node.right);
-                }
-                else
-                {
-                    var point1LeftOfQ = RVOMath.leftOf(q1, q2, obstacle1.point);
-                    var point2LeftOfQ = RVOMath.leftOf(q1, q2, obstacle2.point);
-                    var invLengthQ = 1.0 / RVOMath.absSq(q2.minus(q1));
-
-                    return (point1LeftOfQ * point2LeftOfQ >= 0 && RVOMath.sqr(point1LeftOfQ) * invLengthQ > RVOMath.sqr(radius) && RVOMath.sqr(point2LeftOfQ) * invLengthQ > RVOMath.sqr(radius) && queryVisibilityRecursive(q1, q2, radius, node.left) && queryVisibilityRecursive(q1, q2, radius, node.right));
-                }
-            }
-        };
-    }
-
-    /* c8 ignore next 1000 */
-
-    function Agent() {
-        this.agentNeighbors = []; //  new List<KeyValuePair<float, Agent>>();
-        this.maxNeighbors = 0;
-        this.maxSpeed = 0.0;
-        this.neighborDist = 0.0;
-        this.newVelocity; // Vector 2
-        this.obstaclNeighbors = []; // new List<KeyValuePair<float, Obstacle>>();
-        this.orcaLines = []; // new List<Line>();
-        this.position; // Vector2
-
-        this.prefVelocity; // Vector2
-
-        this.radius = 0.0;
-        this.timeHorizon = 0.0;
-        this.timeHorizonObst = 0.0;
-        this.velocity; // Vector2
-        this.id = 0;
-
-        /** My addition */
-        this.gameObject = null; //Which gameObject are we simulating?
-
-        this.computeNeighbors = function (simulator) {
-            this.obstaclNeighbors = [];
-            var rangeSq = RVOMath.sqr(this.timeHorizonObst * this.maxSpeed + this.radius);
-            simulator.kdTree.computeObstacleNeighbors(this, rangeSq);
-
-            this.agentNeighbors = [];
-            if (this.maxNeighbors > 0) {
-                rangeSq = RVOMath.sqr(this.neighborDist);
-                simulator.kdTree.computeAgentNeighbors(this, rangeSq);
-            }
-        };
-
-        /* Search for the best new velocity. */
-        this.computeNewVelocity = function (simulator) {
-            let orcaLines = [];
-
-            let invTimeHorizonObst = 1.0 / this.timeHorizonObst;
-
-            /* Create obstacle ORCA lines. */
-            for (var i = 0; i < this.obstaclNeighbors.length; ++i) {
-                let obstacle1 = this.obstaclNeighbors[i].value;
-                let obstacle2 = obstacle1.nextObstacle;
-
-                let relativePosition1 = obstacle1.point.minus(this.position);
-                let relativePosition2 = obstacle2.point.minus(this.position);
-
-                /* 
-                 * Check if velocity obstacle of obstacle is already taken care of by
-                 * previously constructed obstacle ORCA lines.
-                 */
-                let alreadyCovered = false;
-
-                for (var j = 0; j < orcaLines.length; ++j) {
-                    if (RVOMath.det(relativePosition1.scale(invTimeHorizonObst).minus(orcaLines[j].point), orcaLines[j].direction) - invTimeHorizonObst * this.radius >= -RVOMath.RVOEPSILON && RVOMath.det(relativePosition2.scale(invTimeHorizonObst).minus(orcaLines[j].point), orcaLines[j].direction) - invTimeHorizonObst * this.radius >= -RVOMath.RVOEPSILON) {
-                        alreadyCovered = true;
-                        break;
-                    }
-                }
-
-                if (alreadyCovered) {
-                    continue;
-                }
-
-                /* Not yet covered. Check for collisions. */
-
-                let distSq1 = RVOMath.absSq(relativePosition1);
-                let distSq2 = RVOMath.absSq(relativePosition2);
-
-                let radiusSq = RVOMath.sqr(this.radius);
-
-                let obstacleVector = obstacle2.point.minus(obstacle1.point);
-                let s = relativePosition1.scale(-1).multiply(obstacleVector) / RVOMath.absSq(obstacleVector); //  (-relativePosition1 * obstacleVector) / RVOMath.absSq(obstacleVector);
-                let distSqLine = RVOMath.absSq(relativePosition1.scale(-1).minus(obstacleVector.scale(s))); // RVOMath.absSq(-relativePosition1 - s * obstacleVector);
-
-                var line = new Line$1();
-
-                if (s < 0 && distSq1 <= radiusSq) {
-                    /* Collision with left vertex. Ignore if non-convex. */
-                    if (obstacle1.isConvex) {
-                        line.point = new Vector2(0, 0);
-                        line.direction = RVOMath.normalize(new Vector2(-relativePosition1.y, relativePosition1.x));
-                        orcaLines.push(line);
-                    }
-                    continue;
-                }
-                else if (s > 1 && distSq2 <= radiusSq) {
-                    /* Collision with right vertex. Ignore if non-convex 
-                     * or if it will be taken care of by neighoring obstace */
-                    if (obstacle2.isConvex && RVOMath.det(relativePosition2, obstacle2.unitDir) >= 0) {
-                        line.point = new Vector2(0, 0);
-                        line.direction = RVOMath.normalize(new Vector2(-relativePosition2.y, relativePosition2.x));
-                        orcaLines.push(line);
-                    }
-                    continue;
-                }
-                else if (s >= 0 && s < 1 && distSqLine <= radiusSq) {
-                    /* Collision with obstacle segment. */
-                    line.point = new Vector2(0, 0);
-                    line.direction = obstacle1.unitDir.scale(-1);
-                    orcaLines.push(line);
-                    continue;
-                }
-
-                /* 
-                 * No collision.  
-                 * Compute legs. When obliquely viewed, both legs can come from a single
-                 * vertex. Legs extend cut-off line when nonconvex vertex.
-                 */
-
-                var leftLegDirection, rightLegDirection, leg1, leg2;
-
-                if (s < 0 && distSqLine <= radiusSq) {
-                    /*
-                     * Obstacle viewed obliquely so that left vertex
-                     * defines velocity obstacle.
-                     */
-                    if (!obstacle1.isConvex) {
-                        /* Ignore obstacle. */
-                        continue;
-                    }
-
-                    obstacle2 = obstacle1;
-
-                    leg1 = Math.sqrt(distSq1 - radiusSq);
-                    leftLegDirection = (new Vector2(relativePosition1.x * leg1 - relativePosition1.y * this.radius, relativePosition1.x * this.radius + relativePosition1.y * leg1)).scale(1 / distSq1);
-                    rightLegDirection = (new Vector2(relativePosition1.x * leg1 + relativePosition1.y * this.radius, -relativePosition1.x * this.radius + relativePosition1.y * leg1)).scale(1 / distSq1);
-                }
-                else if (s > 1 && distSqLine <= radiusSq) {
-                    /*
-                     * Obstacle viewed obliquely so that
-                     * right vertex defines velocity obstacle.
-                     */
-                    if (!obstacle2.isConvex) {
-                        /* Ignore obstacle. */
-                        continue;
-                    }
-
-                    obstacle1 = obstacle2;
-
-                    leg2 = Math.sqrt(distSq2 - radiusSq);
-                    leftLegDirection = (new Vector2(relativePosition2.x * leg2 - relativePosition2.y * this.radius, relativePosition2.x * this.radius + relativePosition2.y * leg2)).scale(1 / distSq2);
-                    rightLegDirection = (new Vector2(relativePosition2.x * leg2 + relativePosition2.y * this.radius, -relativePosition2.x * this.radius + relativePosition2.y * leg2)).scale(1 / distSq2);
-                }
-                else {
-                    /* Usual situation. */
-                    if (obstacle1.isConvex) {
-                        leg1 = Math.sqrt(distSq1 - radiusSq);
-                        leftLegDirection = (new Vector2(relativePosition1.x * leg1 - relativePosition1.y * this.radius, relativePosition1.x * this.radius + relativePosition1.y * leg1)).scale(1 / distSq1);
-                    }
-                    else {
-                        /* Left vertex non-convex; left leg extends cut-off line. */
-                        leftLegDirection = obstacle1.unitDir.scale(-1);
-                    }
-
-                    if (obstacle2.isConvex) {
-                        leg2 = Math.sqrt(distSq2 - radiusSq);
-                        rightLegDirection = (new Vector2(relativePosition2.x * leg2 + relativePosition2.y * this.radius, -relativePosition2.x * this.radius + relativePosition2.y * leg2)).scale(1 / distSq2);
-                    }
-                    else {
-                        /* Right vertex non-convex; right leg extends cut-off line. */
-                        rightLegDirection = obstacle1.unitDir;
-                    }
-                }
-
-                /* 
-                 * Legs can never point into neighboring edge when convex vertex,
-                 * take cutoff-line of neighboring edge instead. If velocity projected on
-                 * "foreign" leg, no constraint is added. 
-                 */
-
-                let leftNeighbor = obstacle1.prevObstacle;
-
-                let isLeftLegForeign = false;
-                let isRightLegForeign = false;
-
-                if (obstacle1.isConvex && RVOMath.det(leftLegDirection, leftNeighbor.unitDir.scale(-1)) >= 0.0) {
-                    /* Left leg points into obstacle. */
-                    leftLegDirection = leftNeighbor.unitDir.scale(-1);
-                    isLeftLegForeign = true;
-                }
-
-                if (obstacle2.isConvex && RVOMath.det(rightLegDirection, obstacle2.unitDir) <= 0.0) {
-                    /* Right leg points into obstacle. */
-                    rightLegDirection = obstacle2.unitDir;
-                    isRightLegForeign = true;
-                }
-
-                /* Compute cut-off centers. */
-                let leftCutoff = obstacle1.point.minus(this.position).scale(invTimeHorizonObst);
-                let rightCutoff = obstacle2.point.minus(this.position).scale(invTimeHorizonObst);
-                let cutoffVec = rightCutoff.minus(leftCutoff);
-
-                /* Project current velocity on velocity obstacle. */
-
-                /* Check if current velocity is projected on cutoff circles. */
-                let t = obstacle1 == obstacle2 ? 0.5 : this.velocity.minus(leftCutoff).multiply(cutoffVec) / RVOMath.absSq(cutoffVec);
-                let tLeft = this.velocity.minus(leftCutoff).multiply(leftLegDirection);
-                let tRight = this.velocity.minus(rightCutoff).multiply(rightLegDirection);
-
-                if ((t < 0.0 && tLeft < 0.0) || (obstacle1 == obstacle2 && tLeft < 0.0 && tRight < 0.0)) {
-                    /* Project on left cut-off circle. */
-                    var unitW = RVOMath.normalize(this.velocity.minus(leftCutoff));
-
-                    line.direction = new Vector2(unitW.y, -unitW.x);
-                    line.point = leftCutoff.plus(unitW.scale(this.radius * invTimeHorizonObst));
-                    orcaLines.push(line);
-                    continue;
-                }
-                else if (t > 1.0 && tRight < 0.0) {
-                    /* Project on right cut-off circle. */
-                    var unitW = RVOMath.normalize(this.velocity.minus(rightCutoff));
-
-                    line.direction = new Vector2(unitW.y, -unitW.x);
-                    line.point = rightCutoff.plus(unitW.scale(this.radius * invTimeHorizonObst));
-                    orcaLines.push(line);
-                    continue;
-                }
-
-                /* 
-                 * Project on left leg, right leg, or cut-off line, whichever is closest
-                 * to velocity.
-                 */
-                let distSqCutoff = ((t < 0.0 || t > 1.0 || obstacle1 == obstacle2) ? Infinity : RVOMath.absSq(this.velocity.minus(cutoffVec.scale(t).plus(leftCutoff))));
-                let distSqLeft = ((tLeft < 0.0) ? Infinity : RVOMath.absSq(this.velocity.minus(leftLegDirection.scale(tLeft).plus(leftCutoff))));
-                let distSqRight = ((tRight < 0.0) ? Infinity : RVOMath.absSq(this.velocity.minus(rightLegDirection.scale(tRight).plus(rightCutoff))));
-
-                if (distSqCutoff <= distSqLeft && distSqCutoff <= distSqRight) {
-                    /* Project on cut-off line. */
-                    line.direction = obstacle1.unitDir.scale(-1);
-                    var aux = new Vector2(-line.direction.y, line.direction.x);
-                    line.point = aux.scale(this.radius * invTimeHorizonObst).plus(leftCutoff);
-                    orcaLines.push(line);
-                    continue;
-                }
-                else if (distSqLeft <= distSqRight) {
-                    /* Project on left leg. */
-                    if (isLeftLegForeign) {
-                        continue;
-                    }
-
-                    line.direction = leftLegDirection;
-                    var aux = new Vector2(-line.direction.y, line.direction.x);
-                    line.point = aux.scale(this.radius * invTimeHorizonObst).plus(leftCutoff);
-                    orcaLines.push(line);
-                    continue;
-                }
-                else {
-                    /* Project on right leg. */
-                    if (isRightLegForeign) {
-                        continue;
-                    }
-
-                    line.direction = rightLegDirection.scale(-1);
-                    var aux = new Vector2(-line.direction.y, line.direction.x);
-                    line.point = aux.scale(this.radius * invTimeHorizonObst).plus(leftCutoff);
-                    orcaLines.push(line);
-                    continue;
-                }
-            }
-
-            var numObstLines = orcaLines.length;
-
-            var invTimeHorizon = 1.0 / this.timeHorizon;
-
-            /* Create agent ORCA lines. */
-            for (var i = 0; i < this.agentNeighbors.length; ++i) {
-                var other = this.agentNeighbors[i].value;
-
-                let relativePosition = other.position.minus(this.position);
-                let relativeVelocity = this.velocity.minus(other.velocity);
-                let distSq = RVOMath.absSq(relativePosition);
-                let combinedRadius = this.radius + other.radius;
-                let combinedRadiusSq = RVOMath.sqr(combinedRadius);
-
-                var line = new Line$1(); // Line
-                var u; // Vector2
-
-                if (distSq > combinedRadiusSq) {
-                    /* No collision. */
-                    let w = relativeVelocity.minus(relativePosition.scale(invTimeHorizon));                /* Vector from cutoff center to relative velocity. */
-                    let wLengthSq = RVOMath.absSq(w);
-
-                    let dotProduct1 = w.multiply(relativePosition);
-
-                    if (dotProduct1 < 0.0 && RVOMath.sqr(dotProduct1) > combinedRadiusSq * wLengthSq) {
-                        /* Project on cut-off circle. */
-                        var wLength = Math.sqrt(wLengthSq);
-                        var unitW = w.scale(1 / wLength);
-
-                        line.direction = new Vector2(unitW.y, -unitW.x);
-                        u = unitW.scale(combinedRadius * invTimeHorizon - wLength);
-                    }
-                    else {
-                        /* Project on legs. */
-                        let leg = Math.sqrt(distSq - combinedRadiusSq);
-
-                        if (RVOMath.det(relativePosition, w) > 0.0) {
-                            /* Project on left leg. */
-                            var aux = new Vector2(relativePosition.x * leg - relativePosition.y * combinedRadius, relativePosition.x * combinedRadius + relativePosition.y * leg);
-                            line.direction = aux.scale(1 / distSq);
-                        }
-                        else {
-                            /* Project on right leg. */
-                            var aux = new Vector2(relativePosition.x * leg + relativePosition.y * combinedRadius, -relativePosition.x * combinedRadius + relativePosition.y * leg);
-                            line.direction = aux.scale(-1 / distSq);
-                        }
-
-                        let dotProduct2 = relativeVelocity.multiply(line.direction);
-
-                        u = line.direction.scale(dotProduct2).minus(relativeVelocity);
-                    }
-                }
-                else {
-                    /* Collision. Project on cut-off circle of time timeStep. */
-                    let invTimeStep = 1.0 / simulator.timeStep;
-
-                    /* Vector from cutoff center to relative velocity. */
-                    let w = relativeVelocity.minus(relativePosition.scale(invTimeStep));
-
-                    let wLength = Math.abs(w);
-                    let unitW = w.scale(1 / wLength);
-
-                    line.direction = new Vector2(unitW.y, -unitW.x);
-                    u = unitW.scale(combinedRadius * invTimeStep - wLength);
-                }
-
-                line.point = u.scale(0.5).plus(this.velocity);
-                orcaLines.push(line);
-            }
-
-            let lineFail = this.linearProgram2(orcaLines, this.maxSpeed, this.prefVelocity, false);
-
-            if (lineFail < orcaLines.length) {
-                this.linearProgram3(orcaLines, numObstLines, lineFail, this.maxSpeed);
-            }
-        };
-
-        this.insertAgentNeighbor = function (agent, rangeSq) {
-            if (this != agent) {
-                var distSq = RVOMath.absSq(this.position.minus(agent.position));
-
-                if (distSq < rangeSq) {
-                    if (this.agentNeighbors.length < this.maxNeighbors) {
-                        this.agentNeighbors.push(new KeyValuePair(distSq, agent));
-                    }
-                    var i = this.agentNeighbors.length - 1;
-                    while (i != 0 && distSq < this.agentNeighbors[i - 1].key) {
-                        this.agentNeighbors[i] = this.agentNeighbors[i - 1];
-                        --i;
-                    }
-                    this.agentNeighbors[i] = new KeyValuePair(distSq, agent);
-
-                    if (this.agentNeighbors.length == this.maxNeighbors) {
-                        rangeSq = this.agentNeighbors[this.agentNeighbors.length - 1].key;
-                    }
-                }
-            }
-        };
-
-        this.insertObstacleNeighbor = function (/** Obstacle */ obstacle, rangeSq) {
-            let nextObstacle = obstacle.nextObstacle;
-
-            let distSq = RVOMath.distSqPointLineSegment(obstacle.point, nextObstacle.point, this.position);
-
-            if (distSq < rangeSq) {
-                this.obstaclNeighbors.push(new KeyValuePair(distSq, obstacle));
-
-                let i = this.obstaclNeighbors.length - 1;
-                while (i != 0 && distSq < this.obstaclNeighbors[i - 1].key) {
-                    this.obstaclNeighbors[i] = this.obstaclNeighbors[i - 1];
-                    --i;
-                }
-                this.obstaclNeighbors[i] = new KeyValuePair(distSq, obstacle);
-            }
-        };
-
-        this.update = function (simulator) {
-            var rnd = new Vector2(0, 0); //Math.random() * 0.1 - 0.05, Math.random() * 0.1 - 0.05);
-            this.velocity = this.newVelocity.plus(rnd);
-            this.position = this.position.plus(this.newVelocity.scale(simulator.timeStep));
-        };
-
-        this.linearProgram1 = function (/** Array */ lines, /** int */ lineNo, /** float */ radius, /** Vector2 */ optVelocity, /** bool */ directionOpt) {
-            var dotProduct = lines[lineNo].point.multiply(lines[lineNo].direction);
-            var discriminant = RVOMath.sqr(dotProduct) + RVOMath.sqr(radius) - RVOMath.absSq(lines[lineNo].point);
-
-            if (discriminant < 0.0) {
-                /* Max speed circle fully invalidates line lineNo. */
-                return false;
-            }
-
-            var sqrtDiscriminant = Math.sqrt(discriminant);
-            var tLeft = -dotProduct - sqrtDiscriminant;
-            var tRight = -dotProduct + sqrtDiscriminant;
-
-            for (var i = 0; i < lineNo; ++i) {
-                var denominator = RVOMath.det(lines[lineNo].direction, lines[i].direction);
-                var numerator = RVOMath.det(lines[i].direction, lines[lineNo].point.minus(lines[i].point));
-
-                if (Math.abs(denominator) <= RVOMath.RVOEPSILON) {
-                    /* Lines lineNo and i are (almost) parallel. */
-                    if (numerator < 0.0) {
-                        return false;
-                    }
-                    else {
-                        continue;
-                    }
-                }
-
-                var t = numerator / denominator;
-
-                if (denominator >= 0.0) {
-                    /* Line i bounds line lineNo on the right. */
-                    tRight = Math.min(tRight, t);
-                }
-                else {
-                    /* Line i bounds line lineNo on the left. */
-                    tLeft = Math.max(tLeft, t);
-                }
-
-                if (tLeft > tRight) {
-                    return false;
-                }
-            }
-
-            if (directionOpt) {
-                if (optVelocity.multiply(lines[lineNo].direction) > 0.0) {
-                    // Take right extreme
-                    this.newVelocity = lines[lineNo].direction.scale(tRight).plus(lines[lineNo].point);
-                }
-                else {
-                    // Take left extreme.
-                    this.newVelocity = lines[lineNo].direction.scale(tLeft).plus(lines[lineNo].point);
-                }
-            }
-            else {
-                // Optimize closest point
-                t = lines[lineNo].direction.multiply(optVelocity.minus(lines[lineNo].point));
-
-                if (t < tLeft) {
-                    this.newVelocity = lines[lineNo].direction.scale(tLeft).plus(lines[lineNo].point);
-                }
-                else if (t > tRight) {
-                    this.newVelocity = lines[lineNo].direction.scale(tRight).plus(lines[lineNo].point);
-                }
-                else {
-                    this.newVelocity = lines[lineNo].direction.scale(t).plus(lines[lineNo].point);
-                }
-            }
-
-            // TODO ugly hack by palmerabollo
-            if (isNaN(this.newVelocity.x) || isNaN(this.newVelocity.y)) {
-                return false;
-            }
-
-            return true;
-        };
-
-        this.linearProgram2 = function (/** Array */ lines, /** float */ radius, /** Vector2 */ optVelocity, /** bool */ directionOpt) {
-            if (directionOpt) {
-                /* 
-                 * Optimize direction. Note that the optimization velocity is of unit
-                 * length in this case.
-                 */
-                this.newVelocity = optVelocity.scale(radius);
-            }
-            else if (RVOMath.absSq(optVelocity) > RVOMath.sqr(radius)) {
-                /* Optimize closest point and outside circle. */
-                this.newVelocity = RVOMath.normalize(optVelocity).scale(radius);
-            }
-            else {
-                /* Optimize closest point and inside circle. */
-                this.newVelocity = optVelocity;
-            }
-
-            for (var i = 0; i < lines.length; ++i) {
-                if (RVOMath.det(lines[i].direction, lines[i].point.minus(this.newVelocity)) > 0.0) {
-                    /* Result does not satisfy constraint i. Compute new optimal result. */
-                    var tempResult = this.newVelocity;
-                    if (!this.linearProgram1(lines, i, this.radius, optVelocity, directionOpt)) {
-                        this.newVelocity = tempResult;
-                        return i;
-                    }
-                }
-            }
-
-            return lines.length;
-        };
-
-        this.linearProgram3 = function (/** Array */ lines, /** int */ numObstLines, /** int */ beginLine, /** float */ radius) {
-            var distance = 0.0;
-
-            for (var i = beginLine; i < lines.length; ++i) {
-                if (RVOMath.det(lines[i].direction, lines[i].point.minus(this.newVelocity)) > distance) {
-                    /* Result does not satisfy constraint of line i. */
-                    //std::vector<Line> projLines(lines.begin(), lines.begin() + numObstLines);
-                    let projLines = []; // new List<Line>();
-                    for (var ii = 0; ii < numObstLines; ++ii) {
-                        projLines.push(lines[ii]);
-                    }
-
-                    for (var j = numObstLines; j < i; ++j) {
-                        var line = new Line$1();
-
-                        let determinant = RVOMath.det(lines[i].direction, lines[j].direction);
-
-                        if (Math.abs(determinant) <= RVOMath.RVOEPSILON) {
-                            /* Line i and line j are parallel. */
-                            if (lines[i].direction.multiply(lines[j].direction) > 0.0) {
-                                /* Line i and line j point in the same direction. */
-                                continue;
-                            }
-                            else {
-                                /* Line i and line j point in opposite direction. */
-                                line.point = lines[i].point.plus(lines[j].point).scale(0.5);
-                            }
-                        }
-                        else {
-                            var aux = lines[i].direction.scale(RVOMath.det(lines[j].direction, lines[i].point.minus(lines[j].point)) / determinant);
-                            line.point = lines[i].point.plus(aux);
-                        }
-
-                        line.direction = RVOMath.normalize(lines[j].direction.minus(lines[i].direction));
-                        projLines.push(line);
-                    }
-
-                    var tempResult = this.newVelocity;
-                    if (this.linearProgram2(projLines, radius, new Vector2(-lines[i].direction.y, lines[i].direction.x), true) < projLines.length) {
-                        /* This should in principle not happen.  The result is by definition
-                         * already in the feasible region of this linear program. If it fails,
-                         * it is due to small floating point error, and the current result is
-                         * kept.
-                         */
-                        this.newVelocity = tempResult;
-                    }
-
-                    distance = RVOMath.det(lines[i].direction, lines[i].point.minus(this.newVelocity));
-                }
-            }
-        };
-    }
-
-    /* c8 ignore next 1000 */
-
-    function Simulator() {
-      this.agents = []; // Agent[]
-      this.obstacles = []; // Obstacle[]
-      this.goals = []; // Vector2
-      this.kdTree = new KdTree();
-
-      this.timeStep = 0.25;
-
-      this.defaultAgent; // Agent
-      this.time = 0.0;
-
-      this.getGlobalTime = function () {
-        return this.time;
-      };
-
-      this.getNumAgents = function () {
-        return this.agents.length;
-      };
-
-      this.getTimeStep = function () {
-        return this.timeStep;
-      };
-
-      this.setAgentPrefVelocity = function (i, velocity) {
-        this.agents[i].prefVelocity = velocity;
-      };
-
-      this.setTimeStep = function (timeStep) {
-        this.timeStep = timeStep;
-      };
-
-      this.getAgentPosition = function (i) {
-        return this.agents[i].position;
-      };
-
-      /**
-       * My additon to allow coupling to game objects
-       */
-      this.getAgentGameObject = function(i){
-        return this.agents[i].gameObject;
-      };
-
-      /** My addition */
-      this.removeRVOAgent = function(i){
-        this.agents.splice(i,1);
-        this.goals.splice(i,1);
-        console.log(this.agents.length);
-      };
-
-      this.getAgentPrefVelocity = function (i) {
-        return this.agents[i].prefVelocity;
-      };
-
-      this.getAgentVelocity = function (i) {
-        return this.agents[i].velocity;
-      };
-
-      this.getAgentRadius = function (i) {
-        return this.agents[i].radius;
-      };
-
-      this.getAgentOrcaLines = function (i) {
-        return this.agents[i].orcaLines;
-      };
-
-      this.addAgent = function (position, gameObject) {
-        if (!this.defaultAgent) {
-          throw new Error("no default agent");
-        }
-
-        var agent = new Agent();
-
-        agent.position = position;
-        agent.maxNeighbors = this.defaultAgent.maxNeighbors;
-        agent.maxSpeed = this.defaultAgent.maxSpeed;
-        agent.neighborDist = this.defaultAgent.neighborDist;
-        agent.radius = this.defaultAgent.radius;
-        agent.timeHorizon = this.defaultAgent.timeHorizon;
-        agent.timeHorizonObst = this.defaultAgent.timeHorizonObst;
-        agent.velocity = this.defaultAgent.velocity;
-        agent.gameObject = gameObject;
-
-        agent.id = this.agents.length;
-        this.agents.push(agent);
-
-        return this.agents.length - 1;
-      };
-
-      //  /** float */ neighborDist, /** int */ maxNeighbors, /** float */ timeHorizon, /** float */ timeHorizonObst, /** float */ radius, /** float*/ maxSpeed, /** Vector2 */ velocity)
-      this.setAgentDefaults = function (neighborDist, maxNeighbors, timeHorizon, timeHorizonObst, radius, maxSpeed, velocity) {
-        if (!this.defaultAgent) {
-          this.defaultAgent = new Agent();
-        }
-
-        this.defaultAgent.maxNeighbors = maxNeighbors;
-        this.defaultAgent.maxSpeed = maxSpeed;
-        this.defaultAgent.neighborDist = neighborDist;
-        this.defaultAgent.radius = radius;
-        this.defaultAgent.timeHorizon = timeHorizon;
-        this.defaultAgent.timeHorizonObst = timeHorizonObst;
-        this.defaultAgent.velocity = velocity;
-      };
-
-      this.run = function () {
-        this.kdTree.buildAgentTree(this);
-
-        for (var i = 0; i < this.getNumAgents(); i++) {
-          this.agents[i].computeNeighbors(this);
-          this.agents[i].computeNewVelocity(this);
-          this.agents[i].update(this);
-        }
-
-        this.time += this.timeStep;
-      };
-
-      this.reachedGoal = function () {
-        for (var i = 0; i < this.getNumAgents(); ++i) {
-          if (RVOMath.absSq(this.goals[i].minus(this.getAgentPosition(i))) > RVOMath.RVO_EPSILON) {
-            return false;
-          }    }
-        return true;
-      };
-
-      this.addGoals = function (goals) {
-        this.goals = goals;
-      };
-
-      /**My addition */
-      this.addGoal = function(goal){
-        this.goals.push(goal);
-      };
-
-      /** My addition */
-      this.setGoal = function(goal, i){
-        this.goals[i] = goal;
-      };
-
-      this.getGoal = function (goalNo) {
-        return this.goals[goalNo];
-      };
-
-      this.addObstacle = function ( /** IList<Vector2> */ vertices) {
-        if (vertices.length < 2) {
-          return -1;
-        }
-
-        var obstacleNo = this.obstacles.length;
-
-        for (var i = 0; i < vertices.length; ++i) {
-          let obstacle = new Obstacle();
-          obstacle.point = vertices[i];
-          if (i != 0) {
-            obstacle.prevObstacle = this.obstacles[this.obstacles.length - 1];
-            obstacle.prevObstacle.nextObstacle = obstacle;
-          }
-          if (i == vertices.length - 1) {
-            obstacle.nextObstacle = this.obstacles[obstacleNo];
-            obstacle.nextObstacle.prevObstacle = obstacle;
-          }
-          obstacle.unitDir = RVOMath.normalize(vertices[(i == vertices.length - 1 ? 0 : i + 1)].minus(vertices[i]));
-
-          if (vertices.length == 2) {
-            obstacle.isConvex = true;
-          } else {
-            obstacle.isConvex = (RVOMath.leftOf(vertices[(i == 0 ? vertices.length - 1 : i - 1)], vertices[i], vertices[(i == vertices.length - 1 ? 0 : i + 1)]) >= 0);
-          }
-
-          obstacle.id = this.obstacles.length;
-
-          this.obstacles.push(obstacle);
-        }
-
-        return obstacleNo;
-      };
-
-      this.processObstacles = function () {
-        this.kdTree.buildObstacleTree(this);
-      };
-
-      this.getObstacles = function () {
-        return this.obstacles;
-      };
-    }
-
-    class CircleCollider extends Collider {
-       
-        constructor() {
-            super();
-            this.radius=50;
-        }
-
-    }
-
-    /**
-    Axis - Aligned Bounding Box 
-    */
-
-    class AABBCollider extends Collider {
-        constructor() {
-            super();
-            this.width=100;
-            this.height=100;
-        }
-
-    }
-
-    /**
-    Axis - Aligned Bounding Box 
-    */
-
-    class TriangleCollider extends Collider {
-
-
-
-        constructor() {
-            super();
-            this.pointAX = 0;
-            this.pointAY = 0;
-            this.pointBX = 100;
-            this.pointBY = 100;
-            this.pointCX = 0;
-            this.pointCY = 100;
-        }
-        update() {
-            
-
-        }
-
-    }
-
-    const CollisionHelper = {
-
-        inCollision(one, two) {
-            if (one.collider instanceof CircleCollider && two.collider instanceof PointCollider) {
-                return this.inCollisionCirclePoint(one, two);
-            } else if (one.collider instanceof PointCollider && two.collider instanceof CircleCollider) {
-                /** Flip */
-                return this.inCollision(two, one);
-            } else if (one.collider instanceof AABBCollider && two.collider instanceof PointCollider) {
-                return this.inCollisionAABBPoint(one, two);
-            } else if (one.collider instanceof PointCollider && two.collider instanceof AABBCollider) {
-                /** Flip */
-                return this.inCollision(two, one);
-            } else if (one.collider instanceof AABBCollider && two.collider instanceof AABBCollider) {
-                return this.inCollisionAABBAABB(one, two);
-            } else if (one.collider instanceof CircleCollider && two.collider instanceof CircleCollider) {
-                return this.inCollisionCircleCircle(one, two);
-            } else if (one.collider instanceof AABBCollider && two.collider instanceof CircleCollider) {
-                return this.inCollisionAABBCircle(one, two);
-            }
-            else if (one.collider instanceof CircleCollider && two.collider instanceof AABBCollider) {
-                /** Flip */
-                return this.inCollision(two, one);
-            }
-            else if (one.collider instanceof TriangleCollider && two.collider instanceof PointCollider) {
-                return this.inCollisionTrianglePoint(one, two);
-            }
-            else if (one.collider instanceof PointCollider && two.collider instanceof TriangleCollider) {
-                /**Flip */
-                return this.inCollision(two, one);
-            }
-
-        },
-        inCollisionAABBAABB(one, two) {
-            //From https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
-            let ws1 = one.gameObject.worldScale;
-            let ws2 = two.gameObject.worldScale;
-            if (one.gameObject.worldLocation.x < two.gameObject.worldLocation.x + (+two.collider.width)*ws2.x &&
-                one.gameObject.worldLocation.x + (+one.collider.width)*ws1.x > two.gameObject.worldLocation.x &&
-                one.gameObject.worldLocation.y < two.gameObject.worldLocation.y + (+two.collider.height)*ws2.y &&
-                one.gameObject.worldLocation.y + (+one.collider.height)*ws1.y > two.gameObject.worldLocation.y)
-                return true;
-            return false;
-        },
-        inCollisionCirclePoint(circle, point) {
-            let distance = circle.gameObject.worldLocation.distance(point.gameObject.location);
-
-            if (distance < circle.collider.radius * circle.gameObject.scaleX)
-                return true;
-            return false;
-        },
-        inCollisionAABBPoint(AABB, point) {
-            let diff = AABB.gameObject.worldLocation.diff(point.gameObject.worldLocation);
-            return Math.abs(diff.x) < AABB.collider.width / 2 && Math.abs(diff.y) < AABB.collider.height / 2;
-
-        },
-        inCollisionCircleCircle(circle1, circle2) {
-            let distance = circle1.gameObject.location.distance(circle2.gameObject.location);
-
-            if (distance < +circle1.collider.radius + +circle2.collider.radius)
-                return true;
-            return false;
-        },
-        inCollisionAABBCircle(AABB, Circle) {
-            let cx = Circle.gameObject.x;
-            let cy = Circle.gameObject.y;
-            let rx = AABB.gameObject.x - AABB.collider.width / 2;
-            let ry = AABB.gameObject.y - AABB.collider.height / 2;
-            let rw = +AABB.collider.width;
-            let rh = +AABB.collider.height;
-
-            let tx = cx;
-            let ty = cy;
-
-            if (cx < rx) tx = rx;
-            else if (cx > rx + rw) tx = rx + rw;
-            if (cy < ry) ty = ry;
-            else if (cy > ry + rh) ty = ry + rh;
-
-            let diffX = (tx - cx);
-            let diffY = (ty - cy);
-            let distance = Math.sqrt(diffX * diffX + diffY * diffY);
-            if (distance < +Circle.collider.radius)
-                return true;
-            return false;
-        },
-        inCollisionTrianglePoint(triangle, point) {
-            let pointA = new Point(+triangle.collider.pointAX + triangle.gameObject.x, +triangle.collider.pointAY + triangle.gameObject.y);
-            let pointB = new Point(+triangle.collider.pointBX + triangle.gameObject.x, +triangle.collider.pointBY + triangle.gameObject.y);
-            let pointC = new Point(+triangle.collider.pointCX + triangle.gameObject.x, +triangle.collider.pointCY + triangle.gameObject.y);
-
-            let lineOne = new Line(pointA, pointB);
-            let lineTwo = new Line(pointB, pointC);
-            let lineThree = new Line(pointC, pointA);
-
-            let distanceOne = lineOne.distance(point.gameObject.location);
-            let distanceTwo = lineTwo.distance(point.gameObject.location);
-            let distanceThree = lineThree.distance(point.gameObject.location);
-
-            return (distanceOne > 0 && distanceTwo > 0 && distanceThree > 0)
-        }
-
-
-
-
-    };
 
     var hasOwnProperty = Object.prototype.hasOwnProperty;
     var toString = Object.prototype.toString;
@@ -3688,8 +2280,6 @@ var Base = (function () {
       Rule: Rule,
     };
 
-    // import Globals from "./Globals.js"
-
     /**
      * A scene represents a level in a game.
      */
@@ -3709,246 +2299,34 @@ var Base = (function () {
         )
           console.error("Scene constructor expects 4 argumens.");
 
-          const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+        const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
 
-          
-          parser.feed(definition.trim());
-          // console.log(JSON.stringify(parser.results));
-          
-          let r = parser.results;
-          super(r[0].name);
-          this.bootSimulator();
-          Base.Serializer.FromEdge(r[0]).forEach(x=>this.addChild(x));
+        parser.feed(definition.trim());
 
-          
+        let r = parser.results;
+        super(r[0].name);
+        //this.bootSimulator();
+        Base.Serializer.FromEdge(r[0]).forEach(x => this.addChild(x));
 
-        // let chunks = definition.split(/(\r?\n){2,}/);
-        // chunks = chunks.filter(c=>c.trim().length > 0);
-        // if(chunks.length == 0)
-        //   throw new Error("Scene definition was empty.")
-        // let nameString = chunks.shift();
-
-        /*
-        let splits = definition.trim().split(/\r?\n/);
-        if (splits.length == 0)
-          throw new Error("Scene definition was empty");
-        let firstLine = splits[0].trim();
-
-
-
-
-        // console.error("Scene constructor expects exactly four argumens of type object")
-        super(firstLine);
-
-        this.bootSimulator();
-
-
-        let remainder = splits.slice(1).join("\n").trim();
-
-        this.children = [];
-
-
-        let lines = remainder.split("\n");
-        let parentStack = [];
-        parentStack.push(this);
-        let next = [];
-        for (var i = 0; i < lines.length; i++) {
-          let parse = false;
-          let line = lines[i];
-          if (line.trim() == '<') {
-            parse = true;
-          }
-          else if (line.trim() == '>') {
-
-            parse = true;
-          }
-          else if (line.trim() == '') {
-            parse = true;
-          }
-          if (parse) {
-            let potentialJoin = next.join("\n");
-            if (potentialJoin.trim().length != 0)
-              Base.Serializer.deserializePrefab(potentialJoin, false, _.last(parentStack));
-            if (line.trim() == '<')
-              parentStack.push(_.last(_.last(parentStack).children));
-            if (line.trim() == '>') {
-              parentStack.pop();
-              if (parentStack.length <= 0)
-                throw new Error("Unbalanced <>'s");
-            }
-            next = [];
-          }
-          else
-            next.push(line)
-        }
-        if (next.join("\n").trim().length != 0)
-          Base.Serializer.deserializePrefab(next.join('\n'), false, _.last(parentStack));
-
-          */
-         this.components = components;
+        this.components = components;
         this.layers = ["background", null, "foreground"];
-
-        this.frameMouseOver = [];
-        this.frameCollisionOver = [];
-
         this.lastCtx = null;
+        
       }
-
-      bootSimulator() {
-        this.simulator = new Simulator();
-
-        this.simulator.setAgentDefaults(
-          30, // neighbor distance (min = radius * radius)
-          30, // max neighbors
-          100, // time horizon
-          10, // time horizon obstacles
-          1.5, // agent radius
-          1.0, // max speed
-          new Vector2(1, 1) // default velocity
-        );
-
-        this.simulator.setTimeStep(.25);
-        this.simulator.addObstacle([]);
-        this.simulator.processObstacles();
-      }
-
-
+      
       /**
        * Load the scene from its declarative syntax
        * 
        */
       boot() {
         if (arguments.length != 0) throw new Error("boot expects no arguments");
-        // Setup up the simulations within the scene
 
-        // this.children = [];//Clear the children in case the scene has been built before
-
-        // // if (this.objects)
-        // //   this.objects.forEach(obj => {
-        // //     this.buildChild(obj, this)
-        // //   })
-        // let that = this;
-        // if (this.objects) {
-        //   this.objects.forEach(obj => {
-        //     Base.Serializer.deserializeGameObject(obj, that);
-        //   })
-        // }
         if (this.children) {
           this.children.forEach(child => {
             child.recursiveCall("start");
           });
         }
-      }
-
-      newChildEvent(gameObject) {
-        if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("newChildEvent expects exactly one argument of type GameObject")
-        if (gameObject.anyComponent("RVOAgent")) {
-          this.simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
-
-          let RVOAgent = gameObject.getComponent("RVOAgent");
-          let destination = RVOAgent.destination;
-          if(typeof destination === 'string' || destination instanceof String){//It's probably still a stringified point object
-            destination = JSON.parse(destination);
-            RVOAgent.destination = destination;
-
-          }
-          let goal = new Vector2(destination.x, destination.y);
-          this.simulator.addGoal(goal);
-          let i = this.simulator.getNumAgents() - 1;
-          RVOAgent._id = i;
-          this.updateRVOAgent(gameObject);
-
-        }
-        if (gameObject.anyComponent("RVOObstacle")) {
-          let rectangleComponent = gameObject.getComponent("RectangleComponent");
-          let width = +(rectangleComponent.width * gameObject.scaleX);
-          let height = +(rectangleComponent.height * gameObject.scaleY);
-          let rx = gameObject.x - width / 2;
-          let ry = gameObject.y - height / 2;
-
-          let a = new Vector2(rx, ry);
-          let b = new Vector2(rx, ry + height);
-          let c = new Vector2(rx + width, ry + height);
-          let d = new Vector2(rx + width, ry);
-
-          this.simulator.addObstacle([a, b]);
-          this.simulator.addObstacle([b, c]);
-          this.simulator.addObstacle([c, d]);
-          this.simulator.addObstacle([d, a]);
-
-          this.simulator.processObstacles();
-        }
-      }
-
-      draw(ctx, width, height) {
-        if (arguments.length != 3 ||
-          !(typeof ctx == 'object') ||
-          !(typeof width == 'number') ||
-          !(typeof height == 'number')) throw new Error("draw expects exactly three arguments of type object, number, and number")
-
-        //Before we draw, see if we have a camera game object and use that
-        ctx.save();
-        let tx = 0, ty = 0, sx = 1, sy = 1, r = 0, hx = 0, hy = 0;
-        let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
-        if (cameras.length == 0) {
-          //You really should add a camera
-          //console.log("You should add a camera to the scene. C'mon.")
-          ctx.fillStyle = "cyan";
-          ctx.fillRect(0, 0, width, height);
-        }
-        else {
-          if (cameras.length > 1)
-            console.log("More than 1 camera detected in the scene. You should only have exactly one root game object with a camera component attached.");
-          let camera = cameras[0];
-          let cameraComponent = camera.getComponent("CameraComponent");
-          ctx.fillStyle = cameraComponent.backgroundColor;
-          ctx.fillRect(0, 0, width, height);
-          [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, width / 2, height / 2];
-
-        }
-
-        ctx.translate(hx, hy);
-        ctx.rotate(r);
-        ctx.scale(sx, sy);
-        ctx.translate(-tx, -ty);
-
-        //Draw children that are not in screen space
-        //Sort them by layer
-        this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Background").forEach(i => i.draw(ctx));
-        this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && !i.layer).forEach(i => i.draw(ctx));
-        this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "default").forEach(i => i.draw(ctx));
-        this.children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Foreground").forEach(i => i.draw(ctx));
-
-        ctx.restore();
-
-        //We're now back in screen space. It's time to draw any GUI components
-        //if we have a gameObject with an attached CanvasComponent
-        ctx.save();
-        let canvases = this.children.filter(i => i.anyComponent("CanvasComponent"));
-        if (canvases.length == 0) ;
-        else {
-          if (canvases.length > 1) {
-            console.log("More than 1 canvas object found in the root of your scene graph. You should only have exactly one game object with a canvas component. The other object(s) and its children will not be rendered.");
-          }
-          let canvas = canvases[0];
-          canvas.draw(ctx);
-        }
-        ctx.restore();
-
-        this.lastCtx = ctx;
-      }
-
-      isInScreenSpace(gameObject) {
-        if (arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
-
-        let canvases = this.children.filter(i => i.anyComponent("CanvasComponent"));
-        if (canvases.length == 0) return false; // We don't have screen space
-        for (let canvas of canvases) {
-          if (canvas.isADescendant(gameObject)) {
-            return true;
-          }
-        }
-        return false;
+        Base.Plugins.filter(x=>x.sceneBoot).forEach(x=>x.sceneBoot(this));
       }
 
       /**
@@ -3962,327 +2340,7 @@ var Base = (function () {
           !(typeof ctx == 'object') ||
           !(typeof collidableType == 'function') ||
           !(typeof collisionHelper == 'object')) throw new Error("update expects exactly three arguments of type object, object, and CollisionHelper")
-
-        //Update all the objects
-        this.children.filter(i => i.update).forEach(i => i.update());
-
-        /**
-         * Now run the simulators
-         */
-
-        //
-        //First we do collisions
-        //
-
-        //Add collision behavior
-        let collidableChildren = [];
-        this.getCollidable(this, collidableChildren, collidableType);
-
-        for (let i = 0; i < collidableChildren.length; i++) {
-          let gameObjectOne = collidableChildren[i].gameObject;
-          let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
-          for (let j = i + 1; j < collidableChildren.length; j++) {
-            let gameObjectTwo = collidableChildren[j].gameObject;
-            let isInScreenSpaceTwo = this.isInScreenSpace(gameObjectTwo);
-            if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
-            let collisionPair = { one: collidableChildren[i], two: collidableChildren[j] };
-            if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
-              gameObjectOne.components.forEach(x => {
-                if (x.onCollisionStay)
-                  x.onCollisionStay(collidableChildren[j]);
-              });
-              gameObjectTwo.components.forEach(x => {
-                if (x.onCollisionStay)
-                  x.onCollisionStay(collidableChildren[i]);
-
-              });
-              if (this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))==-1) {
-                this.frameCollisionOver.push(collisionPair);
-                gameObjectOne.components.filter(x=>x.onCollisionEnter).forEach(x => {
-                  x.onCollisionEnter(collidableChildren[j]);
-                });
-                gameObjectTwo.components.filter(x=>x.onCollisionEnter).forEach(x => {
-                  x.onCollisionEnter(collidableChildren[i]);
-                });
-              }
-            }
-            else {
-              if(this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))!=-1)
-              {
-                this.frameCollisionOver = this.frameCollisionOver.filter(x=>!this.collisionPairMatch(x, collisionPair));
-                gameObjectOne.components.filter(x=>x.onCollisionExit).forEach(x => {
-                  x.onCollisionExit(collidableChildren[j]);
-                });
-                gameObjectTwo.components.filter(x=>x.onCollisionExit).forEach(x => {
-                  x.onCollisionExit(collidableChildren[i]);
-                });
-              }
-            }
-          }
-        }
-
-        //
-        //Now go through and see if the point represented by the mouse collides with any of the colliders
-        //
-        //First get the world space position of the mouse
-        let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
-        let point = { x: 0, y: 0 };
-        point.x = parseInt(Input.mousePosition.x);
-        point.y = parseInt(Input.mousePosition.y);
-        let screenPoint = { x: point.x, y: point.y };
-        if (cameras.length > 0) {
-
-          let camera = cameras[0];
-          //let cameraComponent = camera.getComponent("CameraComponent")
-          let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, ctx.canvas.width / 2, ctx.canvas.height / 2];
-
-
-
-          point.x = (point.x - hx) / sx + tx;
-          point.y = (point.y - hy) / sy + ty;
-        }
-
-        //Put the mouse in world space
-        let colliderObjectWorld = {};
-        colliderObjectWorld.gameObject = new GameObject();
-        colliderObjectWorld.gameObject.x = point.x;
-        colliderObjectWorld.gameObject.y = point.y;
-        colliderObjectWorld.collider = new PointCollider();
-
-        let colliderObjectScreen = {};
-        colliderObjectScreen.gameObject = new GameObject();
-        colliderObjectScreen.gameObject.x = screenPoint.x;
-        colliderObjectScreen.gameObject.y = screenPoint.y;
-        colliderObjectScreen.collider = new PointCollider();
-
-        let colliderObject;
-
-        for (let i = 0; i < collidableChildren.length; i++) {
-          let collidableChild = collidableChildren[i];
-
-          if (!this.isInScreenSpace(collidableChild.gameObject))
-            colliderObject = colliderObjectWorld;
-          else
-            colliderObject = colliderObjectScreen;
-
-          if (collisionHelper.inCollision(collidableChild, colliderObject)) {
-            let gameObjectOne = collidableChild.gameObject;
-
-            //Now loop over all the behaviors too see if any are listening for collision events\
-            if (Input.getMouseButtonDown(0))
-              gameObjectOne.components.filter(x => x.onMouseDown).forEach(x => x.onMouseDown());
-            if (Input.getMouseButtonUp(0))
-              gameObjectOne.components.filter(x => x.onMouseUp).forEach(x => x.onMouseUp());
-            for (let i = 0; i < gameObjectOne.components.length; i++) {
-              let component = gameObjectOne.components[i];
-              if (component.onMouseOver) {
-                component.onMouseOver();
-              }
-              if (!this.frameMouseOver.includes(component)) {
-                if (component.onMouseEnter) {
-                  component.onMouseEnter();
-                }
-                this.frameMouseOver.push(component);
-              }
-
-
-
-            }
-          } else {
-            let gameObjectOne = collidableChild.gameObject;
-            for (let i = 0; i < gameObjectOne.components.length; i++) {
-              let component = gameObjectOne.components[i];
-
-              if (this.frameMouseOver.includes(component)) {
-                _.pull(this.frameMouseOver, component);
-                if (component.onMouseExit) {
-                  component.onMouseExit();
-                }
-              }
-            }
-          }
-        }
-
-
-        //
-        //Now go through and see if the point represented by the touch point collides with any of the colliders
-        //
-        //First get the world space position of the touch
-        let touches = Input.getTouches();
-        if (touches && touches.length > 0) {
-          //let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
-          let point = { x: 0, y: 0 };
-          point.x = parseInt(touches[0].x);
-          point.y = parseInt(touches[0].y);
-          let screenPoint = { x: point.x, y: point.y };
-          if (cameras.length > 0) {
-
-            let camera = cameras[0];
-
-            let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, ctx.canvas.width / 2, ctx.canvas.height / 2];
-
-            point.x = (point.x - hx) / sx + tx;
-            point.y = (point.y - hy) / sy + ty;
-
-          }
-
-          let colliderObject;
-          [colliderObjectWorld.gameObject.x, colliderObjectWorld.gameObject.y] = [point.x, point.y];
-          [colliderObjectScreen.gameObject.x, colliderObjectScreen.gameObject.y] = [screenPoint.x, screenPoint.y];
-          for (let i = 0; i < collidableChildren.length; i++) {
-            let collidableChild = collidableChildren[i];
-            if (!this.isInScreenSpace(collidableChild.gameObject))
-              colliderObject = colliderObjectWorld;
-            else
-              colliderObject = colliderObjectScreen;
-
-            if (collisionHelper.inCollision(collidableChild, colliderObject)) {
-              let gameObjectOne = collidableChild.gameObject;
-
-              //Now loop over all the behaviors too see if any are listening for collision events
-              gameObjectOne.components.filter(x => x.onTouchOver).forEach(x => x.onTouchOver());
-              if (Input.getTouchesStart() && Input.getTouchesStart().length > 0)
-                gameObjectOne.components.filter(x => x.onTouchStart).forEach(x => x.onTouchStart());
-              if (Input.getTouchesEnd() && Input.getTouchesEnd().length > 0)
-                gameObjectOne.components.filter(x => x.onTouchEnd).forEach(x => x.onTouchEnd());
-            }
-          }
-        }
-
-        //
-        // Now we simulate the crowds
-        //
-        this.simulator.run();
-
-        // Go back and update the gameObjects represented by the agents
-        let numAgents = this.simulator.getNumAgents();
-        for (let i = 0; i < numAgents; i++) {
-          let gameObject = this.simulator.getAgentGameObject(i);
-          let position = this.simulator.getAgentPosition(i);
-          gameObject.x = position.x;
-          gameObject.y = position.y;
-          if (RVOMath.absSq(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))) < 10) {
-            // Agent is within one radius of its goal, set preferred velocity to zero
-            this.simulator.setAgentPrefVelocity(i, new Vector2(0.0, 0.0));
-          } else {
-            // Agent is far away from its goal, set preferred velocity as unit vector towards agent's goal.
-            this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(this.simulator.getGoal(i).minus(this.simulator.getAgentPosition(i))));
-          }
-        }
       }
-      collisionPairMatch(one, two){
-        return one.one.gameObject == two.one.gameObject &&
-          one.two.gameObject == two.two.gameObject &&
-          one.one.collider == two.one.collider &&
-          one.two.collider == two.two.collider;
-      }
-
-      /**
-       * Get a flat list of all the collidable components in the scene
-       * @param {*} gameObject The root game object in the tree we are searching
-       * @param {*} collidableChildren The list we are modifying
-       * @param {*} type The type a game object needs in order to be considered collidable
-       */
-      getCollidable(gameObject, collidableChildren, type) {
-        if (arguments.length != 3 ||
-          !(typeof gameObject == 'object') ||
-          !(Array.isArray(collidableChildren)) ||
-          !(typeof type == 'function')) throw new Error("getCollidable expects exactly three arguments of type GameObject, array, and type")
-
-
-        if (gameObject.getComponent) {
-          try {
-            let collidableComponent = gameObject.getComponent(type);
-            if (collidableComponent) {
-              collidableChildren.push({ collider: collidableComponent, gameObject });
-            }
-          } catch (e) {
-            //no-op
-          }
-        }
-
-        for (let i = 0; i < gameObject.children.length; i++) {
-          let child = gameObject.children[i];
-
-          this.getCollidable(child, collidableChildren, type);
-        }
-      }
-
-      /**
-       * Convert the point in screen space to world space
-       * @param {Base.Point} position 
-       */
-      toWorldSpace(position) {
-        let cameras = this.children.filter(i => i.anyComponent("CameraComponent"));
-        let point = position.clone();
-
-        if (cameras.length > 0 && this.lastCtx) {
-
-          let camera = cameras[0];
-          let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, this.lastCtx.canvas.width / 2, this.lastCtx.canvas.height / 2];
-
-          point.x = (point.x - hx) / sx + tx;
-          point.y = (point.y - hy) / sy + ty;
-        }
-        return point
-      }
-
-      /**
-       * 
-       * @param {*} location Proposed entry point for the game object
-       * @param {*} collider Collider for the proposed game object
-       * @param {*} component The component the game object needs to be included in the search. Usually "RVOAgent"
-       */
-      canEnterSafely(location, collider, component) {
-        if (arguments.length != 3 ||
-          !(location instanceof Base.Point) ||
-          !(typeof collider == 'object') ||
-          !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
-
-        let collidableChildren = [];
-        this.getCollidable(this, collidableChildren, this.components.Collider);
-        let proposed = new GameObject();
-        proposed.x = location.x;
-        proposed.y = location.y;
-
-        for (let i = 0; i < collidableChildren.length; i++) {
-          if (collidableChildren[i].gameObject.anyComponent(component))
-            if (this.components.CollisionHelper.inCollision(collidableChildren[i], { collider, gameObject: proposed })) {
-              return false;
-            }
-        }
-        return true;
-      }
-
-
-
-
-      updateRVOAgent(gameObject) {
-        if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
-
-        let RVOAgent = gameObject.getComponent("RVOAgent");
-        let i = RVOAgent._id;
-        let destination = RVOAgent.destination;
-        let goal = new Vector2(destination.x, destination.y);
-        this.simulator.setGoal(goal, i);
-        this.simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(this.simulator.getAgentPosition(i))));
-      }
-      removeRVOAgent(gameObject) {
-        if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
-
-        let RVOAgent = gameObject.getComponent("RVOAgent");
-        let i = RVOAgent._id;
-        this.simulator.removeRVOAgent(i);
-        for (let i = 0; i < this.simulator.getNumAgents(); i++) {
-          let gameObject = this.simulator.getAgentGameObject(i);
-          let component = gameObject.getComponent("RVOAgent");
-          component._id = i;
-        }
-
-      }
-
-
-
 
     }
 
@@ -21883,6 +19941,28 @@ var Base = (function () {
         }
     }
 
+    class Collider extends Component {
+        constructor() {
+            super();
+        }
+
+
+
+    }
+
+    /**
+    Axis - Aligned Bounding Box 
+    */
+
+    class AABBCollider extends Collider {
+        constructor() {
+            super();
+            this.width=100;
+            this.height=100;
+        }
+
+    }
+
     /**
      * A game object with a camera component will be treated as the camera in the scene.
      * Currently, this game object needs to be in the root of the scene graph and there
@@ -21943,6 +20023,153 @@ var Base = (function () {
         }
     }
 
+    class CircleCollider extends Collider {
+       
+        constructor() {
+            super();
+            this.radius=50;
+        }
+
+    }
+
+    class PointCollider extends Collider {
+        constructor() {
+            super();
+        }
+
+    }
+
+    /**
+    Axis - Aligned Bounding Box 
+    */
+
+    class TriangleCollider extends Collider {
+
+
+
+        constructor() {
+            super();
+            this.pointAX = 0;
+            this.pointAY = 0;
+            this.pointBX = 100;
+            this.pointBY = 100;
+            this.pointCX = 0;
+            this.pointCY = 100;
+        }
+        update() {
+            
+
+        }
+
+    }
+
+    const CollisionHelper = {
+
+        inCollision(one, two) {
+            if (one.collider instanceof CircleCollider && two.collider instanceof PointCollider) {
+                return this.inCollisionCirclePoint(one, two);
+            } else if (one.collider instanceof PointCollider && two.collider instanceof CircleCollider) {
+                /** Flip */
+                return this.inCollision(two, one);
+            } else if (one.collider instanceof AABBCollider && two.collider instanceof PointCollider) {
+                return this.inCollisionAABBPoint(one, two);
+            } else if (one.collider instanceof PointCollider && two.collider instanceof AABBCollider) {
+                /** Flip */
+                return this.inCollision(two, one);
+            } else if (one.collider instanceof AABBCollider && two.collider instanceof AABBCollider) {
+                return this.inCollisionAABBAABB(one, two);
+            } else if (one.collider instanceof CircleCollider && two.collider instanceof CircleCollider) {
+                return this.inCollisionCircleCircle(one, two);
+            } else if (one.collider instanceof AABBCollider && two.collider instanceof CircleCollider) {
+                return this.inCollisionAABBCircle(one, two);
+            }
+            else if (one.collider instanceof CircleCollider && two.collider instanceof AABBCollider) {
+                /** Flip */
+                return this.inCollision(two, one);
+            }
+            else if (one.collider instanceof TriangleCollider && two.collider instanceof PointCollider) {
+                return this.inCollisionTrianglePoint(one, two);
+            }
+            else if (one.collider instanceof PointCollider && two.collider instanceof TriangleCollider) {
+                /**Flip */
+                return this.inCollision(two, one);
+            }
+
+        },
+        inCollisionAABBAABB(one, two) {
+            //From https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+            let ws1 = one.gameObject.worldScale;
+            let ws2 = two.gameObject.worldScale;
+            if (one.gameObject.worldLocation.x < two.gameObject.worldLocation.x + (+two.collider.width)*ws2.x &&
+                one.gameObject.worldLocation.x + (+one.collider.width)*ws1.x > two.gameObject.worldLocation.x &&
+                one.gameObject.worldLocation.y < two.gameObject.worldLocation.y + (+two.collider.height)*ws2.y &&
+                one.gameObject.worldLocation.y + (+one.collider.height)*ws1.y > two.gameObject.worldLocation.y)
+                return true;
+            return false;
+        },
+        inCollisionCirclePoint(circle, point) {
+            let distance = circle.gameObject.worldLocation.distance(point.gameObject.location);
+
+            if (distance < circle.collider.radius * circle.gameObject.scaleX)
+                return true;
+            return false;
+        },
+        inCollisionAABBPoint(AABB, point) {
+            let diff = AABB.gameObject.worldLocation.diff(point.gameObject.worldLocation);
+            return Math.abs(diff.x) < AABB.collider.width / 2 && Math.abs(diff.y) < AABB.collider.height / 2;
+
+        },
+        inCollisionCircleCircle(circle1, circle2) {
+            let distance = circle1.gameObject.worldLocation.distance(circle2.gameObject.worldLocation);
+
+            if (distance < +circle1.collider.radius + +circle2.collider.radius)
+                return true;
+            return false;
+        },
+        inCollisionAABBCircle(AABB, Circle) {
+            let cx = Circle.gameObject.x;
+            let cy = Circle.gameObject.y;
+            let rx = AABB.gameObject.x - AABB.collider.width / 2;
+            let ry = AABB.gameObject.y - AABB.collider.height / 2;
+            let rw = +AABB.collider.width;
+            let rh = +AABB.collider.height;
+
+            let tx = cx;
+            let ty = cy;
+
+            if (cx < rx) tx = rx;
+            else if (cx > rx + rw) tx = rx + rw;
+            if (cy < ry) ty = ry;
+            else if (cy > ry + rh) ty = ry + rh;
+
+            let diffX = (tx - cx);
+            let diffY = (ty - cy);
+            let distance = Math.sqrt(diffX * diffX + diffY * diffY);
+            if (distance < +Circle.collider.radius)
+                return true;
+            return false;
+        },
+        inCollisionTrianglePoint(triangle, point) {
+            let pointA = new Point(+triangle.collider.pointAX + triangle.gameObject.x, +triangle.collider.pointAY + triangle.gameObject.y);
+            let pointB = new Point(+triangle.collider.pointBX + triangle.gameObject.x, +triangle.collider.pointBY + triangle.gameObject.y);
+            let pointC = new Point(+triangle.collider.pointCX + triangle.gameObject.x, +triangle.collider.pointCY + triangle.gameObject.y);
+
+            let lineOne = new Line(pointA, pointB);
+            let lineTwo = new Line(pointB, pointC);
+            let lineThree = new Line(pointC, pointA);
+
+            let distanceOne = lineOne.distance(point.gameObject.location);
+            let distanceTwo = lineTwo.distance(point.gameObject.location);
+            let distanceThree = lineThree.distance(point.gameObject.location);
+
+            return (distanceOne > 0 && distanceTwo > 0 && distanceThree > 0)
+        }
+
+
+
+
+    };
+
     /**
     Axis - Aligned Bounding Box 
     */
@@ -21990,6 +20217,106 @@ var Base = (function () {
       }
       onTouchEnd(){
         this.touchDown = false;
+      }
+    }
+
+    class GUIOnlyCollider extends Component {
+      constructor(){
+        super();
+      }
+    }
+
+    class HexagonComponent extends Component {
+
+      constructor() {
+        super();
+        this.points = [];
+        this.centerX = 0;
+        this.centerY = 0;
+        this.radius = 100;
+        this.fill = "gray";
+        this.stroke = "black";
+
+      }
+      draw(ctx) {
+        if (this.points.length == 0) return;
+        ctx.save();
+        ctx.fillStyle = this.fill;
+        ctx.strokeStyle = this.stroke;
+        ctx.beginPath();
+        ctx.moveTo(+this.points[0].x, +this.points[0].y);
+        for (let i = 0; i < this.points.length; i++) {
+          ctx.lineTo(+this.points[i].x, +this.points[i].y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+      update() {
+        if (this.points.length == 0) {
+          let angle = Math.PI/2;
+          for (let i = 0; i < 6; i++) {
+            let x = Math.cos(angle) * this.radius;
+            let y = Math.sin(angle) * this.radius;
+            this.points.push(new Point(x,y));
+            angle -= Math.PI/3;
+          }
+        }
+
+      }
+    }
+
+    class PeerServer extends Component {
+      constructor() {
+        super();
+      }
+      start() {
+        console.log("Start server");
+        this.peer = new Peer("aeuaeouaoeuaeu", {debug:2});
+        this.peer.on('open', function (id) {
+          console.log("My id is " + id);
+        });
+        this.peer.on('connection', function (conn) {
+          conn.on('open', function () {
+            conn.on('data', function (data) {
+              console.log("Received " + data);
+            });
+          });
+          conn.on('error', function(error){
+            console.log(error);
+          });
+        });
+        this.peer.on('error', function(error){
+          console.log(error);
+        });
+        
+      }
+      update() {
+        // console.log("Peer server");
+      }
+    }
+
+    class PeerClient extends Component {
+      constructor() {
+        super();
+      }
+      start() {
+        console.log("Start client");
+        this.peer = new Peer(null, {debug:2});
+        var conn = this.peer.connect('aeuaeouaoeuaeu');
+        conn.on('open', function () {
+          conn.send("Bye, Harry");
+        });
+        this.peer.on('error', function(error){
+          console.log(error);
+        });
+        conn.on('error', function(error){
+          console.log(error);
+        });
+      }
+      update() {
+        // console.log("Peer client");
       }
     }
 
@@ -22043,14 +20370,14 @@ var Base = (function () {
       }
       onMouseDown() {
         this.mouseDown = true;
-        let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
+        let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], Base._cs, this.$go.worldLocation);
         spawned.$("Draggable").mouseDown = true;
       }
       // onMouseUp() {
       //   this.mouseDown = false;
       // }
       onTouchStart(){
-        let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], this.$go.parent, this.$go.worldLocation);
+        let spawned = SceneManager.Base.Serializer.instantiate(SceneManager.Prefabs[this.spawn], Base._cs, this.$go.worldLocation);
         spawned.$("Draggable").touchDown = true;
       }
       
@@ -22065,12 +20392,20 @@ var Base = (function () {
             this.text = "[Blank]";
             this.font = "10pt Sans";
             this.fill = "black";
+            this.centered = false;
         }
         draw(ctx) {
             ctx.save();
             ctx.fillStyle = this.fill;
             ctx.font = this.font;
-            ctx.fillText(this.text, 0, 0);
+            if (!this.centered)
+                ctx.fillText(this.text, 0, 0);
+            else {
+                let metrics = ctx.measureText(this.text);
+                let fontHeight = metrics.actualBoundingBoxAscent;
+                
+                ctx.fillText(this.text, -metrics.width/2, fontHeight/2);
+            }
             ctx.restore();
         }
         update() {
@@ -22162,6 +20497,1227 @@ var Base = (function () {
 
         }
         
+    }
+
+    /* c8 ignore next 1000 */
+    function Vector2(x, y) {
+        this.x = x;
+        this.y = y;
+
+        this.plus = function(vector) {
+        	return new Vector2(x + vector.x, y + vector.y);
+        };
+        
+        this.minus = function(vector) {
+        	return new Vector2(x - vector.x, y - vector.y);
+        };
+        
+        this.multiply = function(vector) {
+        	return x * vector.x + y * vector.y;
+        };
+        
+        this.scale = function(k) {
+            return new Vector2(x*k, y*k);
+        };
+    }
+
+    function Line$1() {
+    	/*
+    	this.point; // Vector2
+    	this.direction; // Vector2
+    	*/
+    }
+
+    function Obstacle() {
+    	/*
+    	this.point; // Vector2
+    	this.unitDir; // Vector2;
+    	this.isConvex; // boolean
+    	this.id; // int
+    	this.prevObstacle; // Obstacle
+    	this.nextObstacle; // Obstacle
+    	*/
+    }
+
+    function KeyValuePair(key, value) {
+    	this.key = key;
+    	this.value = value;
+    }
+
+    let RVOMath = {};
+
+    RVOMath.RVO_EPSILON = 0.01;
+
+    RVOMath.absSq = function(v) {
+        return v.multiply(v);
+    };
+
+    RVOMath.normalize = function(v) {
+    	return v.scale(1 / RVOMath.abs(v)); // v / abs(v)
+    };
+
+    RVOMath.distSqPointLineSegment = function(a, b, c) {
+    	var aux1 = c.minus(a);
+    	var aux2 = b.minus(a);
+    	
+    	// r = ((c - a) * (b - a)) / absSq(b - a);
+    	var r = aux1.multiply(aux2) / RVOMath.absSq(aux2);
+    	
+    	if (r < 0) {
+    		return RVOMath.absSq(aux1); // absSq(c - a)
+    	} else if (r > 1) {
+    		return RVOMath.absSq(aux2); // absSq(c - b)
+    	} else {
+    		return RVOMath.absSq( c.minus(a.plus(aux2.scale(r))) ); // absSq(c - (a + r * (b - a)));
+    	}
+    };
+
+    RVOMath.sqr = function(p) {
+    	return p * p;
+    };
+
+    RVOMath.det = function(v1, v2) {
+    	return v1.x * v2.y - v1.y* v2.x;
+    };
+
+    RVOMath.abs = function(v) {
+    	return Math.sqrt(RVOMath.absSq(v));
+    };
+
+    RVOMath.leftOf = function(a, b, c) {
+    	return RVOMath.det(a.minus(c), b.minus(a));
+    };
+
+    /* c8 ignore next 1000 */
+
+
+    function KdTree() {
+    	var MAXLEAF_SIZE = 100;
+    	
+    	function FloatPair(a, b) {
+    		this.a = a;
+    		this.b = b;
+    		
+    		this.mt = function(rhs) {
+    			return this.a < rhs.a || !(rhs.a < this.a) && this.b < rhs.b;
+    		};
+    		
+    		this.met = function(rhs) {
+    			return (this.a == rhs.a && this.b == rhs.b) || this.mt(rhs); 
+    		};
+    		
+    		this.gt = function(rhs) {
+    			return !this.met(rhs);
+    		};
+    		
+    		this.get = function(rhs) {
+    			return !this.mt(rhs);
+    		};
+    	}
+    	
+    	function AgentTreeNode() {
+    		/**
+            int begin;
+            int end;
+            int left;
+            float maxX;
+            float maxY;
+            float minX;
+            float minY;
+            int right;
+            */
+    	}
+    	
+    	function ObstacleTreeNode() {
+    		/**
+    		ObstacleTreeNode left;
+            Obstacle obstacle;
+            ObstacleTreeNode right;
+    		*/
+    	}
+    	
+    	var agents = []; // Agent[]
+    	var agentTree = []; // AgentTreeNode[]
+    	var obstacleTree = {}; // ObstacleTreeNode
+    	
+    	this.buildAgentTree = function(simulator) {
+    		if (agents.length != simulator.getNumAgents()) {
+    			agents = simulator.agents;
+    			
+    			for (var i=0; i<2*agents.length; i++) {
+    				agentTree.push(new AgentTreeNode());
+    			}
+    		}
+    		
+    		if (agents.length > 0) {
+    			buildAgentTreeRecursive(0, agents.length, 0);
+    		}
+    	};
+    	
+    	var buildAgentTreeRecursive = function(begin, end, node) {
+    		agentTree[node].begin = begin;
+    		agentTree[node].end = end;
+    		agentTree[node].minX = agentTree[node].maxX = agents[begin].position.x;
+    		agentTree[node].minY = agentTree[node].maxY = agents[begin].position.y;
+    		
+    		for (var i = begin+1; i<end; ++i) {
+    			agentTree[node].maxX = Math.max(agentTree[node].maxX, agents[i].position.x);
+    			agentTree[node].minX = Math.max(agentTree[node].minX, agents[i].position.x);
+    			agentTree[node].maxY = Math.max(agentTree[node].maxX, agents[i].position.y);
+    			agentTree[node].minY = Math.max(agentTree[node].minY, agents[i].position.y);
+    		}
+    		
+    		if (end - begin > MAXLEAF_SIZE) {
+    			// no leaf node
+    			var isVertical = agentTree[node].maxX - agentTree[node].minX > agentTree[node].maxY - agentTree[node].minY;
+    			var splitValue = isVertical ? 0.5 * (agentTree[node].maxX + agentTree[node].minX) : 0.5 * (agentTree[node].maxY + agentTree[node].minY);
+    			
+    			var left = begin;
+    			var right = end;
+    			
+    			while (left < right) {
+    				while (left < right && (isVertical ? agents[left].position.x : agents[left].position.y) < splitValue)
+                    {
+                        ++left;
+                    }
+
+                    while (right > left && (isVertical ? agents[right - 1].position.x : agents[right - 1].position.y) >= splitValue)
+                    {
+                        --right;
+                    }
+
+                    if (left < right)
+                    {
+                        var tmp = agents[left];
+                        agents[left] = agents[right - 1];
+                        agents[right - 1] = tmp;
+                        ++left;
+                        --right;
+                    }
+    			}
+    			
+    			var leftSize = left - begin;
+    			if (leftSize == 0) {
+    				++leftSize;
+    				++left;
+    				++right;
+    			}
+    			
+    			agentTree[node].left = node + 1;
+                agentTree[node].right = node + 1 + (2 * leftSize - 1);
+
+                buildAgentTreeRecursive(begin, left, agentTree[node].left);
+                buildAgentTreeRecursive(left, end, agentTree[node].right);
+    		}
+    	};
+    	
+    	this.buildObstacleTree = function(simulator) {
+    		var obstacles = simulator.obstacles;
+    		obstacleTree = buildObstacleTreeRecursive(obstacles);
+    	};
+    	
+    	var buildObstacleTreeRecursive = function(obstacles, simulator) {
+    		if (obstacles.length == 0) {
+    			return null;
+    		} else {
+    			var node = new ObstacleTreeNode();
+    			var optimalSplit = 0;
+                let minLeft = obstacles.length;
+                let minRight = obstacles.length;
+    			
+    			for (var i=0; i<obstacles.length; ++i) {
+    				let leftSize = 0;
+    				let rightSize = 0;
+    				
+    				let obstacleI1 = obstacles[i];
+    				let obstacleI2 = obstacleI1.nextObstacle;
+    				
+    				for (var j=0; j<obstacles.length; j++) {
+    					if (i == j) {
+    						continue;
+    					}
+    					
+    					let obstacleJ1 = obstacles[j];
+    					let obstacleJ2 = obstacleJ1.nextObstacle;
+    					
+    					let j1LeftOfI = RVOMath.leftOf(obstacleI1.point, obstacleI2.point, obstacleJ1.point);
+                        let j2LeftOfI = RVOMath.leftOf(obstacleI1.point, obstacleI2.point, obstacleJ2.point);
+    					
+                        if (j1LeftOfI >= -RVOMath.RVO_EPSILON && j2LeftOfI >= -RVOMath.RVO_EPSILON)
+                        {
+                            ++leftSize;
+                        }
+                        else if (j1LeftOfI <= RVOMath.RVO_EPSILON && j2LeftOfI <= RVOMath.RVO_EPSILON)
+                        {
+                            ++rightSize;
+                        }
+                        else
+                        {
+                            ++leftSize;
+                            ++rightSize;
+                        }
+                        
+                        var fp1 = new FloatPair(Math.max(leftSize, rightSize), Math.min(leftSize, rightSize));
+                        var fp2 = new FloatPair(Math.max(minLeft, minRight), Math.min(minLeft, minRight));
+                        
+                        if (fp1.get(fp2)) {
+                        	break;
+                        }
+    				}
+    				
+    				var fp1 = new FloatPair(Math.max(leftSize, rightSize), Math.min(leftSize, rightSize));
+    				var fp2 = new FloatPair(Math.max(minLeft, minRight), Math.min(minLeft, minRight));
+    				
+    				if (fp1.mt(fp2)) {
+    					minLeft = leftSize;
+    					minRight = rightSize;
+    					optimalSplit = i;
+    				}
+    			}
+    			
+    			{
+                    /* Build split node. */
+    				let leftObstacles = [];
+                    for (var n = 0; n < minLeft; ++n) leftObstacles.push(null);
+                    
+                    let rightObstacles = [];
+                    for (var n = 0; n < minRight; ++n) rightObstacles.push(null);
+
+                    let leftCounter = 0;
+                    let rightCounter = 0;
+                    let i = optimalSplit;
+
+                    let obstacleI1 = obstacles[i];
+                    let obstacleI2 = obstacleI1.nextObstacle;
+
+                    for (var j = 0; j < obstacles.length; ++j)
+                    {
+                        if (i == j)
+                        {
+                            continue;
+                        }
+
+                        let obstacleJ1 = obstacles[j];
+                        let obstacleJ2 = obstacleJ1.nextObstacle;
+
+                        let j1LeftOfI = RVOMath.leftOf(obstacleI1.point, obstacleI2.point, obstacleJ1.point);
+                        let j2LeftOfI = RVOMath.leftOf(obstacleI1.point, obstacleI2.point, obstacleJ2.point);
+
+                        if (j1LeftOfI >= -RVOMath.RVO_EPSILON && j2LeftOfI >= -RVOMath.RVO_EPSILON)
+                        {
+                            leftObstacles[leftCounter++] = obstacles[j];
+                        }
+                        else if (j1LeftOfI <= RVOMath.RVO_EPSILON && j2LeftOfI <= RVOMath.RVO_EPSILON)
+                        {
+                            rightObstacles[rightCounter++] = obstacles[j];
+                        }
+                        else
+                        {
+                            /* Split obstacle j. */
+                            t = RVOMath.det(obstacleI2.point.minus(obstacleI1.point), obstacleJ1.point.minus(obstacleI1.point)) / 
+                            	RVOMath.det(obstacleI2.point.minus(obstacleI1.point), obstacleJ1.point.minus(obstacleJ2.point));
+
+                            var splitpoint = obstacleJ1.point.plus( (obstacleJ2.point.minus(obstacleJ1.point)).scale(t) );
+
+                            var newObstacle = new Obstacle();
+                            newObstacle.point = splitpoint;
+                            newObstacle.prevObstacle = obstacleJ1;
+                            newObstacle.nextObstacle = obstacleJ2;
+                            newObstacle.isConvex = true;
+                            newObstacle.unitDir = obstacleJ1.unitDir;
+
+                            newObstacle.id = simulator.obstacles.length;
+
+                            simulator.obstacles.push(newObstacle);
+
+                            obstacleJ1.nextObstacle = newObstacle;
+                            obstacleJ2.prevObstacle = newObstacle;
+
+                            if (j1LeftOfI > 0.0)
+                            {
+                                leftObstacles[leftCounter++] = obstacleJ1;
+                                rightObstacles[rightCounter++] = newObstacle;
+                            }
+                            else
+                            {
+                                rightObstacles[rightCounter++] = obstacleJ1;
+                                leftObstacles[leftCounter++] = newObstacle;
+                            }
+                        }
+                    }
+
+                    node.obstacle = obstacleI1;
+                    node.left = buildObstacleTreeRecursive(leftObstacles);
+                    node.right = buildObstacleTreeRecursive(rightObstacles);
+                    return node;
+                }
+    		}
+    	};
+    	
+    	this.computeAgentNeighbors = function(agent, rangeSq) {
+    		queryAgentTreeRecursive(agent, rangeSq, 0);
+    	};
+    	
+    	this.computeObstacleNeighbors = function(agent, rangeSq) {
+    		queryObstacleTreeRecursive(agent, rangeSq, obstacleTree);
+    	};
+    	
+    	var queryAgentTreeRecursive = function(agent, rangeSq, node) {
+    		if (agentTree[node].end - agentTree[node].begin <= MAXLEAF_SIZE)
+            {
+                for (var i = agentTree[node].begin; i < agentTree[node].end; ++i)
+                {
+                    agent.insertAgentNeighbor(agents[i], rangeSq);
+                }
+            }
+            else
+            {
+                distSqLeft = RVOMath.sqr(Math.max(0, agentTree[agentTree[node].left].minX - agent.position.x)) + 
+    	            RVOMath.sqr(Math.max(0, agent.position.x - agentTree[agentTree[node].left].maxX)) + 
+    	            RVOMath.sqr(Math.max(0, agentTree[agentTree[node].left].minY - agent.position.y)) + 
+    	            RVOMath.sqr(Math.max(0, agent.position.y - agentTree[agentTree[node].left].maxY));
+
+                distSqRight = RVOMath.sqr(Math.max(0, agentTree[agentTree[node].right].minX - agent.position.x)) +
+    	            RVOMath.sqr(Math.max(0, agent.position.x - agentTree[agentTree[node].right].maxX)) +
+    	            RVOMath.sqr(Math.max(0, agentTree[agentTree[node].right].minY - agent.position.y)) +
+    	            RVOMath.sqr(Math.max(0, agent.position.y - agentTree[agentTree[node].right].maxY));
+
+                if (distSqLeft < distSqRight)
+                {
+                    if (distSqLeft < rangeSq)
+                    {
+                        queryAgentTreeRecursive(agent, rangeSq, agentTree[node].left);
+
+                        if (distSqRight < rangeSq)
+                        {
+                            queryAgentTreeRecursive(agent, rangeSq, agentTree[node].right);
+                        }
+                    }
+                }
+                else
+                {
+                    if (distSqRight < rangeSq)
+                    {
+                        queryAgentTreeRecursive(agent, rangeSq, agentTree[node].right);
+
+                        if (distSqLeft < rangeSq)
+                        {
+                            queryAgentTreeRecursive(agent, rangeSq, agentTree[node].left);
+                        }
+                    }
+                }
+
+            }
+    	};
+    	
+    	// pass ref range
+    	var queryObstacleTreeRecursive = function(/** Agent */ agent, rangeSq, /** ObstacleTreeNode */ node) {
+            if (node == null)
+            {
+                return;
+            }
+            else
+            {
+                let obstacle1 = node.obstacle;
+                let obstacle2 = obstacle1.nextObstacle;
+
+                let agentLeftOfLine = RVOMath.leftOf(obstacle1.point, obstacle2.point, agent.position);
+
+                queryObstacleTreeRecursive(agent, rangeSq, (agentLeftOfLine >= 0 ? node.left : node.right));
+
+                let distSqLine = RVOMath.sqr(agentLeftOfLine) / RVOMath.absSq(obstacle2.point.minus(obstacle1.point));
+
+                if (distSqLine < rangeSq)
+                {
+                    if (agentLeftOfLine < 0)
+                    {
+                        /*
+                         * Try obstacle at this node only if is on right side of
+                         * obstacle (and can see obstacle).
+                         */
+                        agent.insertObstacleNeighbor(node.obstacle, rangeSq);
+                    }
+
+                    /* Try other side of line. */
+                    queryObstacleTreeRecursive(agent, rangeSq, (agentLeftOfLine >= 0 ? node.right : node.left));
+                }
+            }
+        };
+
+        this.queryVisibility = function (/** Vector2 */ q1, /** Vector2 */ q2, radius)
+        {
+            return queryVisibilityRecursive(q1, q2, radius, obstacleTree);
+        };
+
+        var queryVisibilityRecursive = function(/** Vector2 */ q1, /** Vector2 */ q2, radius, /** ObstacleTreeNode */ node)
+        {
+            if (node == null)
+            {
+                return true;
+            }
+            else
+            {
+                var obstacle1 = node.obstacle;
+                var obstacle2 = obstacle1.nextObstacle;
+
+                var q1LeftOfI = RVOMath.leftOf(obstacle1.point, obstacle2.point, q1);
+                var q2LeftOfI = RVOMath.leftOf(obstacle1.point, obstacle2.point, q2);
+                var invLengthI = 1.0 / RVOMath.absSq(obstacle2.point.minus(obstacle1.point));
+
+                if (q1LeftOfI >= 0 && q2LeftOfI >= 0)
+                {
+                    return queryVisibilityRecursive(q1, q2, radius, node.left) && ((RVOMath.sqr(q1LeftOfI) * invLengthI >= RVOMath.sqr(radius) && RVOMath.sqr(q2LeftOfI) * invLengthI >= RVOMath.sqr(radius)) || queryVisibilityRecursive(q1, q2, radius, node.right));
+                }
+                else if (q1LeftOfI <= 0 && q2LeftOfI <= 0)
+                {
+                    return queryVisibilityRecursive(q1, q2, radius, node.right) && ((RVOMath.sqr(q1LeftOfI) * invLengthI >= RVOMath.sqr(radius) && RVOMath.sqr(q2LeftOfI) * invLengthI >= RVOMath.sqr(radius)) || queryVisibilityRecursive(q1, q2, radius, node.left));
+                }
+                else if (q1LeftOfI >= 0 && q2LeftOfI <= 0)
+                {
+                    /* One can see through obstacle from left to right. */
+                    return queryVisibilityRecursive(q1, q2, radius, node.left) && queryVisibilityRecursive(q1, q2, radius, node.right);
+                }
+                else
+                {
+                    var point1LeftOfQ = RVOMath.leftOf(q1, q2, obstacle1.point);
+                    var point2LeftOfQ = RVOMath.leftOf(q1, q2, obstacle2.point);
+                    var invLengthQ = 1.0 / RVOMath.absSq(q2.minus(q1));
+
+                    return (point1LeftOfQ * point2LeftOfQ >= 0 && RVOMath.sqr(point1LeftOfQ) * invLengthQ > RVOMath.sqr(radius) && RVOMath.sqr(point2LeftOfQ) * invLengthQ > RVOMath.sqr(radius) && queryVisibilityRecursive(q1, q2, radius, node.left) && queryVisibilityRecursive(q1, q2, radius, node.right));
+                }
+            }
+        };
+    }
+
+    /* c8 ignore next 1000 */
+
+    function Simulator() {
+      this.agents = []; // Agent[]
+      this.obstacles = []; // Obstacle[]
+      this.goals = []; // Vector2
+      this.kdTree = new KdTree();
+
+      this.timeStep = 0.25;
+
+      this.defaultAgent; // Agent
+      this.time = 0.0;
+
+      this.getGlobalTime = function () {
+        return this.time;
+      };
+
+      this.getNumAgents = function () {
+        return this.agents.length;
+      };
+
+      this.getTimeStep = function () {
+        return this.timeStep;
+      };
+
+      this.setAgentPrefVelocity = function (i, velocity) {
+        this.agents[i].prefVelocity = velocity;
+      };
+
+      this.setTimeStep = function (timeStep) {
+        this.timeStep = timeStep;
+      };
+
+      this.getAgentPosition = function (i) {
+        return this.agents[i].position;
+      };
+
+      /**
+       * My additon to allow coupling to game objects
+       */
+      this.getAgentGameObject = function(i){
+        return this.agents[i].gameObject;
+      };
+
+      /** My addition */
+      this.removeRVOAgent = function(i){
+        this.agents.splice(i,1);
+        this.goals.splice(i,1);
+        //console.log(this.agents.length);
+      };
+
+      this.getAgentPrefVelocity = function (i) {
+        return this.agents[i].prefVelocity;
+      };
+
+      this.getAgentVelocity = function (i) {
+        return this.agents[i].velocity;
+      };
+
+      this.getAgentRadius = function (i) {
+        return this.agents[i].radius;
+      };
+
+      this.getAgentOrcaLines = function (i) {
+        return this.agents[i].orcaLines;
+      };
+
+      this.addAgent = function (position, gameObject) {
+        if (!this.defaultAgent) {
+          throw new Error("no default agent");
+        }
+
+        var agent = new Agent();
+
+        agent.position = position;
+        agent.maxNeighbors = this.defaultAgent.maxNeighbors;
+        agent.maxSpeed = this.defaultAgent.maxSpeed;
+        agent.neighborDist = this.defaultAgent.neighborDist;
+        agent.radius = this.defaultAgent.radius;
+        agent.timeHorizon = this.defaultAgent.timeHorizon;
+        agent.timeHorizonObst = this.defaultAgent.timeHorizonObst;
+        agent.velocity = this.defaultAgent.velocity;
+        agent.gameObject = gameObject;
+
+        agent.id = this.agents.length;
+        this.agents.push(agent);
+
+        return this.agents.length - 1;
+      };
+
+      //  /** float */ neighborDist, /** int */ maxNeighbors, /** float */ timeHorizon, /** float */ timeHorizonObst, /** float */ radius, /** float*/ maxSpeed, /** Vector2 */ velocity)
+      this.setAgentDefaults = function (neighborDist, maxNeighbors, timeHorizon, timeHorizonObst, radius, maxSpeed, velocity) {
+        if (!this.defaultAgent) {
+          this.defaultAgent = new Agent();
+        }
+
+        this.defaultAgent.maxNeighbors = maxNeighbors;
+        this.defaultAgent.maxSpeed = maxSpeed;
+        this.defaultAgent.neighborDist = neighborDist;
+        this.defaultAgent.radius = radius;
+        this.defaultAgent.timeHorizon = timeHorizon;
+        this.defaultAgent.timeHorizonObst = timeHorizonObst;
+        this.defaultAgent.velocity = velocity;
+      };
+
+      this.run = function () {
+        this.kdTree.buildAgentTree(this);
+
+        for (var i = 0; i < this.getNumAgents(); i++) {
+          this.agents[i].computeNeighbors(this);
+          this.agents[i].computeNewVelocity(this);
+          this.agents[i].update(this);
+        }
+
+        this.time += this.timeStep;
+      };
+
+      this.reachedGoal = function () {
+        for (var i = 0; i < this.getNumAgents(); ++i) {
+          if (RVOMath.absSq(this.goals[i].minus(this.getAgentPosition(i))) > RVOMath.RVO_EPSILON) {
+            return false;
+          }    }
+        return true;
+      };
+
+      this.addGoals = function (goals) {
+        this.goals = goals;
+      };
+
+      /**My addition */
+      this.addGoal = function(goal){
+        this.goals.push(goal);
+      };
+
+      /** My addition */
+      this.setGoal = function(goal, i){
+        this.goals[i] = goal;
+      };
+
+      this.getGoal = function (goalNo) {
+        return this.goals[goalNo];
+      };
+
+      this.addObstacle = function ( /** IList<Vector2> */ vertices) {
+        if (vertices.length < 2) {
+          return -1;
+        }
+
+        var obstacleNo = this.obstacles.length;
+
+        for (var i = 0; i < vertices.length; ++i) {
+          let obstacle = new Obstacle();
+          obstacle.point = vertices[i];
+          if (i != 0) {
+            obstacle.prevObstacle = this.obstacles[this.obstacles.length - 1];
+            obstacle.prevObstacle.nextObstacle = obstacle;
+          }
+          if (i == vertices.length - 1) {
+            obstacle.nextObstacle = this.obstacles[obstacleNo];
+            obstacle.nextObstacle.prevObstacle = obstacle;
+          }
+          obstacle.unitDir = RVOMath.normalize(vertices[(i == vertices.length - 1 ? 0 : i + 1)].minus(vertices[i]));
+
+          if (vertices.length == 2) {
+            obstacle.isConvex = true;
+          } else {
+            obstacle.isConvex = (RVOMath.leftOf(vertices[(i == 0 ? vertices.length - 1 : i - 1)], vertices[i], vertices[(i == vertices.length - 1 ? 0 : i + 1)]) >= 0);
+          }
+
+          obstacle.id = this.obstacles.length;
+
+          this.obstacles.push(obstacle);
+        }
+
+        return obstacleNo;
+      };
+
+      this.processObstacles = function () {
+        this.kdTree.buildObstacleTree(this);
+      };
+
+      this.getObstacles = function () {
+        return this.obstacles;
+      };
+    }
+
+    /* c8 ignore next 1000 */
+
+    function Agent() {
+        this.agentNeighbors = []; //  new List<KeyValuePair<float, Agent>>();
+        this.maxNeighbors = 0;
+        this.maxSpeed = 0.0;
+        this.neighborDist = 0.0;
+        this.newVelocity; // Vector 2
+        this.obstaclNeighbors = []; // new List<KeyValuePair<float, Obstacle>>();
+        this.orcaLines = []; // new List<Line>();
+        this.position; // Vector2
+
+        this.prefVelocity; // Vector2
+
+        this.radius = 0.0;
+        this.timeHorizon = 0.0;
+        this.timeHorizonObst = 0.0;
+        this.velocity; // Vector2
+        this.id = 0;
+
+        /** My addition */
+        this.gameObject = null; //Which gameObject are we simulating?
+
+        this.computeNeighbors = function (simulator) {
+            this.obstaclNeighbors = [];
+            var rangeSq = RVOMath.sqr(this.timeHorizonObst * this.maxSpeed + this.radius);
+            simulator.kdTree.computeObstacleNeighbors(this, rangeSq);
+
+            this.agentNeighbors = [];
+            if (this.maxNeighbors > 0) {
+                rangeSq = RVOMath.sqr(this.neighborDist);
+                simulator.kdTree.computeAgentNeighbors(this, rangeSq);
+            }
+        };
+
+        /* Search for the best new velocity. */
+        this.computeNewVelocity = function (simulator) {
+            let orcaLines = [];
+
+            let invTimeHorizonObst = 1.0 / this.timeHorizonObst;
+
+            /* Create obstacle ORCA lines. */
+            for (var i = 0; i < this.obstaclNeighbors.length; ++i) {
+                let obstacle1 = this.obstaclNeighbors[i].value;
+                let obstacle2 = obstacle1.nextObstacle;
+
+                let relativePosition1 = obstacle1.point.minus(this.position);
+                let relativePosition2 = obstacle2.point.minus(this.position);
+
+                /* 
+                 * Check if velocity obstacle of obstacle is already taken care of by
+                 * previously constructed obstacle ORCA lines.
+                 */
+                let alreadyCovered = false;
+
+                for (var j = 0; j < orcaLines.length; ++j) {
+                    if (RVOMath.det(relativePosition1.scale(invTimeHorizonObst).minus(orcaLines[j].point), orcaLines[j].direction) - invTimeHorizonObst * this.radius >= -RVOMath.RVOEPSILON && RVOMath.det(relativePosition2.scale(invTimeHorizonObst).minus(orcaLines[j].point), orcaLines[j].direction) - invTimeHorizonObst * this.radius >= -RVOMath.RVOEPSILON) {
+                        alreadyCovered = true;
+                        break;
+                    }
+                }
+
+                if (alreadyCovered) {
+                    continue;
+                }
+
+                /* Not yet covered. Check for collisions. */
+
+                let distSq1 = RVOMath.absSq(relativePosition1);
+                let distSq2 = RVOMath.absSq(relativePosition2);
+
+                let radiusSq = RVOMath.sqr(this.radius);
+
+                let obstacleVector = obstacle2.point.minus(obstacle1.point);
+                let s = relativePosition1.scale(-1).multiply(obstacleVector) / RVOMath.absSq(obstacleVector); //  (-relativePosition1 * obstacleVector) / RVOMath.absSq(obstacleVector);
+                let distSqLine = RVOMath.absSq(relativePosition1.scale(-1).minus(obstacleVector.scale(s))); // RVOMath.absSq(-relativePosition1 - s * obstacleVector);
+
+                var line = new Line$1();
+
+                if (s < 0 && distSq1 <= radiusSq) {
+                    /* Collision with left vertex. Ignore if non-convex. */
+                    if (obstacle1.isConvex) {
+                        line.point = new Vector2(0, 0);
+                        line.direction = RVOMath.normalize(new Vector2(-relativePosition1.y, relativePosition1.x));
+                        orcaLines.push(line);
+                    }
+                    continue;
+                }
+                else if (s > 1 && distSq2 <= radiusSq) {
+                    /* Collision with right vertex. Ignore if non-convex 
+                     * or if it will be taken care of by neighoring obstace */
+                    if (obstacle2.isConvex && RVOMath.det(relativePosition2, obstacle2.unitDir) >= 0) {
+                        line.point = new Vector2(0, 0);
+                        line.direction = RVOMath.normalize(new Vector2(-relativePosition2.y, relativePosition2.x));
+                        orcaLines.push(line);
+                    }
+                    continue;
+                }
+                else if (s >= 0 && s < 1 && distSqLine <= radiusSq) {
+                    /* Collision with obstacle segment. */
+                    line.point = new Vector2(0, 0);
+                    line.direction = obstacle1.unitDir.scale(-1);
+                    orcaLines.push(line);
+                    continue;
+                }
+
+                /* 
+                 * No collision.  
+                 * Compute legs. When obliquely viewed, both legs can come from a single
+                 * vertex. Legs extend cut-off line when nonconvex vertex.
+                 */
+
+                var leftLegDirection, rightLegDirection, leg1, leg2;
+
+                if (s < 0 && distSqLine <= radiusSq) {
+                    /*
+                     * Obstacle viewed obliquely so that left vertex
+                     * defines velocity obstacle.
+                     */
+                    if (!obstacle1.isConvex) {
+                        /* Ignore obstacle. */
+                        continue;
+                    }
+
+                    obstacle2 = obstacle1;
+
+                    leg1 = Math.sqrt(distSq1 - radiusSq);
+                    leftLegDirection = (new Vector2(relativePosition1.x * leg1 - relativePosition1.y * this.radius, relativePosition1.x * this.radius + relativePosition1.y * leg1)).scale(1 / distSq1);
+                    rightLegDirection = (new Vector2(relativePosition1.x * leg1 + relativePosition1.y * this.radius, -relativePosition1.x * this.radius + relativePosition1.y * leg1)).scale(1 / distSq1);
+                }
+                else if (s > 1 && distSqLine <= radiusSq) {
+                    /*
+                     * Obstacle viewed obliquely so that
+                     * right vertex defines velocity obstacle.
+                     */
+                    if (!obstacle2.isConvex) {
+                        /* Ignore obstacle. */
+                        continue;
+                    }
+
+                    obstacle1 = obstacle2;
+
+                    leg2 = Math.sqrt(distSq2 - radiusSq);
+                    leftLegDirection = (new Vector2(relativePosition2.x * leg2 - relativePosition2.y * this.radius, relativePosition2.x * this.radius + relativePosition2.y * leg2)).scale(1 / distSq2);
+                    rightLegDirection = (new Vector2(relativePosition2.x * leg2 + relativePosition2.y * this.radius, -relativePosition2.x * this.radius + relativePosition2.y * leg2)).scale(1 / distSq2);
+                }
+                else {
+                    /* Usual situation. */
+                    if (obstacle1.isConvex) {
+                        leg1 = Math.sqrt(distSq1 - radiusSq);
+                        leftLegDirection = (new Vector2(relativePosition1.x * leg1 - relativePosition1.y * this.radius, relativePosition1.x * this.radius + relativePosition1.y * leg1)).scale(1 / distSq1);
+                    }
+                    else {
+                        /* Left vertex non-convex; left leg extends cut-off line. */
+                        leftLegDirection = obstacle1.unitDir.scale(-1);
+                    }
+
+                    if (obstacle2.isConvex) {
+                        leg2 = Math.sqrt(distSq2 - radiusSq);
+                        rightLegDirection = (new Vector2(relativePosition2.x * leg2 + relativePosition2.y * this.radius, -relativePosition2.x * this.radius + relativePosition2.y * leg2)).scale(1 / distSq2);
+                    }
+                    else {
+                        /* Right vertex non-convex; right leg extends cut-off line. */
+                        rightLegDirection = obstacle1.unitDir;
+                    }
+                }
+
+                /* 
+                 * Legs can never point into neighboring edge when convex vertex,
+                 * take cutoff-line of neighboring edge instead. If velocity projected on
+                 * "foreign" leg, no constraint is added. 
+                 */
+
+                let leftNeighbor = obstacle1.prevObstacle;
+
+                let isLeftLegForeign = false;
+                let isRightLegForeign = false;
+
+                if (obstacle1.isConvex && RVOMath.det(leftLegDirection, leftNeighbor.unitDir.scale(-1)) >= 0.0) {
+                    /* Left leg points into obstacle. */
+                    leftLegDirection = leftNeighbor.unitDir.scale(-1);
+                    isLeftLegForeign = true;
+                }
+
+                if (obstacle2.isConvex && RVOMath.det(rightLegDirection, obstacle2.unitDir) <= 0.0) {
+                    /* Right leg points into obstacle. */
+                    rightLegDirection = obstacle2.unitDir;
+                    isRightLegForeign = true;
+                }
+
+                /* Compute cut-off centers. */
+                let leftCutoff = obstacle1.point.minus(this.position).scale(invTimeHorizonObst);
+                let rightCutoff = obstacle2.point.minus(this.position).scale(invTimeHorizonObst);
+                let cutoffVec = rightCutoff.minus(leftCutoff);
+
+                /* Project current velocity on velocity obstacle. */
+
+                /* Check if current velocity is projected on cutoff circles. */
+                let t = obstacle1 == obstacle2 ? 0.5 : this.velocity.minus(leftCutoff).multiply(cutoffVec) / RVOMath.absSq(cutoffVec);
+                let tLeft = this.velocity.minus(leftCutoff).multiply(leftLegDirection);
+                let tRight = this.velocity.minus(rightCutoff).multiply(rightLegDirection);
+
+                if ((t < 0.0 && tLeft < 0.0) || (obstacle1 == obstacle2 && tLeft < 0.0 && tRight < 0.0)) {
+                    /* Project on left cut-off circle. */
+                    var unitW = RVOMath.normalize(this.velocity.minus(leftCutoff));
+
+                    line.direction = new Vector2(unitW.y, -unitW.x);
+                    line.point = leftCutoff.plus(unitW.scale(this.radius * invTimeHorizonObst));
+                    orcaLines.push(line);
+                    continue;
+                }
+                else if (t > 1.0 && tRight < 0.0) {
+                    /* Project on right cut-off circle. */
+                    var unitW = RVOMath.normalize(this.velocity.minus(rightCutoff));
+
+                    line.direction = new Vector2(unitW.y, -unitW.x);
+                    line.point = rightCutoff.plus(unitW.scale(this.radius * invTimeHorizonObst));
+                    orcaLines.push(line);
+                    continue;
+                }
+
+                /* 
+                 * Project on left leg, right leg, or cut-off line, whichever is closest
+                 * to velocity.
+                 */
+                let distSqCutoff = ((t < 0.0 || t > 1.0 || obstacle1 == obstacle2) ? Infinity : RVOMath.absSq(this.velocity.minus(cutoffVec.scale(t).plus(leftCutoff))));
+                let distSqLeft = ((tLeft < 0.0) ? Infinity : RVOMath.absSq(this.velocity.minus(leftLegDirection.scale(tLeft).plus(leftCutoff))));
+                let distSqRight = ((tRight < 0.0) ? Infinity : RVOMath.absSq(this.velocity.minus(rightLegDirection.scale(tRight).plus(rightCutoff))));
+
+                if (distSqCutoff <= distSqLeft && distSqCutoff <= distSqRight) {
+                    /* Project on cut-off line. */
+                    line.direction = obstacle1.unitDir.scale(-1);
+                    var aux = new Vector2(-line.direction.y, line.direction.x);
+                    line.point = aux.scale(this.radius * invTimeHorizonObst).plus(leftCutoff);
+                    orcaLines.push(line);
+                    continue;
+                }
+                else if (distSqLeft <= distSqRight) {
+                    /* Project on left leg. */
+                    if (isLeftLegForeign) {
+                        continue;
+                    }
+
+                    line.direction = leftLegDirection;
+                    var aux = new Vector2(-line.direction.y, line.direction.x);
+                    line.point = aux.scale(this.radius * invTimeHorizonObst).plus(leftCutoff);
+                    orcaLines.push(line);
+                    continue;
+                }
+                else {
+                    /* Project on right leg. */
+                    if (isRightLegForeign) {
+                        continue;
+                    }
+
+                    line.direction = rightLegDirection.scale(-1);
+                    var aux = new Vector2(-line.direction.y, line.direction.x);
+                    line.point = aux.scale(this.radius * invTimeHorizonObst).plus(leftCutoff);
+                    orcaLines.push(line);
+                    continue;
+                }
+            }
+
+            var numObstLines = orcaLines.length;
+
+            var invTimeHorizon = 1.0 / this.timeHorizon;
+
+            /* Create agent ORCA lines. */
+            for (var i = 0; i < this.agentNeighbors.length; ++i) {
+                var other = this.agentNeighbors[i].value;
+
+                let relativePosition = other.position.minus(this.position);
+                let relativeVelocity = this.velocity.minus(other.velocity);
+                let distSq = RVOMath.absSq(relativePosition);
+                let combinedRadius = this.radius + other.radius;
+                let combinedRadiusSq = RVOMath.sqr(combinedRadius);
+
+                var line = new Line$1(); // Line
+                var u; // Vector2
+
+                if (distSq > combinedRadiusSq) {
+                    /* No collision. */
+                    let w = relativeVelocity.minus(relativePosition.scale(invTimeHorizon));                /* Vector from cutoff center to relative velocity. */
+                    let wLengthSq = RVOMath.absSq(w);
+
+                    let dotProduct1 = w.multiply(relativePosition);
+
+                    if (dotProduct1 < 0.0 && RVOMath.sqr(dotProduct1) > combinedRadiusSq * wLengthSq) {
+                        /* Project on cut-off circle. */
+                        var wLength = Math.sqrt(wLengthSq);
+                        var unitW = w.scale(1 / wLength);
+
+                        line.direction = new Vector2(unitW.y, -unitW.x);
+                        u = unitW.scale(combinedRadius * invTimeHorizon - wLength);
+                    }
+                    else {
+                        /* Project on legs. */
+                        let leg = Math.sqrt(distSq - combinedRadiusSq);
+
+                        if (RVOMath.det(relativePosition, w) > 0.0) {
+                            /* Project on left leg. */
+                            var aux = new Vector2(relativePosition.x * leg - relativePosition.y * combinedRadius, relativePosition.x * combinedRadius + relativePosition.y * leg);
+                            line.direction = aux.scale(1 / distSq);
+                        }
+                        else {
+                            /* Project on right leg. */
+                            var aux = new Vector2(relativePosition.x * leg + relativePosition.y * combinedRadius, -relativePosition.x * combinedRadius + relativePosition.y * leg);
+                            line.direction = aux.scale(-1 / distSq);
+                        }
+
+                        let dotProduct2 = relativeVelocity.multiply(line.direction);
+
+                        u = line.direction.scale(dotProduct2).minus(relativeVelocity);
+                    }
+                }
+                else {
+                    /* Collision. Project on cut-off circle of time timeStep. */
+                    let invTimeStep = 1.0 / simulator.timeStep;
+
+                    /* Vector from cutoff center to relative velocity. */
+                    let w = relativeVelocity.minus(relativePosition.scale(invTimeStep));
+
+                    let wLength = Math.abs(w);
+                    let unitW = w.scale(1 / wLength);
+
+                    line.direction = new Vector2(unitW.y, -unitW.x);
+                    u = unitW.scale(combinedRadius * invTimeStep - wLength);
+                }
+
+                line.point = u.scale(0.5).plus(this.velocity);
+                orcaLines.push(line);
+            }
+
+            let lineFail = this.linearProgram2(orcaLines, this.maxSpeed, this.prefVelocity, false);
+
+            if (lineFail < orcaLines.length) {
+                this.linearProgram3(orcaLines, numObstLines, lineFail, this.maxSpeed);
+            }
+        };
+
+        this.insertAgentNeighbor = function (agent, rangeSq) {
+            if (this != agent) {
+                var distSq = RVOMath.absSq(this.position.minus(agent.position));
+
+                if (distSq < rangeSq) {
+                    if (this.agentNeighbors.length < this.maxNeighbors) {
+                        this.agentNeighbors.push(new KeyValuePair(distSq, agent));
+                    }
+                    var i = this.agentNeighbors.length - 1;
+                    while (i != 0 && distSq < this.agentNeighbors[i - 1].key) {
+                        this.agentNeighbors[i] = this.agentNeighbors[i - 1];
+                        --i;
+                    }
+                    this.agentNeighbors[i] = new KeyValuePair(distSq, agent);
+
+                    if (this.agentNeighbors.length == this.maxNeighbors) {
+                        rangeSq = this.agentNeighbors[this.agentNeighbors.length - 1].key;
+                    }
+                }
+            }
+        };
+
+        this.insertObstacleNeighbor = function (/** Obstacle */ obstacle, rangeSq) {
+            let nextObstacle = obstacle.nextObstacle;
+
+            let distSq = RVOMath.distSqPointLineSegment(obstacle.point, nextObstacle.point, this.position);
+
+            if (distSq < rangeSq) {
+                this.obstaclNeighbors.push(new KeyValuePair(distSq, obstacle));
+
+                let i = this.obstaclNeighbors.length - 1;
+                while (i != 0 && distSq < this.obstaclNeighbors[i - 1].key) {
+                    this.obstaclNeighbors[i] = this.obstaclNeighbors[i - 1];
+                    --i;
+                }
+                this.obstaclNeighbors[i] = new KeyValuePair(distSq, obstacle);
+            }
+        };
+
+        this.update = function (simulator) {
+            var rnd = new Vector2(0, 0); //Math.random() * 0.1 - 0.05, Math.random() * 0.1 - 0.05);
+            this.velocity = this.newVelocity.plus(rnd);
+            this.position = this.position.plus(this.newVelocity.scale(simulator.timeStep));
+        };
+
+        this.linearProgram1 = function (/** Array */ lines, /** int */ lineNo, /** float */ radius, /** Vector2 */ optVelocity, /** bool */ directionOpt) {
+            var dotProduct = lines[lineNo].point.multiply(lines[lineNo].direction);
+            var discriminant = RVOMath.sqr(dotProduct) + RVOMath.sqr(radius) - RVOMath.absSq(lines[lineNo].point);
+
+            if (discriminant < 0.0) {
+                /* Max speed circle fully invalidates line lineNo. */
+                return false;
+            }
+
+            var sqrtDiscriminant = Math.sqrt(discriminant);
+            var tLeft = -dotProduct - sqrtDiscriminant;
+            var tRight = -dotProduct + sqrtDiscriminant;
+
+            for (var i = 0; i < lineNo; ++i) {
+                var denominator = RVOMath.det(lines[lineNo].direction, lines[i].direction);
+                var numerator = RVOMath.det(lines[i].direction, lines[lineNo].point.minus(lines[i].point));
+
+                if (Math.abs(denominator) <= RVOMath.RVOEPSILON) {
+                    /* Lines lineNo and i are (almost) parallel. */
+                    if (numerator < 0.0) {
+                        return false;
+                    }
+                    else {
+                        continue;
+                    }
+                }
+
+                var t = numerator / denominator;
+
+                if (denominator >= 0.0) {
+                    /* Line i bounds line lineNo on the right. */
+                    tRight = Math.min(tRight, t);
+                }
+                else {
+                    /* Line i bounds line lineNo on the left. */
+                    tLeft = Math.max(tLeft, t);
+                }
+
+                if (tLeft > tRight) {
+                    return false;
+                }
+            }
+
+            if (directionOpt) {
+                if (optVelocity.multiply(lines[lineNo].direction) > 0.0) {
+                    // Take right extreme
+                    this.newVelocity = lines[lineNo].direction.scale(tRight).plus(lines[lineNo].point);
+                }
+                else {
+                    // Take left extreme.
+                    this.newVelocity = lines[lineNo].direction.scale(tLeft).plus(lines[lineNo].point);
+                }
+            }
+            else {
+                // Optimize closest point
+                t = lines[lineNo].direction.multiply(optVelocity.minus(lines[lineNo].point));
+
+                if (t < tLeft) {
+                    this.newVelocity = lines[lineNo].direction.scale(tLeft).plus(lines[lineNo].point);
+                }
+                else if (t > tRight) {
+                    this.newVelocity = lines[lineNo].direction.scale(tRight).plus(lines[lineNo].point);
+                }
+                else {
+                    this.newVelocity = lines[lineNo].direction.scale(t).plus(lines[lineNo].point);
+                }
+            }
+
+            // TODO ugly hack by palmerabollo
+            if (isNaN(this.newVelocity.x) || isNaN(this.newVelocity.y)) {
+                return false;
+            }
+
+            return true;
+        };
+
+        this.linearProgram2 = function (/** Array */ lines, /** float */ radius, /** Vector2 */ optVelocity, /** bool */ directionOpt) {
+            if (directionOpt) {
+                /* 
+                 * Optimize direction. Note that the optimization velocity is of unit
+                 * length in this case.
+                 */
+                this.newVelocity = optVelocity.scale(radius);
+            }
+            else if (RVOMath.absSq(optVelocity) > RVOMath.sqr(radius)) {
+                /* Optimize closest point and outside circle. */
+                this.newVelocity = RVOMath.normalize(optVelocity).scale(radius);
+            }
+            else {
+                /* Optimize closest point and inside circle. */
+                this.newVelocity = optVelocity;
+            }
+
+            for (var i = 0; i < lines.length; ++i) {
+                if (RVOMath.det(lines[i].direction, lines[i].point.minus(this.newVelocity)) > 0.0) {
+                    /* Result does not satisfy constraint i. Compute new optimal result. */
+                    var tempResult = this.newVelocity;
+                    if (!this.linearProgram1(lines, i, this.radius, optVelocity, directionOpt)) {
+                        this.newVelocity = tempResult;
+                        return i;
+                    }
+                }
+            }
+
+            return lines.length;
+        };
+
+        this.linearProgram3 = function (/** Array */ lines, /** int */ numObstLines, /** int */ beginLine, /** float */ radius) {
+            var distance = 0.0;
+
+            for (var i = beginLine; i < lines.length; ++i) {
+                if (RVOMath.det(lines[i].direction, lines[i].point.minus(this.newVelocity)) > distance) {
+                    /* Result does not satisfy constraint of line i. */
+                    //std::vector<Line> projLines(lines.begin(), lines.begin() + numObstLines);
+                    let projLines = []; // new List<Line>();
+                    for (var ii = 0; ii < numObstLines; ++ii) {
+                        projLines.push(lines[ii]);
+                    }
+
+                    for (var j = numObstLines; j < i; ++j) {
+                        var line = new Line$1();
+
+                        let determinant = RVOMath.det(lines[i].direction, lines[j].direction);
+
+                        if (Math.abs(determinant) <= RVOMath.RVOEPSILON) {
+                            /* Line i and line j are parallel. */
+                            if (lines[i].direction.multiply(lines[j].direction) > 0.0) {
+                                /* Line i and line j point in the same direction. */
+                                continue;
+                            }
+                            else {
+                                /* Line i and line j point in opposite direction. */
+                                line.point = lines[i].point.plus(lines[j].point).scale(0.5);
+                            }
+                        }
+                        else {
+                            var aux = lines[i].direction.scale(RVOMath.det(lines[j].direction, lines[i].point.minus(lines[j].point)) / determinant);
+                            line.point = lines[i].point.plus(aux);
+                        }
+
+                        line.direction = RVOMath.normalize(lines[j].direction.minus(lines[i].direction));
+                        projLines.push(line);
+                    }
+
+                    var tempResult = this.newVelocity;
+                    if (this.linearProgram2(projLines, radius, new Vector2(-lines[i].direction.y, lines[i].direction.x), true) < projLines.length) {
+                        /* This should in principle not happen.  The result is by definition
+                         * already in the feasible region of this linear program. If it fails,
+                         * it is due to small floating point error, and the current result is
+                         * kept.
+                         */
+                        this.newVelocity = tempResult;
+                    }
+
+                    distance = RVOMath.det(lines[i].direction, lines[i].point.minus(this.newVelocity));
+                }
+            }
+        };
     }
 
     class RVOSimulator extends Component {
@@ -22319,6 +21875,577 @@ RectangleComponent
 -fill=black
 `;
 
+    class UpdatePlugin{
+      constructor(){
+
+      }
+      update(){
+        //Update all the objects
+        Base.$$.children.filter(i => i.update).forEach(i => i.update());
+
+      }
+    }
+
+    class DrawPlugin{
+      constructor(){
+
+      }
+      
+      draw(ctx, width, height) {
+        if (arguments.length != 3 ||
+          !(typeof ctx == 'object') ||
+          !(typeof width == 'number') ||
+          !(typeof height == 'number')) throw new Error("draw expects exactly three arguments of type object, number, and number")
+
+        //Before we draw, see if we have a camera game object and use that
+        ctx.save();
+        let tx = 0, ty = 0, sx = 1, sy = 1, r = 0, hx = 0, hy = 0;
+        let children = Base.$$.children;
+        let cameras = children.filter(i => i.anyComponent("CameraComponent"));
+        if (cameras.length == 0) {
+          //You really should add a camera
+          //console.log("You should add a camera to the scene. C'mon.")
+          ctx.fillStyle = "cyan";
+          ctx.fillRect(0, 0, width, height);
+        }
+        else {
+          if (cameras.length > 1)
+            console.log("More than 1 camera detected in the scene. You should only have exactly one root game object with a camera component attached.");
+          let camera = cameras[0];
+          let cameraComponent = camera.getComponent("CameraComponent");
+          ctx.fillStyle = cameraComponent.backgroundColor;
+          ctx.fillRect(0, 0, width, height);
+          [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, width / 2, height / 2];
+
+        }
+
+        ctx.translate(hx, hy);
+        ctx.rotate(r);
+        ctx.scale(sx, sy);
+        ctx.translate(-tx, -ty);
+
+        //Draw children that are not in screen space
+        //Sort them by layer
+        children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Background").forEach(i => i.draw(ctx));
+        children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && !i.layer).forEach(i => i.draw(ctx));
+        children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "default").forEach(i => i.draw(ctx));
+        children.filter(i => i.draw && !i.anyComponent("CanvasComponent") && i.layer == "Foreground").forEach(i => i.draw(ctx));
+
+        ctx.restore();
+
+        //We're now back in screen space. It's time to draw any GUI components
+        //if we have a gameObject with an attached CanvasComponent
+        ctx.save();
+        let canvases = children.filter(i => i.anyComponent("CanvasComponent"));
+        if (canvases.length == 0) ;
+        else {
+          if (canvases.length > 1) {
+            console.log("More than 1 canvas object found in the root of your scene graph. You should only have exactly one game object with a canvas component. The other object(s) and its children will not be rendered.");
+          }
+          let canvas = canvases[0];
+          canvas.draw(ctx);
+        }
+        ctx.restore();
+
+        Base.$$.lastCtx = ctx;
+      }
+    }
+
+    class CollisionPlugin{
+      constructor(){
+        this.frameCollisionOver = [];
+
+      }
+      update(){
+        //
+        //First we do collisions
+        //
+
+        let collidableType = Base.Serializer.components.Collider;
+        let collisionHelper = Base.Serializer.components.CollisionHelper;
+
+        //Add collision behavior
+        // let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
+        
+        let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+        collidableChildren = collidableChildren.filter(x=>!x.gameObject.anyComponent(Base.Serializer.components.GUIOnlyCollider));
+
+        for (let i = 0; i < collidableChildren.length; i++) {
+          let gameObjectOne = collidableChildren[i].gameObject;
+          // let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
+          let isInScreenSpaceOne = gameObjectOne.hasParentWithComponent(Base.Components.CanvasComponent);
+          for (let j = i + 1; j < collidableChildren.length; j++) {
+            let gameObjectTwo = collidableChildren[j].gameObject;
+            let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
+            if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
+            let collisionPair = { one: collidableChildren[i], two: collidableChildren[j] };
+            if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
+              gameObjectOne.components.forEach(x => {
+                if (x.onCollisionStay)
+                  x.onCollisionStay(collidableChildren[j]);
+              });
+              gameObjectTwo.components.forEach(x => {
+                if (x.onCollisionStay)
+                  x.onCollisionStay(collidableChildren[i]);
+
+              });
+              if (this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))==-1) {
+                this.frameCollisionOver.push(collisionPair);
+                gameObjectOne.components.filter(x=>x.onCollisionEnter).forEach(x => {
+                  x.onCollisionEnter(collidableChildren[j]);
+                });
+                gameObjectTwo.components.filter(x=>x.onCollisionEnter).forEach(x => {
+                  x.onCollisionEnter(collidableChildren[i]);
+                });
+              }
+            }
+            else {
+              if(this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))!=-1)
+              {
+                this.frameCollisionOver = this.frameCollisionOver.filter(x=>!this.collisionPairMatch(x, collisionPair));
+                gameObjectOne.components.filter(x=>x.onCollisionExit).forEach(x => {
+                  x.onCollisionExit(collidableChildren[j]);
+                });
+                gameObjectTwo.components.filter(x=>x.onCollisionExit).forEach(x => {
+                  x.onCollisionExit(collidableChildren[i]);
+                });
+              }
+            }
+          }
+        }
+
+      }
+      
+      
+      collisionPairMatch(one, two){
+        return one.one.gameObject == two.one.gameObject &&
+          one.two.gameObject == two.two.gameObject &&
+          one.one.collider == two.one.collider &&
+          one.two.collider == two.two.collider;
+      }
+    }
+
+    class MouseCollisionPlugin{
+      constructor(){
+        this.frameMouseOver = [];
+      }
+      update(ctx){
+        let collidableType = Base.Serializer.components.Collider;
+        let collisionHelper = Base.Serializer.components.CollisionHelper;
+        let children = Base.$$.children;
+        //Add collision behavior
+        let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+        
+        //
+        //Now go through and see if the point represented by the mouse collides with any of the colliders
+        //
+        //First get the world space position of the mouse
+        let cameras = children.filter(i => i.anyComponent("CameraComponent"));
+        let point = { x: 0, y: 0 };
+        point.x = parseInt(Input.mousePosition.x);
+        point.y = parseInt(Input.mousePosition.y);
+        let screenPoint = { x: point.x, y: point.y };
+        if (cameras.length > 0) {
+
+          let camera = cameras[0];
+          //let cameraComponent = camera.getComponent("CameraComponent")
+          let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, ctx.canvas.width / 2, ctx.canvas.height / 2];
+
+
+
+          point.x = (point.x - hx) / sx + tx;
+          point.y = (point.y - hy) / sy + ty;
+        }
+
+        //Put the mouse in world space
+        let colliderObjectWorld = {};
+        colliderObjectWorld.gameObject = new GameObject();
+        colliderObjectWorld.gameObject.x = point.x;
+        colliderObjectWorld.gameObject.y = point.y;
+        colliderObjectWorld.collider = new PointCollider();
+
+        let colliderObjectScreen = {};
+        colliderObjectScreen.gameObject = new GameObject();
+        colliderObjectScreen.gameObject.x = screenPoint.x;
+        colliderObjectScreen.gameObject.y = screenPoint.y;
+        colliderObjectScreen.collider = new PointCollider();
+
+        let colliderObject;
+
+        for (let i = 0; i < collidableChildren.length; i++) {
+          let collidableChild = collidableChildren[i];
+
+          if (!collidableChild.gameObject.hasParentWithComponent(Base.Components.CanvasComponent))
+            colliderObject = colliderObjectWorld;
+          else
+            colliderObject = colliderObjectScreen;
+
+          if (collisionHelper.inCollision(collidableChild, colliderObject)) {
+            let gameObjectOne = collidableChild.gameObject;
+
+            //Now loop over all the behaviors too see if any are listening for collision events\
+            if (Input.getMouseButtonDown(0))
+              gameObjectOne.components.filter(x => x.onMouseDown).forEach(x => x.onMouseDown());
+            if (Input.getMouseButtonUp(0))
+              gameObjectOne.components.filter(x => x.onMouseUp).forEach(x => x.onMouseUp());
+            for (let i = 0; i < gameObjectOne.components.length; i++) {
+              let component = gameObjectOne.components[i];
+              if (component.onMouseOver) {
+                component.onMouseOver();
+              }
+              if (!this.frameMouseOver.includes(component)) {
+                if (component.onMouseEnter) {
+                  component.onMouseEnter();
+                }
+                this.frameMouseOver.push(component);
+              }
+
+
+
+            }
+          } else {
+            let gameObjectOne = collidableChild.gameObject;
+            for (let i = 0; i < gameObjectOne.components.length; i++) {
+              let component = gameObjectOne.components[i];
+
+              if (this.frameMouseOver.includes(component)) {
+                _.pull(this.frameMouseOver, component);
+                if (component.onMouseExit) {
+                  component.onMouseExit();
+                }
+              }
+            }
+          }
+        }
+
+      }
+      
+      isInScreenSpace(gameObject) {
+        if (arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
+
+        let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
+        if (canvases.length == 0) return false; // We don't have screen space
+        for (let canvas of canvases) {
+          if (canvas.isChildDeep(gameObject)) {
+            return true;
+          }
+        }
+        return false;
+      }
+    }
+
+    class TouchCollisionPlugin {
+      constructor() {
+
+      }
+      update(ctx) {
+        let collidableType = Base.Serializer.components.Collider;
+        let collisionHelper = Base.Serializer.components.CollisionHelper;
+        let children = Base.$$.children;
+
+        //Add collision behavior
+        let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+        let cameras = children.filter(i => i.anyComponent("CameraComponent"));
+
+        //
+        //Now go through and see if the point represented by the touch point collides with any of the colliders
+        //
+        //First get the world space position of the touch
+        let touches = Input.getTouches();
+        if (touches && touches.length > 0) {
+          //let cameras = this.children.filter(i => i.anyComponent("CameraComponent"))
+          let point = { x: 0, y: 0 };
+          point.x = parseInt(touches[0].x);
+          point.y = parseInt(touches[0].y);
+          let screenPoint = { x: point.x, y: point.y };
+          if (cameras.length > 0) {
+
+            let camera = cameras[0];
+
+            let [tx, ty, sx, sy, r, hx, hy] = [camera.x, camera.y, camera.scaleX, camera.scaleY, camera.rotation, ctx.canvas.width / 2, ctx.canvas.height / 2];
+
+            point.x = (point.x - hx) / sx + tx;
+            point.y = (point.y - hy) / sy + ty;
+
+          }
+
+          let colliderObjectWorld = {};
+          colliderObjectWorld.gameObject = new GameObject();
+          colliderObjectWorld.collider = new PointCollider();
+
+          let colliderObjectScreen = {};
+          colliderObjectScreen.gameObject = new GameObject();
+          colliderObjectScreen.collider = new PointCollider();
+      
+          let colliderObject;
+          [colliderObjectWorld.gameObject.x, colliderObjectWorld.gameObject.y] = [point.x, point.y];
+          [colliderObjectScreen.gameObject.x, colliderObjectScreen.gameObject.y] = [screenPoint.x, screenPoint.y];
+          for (let i = 0; i < collidableChildren.length; i++) {
+            let collidableChild = collidableChildren[i];
+            if (!collidableChild.gameObject.hasParentWithComponent(Base.Components.CanvasComponent))
+              colliderObject = colliderObjectWorld;
+            else
+              colliderObject = colliderObjectScreen;
+
+            if (collisionHelper.inCollision(collidableChild, colliderObject)) {
+              let gameObjectOne = collidableChild.gameObject;
+
+              //Now loop over all the behaviors too see if any are listening for collision events
+              gameObjectOne.components.filter(x => x.onTouchOver).forEach(x => x.onTouchOver());
+              if (Input.getTouchesStart() && Input.getTouchesStart().length > 0)
+                gameObjectOne.components.filter(x => x.onTouchStart).forEach(x => x.onTouchStart());
+              if (Input.getTouchesEnd() && Input.getTouchesEnd().length > 0)
+                gameObjectOne.components.filter(x => x.onTouchEnd).forEach(x => x.onTouchEnd());
+            }
+          }
+        }
+
+      }
+      
+      isInScreenSpace(gameObject) {
+        if (arguments.length != 1 || !(gameObject instanceof Base.GameObject)) throw new Error("isInScreenSpace expects exactly one argument of type GameObject")
+
+        let canvases = Base.$$.children.filter(i => i.anyComponent("CanvasComponent"));
+        if (canvases.length == 0) return false; // We don't have screen space
+        for (let canvas of canvases) {
+          if (canvas.isChildDeep(gameObject)) {
+            return true;
+          }
+        }
+        return false;
+      }
+    }
+
+    let floorObj = `
+o Plane
+v -100.000000 0.000000 100.000000
+v 100.000000 0.000000 100.000000
+v -100.000000 0.000000 -100.000000
+v 100.000000 0.000000 -100.000000
+vt 0.000000 0.000000
+vt 1.000000 0.000000
+vt 1.000000 1.000000
+vt 0.000000 1.000000
+vn 0.0000 1.0000 0.0000
+f 1/1/1 2/2/1 4/3/1 3/4/1
+`;
+
+    class CrowdSimulationPlugin {
+      constructor() {
+        this.simulators = [];
+      }
+      OnNewScene(scene) {
+        let simulator = this.bootSimulator();
+        let toAdd = { scene: scene.uuid, simulator, recastInfo:{objs:[floorObj],navmesh:{}} };
+        this.simulators.push(toAdd);
+        for (let i = 0; i < scene.children.length; i++) {
+          this.OnNewChild(scene.children[i], scene);
+        }
+      }
+      OnNewChild(gameObject, highestParent) {
+        //if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("newChildEvent expects exactly one argument of type GameObject")
+        let simulatorObject = this.simulators.find(s => s.scene == highestParent.uuid);
+        if (!simulatorObject)
+          return //The scene hasn't been initialized yet
+        let simulator = simulatorObject.simulator;
+        if (gameObject.anyComponent("RVOAgent")) {
+
+          simulator.addAgent(new Vector2(gameObject.x, gameObject.y), gameObject);
+
+          let RVOAgent = gameObject.getComponent("RVOAgent");
+          let destination = RVOAgent.destination;
+          if (typeof destination === 'string' || destination instanceof String) {//It's probably still a stringified point object
+            destination = JSON.parse(destination);
+            RVOAgent.destination = destination;
+
+          }
+          let goal = new Vector2(destination.x, destination.y);
+          simulator.addGoal(goal);
+          let i = simulator.getNumAgents() - 1;
+          RVOAgent._id = i;
+          //this.updateRVOAgent(gameObject, simulator);
+          //Check to see if our destination has changed
+
+          simulator.setAgentPrefVelocity(i, RVOMath.normalize(goal.minus(simulator.getAgentPosition(i))));
+
+        }
+        if (gameObject.anyComponent("RVOObstacle")) {
+          let rectangleComponent = gameObject.getComponent("RectangleComponent");
+          let width = +(rectangleComponent.width * gameObject.scaleX);
+          let height = +(rectangleComponent.height * gameObject.scaleY);
+          let rx = gameObject.x - width / 2;
+          let ry = gameObject.y - height / 2;
+
+          let a = new Vector2(rx, ry);
+          let b = new Vector2(rx, ry + height);
+          let c = new Vector2(rx + width, ry + height);
+          let d = new Vector2(rx + width, ry);
+
+          simulator.addObstacle([a, b]);
+          simulator.addObstacle([b, c]);
+          simulator.addObstacle([c, d]);
+          simulator.addObstacle([d, a]);
+
+          simulator.processObstacles();
+        }
+        //Look for objects with colliders and add objs
+        if(gameObject.$any(Base.Components.Collider)){
+          if(gameObject.$any(Base.Components.AABBCollider));
+        }
+
+        
+
+
+        //Recurse
+        for (let i = 0; i < gameObject.children.length; i++) {
+          let child = gameObject.children[i];
+          this.OnNewChild(child, highestParent);
+        }
+
+      }
+      sceneBoot(scene){
+        let simulatorObject = this.simulators.find(s => s.scene == scene.uuid);
+        console.log(_.VERSION);
+        // let recast = _.cloneDeep(window.recast);
+        // console.log("Done with clone");
+        // recast.OBJDataLoader(floorObj, ()=>{
+        //   simulatorObject.recastInfo.navmesh = recast.buildTiled();
+
+        // })
+      }
+      bootSimulator() {
+        let simulator = new Simulator();
+
+        simulator.setAgentDefaults(
+          30, // neighbor distance (min = radius * radius)
+          30, // max neighbors
+          100, // time horizon
+          10, // time horizon obstacles
+          1.5, // agent radius
+          1.0, // max speed
+          new Vector2(1, 1) // default velocity
+        );
+
+        simulator.setTimeStep(.25);
+        simulator.addObstacle([]);
+        simulator.processObstacles();
+        return simulator;
+      }
+      updateRVOAgent(gameObject, simulator) {
+        //if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
+
+        let RVOAgent = gameObject.getComponent("RVOAgent");
+        let destination = RVOAgent.destination;
+        //simulator.setGoal(goal, i)
+      }
+      OnDestroy(gameObject, parent) {
+        if (!gameObject.anyComponent(Base.Components.RVOAgent)) return;
+        this.removeRVOAgent(gameObject);
+      }
+      removeRVOAgent(gameObject) {
+        if (arguments.length != 1 || !(gameObject instanceof GameObject)) throw new Error("updateRVOAgent expects exactly one argument of type GameObject")
+
+        let simulator = this.simulators.find(x => x.scene == Base.$$.uuid).simulator;
+
+        //console.log("Removing agent");
+        let RVOAgent = gameObject.getComponent("RVOAgent");
+        let i = RVOAgent._id;
+        simulator.removeRVOAgent(i);
+        for (let i = 0; i < simulator.getNumAgents(); i++) {
+          let gameObject = simulator.getAgentGameObject(i);
+          let component = gameObject.getComponent("RVOAgent");
+          component._id = i;
+        }
+
+      }
+      update() {
+
+        let simulator = this.simulators.find(x => x.scene == Base.$$.uuid).simulator;
+
+        
+        let toUpdate = Base.$$.allWithComponent(Base.Components.RVOAgent);
+
+        //Check to see if anyone's destinantion has changed
+        for (let i = 0; i < toUpdate.length; i++) {
+          let agent = toUpdate[i].gameObject;
+          let RVOComponent = agent.getComponent("RVOAgent");
+          let goal = new Vector2(RVOComponent.destination.x, RVOComponent.destination.y);
+          let id = RVOComponent._id;
+          let storedGoal = simulator.getGoal(id);
+          if (storedGoal.x != goal.x || storedGoal.y != goal.y) {
+            simulator.setGoal(new Vector2(goal.x, goal.y));
+            simulator.setAgentPrefVelocity(id, RVOMath.normalize(goal.minus(simulator.getAgentPosition(id))));
+          }
+        }
+
+
+        simulator.run();
+        //
+        // Now we simulate the crowds
+        //
+
+        // Go back and update the gameObjects represented by the agents
+        let numAgents = simulator.getNumAgents();
+        for (let i = 0; i < numAgents; i++) {
+          let gameObject = simulator.getAgentGameObject(i);
+          let position = simulator.getAgentPosition(i);
+          gameObject.x = position.x;
+          gameObject.y = position.y;
+          if (RVOMath.absSq(simulator.getGoal(i).minus(simulator.getAgentPosition(i))) < 10) {
+            // Agent is within one radius of its goal, set preferred velocity to zero
+            simulator.setAgentPrefVelocity(i, new Vector2(0.0, 0.0));
+          } else {
+            // Agent is far away from its goal, set preferred velocity as unit vector towards agent's goal.
+            simulator.setAgentPrefVelocity(i, RVOMath.normalize(simulator.getGoal(i).minus(simulator.getAgentPosition(i))));
+          }
+        }
+
+      }
+      canEnterSafely(location, collider, component) {
+        if (arguments.length != 3 ||
+          !(location instanceof Base.Point) ||
+          !(typeof collider == 'object') ||
+          !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
+
+        let collidableType = Base.Serializer.components.Collider;
+        
+        let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
+        let proposed = new GameObject();
+        proposed.x = location.x;
+        proposed.y = location.y;
+
+        for (let i = 0; i < collidableChildren.length; i++) {
+          if (collidableChildren[i].gameObject.anyComponent(component))
+            if (Base.$$.components.CollisionHelper.inCollision(collidableChildren[i], { collider, gameObject: proposed })) {
+              return false;
+            }
+        }
+        return true;
+      }
+      
+    }
+
+    // import * as Peer from "../../lib/peerjs/peerjs.min.js"
+    class Peer2PeerPlugin{
+      constructor(){
+        this.firstUpdate = false;
+        
+      }
+      update(){
+        if(!this.firstUpdate){
+          this.firstUpdate = false;
+         
+        }
+        
+      }
+      getServer(){
+        return new Peer();
+      }
+      getClient(){
+        return null;
+      }
+    }
+
     /**
      * Main function for the game.
      * This functon takes in game-specific game objects, behaviors, and scenes
@@ -22340,11 +22467,11 @@ RectangleComponent
       Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
       this.deserializedPrefabs = [];
 
-      
+
       for (let key in this.Prefabs) {
         const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar$1));
         parser.feed(this.Prefabs[key].trim());
-        
+
         let r = parser.results;
         Base.Serializer.FromEdgeChild(r[0][0], true);
       }
@@ -22360,46 +22487,57 @@ RectangleComponent
       this.Behaviors = gameBehaviors;
       let canv, ctx;
 
-      let shouldDraw = true;
-      if (typeof options.runDraw !== 'undefined' || options.runDraw === false)
-        shouldDraw = false;
+
 
       this.SceneManager.clearScenes();
       scenes.allScenes
         .forEach(i => this.SceneManager.addScene(new Scene(i, this.Prefabs, gameBehaviors, this.Components)));
+      
+      Base.Plugins.filter(plugin => plugin.OnNewScene).forEach(plugin => Base.SceneManager.scenes.forEach(scene => plugin.OnNewScene(scene)));
+
 
       this.SceneManager.currentScene = options.startScene || scenes.startScene;
 
-      if (shouldDraw) {
+      this.shouldDraw = true;
+      if (typeof options.runDraw !== 'undefined' || options.runDraw === false)
+        this.shouldDraw = false;
+
+      if (this.shouldDraw) {
         canv = document.querySelector("#canv");
         ctx = canv.getContext('2d');
       }
 
+      this.shouldUpdate = true;
+      if (typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
+        this.shouldUpdate = false;
+
+
       let that = this;
 
-      function gameLoop() {
-
-        let shouldUpdate = true;
-
-
-        if (typeof options.runUpdate !== 'undefined' || options.runUpdate === false)
-          shouldUpdate = false;
-
-
+      function gameLoop(shouldUpdate, shouldDraw) {
         Input.swapUpDownArrays();
-        if (shouldUpdate)
-          update(ctx);
-        if (shouldDraw)
-          draw(ctx);
+
+        callPlugins(ctx, shouldUpdate, shouldDraw);
       }
 
-      function update(ctx) {
-        that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
+      function callPlugins(ctx, shouldUpdate, shouldDraw) {
+
+
+        if (shouldUpdate) {
+          Base.Plugins.forEach(plugin => plugin.update ? plugin.update(ctx) : {/*no op*/ });
+          that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
+        }
+
+
+
+
+        if (shouldDraw) {
+          Base.Plugins.forEach(plugin => plugin.draw ? plugin.draw(ctx, canv.width, canv.height) : {/*no op*/ });
+
+        }
       }
 
-      function draw(ctx) {
-        that.SceneManager.currentScene.draw(ctx, canv.width, canv.height);
-      }
+
 
       //Setup event handling
       if (options.runUpdate === undefined || options.runUpdate == true) {
@@ -22550,7 +22688,7 @@ RectangleComponent
         }
       }
       //Don't look for or respond to the canvas if we're in "headless" mode
-      if (shouldDraw) {
+      if (this.shouldDraw) {
         window.onresize = resizeCanvas;
 
         // Webkit/Blink will fire this on load, but Gecko doesn't.
@@ -22558,7 +22696,7 @@ RectangleComponent
         resizeCanvas();
       }
       if (options.runUpdate === undefined || options.runUpdate == true)
-        setInterval(gameLoop, 33);
+        setInterval(() => gameLoop(this.shouldUpdate, this.shouldDraw), 33);
     }
 
     let Components = {
@@ -22571,6 +22709,10 @@ RectangleComponent
       CollisionHelper,
       ConvexCollider,
       Draggable,
+      GUIOnlyCollider,
+      HexagonComponent,
+      PeerServer,
+      PeerClient,
       PointCollider,
       RectangleComponent,
       RectTransform,
@@ -22600,6 +22742,16 @@ RectangleComponent
       RVOObstacle: RVOObstacle$1,
     };
 
+    const Plugins = [
+      new UpdatePlugin(), 
+      new DrawPlugin(),
+      new CollisionPlugin(),
+      new MouseCollisionPlugin(),
+      new TouchCollisionPlugin(),
+      new CrowdSimulationPlugin(),
+      new Peer2PeerPlugin(),
+    ];
+
     const Base = {
       Behavior,
       Behaviors: {},
@@ -22619,8 +22771,12 @@ RectangleComponent
       State: State$1,
       StateMachine,
       Time,
+      Plugins, //Make the architecture more flexible with plugins
       get _cs(){
         return this.SceneManager.currentScene;
+      },
+      get $$(){
+        return this._cs;
       },
       $ : function(string){
         return this.SceneManager.currentScene.findByName(string);
