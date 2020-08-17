@@ -17,7 +17,7 @@ for (let i = 0; i < files.length; i++) {
 
   let r = parser.results;
 
-  console.log(JSON.stringify(r, null, 2));
+  //console.log(JSON.stringify(r, null, 2));
   console.log(parser.results.length + " total way(s) to parse the program.");
   console.log("--- Done with " + file);
 }

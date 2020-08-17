@@ -36,9 +36,9 @@ Layer -> Word   {% id %}
 
 Transforms -> _ Translation ( NewLine SecondTransforms ):?   {% d=> {return {translate: d[1], scale:d[2]?d[2][1].scale:{x:1,y:1}, rotation:d[2]?d[2][1].rotation:0}}%}
 SecondTransforms -> _ Scale ( NewLine Rotation ):?          {% d=> {return {scale: d[1], rotation:d[2]?d[2][1]:0}}%}
-Translation ->  Point  {% id %}
+Translation ->  Point _ {% id %}
 
-Scale -> Point        {% id %}
+Scale -> Point _       {% id %}
 
 Components -> _ ComponentName _ ( NewLine _ "-" _ ComponentKeyValue):*   {% getComponentList %}
 ComponentName->Word {% id %}
@@ -46,7 +46,7 @@ ComponentKeyValue -> Word _ ComponentValue {% d => {return {key:d[0], value:d[2]
 ComponentValue -> %componentLine {% handleComponentLine %}
 
 Point -> Number _ "," _ Number {% d => { return {x:d[0],y:d[4]}}%}
-Rotation -> _ Number                                     {% d=>d[1] %}
+Rotation -> Number _                                    {% d=>d[1] %}
 Number -> Float {% id %}
 Number -> Int {% id %}
 Float -> %float {% getValue %}
