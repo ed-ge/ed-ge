@@ -1,8 +1,8 @@
 {
-    "name": "ed-ge",
+    "name": "@ed-ge/ed-ge",
     "version": "1.0.0",
     "type": "module",
-    "description": "The EDucational Game Engine, built with babel.",
+    "description": "The EDucational Game Engine",
     "scripts": {
         "test": "./node_modules/.bin/coverage --reporter=text-summary -x ./lib mocha ./test/mocha/**/*.js",
         "testit": "./node_modules/.bin/mocha ./test/mocha/**/*.js",
@@ -13,12 +13,12 @@
         "doc": "./node_modules/.bin/jsdoc -d ./docs -r ./src -c ./config/.jsdoc.json"
     },
     "keywords": [
-        "Gam Engine",
+        "Game Engine",
         "Games",
         "Education",
         "unomaha.edu"
     ],
-    "author": "B. Ricks, and CSCI 2510 @ unomaha.edu",
+    "author": "B. Ricks, phd",
     "license": "MIT",
     "devDependencies": {
         "chai": "^4.2.0",
