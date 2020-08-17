@@ -24,9 +24,14 @@ Stack
 CircleComponent
 -fill=red
 -radius=20
+{
+Icon Text
 TextComponent
--text=K
+-font=20px FontAwesome
+-text=\uf521
 -fill=white
+-centered=true
+}
 
 BlackKingStack Circle
 -50, 0
@@ -35,9 +40,14 @@ Stack
 CircleComponent
 -fill=black
 -radius=20
-TextComponent
--text=K
--fill=white
+{
+  Icon Text
+  TextComponent
+  -font=20px FontAwesome
+  -text=\uf521
+  -fill=white
+  -centered=true
+}
 
 MainCamera Camera
 200,200
@@ -60,27 +70,37 @@ let RedKing =
 `
 Piece Circle
 Draggable
-TextComponent
--text=K
--fill=white
 CircleComponent
 -fill=red
 -radius=20
 CircleCollider
 -radius=20
+{
+  Icon Text
+  TextComponent
+  -font=20px FontAwesome
+  -text=\uf521
+  -fill=white
+  -centered=true
+}
 `
 let BlackKing =
 `
 Piece Circle
 Draggable
-TextComponent
--text=K
--fill=white
 CircleComponent
 -fill=black
 -radius=20
 CircleCollider
 -radius=20
+{
+  Icon Text
+  TextComponent
+  -font=20px FontAwesome
+  -text=\uf521
+  -fill=white
+  -centered=true
+}
 `
 
 //Place the prefabs in an object we will pass to Main

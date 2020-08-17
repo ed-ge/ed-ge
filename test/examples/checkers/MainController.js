@@ -10,7 +10,7 @@ export default class MainController extends Base.Behavior {
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
         let rectangle = Base.Serializer.instantiate(Base.Prefabs.RectangleNoCollider, this.BoardBase, new Base.Point(x * 50, y * 50));
-        let color = "red";
+        let color = "#DD0000";
         if ((y + x) % 2) {
           color = "black"
         }
