@@ -97,7 +97,9 @@ var grammar = {
     Lexer: lexer,
     ParserRules: [
     {"name": "Objects$ebnf$1", "symbols": []},
-    {"name": "Objects$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine", "Object"]},
+    {"name": "Objects$ebnf$1$subexpression$1$ebnf$1", "symbols": ["NewLine"]},
+    {"name": "Objects$ebnf$1$subexpression$1$ebnf$1", "symbols": ["Objects$ebnf$1$subexpression$1$ebnf$1", "NewLine"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "Objects$ebnf$1$subexpression$1", "symbols": ["NewLine", "Objects$ebnf$1$subexpression$1$ebnf$1", "Object"]},
     {"name": "Objects$ebnf$1", "symbols": ["Objects$ebnf$1", "Objects$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "Objects", "symbols": ["Object", "Objects$ebnf$1"], "postprocess": parseObjects},
     {"name": "Object$ebnf$1", "symbols": ["ChildrenList"], "postprocess": id},
