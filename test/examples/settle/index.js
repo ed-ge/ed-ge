@@ -22,121 +22,121 @@ BoardBase Empty
 Stacks Empty
 -500,-100
 {
-Dice Rectangle
-0,-200
-DiceController
-GUIOnlyCollider
-RectangleComponent
--width=100
--height=50
--fill=lightgray
-AABBCollider
--width=100
--height=50
-{
-Die1 Text
--40,10
-TextComponent
--text=Di
+  Dice Rectangle
+  0,-200
+  DiceController
+  GUIOnlyCollider
+  RectangleComponent
+  -width=100
+  -height=50
+  -fill=lightgray
+  AABBCollider
+  -width=100
+  -height=50
+  {
+    Die1 Text
+    -40,10
+    TextComponent
+    -text=Di
 
-Die2 Text
-10,10
-TextComponent
--text=ce
-}
+    Die2 Text
+    10,10
+    TextComponent
+    -text=ce
+  }
 
-Robber Rectangle
-0,-50
-GUIOnlyCollider
-Draggable
-RectangleComponent
--width=40
--height=40
--fill=black
-AABBCollider
--width=40
--height=40
-{
-Icon Text
-TextComponent
--font=25px FontAwesome
--text=\uf21b
--fill=white
--centered=true
-}
+  Robber Rectangle
+  0,-50
+  GUIOnlyCollider
+  Draggable
+  RectangleComponent
+  -width=40
+  -height=40
+  -fill=black
+  AABBCollider
+  -width=40
+  -height=40
+  {
+    Icon Text
+    TextComponent
+    -font=25px FontAwesome
+    -text=\uf21b
+    -fill=white
+    -centered=true
+  }
 
-WheatStack WheatStack
-0,0
-{
-WheatIcon Text
-TextComponent
--font=25px FontAwesome
--text=\uf7ec
--fill=black
--centered=true
-}
+  WheatStack WheatStack
+  0,0
+  {
+    WheatIcon Text
+    TextComponent
+    -font=25px FontAwesome
+    -text=\uf7ec
+    -fill=black
+    -centered=true
+  }
 
-SheepStack SheepStack
-0,50
-{
-Icon Text
-TextComponent
--font=25px FontAwesome
--text=\uf553
--fill=black
--centered=true
-}
+  SheepStack SheepStack
+  0,50
+  {
+    Icon Text
+    TextComponent
+    -font=25px FontAwesome
+    -text=\uf553
+    -fill=black
+    -centered=true
+  }
 
-BrickStack BrickStack
-0,100
-{
-Icon Text
-TextComponent
--font=25px FontAwesome
--text=\uf84c
--fill=black
--centered=true
-}
+  BrickStack BrickStack
+  0,100
+  {
+    Icon Text
+    TextComponent
+    -font=25px FontAwesome
+    -text=\uf84c
+    -fill=black
+    -centered=true
+  }
 
-WoodStack WoodStack
-0,150
-{
-Icon Text
-TextComponent
--font=25px FontAwesome
--text=\uf1bb
--fill=black
--centered=true
-}
+  WoodStack WoodStack
+  0,150
+  {
+    Icon Text
+    TextComponent
+    -font=25px FontAwesome
+    -text=\uf1bb
+    -fill=black
+    -centered=true
+  }
 
-Stone StoneStack
-0,200
-{
-Icon Text
-TextComponent
--font=25px FontAwesome
--text=\uf19c
--fill=black
--centered=true
-}
+  Stone StoneStack
+  0,200
+  {
+    Icon Text
+    TextComponent
+    -font=25px FontAwesome
+    -text=\uf19c
+    -fill=black
+    -centered=true
+  }
 
-Trash Circle
-0, 275
-Trash
-CircleComponent
--fill=black
--radius=20
-CircleCollider
--radius=20
-{
-TrashIcon Text
-0, 0
-TextComponent
--font=20px FontAwesome
--text=\uf1f8
--fill=white
--centered=true
-}
+  Trash Circle
+  0, 275
+  Trash
+  CircleComponent
+  -fill=black
+  -radius=20
+  CircleCollider
+  -radius=20
+  {
+    TrashIcon Text
+    0, 0
+    TextComponent
+    -font=20px FontAwesome
+    -text=\uf1f8
+    -fill=white
+    -centered=true
+  }
 }
 
 MainCamera Camera
@@ -168,7 +168,7 @@ CircleCollider
   -text=\uf7ec
   -fill=black
   -centered=true
-  }
+}
 `
 let Sheep =
 `
@@ -187,7 +187,7 @@ CircleCollider
   -text=\uf553
   -fill=black
   -centered=true
-  }
+}
 `
 let Brick =
 `
@@ -206,7 +206,7 @@ CircleCollider
   -text=\uf84c
   -fill=black
   -centered=true
-  }
+}
 `
 let Wood =
 `
@@ -225,7 +225,7 @@ CircleCollider
   -text=\uf1bb
   -fill=black
   -centered=true
-  }
+}
 `
 let Stone =
 `
@@ -244,7 +244,7 @@ CircleCollider
   -text=\uf19c
   -fill=black
   -centered=true
-  }
+}
 `
 let WheatStack = 
 `
@@ -317,7 +317,7 @@ CircleCollider
     TextComponent
     -centered=true
   }
- }
+}
  `
 
  let City =
@@ -338,7 +338,7 @@ CircleCollider
   -text=\uf1ad
   -fill=white
   -centered=true
-  }
+}
  `
  let Road =
  `
@@ -358,39 +358,40 @@ CircleCollider
   -text=\uf018
   -fill=white
   -centered=true
-  }
+}
+  
   `
   let Town =
-  `
-  City Rectangle
-  GUIOnlyCollider
-  Draggable
-  RectangleComponent
-  -width=30
-  -height=30
-  -stroke=black
-  AABBCollider
-  -width=30
-  -height=30
-  {
-    Icon Text
-    0, 0
-    TextComponent
-    -font=20px FontAwesome
-    -text=\uf015
-    -fill=white
-    -centered=true
-    }
-  `
+`
+City Rectangle
+GUIOnlyCollider
+Draggable
+RectangleComponent
+-width=30
+-height=30
+-stroke=black
+AABBCollider
+-width=30
+-height=30
+{
+  Icon Text
+  0, 0
+  TextComponent
+  -font=20px FontAwesome
+  -text=\uf015
+  -fill=white
+  -centered=true
+}
+`
 
  let Trade = 
- `
- Trade RectangleNoCollider
- RectangleComponent
- -width=40
- -height=40
- -fill=white
- {
+`
+Trade RectangleNoCollider
+RectangleComponent
+-width=40
+-height=40
+-fill=white
+{
   Icon Text
   0, 0
   TextComponent
@@ -398,8 +399,8 @@ CircleCollider
   -text=\uf1f8
   -fill=black
   -centered=true
-  }
- `
+}
+`
 
 
 //Place the prefabs in an object we will pass to Main

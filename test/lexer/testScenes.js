@@ -6,7 +6,7 @@ console.log("Using " + "../../lexer/sceneGrammar.js")
 let files = fs.readdirSync("./test/lexer/sceneTests").filter(x => x.endsWith(".edge"));
 //console.log(files);
 
-for (let i = 0; i < files.length && false; i++) {
+for (let i = 0; i < files.length; i++) {
   let file = files[i];
   console.log("Parsing " + file);
   let string = fs.readFileSync(`./test/lexer/sceneTests/${file}`, "utf-8");
