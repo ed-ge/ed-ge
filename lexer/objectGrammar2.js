@@ -1,3 +1,6 @@
+// Generated automatically by nearley, version 2.19.5
+// http://github.com/Hardmath123/nearley
+(function () {
 function id(x) { return x[0]; }
 
 //Allow use in node and in browser
@@ -124,15 +127,13 @@ var grammar = {
     {"name": "Transforms$ebnf$1$subexpression$1", "symbols": ["NewLine", "SecondTransforms"]},
     {"name": "Transforms$ebnf$1", "symbols": ["Transforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Transforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Transforms", "symbols": ["Translation", "Transforms$ebnf$1"], "postprocess": d=> {return {translate: d[0], scale:d[1]?d[1][1].scale:{x:1,y:1}, rotation:d[1]?d[1][1].rotation:0}}},
-    {"name": "Translation", "symbols": ["Point", "_"], "postprocess": id},
+    {"name": "Transforms", "symbols": ["Translation", "Transforms$ebnf$1"], "postprocess": d=> {return {translate: d[0], scale:d[1]?d[1][1].scale:{x:1,y:1}, rotation:d[2]?d[2][1].rotation:0}}},
     {"name": "SecondTransforms$ebnf$1$subexpression$1", "symbols": ["NewLine", "Rotation"]},
     {"name": "SecondTransforms$ebnf$1", "symbols": ["SecondTransforms$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "SecondTransforms$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "SecondTransforms", "symbols": ["Scale", "SecondTransforms$ebnf$1"], "postprocess": d=>
-        {return {scale: d[0], rotation:d[1]?d[1][1]:0}}},
+    {"name": "SecondTransforms", "symbols": ["Scale", "SecondTransforms$ebnf$1"], "postprocess": d=> {return {scale: d[0], rotation:d[1]?d[1][1]:0}}},
+    {"name": "Translation", "symbols": ["Point", "_"], "postprocess": id},
     {"name": "Scale", "symbols": ["Point", "_"], "postprocess": id},
-    {"name": "Rotation", "symbols": ["Number", "_"], "postprocess": d=>d[0]},
     {"name": "Components$ebnf$1", "symbols": []},
     {"name": "Components$ebnf$1$subexpression$1", "symbols": ["NewLine", {"literal":"-"}, "_", "ComponentKeyValue"]},
     {"name": "Components$ebnf$1", "symbols": ["Components$ebnf$1", "Components$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
@@ -141,6 +142,7 @@ var grammar = {
     {"name": "ComponentKeyValue", "symbols": ["Word", "_", "ComponentValue"], "postprocess": d => {return {key:d[0], value:d[2]}}},
     {"name": "ComponentValue", "symbols": [(lexer.has("componentLine") ? {type: "componentLine"} : componentLine)], "postprocess": handleComponentLine},
     {"name": "Point", "symbols": ["Number", "_", {"literal":","}, "_", "Number"], "postprocess": d => { return {x:d[0],y:d[4]}}},
+    {"name": "Rotation", "symbols": ["Number", "_"], "postprocess": d=>d[1]},
     {"name": "Number", "symbols": ["Float"], "postprocess": id},
     {"name": "Number", "symbols": ["Int"], "postprocess": id},
     {"name": "Float", "symbols": [(lexer.has("float") ? {type: "float"} : float)], "postprocess": getValue},
@@ -154,13 +156,13 @@ var grammar = {
     {"name": "__$ebnf$1", "symbols": ["wschar"]},
     {"name": "__$ebnf$1", "symbols": ["__$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": ignore},
-    {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id},
-    {"name": "Scene$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine", "Objects"]},
-    {"name": "Scene$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$1"], "postprocess": id},
-    {"name": "Scene$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Scene", "symbols": ["_", "SceneName", "_", "Scene$ebnf$1"], "postprocess": d=> {return{name:d[1], objects: d[3]? d[3][2]:[]}}},
-    {"name": "SceneName", "symbols": ["Word"], "postprocess": id}
+    {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id}
 ]
-  , ParserStart: "Scene"
+  , ParserStart: "Objects"
 }
-export default grammar
+if (typeof module !== 'undefined'&& typeof module.exports !== 'undefined') {
+   module.exports = grammar;
+} else {
+   window.grammar = grammar;
+}
+})();

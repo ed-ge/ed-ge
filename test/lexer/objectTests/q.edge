@@ -1,0 +1,125 @@
+MainCamera Camera
+100, 100
+2,2
+CameraComponent
+-backgroundColor=white
+CameraMover
+
+Canvas Canvas
+{
+ScreenText ScreenText
+50, 50
+RectTransform
+-anchorHorizontal=left
+-anchorVertical=top
+TextComponent
+-text=left top
+
+ScreenText ScreenText
+0, 50
+RectTransform
+-anchorHorizontal=center
+-anchorVertical=top
+TextComponent
+-text=center top
+
+ScreenText ScreenText
+ -150, 50
+RectTransform
+-anchorHorizontal=right
+-anchorVertical=top
+TextComponent
+-text=right top
+
+ScreenText ScreenText
+  50, 0
+RectTransform
+-anchorHorizontal=left
+-anchorVertical=middle
+TextComponent
+-text=left middle
+
+ScreenText ScreenText
+   0, 0
+RectTransform
+-anchorHorizontal=center
+-anchorVertical=middle
+TextComponent
+-text=center middle
+
+ScreenText ScreenText
+0, 0
+RectTransform
+-anchorHorizontal=center
+-anchorVertical=middle
+TextComponent
+-text=center middle
+
+ScreenText ScreenText
+   -150, 0
+RectTransform
+-anchorHorizontal=right
+-anchorVertical=middle
+TextComponent
+-text=right middle
+
+ScreenText ScreenText
+   50, -50
+RectTransform
+-anchorHorizontal=left
+-anchorVertical=bottom
+TextComponent
+-text=left bottom
+
+ScreenText ScreenText
+0, -50
+RectTransform
+-anchorHorizontal=center
+-anchorVertical=bottom
+TextComponent
+-text=center bottom
+
+ScreenText ScreenText
+-150, -50
+RectTransform
+-anchorHorizontal=right
+-anchorVertical=bottom
+TextComponent
+-text=right bottom
+}
+
+RotatingSquare RotatingSquare
+200, 200
+
+TextTimer Text
+200, 200
+
+OscillatingCircle OscillatingCircle
+100, 100
+{
+Moon Moon
+}
+
+Triangle Empty
+300, 300
+ScaleBehavior
+TriangleComponent
+-fill=white
+-stroke=red
+-pointAX=0
+-pointAY=0
+-pointBX=100
+-pointBY=100
+-pointCX=200
+-pointCY=0
+
+MainController Empty
+100, 100
+BackToStartSceneBehavior
+
+Empty Empty
+100, 100
+RectangleComponent
+-fill=gray
+-width=10
+-height=10

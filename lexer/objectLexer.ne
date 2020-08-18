@@ -34,11 +34,14 @@ Name -> Word    {% id %}
 Prefab -> Word  {% id %}
 Layer -> Word   {% id %}
 
-Transforms -> Translation ( NewLine SecondTransforms ):?   {% d=> {return {translate: d[0], scale:d[1]?d[1][1].scale:{x:1,y:1}, rotation:d[2]?d[2][1].rotation:0}}%}
-SecondTransforms ->  Scale ( NewLine Rotation ):?          {% d=> {return {scale: d[0], rotation:d[1]?d[1][1]:0}}%}
+Transforms -> Translation ( NewLine SecondTransforms ):?   {% d=> {return {translate: d[0], scale:d[1]?d[1][1].scale:{x:1,y:1}, rotation:d[1]?d[1][1].rotation:0}}%}
 Translation ->  Point _ {% id %}
 
+SecondTransforms ->  Scale ( NewLine Rotation ):?          {% d=>
+ {return {scale: d[0], rotation:d[1]?d[1][1]:0}}%}
 Scale -> Point _       {% id %}
+Rotation -> Number _                                    {% d=>d[0] %}
+
 
 Components ->  ComponentName _ ( NewLine "-" _ ComponentKeyValue):*   {% getComponentList %}
 ComponentName->Word {% id %}
@@ -46,7 +49,6 @@ ComponentKeyValue -> Word _ ComponentValue {% d => {return {key:d[0], value:d[2]
 ComponentValue -> %componentLine {% handleComponentLine %}
 
 Point -> Number _ "," _ Number {% d => { return {x:d[0],y:d[4]}}%}
-Rotation -> Number _                                    {% d=>d[1] %}
 Number -> Float {% id %}
 Number -> Int {% id %}
 Float -> %float {% getValue %}
