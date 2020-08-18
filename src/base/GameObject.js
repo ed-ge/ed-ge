@@ -170,6 +170,10 @@ class GameObject extends NameableParent {
       //https://stackoverflow.com/a/7772724/10047920
       let component = this.components.find(i => i.constructor.name === type);
       if (component) return component;
+      for(let i = 0; i < this.children.length; i++){
+        let found = this.children[i].getComponent(type);
+        if(found) return found;
+      }
       return null;
     } else {
       let component;

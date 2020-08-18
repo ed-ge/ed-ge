@@ -671,6 +671,10 @@ class GameObject extends NameableParent {
       //https://stackoverflow.com/a/7772724/10047920
       let component = this.components.find(i => i.constructor.name === type);
       if (component) return component;
+      for(let i = 0; i < this.children.length; i++){
+        let found = this.children[i].getComponent(type);
+        if(found) return found;
+      }
       return null;
     } else {
       let component;
@@ -19938,11 +19942,9 @@ class StateMachine extends State$1 {
  * Static class that holds all the time variables related to the game.
  */
 
-class Time {
-    constructor() {
-        this.deltaTime = 0;
-    }
-}
+const Time = {
+  deltaTime: 1 / 33
+};
 
 class Collider extends Component {
     constructor() {
@@ -20485,6 +20487,26 @@ class TriangleComponent extends Component {
         }
 
     }
+}
+
+class WASDA extends Component {
+  constructor() {
+    super();
+    this.speed = 200;
+  }
+
+  update() {
+    let gameObject = this.$go;
+    if (Input.getKey("a") || Input.getKey("ArrowLeft"))
+      gameObject.x -= this.speed * Time.deltaTime;
+    if (Input.getKey("d") || Input.getKey("ArrowRight"))
+      gameObject.x += this.speed * Time.deltaTime;
+    if (Input.getKey("s") || Input.getKey("ArrowDown"))
+      gameObject.y += this.speed * Time.deltaTime;
+    if (Input.getKey("w") || Input.getKey("ArrowUp"))
+      gameObject.y -= this.speed * Time.deltaTime;
+
+  }
 }
 
 class RVOAgent extends Component {
@@ -22728,6 +22750,7 @@ let Components = {
   Trashable,
   TriangleCollider,
   TriangleComponent,
+  WASDA,
 };
 
 const Prefabs = {

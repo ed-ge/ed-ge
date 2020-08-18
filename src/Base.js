@@ -36,6 +36,7 @@ import Trashable from "./components/Trashable.js"
 import TriangleCollider from "./components/TriangleCollider.js"
 import TriangleComponent from "./components/TriangleComponent.js"
 import RectTransform from "./components/RectTransform.js"
+import WASDA from "./components/WASDA.js"
 import _RVOAgent from "./components/RVOAgent.js"
 import _RVOSimulator from "./components/RVOSimulator.js"
 import _ROVObstacle from "./components/RVOObstacle.js"
@@ -95,6 +96,7 @@ let Components = {
   Trashable,
   TriangleCollider,
   TriangleComponent,
+  WASDA,
 };
 
 const Prefabs = {
