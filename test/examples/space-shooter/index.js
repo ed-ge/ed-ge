@@ -52,7 +52,7 @@ let UFOBullet=
 `
 UFOBullet Circle
 UFOBulletController
-CircleController
+CircleComponent
 -radius=5
 `
 
@@ -121,6 +121,6 @@ WASDA
 `
 
 //Place the prefabs in an object we will pass to Main
-let Prefabs = { Spaceship, Bullet, UFO  };
+let Prefabs = { Spaceship, Bullet, UFO, UFOBullet  };
 
 Base.Main = Base.main(Prefabs, GameBehaviors, Scenes);
