@@ -14,6 +14,9 @@ export default class BulletController extends Base.Behavior {
     if(this.lifetime > 1)
       this.$go.parent.destroy(this.$go);
   }
+  onCollisionEnter(){
+    
+  }
  
 
 

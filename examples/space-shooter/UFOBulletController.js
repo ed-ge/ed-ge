@@ -1,7 +1,7 @@
 
 export default class UFOBulletController extends Base.Behavior {
   start() {
-    this.speed = 1000;
+    this.speed = 500;
     this.lifetime = 0;
     this.angle = 0;
     
@@ -13,8 +13,5 @@ export default class UFOBulletController extends Base.Behavior {
     if(this.lifetime > 1)
       this.$go.parent.destroy(this.$go);
   }
- 
-
-
 }
 

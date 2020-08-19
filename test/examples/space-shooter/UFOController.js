@@ -19,6 +19,8 @@ export default class UFOController extends Base.Behavior {
       this.fire();
     }
     this.$go.y += Base.Time.deltaTime * this.speed;
+    if(this.$go.y > 1000)
+      this.$go.parent.destroy(this.$go);
   }
   fire() {
     let bullets = 20;

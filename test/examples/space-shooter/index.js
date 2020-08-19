@@ -5,6 +5,7 @@ import SpaceShipController from "./SpaceShipController.js"
 import BulletController from "./BulletController.js"
 import UFOBulletController from "./UFOBulletController.js"
 import UFOController from "./UFOController.js"
+import StarController from "./StarController.js"
 
 //Add custom behaviors to an object we pass to Main
 let GameBehaviors = {
@@ -13,7 +14,7 @@ let GameBehaviors = {
   UFOController,
   BulletController,
   UFOBulletController,
-  
+  StarController,
 }
 
 //Add objects to our scene that we pass to main
@@ -28,6 +29,8 @@ MainController
 
 MainCamera Camera
 0,0
+CameraComponent
+-backgroundColor=black
 
 Ship Spaceship
 0, 100
@@ -60,6 +63,21 @@ let UFO=
 `
 UFO Circle
 UFOController
+CircleComponent
+-fill=red
+{
+  UFOHub CircleNoCollider
+  0,-20
+  CircleComponent
+  -fill=black
+  -radius=25
+
+  UFOOther CircleNoCollider
+  0,20
+  CircleComponent
+  -fill=gray
+  -radius=10
+}
 `
 
 var Spaceship = 
@@ -71,8 +89,8 @@ WASDA
     RectangleComponent
     -width=50
     -height=75
-    -fill=black
-    -stroke=black
+    -fill=darkgray
+    -stroke=darkgray
     AABBCollider
     -width=50
     -height=75
@@ -120,7 +138,31 @@ WASDA
 }
 `
 
+let Star1 =
+`
+Star1 RectangleNoCollider
+StarController
+-speed=500
+RectangleComponent
+-width=2
+-height=2
+-fill=white
+-stroke=white
+`
+
+let Star2 =
+`
+Star2 RectangleNoCollider
+StarController
+-speed=250
+RectangleComponent
+-width=1
+-height=1
+-fill=lightgray
+-stroke=lightgray
+`
+
 //Place the prefabs in an object we will pass to Main
-let Prefabs = { Spaceship, Bullet, UFO, UFOBullet  };
+let Prefabs = { Spaceship, Bullet, UFO, UFOBullet, Star1, Star2  };
 
 Base.Main = Base.main(Prefabs, GameBehaviors, Scenes);

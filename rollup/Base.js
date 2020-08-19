@@ -21810,12 +21810,6 @@ var Empty = `
 Empty Empty
 `;
 
-var Text = `Text Empty
-TextComponent
--text=Hi
--font=20pt Times
--fill=black`;
-
 var Camera = `
 Camera Empty
 CameraComponent
@@ -21834,6 +21828,24 @@ TextComponent
 -text=10
 -font=20pt Times
 -fill=black
+`;
+
+var Circle = `
+Circle Empty
+CircleComponent
+-radius=50
+-fill=rgba(255,255,0,.5)
+-stroke=black
+CircleCollider
+-radius=50
+`;
+
+var CircleNoCollider = `
+CircleNoCollider Empty
+CircleComponent
+-radius=50
+-fill=rgba(255,255,0,.5)
+-stroke=black
 `;
 
 var Rectangle = `
@@ -21855,25 +21867,6 @@ RectangleComponent
 -height=100
 -fill=red
 -stroke=blue
-`;
-
-var Circle = `
-Circle Empty
-CircleComponent
--radius=50
--fill=rgba(255,255,0,.5)
--stroke=black
-CircleCollider
--radius=50
-`;
-
-var ScreenText = `
-ScreenText Empty
-RectTransform
-TextComponent
--text=10
--font=20pt Times
--fill=black
 `;
 
 var RVOAgent$1 = `
@@ -21899,6 +21892,21 @@ RectangleComponent
 -height=5
 -fill=black
 `;
+
+var ScreenText = `
+ScreenText Empty
+RectTransform
+TextComponent
+-text=10
+-font=20pt Times
+-fill=black
+`;
+
+var Text = `Text Empty
+TextComponent
+-text=Hi
+-font=20pt Times
+-fill=black`;
 
 class UpdatePlugin{
   constructor(){
@@ -22755,17 +22763,18 @@ let Components = {
 
 const Prefabs = {
   Empty,
-  Text,
   Camera,
   Canvas,
   CanvasText,
+  Circle,
+  CircleNoCollider,
   Rectangle,
   RectangleNoCollider,
-  Circle,
-  ScreenText,
-  RVOSimulator: RVOSimulator$1,
   RVOAgent: RVOAgent$1,
   RVOObstacle: RVOObstacle$1,
+  RVOSimulator: RVOSimulator$1,
+  ScreenText,
+  Text,
 };
 
 const Plugins = [
