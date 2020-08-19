@@ -43,17 +43,18 @@ import _ROVObstacle from "./components/RVOObstacle.js"
 
 /** Prefabs */
 import Empty from "./prefabs/Empty.js"
-import Text from "./prefabs/Text.js"
 import Camera from "./prefabs/Camera.js"
 import Canvas from "./prefabs/Canvas.js"
 import CanvasText from "./prefabs/CanvasText.js"
+import Circle from "./prefabs/Circle.js"
+import CircleNoCollider from "./prefabs/CircleNoCollider.js"
 import Rectangle from "./prefabs/Rectangle.js"
 import RectangleNoCollider from "./prefabs/RectangleNoCollider.js"
-import Circle from "./prefabs/Circle.js"
-import ScreenText from "./prefabs/ScreenText.js"
 import RVOAgent from "./prefabs/RVOAgent.js"
 import RVOSimulator from "./prefabs/RVOSimulator.js"
 import RVOObstacle from "./prefabs/RVOObstacle.js"
+import ScreenText from "./prefabs/ScreenText.js"
+import Text from "./prefabs/Text.js"
 
 /** Plugins */
 import UpdatePlugin from "./plugins/UpdatePlugin.js"
@@ -101,17 +102,18 @@ let Components = {
 
 const Prefabs = {
   Empty,
-  Text,
   Camera,
   Canvas,
   CanvasText,
+  Circle,
+  CircleNoCollider,
   Rectangle,
   RectangleNoCollider,
-  Circle,
-  ScreenText,
-  RVOSimulator,
   RVOAgent,
   RVOObstacle,
+  RVOSimulator,
+  ScreenText,
+  Text,
 };
 
 const Plugins = [
