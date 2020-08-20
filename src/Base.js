@@ -120,7 +120,7 @@ const Prefabs = {
 const Plugins = [
   new UpdatePlugin(), 
   new DrawPlugin(),
-  new CollisionPlugin(),
+  new CollisionPluginHash(),
   new MouseCollisionPlugin(),
   new TouchCollisionPlugin(),
   new CrowdSimulationPlugin(),

@@ -8,6 +8,8 @@ export default class UFOController extends Base.Behavior {
     this.elapsedTime = 0;
     this.circle = this.$go.$("CircleComponent");
     this.speed = 100;
+    this.main = Base.$$.findByName("MainController").$("MainController");
+
 
     
 
@@ -19,7 +21,7 @@ export default class UFOController extends Base.Behavior {
       this.fire();
     }
     this.$go.y += Base.Time.deltaTime * this.speed;
-    if(this.$go.y > 1000)
+    if(this.$go.y > this.main.height)
       this.$go.parent.destroy(this.$go);
   }
   fire() {

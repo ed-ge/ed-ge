@@ -32,7 +32,7 @@ MainCamera Camera
 CameraComponent
 -backgroundColor=black
 
-Ship Spaceship
+Ship Spaceship | Foreground
 0, 100
 SpaceShipController
 
