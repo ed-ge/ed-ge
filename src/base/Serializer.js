@@ -26,6 +26,7 @@ class Serializer {
     if (edge.prefab != "Empty") {
       let toClone = this.prefabs[edge.prefab];
       toReturn = _.cloneDeep(toClone);
+      toReturn.newuuid();
     }
     //Handle main line
     toReturn.name = edge.name;

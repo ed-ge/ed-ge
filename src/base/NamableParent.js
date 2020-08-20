@@ -157,6 +157,9 @@ class NameableParent {
             return v.toString(16);
         });
     }
+    newuuid(){
+        this.uuid = this.uuidv4();
+    }
 
 
 }

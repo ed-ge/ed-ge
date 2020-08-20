@@ -1,10 +1,10 @@
 import Base from "../Base.js"
-class CollisionPlugin{
-  constructor(){
+class CollisionPlugin {
+  constructor() {
     this.frameCollisionOver = [];
 
   }
-  update(){
+  update() {
     //
     //First we do collisions
     //
@@ -14,62 +14,61 @@ class CollisionPlugin{
 
     //Add collision behavior
     // let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
-    
-    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
-    collidableChildren = collidableChildren.filter(x=>!x.gameObject.anyComponent(Base.Serializer.components.GUIOnlyCollider));
+
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x => { return { collider: x.component, gameObject: x.gameObject } });
+    collidableChildren = collidableChildren.filter(x => !x.gameObject.anyComponent(Base.Serializer.components.GUIOnlyCollider));
 
     for (let i = 0; i < collidableChildren.length; i++) {
-      let gameObjectOne = collidableChildren[i].gameObject;
+      let collidableOne = collidableChildren[i];
+      let gameObjectOne = collidableOne.gameObject;
       // let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
       let isInScreenSpaceOne = gameObjectOne.hasParentWithComponent(Base.Components.CanvasComponent);
       for (let j = i + 1; j < collidableChildren.length; j++) {
-        let gameObjectTwo = collidableChildren[j].gameObject;
-        let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
-        if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
-        let collisionPair = { one: collidableChildren[i], two: collidableChildren[j] };
-        if (collisionHelper.inCollision(collidableChildren[i], collidableChildren[j])) {
+        let collidableTwo = collidableChildren[j];
+        let gameObjectTwo = collidableTwo.gameObject;
+        //let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
+        //if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
+        let collisionPair = { one: collidableOne, two: collidableTwo };
+        if (collisionHelper.inCollision(collidableOne, collidableTwo)) {
           gameObjectOne.components.forEach(x => {
             if (x.onCollisionStay)
-              x.onCollisionStay(collidableChildren[j])
+              x.onCollisionStay(collidableTwo)
           })
           gameObjectTwo.components.forEach(x => {
             if (x.onCollisionStay)
-              x.onCollisionStay(collidableChildren[i])
+              x.onCollisionStay(collidableOne)
 
           })
-          if (this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))==-1) {
+          if (this.frameCollisionOver.findIndex(x => this.collisionPairMatch(x, collisionPair)) == -1) {
             this.frameCollisionOver.push(collisionPair);
-            gameObjectOne.components.filter(x=>x.onCollisionEnter).forEach(x => {
-              x.onCollisionEnter(collidableChildren[j])
+            gameObjectOne.components.filter(x => x.onCollisionEnter).forEach(x => {
+              x.onCollisionEnter(collidableTwo)
             })
-            gameObjectTwo.components.filter(x=>x.onCollisionEnter).forEach(x => {
-              x.onCollisionEnter(collidableChildren[i])
+            gameObjectTwo.components.filter(x => x.onCollisionEnter).forEach(x => {
+              x.onCollisionEnter(collidableOne)
             })
           }
         }
-        else{
-          if(this.frameCollisionOver.findIndex(x=>this.collisionPairMatch(x,collisionPair))!=-1)
-          {
-            this.frameCollisionOver = this.frameCollisionOver.filter(x=>!this.collisionPairMatch(x, collisionPair));
-            gameObjectOne.components.filter(x=>x.onCollisionExit).forEach(x => {
-              x.onCollisionExit(collidableChildren[j])
+        else {
+          let index = this.frameCollisionOver.findIndex(x => this.collisionPairMatch(x, collisionPair))
+          if (index != -1) {
+            this.frameCollisionOver.splice(index, 1);
+            gameObjectOne.components.filter(x => x.onCollisionExit).forEach(x => {
+              x.onCollisionExit(collidableTwo)
             })
-            gameObjectTwo.components.filter(x=>x.onCollisionExit).forEach(x => {
-              x.onCollisionExit(collidableChildren[i])
+            gameObjectTwo.components.filter(x => x.onCollisionExit).forEach(x => {
+              x.onCollisionExit(collidableOne)
             })
           }
         }
       }
     }
-
   }
-  
-  
-  collisionPairMatch(one, two){
-    return one.one.gameObject == two.one.gameObject &&
-      one.two.gameObject == two.two.gameObject &&
-      one.one.collider == two.one.collider &&
-      one.two.collider == two.two.collider;
+  collisionPairMatch(one, two) {
+    return (one.one.gameObject.uuid == two.one.gameObject.uuid &&
+      one.two.gameObject.uuid == two.two.gameObject.uuid) ||
+      (one.one.collider.uuid == two.one.collider.uuid &&
+        one.two.collider.uuid == two.two.collider.uuid);
   }
 }
 
