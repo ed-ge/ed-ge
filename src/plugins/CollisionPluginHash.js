@@ -83,12 +83,12 @@ class CollisionPluginHash {
       let potentialMatches = UUIDs.filter(x => x.index > collidableOne.index);
       potentialMatches = potentialMatches.filter(x => _.intersection(x.hashEntries, collidableOne.hashEntries).length > 0);
 
-      //let isInScreenSpaceOne = gameObjectOne.hasParentWithComponent(Base.Components.CanvasComponent);
+      let isInScreenSpaceOne = gameObjectOne.hasParentWithComponent(Base.Components.CanvasComponent);
       for (let j = 0; j < potentialMatches.length; j++) {
         let collidableTwo = potentialMatches[j];
         let gameObjectTwo = collidableTwo.gameObject;
-        //let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
-        //if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
+        let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
+        if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
         let collisionPair = { one: collidableOne, two: collidableTwo };
         if (collisionHelper.inCollision(collidableOne, collidableTwo)) {
           gameObjectOne.components.forEach(x => {

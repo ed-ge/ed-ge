@@ -26,8 +26,8 @@ class CollisionPlugin {
       for (let j = i + 1; j < collidableChildren.length; j++) {
         let collidableTwo = collidableChildren[j];
         let gameObjectTwo = collidableTwo.gameObject;
-        //let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
-        //if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
+        let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
+        if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
         let collisionPair = { one: collidableOne, two: collidableTwo };
         if (collisionHelper.inCollision(collidableOne, collidableTwo)) {
           gameObjectOne.components.forEach(x => {
