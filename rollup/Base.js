@@ -20132,12 +20132,12 @@ const CollisionHelper = {
         return false;
     },
     inCollisionAABBCircle(AABB, Circle) {
-        let cx = Circle.gameObject.x;
-        let cy = Circle.gameObject.y;
-        let rx = AABB.gameObject.x - AABB.collider.width / 2;
-        let ry = AABB.gameObject.y - AABB.collider.height / 2;
-        let rw = +AABB.collider.width;
-        let rh = +AABB.collider.height;
+        let cx = Circle.gameObject.worldLocation.x;
+        let cy = Circle.gameObject.worldLocation.y;
+        let rx = AABB.gameObject.worldLocation.x - AABB.collider.width * AABB.gameObject.worldScale.x / 2;
+        let ry = AABB.gameObject.worldLocation.y - AABB.collider.height *  AABB.gameObject.worldScale.y / 2;
+        let rw = +AABB.collider.width * AABB.gameObject.worldScale.x;
+        let rh = +AABB.collider.height * AABB.gameObject.worldScale.y;
 
         let tx = cx;
         let ty = cy;
@@ -20150,7 +20150,7 @@ const CollisionHelper = {
         let diffX = (tx - cx);
         let diffY = (ty - cy);
         let distance = Math.sqrt(diffX * diffX + diffY * diffY);
-        if (distance < +Circle.collider.radius)
+        if (distance < +Circle.collider.radius * Circle.gameObject.worldScale.x) // Assuming worldScale.x == worldScale.y
             return true;
         return false;
     },

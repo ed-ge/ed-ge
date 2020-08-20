@@ -23,8 +23,8 @@ export default class UFOController extends Base.Behavior {
     let bullets = 20;
     for(let i = 0; i < bullets; i++){
       let angle = Math.PI*2/bullets * i;
-      let locX = this.$go.worldLocation.x + Math.cos(angle)*this.circle.radius;
-      let locY = this.$go.worldLocation.y + Math.sin(angle)*this.circle.radius;
+      let locX = this.$go.worldLocation.x + Math.cos(angle)*(+this.circle.radius+10);
+      let locY = this.$go.worldLocation.y + Math.sin(angle)*(+this.circle.radius+10);
       let bullet = Base.Serializer.instantiate(Base.SceneManager.Prefabs.UFOBullet, Base.$$, new Base.Point(locX, locY) );
       bullet.$("UFOBulletController").angle = angle;
     }

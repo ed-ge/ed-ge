@@ -49,6 +49,8 @@ Bullet Circle
 BulletController
 CircleComponent
 -radius=10
+CircleCollider
+-radius=10
 `
 
 let UFOBullet=
@@ -56,6 +58,8 @@ let UFOBullet=
 UFOBullet Circle
 UFOBulletController
 CircleComponent
+-radius=5
+CircleCollider
 -radius=5
 `
 
@@ -65,6 +69,7 @@ UFO Circle
 UFOController
 CircleComponent
 -fill=red
+-radius=50
 {
   UFOHub CircleNoCollider
   0,-20
@@ -85,7 +90,7 @@ var Spaceship =
 Spaceship Empty
 WASDA
 {
-    Body Rectangle
+    SpaceshipBody Rectangle
     RectangleComponent
     -width=50
     -height=75
@@ -95,7 +100,7 @@ WASDA
     -width=50
     -height=75
     {
-      Cockpit RectangleNoCollider
+      SpaceshipCockpit RectangleNoCollider
       0,15
       RectangleComponent
       -width=25
@@ -103,7 +108,7 @@ WASDA
       -fill=red
       -stroke=red
 
-      BoosterLeft RectangleNoCollider
+      SpaceshipBoosterLeft RectangleNoCollider
       -16,47
       RectangleComponent
       -width=15
@@ -111,7 +116,7 @@ WASDA
       -fill=lightgray
       -stroke=black
       
-      BoosterRight RectangleNoCollider
+      SpaceshipBoosterRight RectangleNoCollider
       16,47
       RectangleComponent
       -width=15
