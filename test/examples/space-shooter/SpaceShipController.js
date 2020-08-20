@@ -14,7 +14,7 @@ export default class DiceController extends Base.Behavior {
     this.countDown -= Base.Time.deltaTime;
     if (this.countDown <= 0) {
       this.countDown = .1;
-      this.fire();
+      // this.fire();
     }
   }
   fire() {

@@ -11,10 +11,12 @@ export default class BulletController extends Base.Behavior {
   update() {
     this.$go.y -= Base.Time.deltaTime * this.speed;
     this.lifetime += Base.Time.deltaTime;
-    if(this.lifetime > 1)
+    if(this.$go.y < -1000)
       this.$go.parent.destroy(this.$go);
   }
-  onCollisionEnter(){
+  onCollisionEnter(other){
+    if(other.gameObject.name == "UFO")
+      this.$go.parent.destroy(this.$go)
     
   }
  
