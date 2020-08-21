@@ -1,19 +1,7 @@
 export default `
+Plugin
+
 StartScene
-
-Circle Circle
-0,0
-1,1
-0
-CircleComponent
--radius=1
-
-
-
-
-
-
-
 
 Click Text
 10,40
@@ -21,8 +9,6 @@ Click Text
 0
 TextComponent
 -text=Push 'z' to start the collision scene.
-
-
 
 Enter Text
 10,80
@@ -64,15 +50,10 @@ t Text
 TextComponent
 -text=Push 't' to start the circle touch test game.
 
-
-
 p Text
 10, 400
 TextComponent
 -text=Push 'p' to start the p2p server.
-
-
-
 
 z Text
 10, 440

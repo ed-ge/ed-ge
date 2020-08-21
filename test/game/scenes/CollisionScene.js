@@ -1,5 +1,7 @@
 
 export default `
+Plugin
+
 CollisionScene
 
 CollisionCircle CollisionCircle

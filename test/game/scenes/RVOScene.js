@@ -1,5 +1,7 @@
 
 export default `
+Plugin
+
 RVOScene
 
 MainCamera Camera

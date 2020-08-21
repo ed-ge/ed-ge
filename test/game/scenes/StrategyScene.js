@@ -1,4 +1,6 @@
 export default`
+Plugin
+
 StrategyScene
 
 Napster Napster     

@@ -1,4 +1,6 @@
 export default `
+Plugin
+
 SceneOne 
 
 MainCamera Camera

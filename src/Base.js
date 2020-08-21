@@ -120,7 +120,7 @@ const Prefabs = {
 const Plugins = [
   new UpdatePlugin(), 
   new DrawPlugin(),
-  new CollisionPluginHash(),
+  new CollisionPlugin(),
   new MouseCollisionPlugin(),
   new TouchCollisionPlugin(),
   new CrowdSimulationPlugin(),
@@ -142,7 +142,7 @@ const Base = {
   Prefabs,
   Scene,
   SceneManager,
-  Serializer: new Serializer(Components, Prefabs),
+  Serializer: new Serializer(),
   State,
   StateMachine,
   Time,

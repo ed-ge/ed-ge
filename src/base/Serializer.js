@@ -3,18 +3,18 @@ import Point from "./Point.js"
 import grammar from "../objectGrammar.js"
 import nearley from "../../lib/lexer/nearley.js"
 import _ from "../../lib/util/lodash.js"
+import Base from "../Base.js"
 
 
 
 class Serializer {
-  constructor(components) {
-    this.components = components;
+  constructor() {
     this.prefabs = {};
   }
   FromEdge(arr) {
     let toReturn = [];
-    for (let i = 0; i < arr.objects.length; i++) {
-      let edgeChild = arr.objects[i];
+    for (let i = 0; i < arr.Scene.objects.length; i++) {
+      let edgeChild = arr.Scene.objects[i];
       let toAdd = this.FromEdgeChild(edgeChild);
       toReturn.push(toAdd);
     }
@@ -47,7 +47,7 @@ class Serializer {
       if (toReturn.anyComponent(edgeComponent.name))
         component = toReturn.getComponent(edgeComponent.name);
       else {
-        component = new this.components[edgeComponent.name]();
+        component = new Base.Components[edgeComponent.name]();
         toReturn.components.push(component);
       }
       for (let j = 0; j < edgeComponent.keyValues.length; j++) {
@@ -163,7 +163,7 @@ class Serializer {
         }
         else {
           //Add a new component
-          currentComponent = new this.components[componentName]();
+          currentComponent = new Base.Components[componentName]();
           toReturn.addComponent(currentComponent);
         }
       }

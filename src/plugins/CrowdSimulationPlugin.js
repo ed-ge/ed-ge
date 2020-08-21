@@ -198,7 +198,7 @@ class CrowdSimulationPlugin {
       !(typeof collider == 'object') ||
       !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
 
-    let collidableType = Base.Serializer.components.Collider;
+    let collidableType = Base.Components.Collider;
     
     let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
     let proposed = new GameObject();

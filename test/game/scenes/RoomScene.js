@@ -1,5 +1,6 @@
-
 export default`
+Plugin
+
 RoomScene
 
 room Empty    

@@ -24,7 +24,7 @@ import nearley from "../lib/lexer/nearley.js"
  */
 function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
-  Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
+  Base.Components = { ...Base.Components, ...gameBehaviors };
   this.deserializedPrefabs = []
 
 
