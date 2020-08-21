@@ -1661,6 +1661,21 @@ function topLevel(d){
     //return Object.assign(Object.assign(d[0],d[1]), d[2])
 }
 
+
+
+
+
+function parsePlugins(d){
+    let first = d[1];
+    let list = d[3];
+    if(!list || list.length == 0){
+        return [first]
+    }else {
+        let collect = list.map(x=>x[1]);
+        return [first, ...collect];
+    }
+}
+
 var grammar = {
     Lexer: lexer,
     ParserRules: [
@@ -1723,13 +1738,23 @@ var grammar = {
     {"name": "__$ebnf$1", "symbols": ["__$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": ignore},
     {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id},
+    {"name": "Everything", "symbols": ["Plugins", "NewLine", "NewLine", "Scene"], "postprocess":  d=>{
+        return {Plugins:d[0],Scene:d[3]};
+        }},
+    {"name": "Plugins$ebnf$1", "symbols": []},
+    {"name": "Plugins$ebnf$1$subexpression$1", "symbols": ["NewLine", "Plugin"]},
+    {"name": "Plugins$ebnf$1", "symbols": ["Plugins$ebnf$1", "Plugins$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "Plugins", "symbols": ["_", "Plugin", "_", "Plugins$ebnf$1"], "postprocess": parsePlugins},
+    {"name": "Plugin", "symbols": ["Word"], "postprocess": id},
     {"name": "Scene$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine", "Objects"]},
     {"name": "Scene$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Scene$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Scene", "symbols": ["_", "SceneName", "_", "Scene$ebnf$1"], "postprocess": d=> {return {name:d[1], objects: d[3]? d[3][2]:[]}}},
+    {"name": "Scene", "symbols": ["SceneName", "_", "Scene$ebnf$1"], "postprocess":  d=> {
+        return {name:d[0], objects: d[2]? d[2][2]:[]}
+        }},
     {"name": "SceneName", "symbols": ["Word"], "postprocess": id}
 ]
-  , ParserStart: "Scene"
+  , ParserStart: "Everything"
 };
 
 function Rule(name, symbols, postprocess) {
@@ -2311,7 +2336,7 @@ class Scene extends NameableParent {
     parser.feed(definition.trim());
 
     let r = parser.results;
-    super(r[0].name);
+    super(r[0].Scene.name);
     //this.bootSimulator();
     Base.Serializer.FromEdge(r[0]).forEach(x => this.addChild(x));
 
@@ -19681,14 +19706,13 @@ var grammar$1 = {
   }
 
 class Serializer {
-  constructor(components) {
-    this.components = components;
+  constructor() {
     this.prefabs = {};
   }
   FromEdge(arr) {
     let toReturn = [];
-    for (let i = 0; i < arr.objects.length; i++) {
-      let edgeChild = arr.objects[i];
+    for (let i = 0; i < arr.Scene.objects.length; i++) {
+      let edgeChild = arr.Scene.objects[i];
       let toAdd = this.FromEdgeChild(edgeChild);
       toReturn.push(toAdd);
     }
@@ -19721,7 +19745,7 @@ class Serializer {
       if (toReturn.anyComponent(edgeComponent.name))
         component = toReturn.getComponent(edgeComponent.name);
       else {
-        component = new this.components[edgeComponent.name]();
+        component = new Base.Components[edgeComponent.name]();
         toReturn.components.push(component);
       }
       for (let j = 0; j < edgeComponent.keyValues.length; j++) {
@@ -19837,7 +19861,7 @@ class Serializer {
         }
         else {
           //Add a new component
-          currentComponent = new this.components[componentName]();
+          currentComponent = new Base.Components[componentName]();
           toReturn.addComponent(currentComponent);
         }
       }
@@ -21988,91 +22012,32 @@ class DrawPlugin{
   }
 }
 
-class CollisionPluginHash {
+class CollisionPlugin {
   constructor() {
     this.frameCollisionOver = [];
-    this.hashTable = [];
-  }
-  addToHash(a) {
-    let boundingRectangle = {};
-    boundingRectangle.x = a.gameObject.worldLocation.x;
-    boundingRectangle.y = a.gameObject.worldLocation.y;
-    if (a.collider.type == "AABBCollider") {
-      boundingRectangle.width = a.collider.width * a.gameObject.worldScale.x;
-      boundingRectangle.height = a.collider.height * a.gameObject.worldScale.y;
-    }
-    else if (a.collider.type == "CircleCollider") {
-      boundingRectangle.width = a.collider.radius * 2 * a.gameObject.worldScale.x;
-      boundingRectangle.height = a.collider.radius * 2 * a.gameObject.worldScale.y;
 
-    }
-    else {
-      console.error("Unknown collider type in hash function");
-
-    }
-
-
-    let gridWidth = 10;
-
-    let left = boundingRectangle.x - boundingRectangle.width / 2;
-    let right = boundingRectangle.x + boundingRectangle.width / 2;
-    let top = boundingRectangle.y - boundingRectangle.height / 2;
-    let bottom = boundingRectangle.y + boundingRectangle.height / 2;
-
-    left = Math.floor(left / gridWidth) * gridWidth;
-    right = Math.floor(right / gridWidth) * gridWidth;
-    top = Math.floor(top / gridWidth) * gridWidth;
-    bottom = Math.ceil(bottom / gridWidth) * gridWidth;
-    a.hashEntries = new Set();
-    for (let x = left; x <= right; x += gridWidth) {
-      for (let y = top; y <= bottom; y += gridWidth) {
-        let toAdd = new Point(x, y);
-        let h = this.hash(toAdd);
-        a.hashEntries.add(h);
-      }
-    }
-    a.hashEntries = [...a.hashEntries];
-
-  }
-  hash(point) {
-    return Math.abs(Math.floor(point.x) + Math.floor(point.y));
   }
   update() {
     //
     //First we do collisions
     //
 
-    let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
+    let collidableType = Base.Components.Collider;
+    let collisionHelper = Base.Components.CollisionHelper;
 
     //Add collision behavior
     // let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
 
-    let collidableChildren = Base.$$.allWithComponent(collidableType).map((x, i) => { return { collider: x.component, gameObject: x.gameObject, index: i } });
-    this.hashTable = [];
-    collidableChildren = collidableChildren.filter(x => !x.gameObject.anyComponent(Base.Serializer.components.GUIOnlyCollider));
-    // collidableChildren.forEach(x => this.addToHash(x));
+    let collidableChildren = Base.$$.allWithComponent(collidableType).map(x => { return { collider: x.component, gameObject: x.gameObject } });
+    collidableChildren = collidableChildren.filter(x => !x.gameObject.anyComponent(Base.Components.GUIOnlyCollider));
+
     for (let i = 0; i < collidableChildren.length; i++) {
-      this.addToHash(collidableChildren[i]);
-    }
-
-
-    let UUIDs = collidableChildren.sort((a, b) => a.index - b.index);
-
-    for (let k = 0; k < UUIDs.length; k++) {
-      let collidableOne = UUIDs[k];
-      //for (let i = 0; i < collidables.length; i++) {
-      //let collidableOne = collidables[i];
+      let collidableOne = collidableChildren[i];
       let gameObjectOne = collidableOne.gameObject;
-
-
-      //Find potential matches based on uuid and hashes
-      let potentialMatches = UUIDs.filter(x => x.index > collidableOne.index);
-      potentialMatches = potentialMatches.filter(x => _.intersection(x.hashEntries, collidableOne.hashEntries).length > 0);
-
+      // let isInScreenSpaceOne = this.isInScreenSpace(gameObjectOne);
       let isInScreenSpaceOne = gameObjectOne.hasParentWithComponent(Base.Components.CanvasComponent);
-      for (let j = 0; j < potentialMatches.length; j++) {
-        let collidableTwo = potentialMatches[j];
+      for (let j = i + 1; j < collidableChildren.length; j++) {
+        let collidableTwo = collidableChildren[j];
         let gameObjectTwo = collidableTwo.gameObject;
         let isInScreenSpaceTwo = gameObjectTwo.hasParentWithComponent(Base.Components.CanvasComponent);
         if (isInScreenSpaceOne != isInScreenSpaceTwo) break;
@@ -22125,8 +22090,8 @@ class MouseCollisionPlugin{
     this.frameMouseOver = [];
   }
   update(ctx){
-    let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
+    let collidableType = Base.Components.Collider;
+    let collisionHelper = Base.Components.CollisionHelper;
     let children = Base.$$.children;
     //Add collision behavior
     let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
@@ -22234,8 +22199,8 @@ class TouchCollisionPlugin {
 
   }
   update(ctx) {
-    let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
+    let collidableType = Base.Components.Collider;
+    let collisionHelper = Base.Components.CollisionHelper;
     let children = Base.$$.children;
 
     //Add collision behavior
@@ -22502,7 +22467,7 @@ class CrowdSimulationPlugin {
       !(typeof collider == 'object') ||
       !(typeof (component) === 'string' || component instanceof String)) throw new Error("canEnterSafely expects exactly three arguments of type Point, Collider, and String")
 
-    let collidableType = Base.Serializer.components.Collider;
+    let collidableType = Base.Components.Collider;
     
     let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return {collider:x.component, gameObject:x.gameObject}});
     let proposed = new GameObject();
@@ -22559,7 +22524,7 @@ class Peer2PeerPlugin{
  */
 function main(gameObjects, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
-  Base.Serializer.components = { ...Base.Serializer.components, ...gameBehaviors };
+  Base.Components = { ...Base.Components, ...gameBehaviors };
   this.deserializedPrefabs = [];
 
 
@@ -22842,7 +22807,7 @@ const Prefabs = {
 const Plugins = [
   new UpdatePlugin(), 
   new DrawPlugin(),
-  new CollisionPluginHash(),
+  new CollisionPlugin(),
   new MouseCollisionPlugin(),
   new TouchCollisionPlugin(),
   new CrowdSimulationPlugin(),
@@ -22864,7 +22829,7 @@ const Base = {
   Prefabs,
   Scene,
   SceneManager,
-  Serializer: new Serializer(Components, Prefabs),
+  Serializer: new Serializer(),
   State: State$1,
   StateMachine,
   Time,

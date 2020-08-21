@@ -9,14 +9,14 @@ class CollisionPlugin {
     //First we do collisions
     //
 
-    let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
+    let collidableType = Base.Components.Collider;
+    let collisionHelper = Base.Components.CollisionHelper;
 
     //Add collision behavior
     // let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});
 
     let collidableChildren = Base.$$.allWithComponent(collidableType).map(x => { return { collider: x.component, gameObject: x.gameObject } });
-    collidableChildren = collidableChildren.filter(x => !x.gameObject.anyComponent(Base.Serializer.components.GUIOnlyCollider));
+    collidableChildren = collidableChildren.filter(x => !x.gameObject.anyComponent(Base.Components.GUIOnlyCollider));
 
     for (let i = 0; i < collidableChildren.length; i++) {
       let collidableOne = collidableChildren[i];

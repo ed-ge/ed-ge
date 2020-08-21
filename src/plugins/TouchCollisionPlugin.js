@@ -7,8 +7,8 @@ class TouchCollisionPlugin {
 
   }
   update(ctx) {
-    let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
+    let collidableType = Base.Components.Collider;
+    let collisionHelper = Base.Components.CollisionHelper;
     let children = Base.$$.children;
 
     //Add collision behavior

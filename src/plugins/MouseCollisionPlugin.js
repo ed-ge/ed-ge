@@ -7,8 +7,8 @@ class MouseCollisionPlugin{
     this.frameMouseOver = [];
   }
   update(ctx){
-    let collidableType = Base.Serializer.components.Collider;
-    let collisionHelper = Base.Serializer.components.CollisionHelper;
+    let collidableType = Base.Components.Collider;
+    let collisionHelper = Base.Components.CollisionHelper;
     let children = Base.$$.children;
     //Add collision behavior
     let collidableChildren = Base.$$.allWithComponent(collidableType).map(x=>{return{collider:x.component, gameObject:x.gameObject}});

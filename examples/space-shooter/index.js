@@ -21,6 +21,8 @@ let Scenes = {
   startScene: "StartScene",
   allScenes: [
 `
+Plugin
+
 StartScene
 
 MainController Empty

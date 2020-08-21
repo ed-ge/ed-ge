@@ -1,5 +1,6 @@
-
 export default `
+Plugin
+
 TouchScene
 
 MainCamera Camera

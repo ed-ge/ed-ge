@@ -1,5 +1,6 @@
-
 export default `
+Plugin
+
 SceneTwo
 
 counter Text
