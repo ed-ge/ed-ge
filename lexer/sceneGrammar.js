@@ -93,6 +93,21 @@ function topLevel(d){
     //return Object.assign(Object.assign(d[0],d[1]), d[2])
 }
 
+
+
+
+
+function parsePlugins(d){
+    let first = d[1];
+    let list = d[3];
+    if(!list || list.length == 0){
+        return [first]
+    }else{
+        let collect = list.map(x=>x[1]);
+        return [first, ...collect];
+    }
+}
+
 var grammar = {
     Lexer: lexer,
     ParserRules: [
@@ -155,12 +170,22 @@ var grammar = {
     {"name": "__$ebnf$1", "symbols": ["__$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": ignore},
     {"name": "wschar", "symbols": [(lexer.has("wschar") ? {type: "wschar"} : wschar)], "postprocess": id},
+    {"name": "Everything", "symbols": ["Plugins", "NewLine", "NewLine", "Scene"], "postprocess":  d=>{
+        return{Plugins:d[0],Scene:d[3]};
+        }},
+    {"name": "Plugins$ebnf$1", "symbols": []},
+    {"name": "Plugins$ebnf$1$subexpression$1", "symbols": ["NewLine", "Plugin"]},
+    {"name": "Plugins$ebnf$1", "symbols": ["Plugins$ebnf$1", "Plugins$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "Plugins", "symbols": ["_", "Plugin", "_", "Plugins$ebnf$1"], "postprocess": parsePlugins},
+    {"name": "Plugin", "symbols": ["Word"], "postprocess": id},
     {"name": "Scene$ebnf$1$subexpression$1", "symbols": ["NewLine", "NewLine", "Objects"]},
     {"name": "Scene$ebnf$1", "symbols": ["Scene$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "Scene$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "Scene", "symbols": ["_", "SceneName", "_", "Scene$ebnf$1"], "postprocess": d=> {return{name:d[1], objects: d[3]? d[3][2]:[]}}},
+    {"name": "Scene", "symbols": ["SceneName", "_", "Scene$ebnf$1"], "postprocess":  d=> {
+        return{name:d[0], objects: d[2]? d[2][2]:[]}
+        }},
     {"name": "SceneName", "symbols": ["Word"], "postprocess": id}
 ]
-  , ParserStart: "Scene"
+  , ParserStart: "Everything"
 }
 export default grammar
