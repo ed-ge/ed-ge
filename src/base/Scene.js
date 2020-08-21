@@ -29,6 +29,13 @@ class Scene extends NameableParent {
 
     let r = parser.results;
     super(r[0].Scene.name)
+
+    this.plugins = [];
+    for(let plugin of r[0].Plugins){
+      
+      this.plugins.push( new Base.Plugins[plugin]())
+    }
+
     //this.bootSimulator();
     Base.Serializer.FromEdge(r[0]).forEach(x => this.addChild(x));
 

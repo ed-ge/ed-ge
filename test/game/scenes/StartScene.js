@@ -1,5 +1,6 @@
 export default `
-Plugin
+UpdatePlugin
+DrawPlugin
 
 StartScene
 

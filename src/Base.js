@@ -117,15 +117,15 @@ const Prefabs = {
   Text,
 };
 
-const Plugins = [
-  new UpdatePlugin(), 
-  new DrawPlugin(),
-  new CollisionPlugin(),
-  new MouseCollisionPlugin(),
-  new TouchCollisionPlugin(),
-  new CrowdSimulationPlugin(),
-  new Peer2PeerPlugin(),
-];
+const Plugins = {
+  UpdatePlugin, 
+  DrawPlugin,
+  CollisionPlugin,
+  MouseCollisionPlugin,
+  TouchCollisionPlugin,
+  CrowdSimulationPlugin,
+  Peer2PeerPlugin,
+};
 
 const Base = {
   Behavior,

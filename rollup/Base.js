@@ -146,7 +146,7 @@ class NameableParent {
         }
     }
     callDestroyEvent(gameObject, parent) {
-        Base.Plugins
+        Base.$$.plugins
             .filter(plugin => plugin.OnDestroy)
             .forEach(plugin => plugin.OnDestroy(gameObject, parent));
     }
@@ -161,7 +161,7 @@ class NameableParent {
         while (highestParent.parent != null) {
             highestParent = highestParent.parent;
         }
-        Base.Plugins.filter(plugin => plugin.OnNewChild).forEach(plugin => plugin.OnNewChild(child, highestParent));
+        this.parentScene().plugins.filter(plugin => plugin.OnNewChild).forEach(plugin => plugin.OnNewChild(child, highestParent));
         if (this.newChildEvent)
             this.newChildEvent(child);
     }
@@ -198,6 +198,12 @@ class NameableParent {
             toReturn.push(...childResults);
         }
         return toReturn;
+    }
+    parentScene(){
+        if(this instanceof Base.Scene){
+            return this;
+        }
+        return this.parent.parentScene();
     }
     $(name) {
         return this.findByName(name);
@@ -2337,6 +2343,13 @@ class Scene extends NameableParent {
 
     let r = parser.results;
     super(r[0].Scene.name);
+
+    this.plugins = [];
+    for(let plugin of r[0].Plugins){
+      
+      this.plugins.push( new Base.Plugins[plugin]());
+    }
+
     //this.bootSimulator();
     Base.Serializer.FromEdge(r[0]).forEach(x => this.addChild(x));
 
@@ -22517,12 +22530,12 @@ class Peer2PeerPlugin{
  * - startScene:{String} overrive the start scene provided in the scenes object
  * - runUpdate:{bool} if true, prevents update from being called. The Engine wil only render the initial state.
  * 
- * @param {Array} gameObjects An array of game objects that can be in the game
+ * @param {Array} prefabs An array of game objects that can be in the game
  * @param {Array} gameBehaviors An array of behaviors that can be in the game
  * @param {Object} scenes An object specifying the start scenes and scene definitions
  * @param {Object} options An object with options that override the defaults
  */
-function main(gameObjects, gameBehaviors, scenes, options = {}) {
+function main(prefabs, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
   Base.Components = { ...Base.Components, ...gameBehaviors };
   this.deserializedPrefabs = [];
@@ -22535,14 +22548,14 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     let r = parser.results;
     Base.Serializer.FromEdgeChild(r[0][0], true);
   }
-  for (let key in gameObjects) {
+  for (let key in prefabs) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar$1));
-    parser.feed(gameObjects[key].trim());
+    parser.feed(prefabs[key].trim());
 
     let r = parser.results;
     Base.Serializer.FromEdgeChild(r[0][0], true);
   }
-  this.SceneManager.Prefabs = { ...gameObjects, ...this.Prefabs };
+  this.SceneManager.Prefabs = { ...prefabs, ...this.Prefabs };
   //Base.Serializer.prefabs = this.Prefabs;
   this.Behaviors = gameBehaviors;
   let canv, ctx;
@@ -22804,15 +22817,15 @@ const Prefabs = {
   Text,
 };
 
-const Plugins = [
-  new UpdatePlugin(), 
-  new DrawPlugin(),
-  new CollisionPlugin(),
-  new MouseCollisionPlugin(),
-  new TouchCollisionPlugin(),
-  new CrowdSimulationPlugin(),
-  new Peer2PeerPlugin(),
-];
+const Plugins = {
+  UpdatePlugin, 
+  DrawPlugin,
+  CollisionPlugin,
+  MouseCollisionPlugin,
+  TouchCollisionPlugin,
+  CrowdSimulationPlugin,
+  Peer2PeerPlugin,
+};
 
 const Base = {
   Behavior,

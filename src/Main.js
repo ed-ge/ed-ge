@@ -17,12 +17,12 @@ import nearley from "../lib/lexer/nearley.js"
  * - startScene:{String} overrive the start scene provided in the scenes object
  * - runUpdate:{bool} if true, prevents update from being called. The Engine wil only render the initial state.
  * 
- * @param {Array} gameObjects An array of game objects that can be in the game
+ * @param {Array} prefabs An array of game objects that can be in the game
  * @param {Array} gameBehaviors An array of behaviors that can be in the game
  * @param {Object} scenes An object specifying the start scenes and scene definitions
  * @param {Object} options An object with options that override the defaults
  */
-function main(gameObjects, gameBehaviors, scenes, options = {}) {
+function main(prefabs, gameBehaviors, scenes, options = {}) {
   //From https://flaviocopes.com/how-to-merge-objects-javascript/
   Base.Components = { ...Base.Components, ...gameBehaviors };
   this.deserializedPrefabs = []
@@ -35,14 +35,14 @@ function main(gameObjects, gameBehaviors, scenes, options = {}) {
     let r = parser.results;
     Base.Serializer.FromEdgeChild(r[0][0], true);
   }
-  for (let key in gameObjects) {
+  for (let key in prefabs) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
-    parser.feed(gameObjects[key].trim());
+    parser.feed(prefabs[key].trim());
 
     let r = parser.results;
     Base.Serializer.FromEdgeChild(r[0][0], true);
   }
-  this.SceneManager.Prefabs = { ...gameObjects, ...this.Prefabs };
+  this.SceneManager.Prefabs = { ...prefabs, ...this.Prefabs };
   //Base.Serializer.prefabs = this.Prefabs;
   this.Behaviors = gameBehaviors;
   let canv, ctx;
