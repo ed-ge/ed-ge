@@ -62,7 +62,7 @@ class NameableParent {
         }
     }
     callDestroyEvent(gameObject, parent) {
-        Base.Plugins
+        Base.$$.plugins
             .filter(plugin => plugin.OnDestroy)
             .forEach(plugin => plugin.OnDestroy(gameObject, parent))
     }
@@ -77,7 +77,7 @@ class NameableParent {
         while (highestParent.parent != null) {
             highestParent = highestParent.parent;
         }
-        Base.Plugins.filter(plugin => plugin.OnNewChild).forEach(plugin => plugin.OnNewChild(child, highestParent));
+        this.parentScene().plugins.filter(plugin => plugin.OnNewChild).forEach(plugin => plugin.OnNewChild(child, highestParent));
         if (this.newChildEvent)
             this.newChildEvent(child);
     }
@@ -114,6 +114,12 @@ class NameableParent {
             toReturn.push(...childResults);
         }
         return toReturn;
+    }
+    parentScene(){
+        if(this instanceof Base.Scene){
+            return this;
+        }
+        return this.parent.parentScene();
     }
     $(name) {
         return this.findByName(name);

@@ -1,5 +1,9 @@
 export default `
-Plugin
+UpdatePlugin
+DrawPlugin
+CollisionPlugin
+MouseCollisionPlugin
+TouchCollisionPlugin
 
 TouchScene
 
