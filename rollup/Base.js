@@ -161,7 +161,8 @@ class NameableParent {
         while (highestParent.parent != null) {
             highestParent = highestParent.parent;
         }
-        this.parentScene().plugins.filter(plugin => plugin.OnNewChild).forEach(plugin => plugin.OnNewChild(child, highestParent));
+        if (scene)
+            scene.plugins.filter(plugin => plugin.OnNewChild).forEach(plugin => plugin.OnNewChild(child, highestParent));
         if (this.newChildEvent)
             this.newChildEvent(child);
     }
@@ -199,8 +200,8 @@ class NameableParent {
         }
         return toReturn;
     }
-    parentScene(){
-        if(this instanceof Base.Scene){
+    parentScene() {
+        if (this instanceof Base.Scene) {
             return this;
         }
         return this.parent.parentScene();
@@ -225,17 +226,17 @@ class NameableParent {
         }
         return null;
     }
-    hasParentWithComponent(component){
+    hasParentWithComponent(component) {
         let candidates = Base.$$.children.filter(i => i.anyComponent(component));
         if (candidates.length == 0) return false; // We don't have screen space
         for (let candidate of candidates) {
-          if (candidate.isChildDeep(this)) {
-            return true;
-          }
+            if (candidate.isChildDeep(this)) {
+                return true;
+            }
         }
         return false;
     }
-    
+
     /**Generate a uuid
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
      */
@@ -247,7 +248,7 @@ class NameableParent {
             return v.toString(16);
         });
     }
-    newuuid(){
+    newuuid() {
         this.uuid = this.uuidv4();
     }
 
@@ -2328,7 +2329,11 @@ class Scene extends NameableParent {
    * 
    * @param {String} name Name of this scene
    */
-  constructor(definition, prefabs, behaviors, components) {
+  constructor()
+  {
+    super("Uninitialized");
+  }
+  factory(definition, prefabs, behaviors, components) {
     if (!(arguments.length == 4) ||
       !(typeof (definition) === 'string' || definition instanceof String) ||
       !(typeof prefabs == 'object') ||
@@ -2342,7 +2347,7 @@ class Scene extends NameableParent {
     parser.feed(definition.trim());
 
     let r = parser.results;
-    super(r[0].Scene.name);
+    this.name = (r[0].Scene.name);
 
     this.plugins = [];
     for(let plugin of r[0].Plugins){
@@ -2351,13 +2356,16 @@ class Scene extends NameableParent {
     }
 
     //this.bootSimulator();
-    Base.Serializer.FromEdge(r[0]).forEach(x => this.addChild(x));
+    Base.Serializer.FromEdge(this,r[0]).forEach(x => this.addChild(x));
 
     this.components = components;
     this.layers = ["background", null, "foreground"];
     this.lastCtx = null;
+
+    return this;
     
   }
+  
   
   /**
    * Load the scene from its declarative syntax
@@ -2371,7 +2379,8 @@ class Scene extends NameableParent {
         child.recursiveCall("start");
       });
     }
-    Base.Plugins.filter(x=>x.sceneBoot).forEach(x=>x.sceneBoot(this));
+    this.plugins.filter(p=>p.sceneBoot).forEach(p=>p.sceneBoot(this));
+    // Base.Plugins.filter(x=>x.sceneBoot).forEach(x=>x.sceneBoot(this));
   }
 
   /**
@@ -19722,17 +19731,17 @@ class Serializer {
   constructor() {
     this.prefabs = {};
   }
-  FromEdge(arr) {
+  FromEdge(scene, arr) {
     let toReturn = [];
     for (let i = 0; i < arr.Scene.objects.length; i++) {
       let edgeChild = arr.Scene.objects[i];
-      let toAdd = this.FromEdgeChild(edgeChild);
+      let toAdd = this.FromEdgeChild(scene, edgeChild);
       toReturn.push(toAdd);
     }
     return toReturn;
   }
 
-  FromEdgeChild(edge, store=false) {
+  FromEdgeChild(scene, edge, store = false) {
     let toReturn = new GameObject();
     if (edge.prefab != "Empty") {
       let toClone = this.prefabs[edge.prefab];
@@ -19772,8 +19781,8 @@ class Serializer {
     //Now do the children
     for (let i = 0; edge.children && i < edge.children.length; i++) {
       let edgeChild = edge.children[i];
-      let gameObjectChild = this.FromEdgeChild(edgeChild);
-      toReturn.addChild(gameObjectChild);
+      let gameObjectChild = this.FromEdgeChild(scene, edgeChild);
+      toReturn.addChild(gameObjectChild, scene);
     }
 
     if (store)
@@ -19893,22 +19902,22 @@ class Serializer {
     //If they are either add them or override them
 
     let edge = gameObjectType;
-    if(typeof edge === 'string' || edge instanceof String){
+    if (typeof edge === 'string' || edge instanceof String) {
       const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar$1));
       parser.feed(edge.trim());
-      
+
       let r = parser.results;
       edge = r[0][0];
     }
 
 
-    let toReturn = this.FromEdgeChild(edge);
+    let toReturn = this.FromEdgeChild(Base.$$,edge);
 
     if (location != null) { //Override if we have a valid argument
       toReturn.x = location.x;
       toReturn.y = location.y;
     }
-    
+
     if (scale != null) {
       toReturn.scaleX = scale.x;
       toReturn.scaleY = scale.y;
@@ -19917,7 +19926,7 @@ class Serializer {
       toReturn.rotation = rotation;
     }
     if (parent != null) {
-      parent.addChild(toReturn);
+      parent.addChild(toReturn, Base.$$);
     }
 
     //let gameObject = this.deserializePrefab(gameObjectType, false, parent, location, scale, rotation);
@@ -22433,7 +22442,9 @@ class CrowdSimulationPlugin {
   }
   update() {
 
-    let simulator = this.simulators.find(x => x.scene == Base.$$.uuid).simulator;
+    let object = this.simulators.find(x => x.scene == Base.$$.uuid);
+    if(!object) return; //We could be in the middle of changing scenens, etc.
+    let simulator = object.simulator;
 
     
     let toUpdate = Base.$$.allWithComponent(Base.Components.RVOAgent);
@@ -22546,14 +22557,14 @@ function main(prefabs, gameBehaviors, scenes, options = {}) {
     parser.feed(this.Prefabs[key].trim());
 
     let r = parser.results;
-    Base.Serializer.FromEdgeChild(r[0][0], true);
+    Base.Serializer.FromEdgeChild(null, r[0][0], true);
   }
   for (let key in prefabs) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar$1));
     parser.feed(prefabs[key].trim());
 
     let r = parser.results;
-    Base.Serializer.FromEdgeChild(r[0][0], true);
+    Base.Serializer.FromEdgeChild(null, r[0][0], true);
   }
   this.SceneManager.Prefabs = { ...prefabs, ...this.Prefabs };
   //Base.Serializer.prefabs = this.Prefabs;
@@ -22564,9 +22575,10 @@ function main(prefabs, gameBehaviors, scenes, options = {}) {
 
   this.SceneManager.clearScenes();
   scenes.allScenes
-    .forEach(i => this.SceneManager.addScene(new Scene(i, this.Prefabs, gameBehaviors, this.Components)));
+    .forEach(i => this.SceneManager.addScene(new Scene().factory(i, this.Prefabs, gameBehaviors, this.Components)));
   
-  Base.Plugins.filter(plugin => plugin.OnNewScene).forEach(plugin => Base.SceneManager.scenes.forEach(scene => plugin.OnNewScene(scene)));
+  Base.SceneManager.scenes.forEach(s=>s.plugins.filter(p=>p.OnNewScene).forEach(p=>p.OnNewScene(s)));
+  // Base.Plugins.filter(plugin => plugin.OnNewScene).forEach(plugin => Base.SceneManager.scenes.forEach(scene => plugin.OnNewScene(scene)))
 
 
   this.SceneManager.currentScene = options.startScene || scenes.startScene;
@@ -22597,7 +22609,8 @@ function main(prefabs, gameBehaviors, scenes, options = {}) {
 
 
     if (shouldUpdate) {
-      Base.Plugins.forEach(plugin => plugin.update ? plugin.update(ctx) : {/*no op*/ });
+      that.SceneManager.currentScene.plugins.filter(p=>p.update).forEach(p=>p.update(ctx));
+      // Base.Plugins.forEach(plugin => plugin.update ? plugin.update(ctx) : {/*no op*/ });
       that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
     }
 
@@ -22605,7 +22618,8 @@ function main(prefabs, gameBehaviors, scenes, options = {}) {
 
 
     if (shouldDraw) {
-      Base.Plugins.forEach(plugin => plugin.draw ? plugin.draw(ctx, canv.width, canv.height) : {/*no op*/ });
+      that.SceneManager.currentScene.plugins.filter(p=>p.draw).forEach(p=>p.draw(ctx, canv.width, canv.height));
+      // Base.Plugins.forEach(plugin => plugin.draw ? plugin.draw(ctx, canv.width, canv.height) : {/*no op*/ });
 
     }
   }

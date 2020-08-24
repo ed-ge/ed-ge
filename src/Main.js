@@ -33,14 +33,14 @@ function main(prefabs, gameBehaviors, scenes, options = {}) {
     parser.feed(this.Prefabs[key].trim());
 
     let r = parser.results;
-    Base.Serializer.FromEdgeChild(r[0][0], true);
+    Base.Serializer.FromEdgeChild(null, r[0][0], true);
   }
   for (let key in prefabs) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     parser.feed(prefabs[key].trim());
 
     let r = parser.results;
-    Base.Serializer.FromEdgeChild(r[0][0], true);
+    Base.Serializer.FromEdgeChild(null, r[0][0], true);
   }
   this.SceneManager.Prefabs = { ...prefabs, ...this.Prefabs };
   //Base.Serializer.prefabs = this.Prefabs;
@@ -51,9 +51,10 @@ function main(prefabs, gameBehaviors, scenes, options = {}) {
 
   this.SceneManager.clearScenes();
   scenes.allScenes
-    .forEach(i => this.SceneManager.addScene(new Scene(i, this.Prefabs, gameBehaviors, this.Components)))
+    .forEach(i => this.SceneManager.addScene(new Scene().factory(i, this.Prefabs, gameBehaviors, this.Components)))
   
-  Base.Plugins.filter(plugin => plugin.OnNewScene).forEach(plugin => Base.SceneManager.scenes.forEach(scene => plugin.OnNewScene(scene)))
+  Base.SceneManager.scenes.forEach(s=>s.plugins.filter(p=>p.OnNewScene).forEach(p=>p.OnNewScene(s)))
+  // Base.Plugins.filter(plugin => plugin.OnNewScene).forEach(plugin => Base.SceneManager.scenes.forEach(scene => plugin.OnNewScene(scene)))
 
 
   this.SceneManager.currentScene = options.startScene || scenes.startScene;
@@ -87,7 +88,8 @@ function main(prefabs, gameBehaviors, scenes, options = {}) {
 
 
     if (shouldUpdate) {
-      Base.Plugins.forEach(plugin => plugin.update ? plugin.update(ctx) : {/*no op*/ });
+      that.SceneManager.currentScene.plugins.filter(p=>p.update).forEach(p=>p.update(ctx));
+      // Base.Plugins.forEach(plugin => plugin.update ? plugin.update(ctx) : {/*no op*/ });
       that.SceneManager.currentScene.update(ctx, that.Components.Collider, that.Components.CollisionHelper);
     }
 
@@ -95,7 +97,8 @@ function main(prefabs, gameBehaviors, scenes, options = {}) {
 
 
     if (shouldDraw) {
-      Base.Plugins.forEach(plugin => plugin.draw ? plugin.draw(ctx, canv.width, canv.height) : {/*no op*/ });
+      that.SceneManager.currentScene.plugins.filter(p=>p.draw).forEach(p=>p.draw(ctx, canv.width, canv.height));
+      // Base.Plugins.forEach(plugin => plugin.draw ? plugin.draw(ctx, canv.width, canv.height) : {/*no op*/ });
 
     }
   }

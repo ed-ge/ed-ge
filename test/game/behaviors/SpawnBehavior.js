@@ -16,7 +16,7 @@ export default class SpawnBehavior extends Base.Behavior {
             let x = this.gameObject.x;
             let collider = new Base.Components.CircleCollider();
             collider.radius = 5;
-            if (Base.Plugins.find(x=>x.constructor.name == "CrowdSimulationPlugin").canEnterSafely(new Base.Point(x, y), collider, "RVOAgent")) {
+            if (Base.$$.plugins.find(x=>x.constructor.name == "CrowdSimulationPlugin").canEnterSafely(new Base.Point(x, y), collider, "RVOAgent")) {
                 let RVOCopy = _.cloneDeep(Base.Prefabs.RVOAgent).trim();
                 let splits = RVOCopy.split(/\r?\n/);
                 if(isNaN(x) || isNaN(y)){

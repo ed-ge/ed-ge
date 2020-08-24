@@ -77,7 +77,8 @@ class NameableParent {
         while (highestParent.parent != null) {
             highestParent = highestParent.parent;
         }
-        this.parentScene().plugins.filter(plugin => plugin.OnNewChild).forEach(plugin => plugin.OnNewChild(child, highestParent));
+        if (scene)
+            scene.plugins.filter(plugin => plugin.OnNewChild).forEach(plugin => plugin.OnNewChild(child, highestParent));
         if (this.newChildEvent)
             this.newChildEvent(child);
     }
@@ -115,8 +116,8 @@ class NameableParent {
         }
         return toReturn;
     }
-    parentScene(){
-        if(this instanceof Base.Scene){
+    parentScene() {
+        if (this instanceof Base.Scene) {
             return this;
         }
         return this.parent.parentScene();
@@ -141,17 +142,17 @@ class NameableParent {
         }
         return null;
     }
-    hasParentWithComponent(component){
+    hasParentWithComponent(component) {
         let candidates = Base.$$.children.filter(i => i.anyComponent(component));
         if (candidates.length == 0) return false; // We don't have screen space
         for (let candidate of candidates) {
-          if (candidate.isChildDeep(this)) {
-            return true;
-          }
+            if (candidate.isChildDeep(this)) {
+                return true;
+            }
         }
         return false;
     }
-    
+
     /**Generate a uuid
      * From https://stackoverflow.com/questions/105034/how-to-create-guid-uuid
      */
@@ -163,7 +164,7 @@ class NameableParent {
             return v.toString(16);
         });
     }
-    newuuid(){
+    newuuid() {
         this.uuid = this.uuidv4();
     }
 
