@@ -14,6 +14,8 @@ let Scenes = {
   startScene: "StartScene",
   allScenes: [
 `
+Plugin 
+
 StartScene
 
 BoardBase Empty

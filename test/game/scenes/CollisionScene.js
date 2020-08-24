@@ -3,8 +3,6 @@ export default `
 UpdatePlugin
 DrawPlugin
 CollisionPlugin
-MouseCollisionPlugin
-TouchCollisionPlugin
 
 CollisionScene
 

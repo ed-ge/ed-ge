@@ -151,7 +151,9 @@ class CrowdSimulationPlugin {
   }
   update() {
 
-    let simulator = this.simulators.find(x => x.scene == Base.$$.uuid).simulator;
+    let object = this.simulators.find(x => x.scene == Base.$$.uuid);
+    if(!object) return; //We could be in the middle of changing scenens, etc.
+    let simulator = object.simulator;
 
     
     let toUpdate = Base.$$.allWithComponent(Base.Components.RVOAgent);

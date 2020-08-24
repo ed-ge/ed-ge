@@ -2,9 +2,7 @@
 export default `
 UpdatePlugin
 DrawPlugin
-CollisionPlugin
-MouseCollisionPlugin
-TouchCollisionPlugin
+CrowdSimulationPlugin
 
 RVOScene
 
